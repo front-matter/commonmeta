@@ -1,25 +1,24 @@
 package utils_test
 
 import (
+	"commonmeta/utils"
 	"testing"
-	"utils"
 )
 
 func TestIssnAsUrl(t *testing.T) {
 	t.Parallel()
 	type testCase struct {
-		issn string
-		want string
+		input string
+		want  string
 	}
 	testCases := []testCase{
-		{issn: "2146-8427", want: "https://portal.issn.org/resource/ISSN/2146-8427"},
-		{issn: nil, want: nil},
+		{input: "2146-8427", want: "https://portal.issn.org/resource/ISSN/2146-8427"},
 	}
 	for _, tc := range testCases {
-		got := utils.IssnAsUrl(tc.issn)
+		got := utils.IssnAsUrl(tc.input)
 		if tc.want != got {
-			t.Errorf("ISSN as URL(%f): want %f, got %f",
-				tc.issn, tc.want, got)
+			t.Errorf("ISSN as URL(%v): want %v, got %v",
+				tc.input, tc.want, got)
 		}
 	}
 }
