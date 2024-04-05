@@ -1,4 +1,4 @@
-package commonmeta
+package version
 
 import (
 	"strings"

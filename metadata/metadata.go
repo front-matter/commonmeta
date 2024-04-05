@@ -87,9 +87,9 @@ type Contributor struct {
 }
 
 type Description struct {
-	Description string `json:"myName"`
-	Type        string `json:"myName,omitempty"`
-	Language    string `json:"myName,omitempty"`
+	Description string `json:"Description"`
+	Type        string `json:"Type,omitempty"`
+	Language    string `json:"Language,omitempty"`
 }
 
 type File struct {
@@ -122,13 +122,13 @@ type GeoLocation struct {
 }
 
 type GeoLocationPoint struct {
-	pointLongitude float64 `json:"point_longitude,omitempty"`
-	pointLatitude  float64 `json:"point_latitude,omitempty"`
+	PointLongitude float64 `json:"point_longitude,omitempty"`
+	PointLatitude  float64 `json:"point_latitude,omitempty"`
 }
 
 type GeoLocationPolygon struct {
 	PolygonPoints  []GeoLocationPoint `json:"polygon_points"`
-	inPolygonPoint GeoLocationPoint   `json:"in_polygon_point,omitempty"`
+	InPolygonPoint GeoLocationPoint   `json:"in_polygon_point,omitempty"`
 }
 
 type Relation struct {

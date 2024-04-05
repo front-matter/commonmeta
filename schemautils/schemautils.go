@@ -1,4 +1,4 @@
-package schema_utils
+package schemautils
 
 import (
 	"fmt"
@@ -6,10 +6,9 @@ import (
 	"github.com/xeipuuv/gojsonschema"
 )
 
-func main() {
-
-	schemaLoader := gojsonschema.NewReferenceLoader("file:///home/me/schema.json")
-	documentLoader := gojsonschema.NewReferenceLoader("file:///home/me/document.json")
+func JSONSchemaErrors(document []byte) *gojsonschema.Result {
+	schemaLoader := gojsonschema.NewReferenceLoader("file://../resources/commonmeta_v0.12.json")
+	documentLoader := gojsonschema.NewGoLoader(document)
 
 	result, err := gojsonschema.Validate(schemaLoader, documentLoader)
 	if err != nil {
@@ -24,4 +23,5 @@ func main() {
 			fmt.Printf("- %s\n", desc)
 		}
 	}
+	return result
 }

@@ -1,1 +1,0 @@
-package schemaorg_writer

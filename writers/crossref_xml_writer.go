@@ -1,1 +1,0 @@
-package crossref_xml_writer

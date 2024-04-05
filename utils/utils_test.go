@@ -1,8 +1,8 @@
 package utils_test
 
 import (
-	"commonmeta/utils"
 	"testing"
+	"utils"
 )
 
 func TestIssnAsUrl(t *testing.T) {
