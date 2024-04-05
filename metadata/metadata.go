@@ -7,65 +7,34 @@ type Metadata struct {
 	Url          string        `json:"url,omitempty"`
 	Contributors []Contributor `json:"contributors,omitempty"`
 	Titles       []Title       `json:"titles,omitempty"`
-	Publisher    struct {
-		ID   string `json:"id,omitempty"`
-		Name string `json:"name"`
-	}
-	Date struct {
-		Created   string `json:"created,omitempty"`
-		Submitted string `json:"submitted,omitempty"`
-		Accepted  string `json:"accepted,omitempty"`
-		Published string `json:"published,omitempty"`
-		Updated   string `json:"updated,omitempty"`
-		Accessed  string `json:"accessed,omitempty"`
-		Available string `json:"available,omitempty"`
-		Withdrawn string `json:"withdrawn,omitempty"`
-	}
-
+	Publisher    Publisher     `json:"publisher,omitempty"`
+	Date         Date          `json:"date,omitempty"`
 	// recommended and optional properties
 	AdditionalType string    `json:"additional_name,omitempty"`
 	Subjects       []Subject `json:"subjects,omitempty"`
 	// The language of the resource. Use one of the language codes from the IETF BCP 47 standard.
-	Language             string `json:"language,omitempty"`
-	AlternateIdentifiers struct {
-		AlternateIdentifier     string `json:"alternate_identifier"`
-		AlternateIdentifierType string `json:"alternate_identifier_type"`
-	}
-	Relations []Relation `json:"relations,omitempty"`
-	Sizes     []string   `json:"sizes,omitempty"`
-	Formats   []string   `json:"formats,omitempty"`
-	Version   string     `json:"version,omitempty"`
+	Language             string                `json:"language,omitempty"`
+	AlternateIdentifiers []AlternateIdentifier `json:"alternate_identifiers,omitempty"`
+	Relations            []Relation            `json:"relations,omitempty"`
+	Sizes                []string              `json:"sizes,omitempty"`
+	Formats              []string              `json:"formats,omitempty"`
+	Version              string                `json:"version,omitempty"`
 	// The license for the resource. Use one of the SPDX license identifiers.
-	License struct {
-		ID  string `json:"id,omitempty"`
-		Url string `json:"url,omitempty"`
-	}
+	License           License            `json:"license,omitempty"`
 	Descriptions      []Description      `json:"descriptions,omitempty"`
 	GeoLocations      []GeoLocation      `json:"geo_locations,omitempty"`
 	FundingReferences []FundingReference `json:"funding_references,omitempty"`
 	References        []Reference        `json:"references,omitempty"`
 
 	// other properties
-	DateCreated    string `json:"date_created,omitempty"`
-	DateRegistered string `json:"date_registered,omitempty"`
-	DatePublished  string `json:"date_published,omitempty"`
-	DateUpdated    string `json:"date_updated,omitempty"`
-	Files          []File `json:"files,omitempty"`
-	Container      struct {
-		Identifier     string `json:"identifier,omitempty"`
-		IdentifierType string `json:"identifier_type,omitempty"`
-		Type           string `json:"type,omitempty"`
-		Title          string `json:"title,omitempty"`
-		FirstPage      string `json:"first_page,omitempty"`
-		LastPage       string `json:"last_page,omitempty"`
-		Volume         string `json:"volume,omitempty"`
-		Issue          string `json:"issue,omitempty"`
-	}
-	Provider struct {
-		ID   string `json:"id,omitempty"`
-		Name string `json:"name,omitempty"`
-	}
-	SchemaVersion string `json:"schema_version,omitempty"`
+	DateCreated    string    `json:"date_created,omitempty"`
+	DateRegistered string    `json:"date_registered,omitempty"`
+	DatePublished  string    `json:"date_published,omitempty"`
+	DateUpdated    string    `json:"date_updated,omitempty"`
+	Files          []File    `json:"files,omitempty"`
+	Container      Container `json:"container,omitempty"`
+	Provider       string    `json:"provider,omitempty"`
+	SchemaVersion  string    `json:"schema_version,omitempty"`
 	// The location where content is archived.
 	ArchiveLocations []string `json:"archive_locations,omitempty"`
 	State            string   `json:"state,omitempty"`
@@ -76,6 +45,22 @@ type Affiliation struct {
 	Name string `json:"name,omitempty"`
 }
 
+type AlternateIdentifier struct {
+	AlternateIdentifier     string `json:"alternate_identifier"`
+	AlternateIdentifierType string `json:"alternate_identifier_type"`
+}
+
+type Container struct {
+	Identifier     string `json:"identifier,omitempty"`
+	IdentifierType string `json:"identifier_type,omitempty"`
+	Type           string `json:"type,omitempty"`
+	Title          string `json:"title,omitempty"`
+	FirstPage      string `json:"first_page,omitempty"`
+	LastPage       string `json:"last_page,omitempty"`
+	Volume         string `json:"volume,omitempty"`
+	Issue          string `json:"issue,omitempty"`
+}
+
 type Contributor struct {
 	ID               string        `json:"id,omitempty"`
 	Type             string        `json:"type"`
@@ -84,6 +69,17 @@ type Contributor struct {
 	GivenName        string        `json:"given_name,omitempty"`
 	FamilyName       string        `json:"family_name,omitempty"`
 	Affiliations     []Affiliation `json:"affiliations,omitempty"`
+}
+
+type Date struct {
+	Created   string `json:"created,omitempty"`
+	Submitted string `json:"submitted,omitempty"`
+	Accepted  string `json:"accepted,omitempty"`
+	Published string `json:"published,omitempty"`
+	Updated   string `json:"updated,omitempty"`
+	Accessed  string `json:"accessed,omitempty"`
+	Available string `json:"available,omitempty"`
+	Withdrawn string `json:"withdrawn,omitempty"`
 }
 
 type Description struct {
@@ -129,6 +125,16 @@ type GeoLocationPoint struct {
 type GeoLocationPolygon struct {
 	PolygonPoints  []GeoLocationPoint `json:"polygon_points"`
 	InPolygonPoint GeoLocationPoint   `json:"in_polygon_point,omitempty"`
+}
+
+type License struct {
+	ID  string `json:"id,omitempty"`
+	Url string `json:"url,omitempty"`
+}
+
+type Publisher struct {
+	ID   string `json:"id,omitempty"`
+	Name string `json:"name"`
 }
 
 type Relation struct {
