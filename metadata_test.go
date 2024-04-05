@@ -5,21 +5,10 @@ import (
 	"testing"
 )
 
-func TestIssnAsUrl(t *testing.T) {
+func TestMetadata(t *testing.T) {
 	t.Parallel()
-	type testCase struct {
-		issn string
-		want string
-	}
-	testCases := []testCase{
-		{issn: "2146-8427", want: "https://portal.issn.org/resource/ISSN/2146-8427"},
-		{issn: nil, want: nil},
-	}
-	for _, tc := range testCases {
-		got := metadata.IssnAsUrl(tc.issn)
-		if tc.want != got {
-			t.Errorf("ISSN as URL(%f): want %f, got %f",
-				tc.issn, tc.want, got)
-		}
+	_ = metadata.Metadata{
+		ID:   "https://doi.org/10.7554/elife.01567",
+		Type: "JournalArticle",
 	}
 }

@@ -23,9 +23,10 @@ type Metadata struct {
 	}
 
 	// recommended and optional properties
-	AdditionalType       string    `json:"additional_name,omitempty"`
-	Subjects             []Subject `json:"subjects,omitempty"`
-	Language             string    `json:"language,omitempty"`
+	AdditionalType string    `json:"additional_name,omitempty"`
+	Subjects       []Subject `json:"subjects,omitempty"`
+	// The language of the resource. Use one of the language codes from the IETF BCP 47 standard.
+	Language             string `json:"language,omitempty"`
 	AlternateIdentifiers struct {
 		AlternateIdentifier     string `json:"alternate_identifier"`
 		AlternateIdentifierType string `json:"alternate_identifier_type"`
@@ -34,7 +35,8 @@ type Metadata struct {
 	Sizes     []string   `json:"sizes,omitempty"`
 	Formats   []string   `json:"formats,omitempty"`
 	Version   string     `json:"version,omitempty"`
-	License   struct {
+	// The license for the resource. Use one of the SPDX license identifiers.
+	License struct {
 		ID  string `json:"id,omitempty"`
 		Url string `json:"url,omitempty"`
 	}
@@ -63,7 +65,8 @@ type Metadata struct {
 		ID   string `json:"id,omitempty"`
 		Name string `json:"name,omitempty"`
 	}
-	SchemaVersion    string   `json:"schema_version,omitempty"`
+	SchemaVersion string `json:"schema_version,omitempty"`
+	// The location where content is archived.
 	ArchiveLocations []string `json:"archive_locations,omitempty"`
 	State            string   `json:"state,omitempty"`
 }
