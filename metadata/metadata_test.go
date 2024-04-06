@@ -1,7 +1,7 @@
 package metadata_test
 
 import (
-	"metadata/metadata"
+	"commonmeta/metadata"
 	"testing"
 )
 

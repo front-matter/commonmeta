@@ -1,7 +1,7 @@
 package dateutils_test
 
 import (
-	"dateutils"
+	"commonmeta/dateutils"
 	"testing"
 )
 
