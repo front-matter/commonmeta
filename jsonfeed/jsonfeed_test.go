@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestGetJsonfeedItem(t *testing.T) {
+func TestGetJsonFeedItem(t *testing.T) {
 	t.Parallel()
 
 	type testCase struct {
@@ -28,7 +28,7 @@ func TestGetJsonfeedItem(t *testing.T) {
 		{id: wordpressPost.ID, want: wordpressPost.Title, err: nil},
 	}
 	for _, tc := range testCases {
-		got, err := jsonfeed.GetJsonfeedItem(tc.id)
+		got, err := jsonfeed.GetJsonFeedItem(tc.id)
 		if tc.want != got.Title {
 			t.Errorf("JSON Feed ID(%v): want %v, got %v, error %v",
 				tc.id, tc.want, got, err)

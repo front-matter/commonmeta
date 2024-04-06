@@ -2,6 +2,7 @@ package crossref
 
 import (
 	"commonmeta/doiutils"
+	"commonmeta/metadata"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -57,4 +58,9 @@ func GetCrossref(pid string) (Record, error) {
 		fmt.Println("error:", err)
 	}
 	return result.Message, err
+}
+
+func ReadCrossref(record Record) (metadata.Metadata, error) {
+	var m metadata.Metadata
+	return m, nil
 }

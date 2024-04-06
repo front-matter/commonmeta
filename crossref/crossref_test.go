@@ -2,6 +2,7 @@ package crossref_test
 
 import (
 	"commonmeta/crossref"
+	"commonmeta/metadata"
 	"testing"
 )
 
@@ -34,6 +35,25 @@ func TestGetCrossref(t *testing.T) {
 		if tc.want != got.Publisher {
 			t.Errorf("Get Crossref(%v): want %v, got %v, error %v",
 				tc.doi, tc.want, got, err)
+		}
+	}
+}
+
+func TestNewCrossref(t *testing.T) {
+	t.Parallel()
+	type testCase struct {
+		id   string
+		via  string
+		want string
+	}
+	testCases := []testCase{
+		{id: "https://doi.org/10.7554/elife.01567", via: "Crossref", want: "https://doi.org/10.7554/elife.01567"},
+	}
+	for _, tc := range testCases {
+		got := metadata.NewMetadata(tc.id, tc.via)
+		if tc.want != got.ID {
+			t.Errorf("New Crossref Metadata(%v, %v): want %v, got %v",
+				tc.id, tc.via, tc.want, got.ID)
 		}
 	}
 }

@@ -1,6 +1,7 @@
 package inveniordm
 
 import (
+	"commonmeta/metadata"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -39,4 +40,9 @@ func GetInvenioRDM(pid string) (Record, error) {
 		fmt.Println("error:", err)
 	}
 	return result, err
+}
+
+func ReadInvenioRDM(record Record) (metadata.Metadata, error) {
+	var m metadata.Metadata
+	return m, nil
 }

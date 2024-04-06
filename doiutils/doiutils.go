@@ -2,6 +2,7 @@ package doiutils
 
 import (
 	"net/url"
+	"regexp"
 	"strings"
 )
 
@@ -52,3 +53,37 @@ func DOIFromUrl(str string) (string, error) {
 //     if match is None:
 //         return None
 //     return match.group(0).lower()
+
+// Normalize a DOI
+func NormalizeDOI(doi string) string {
+	doistr, err := ValidateDOI(doi)
+	if err != nil {
+		return ""
+	}
+	resolver := DOIResolver(doi, false)
+	return resolver + strings.ToLower(doistr)
+}
+
+// Validate a DOI
+func ValidateDOI(doi string) (string, error) {
+	matched, err := regexp.MatchString(`^(?:(http|https):/(/)?(dx\.)?(doi\.org|handle\.stage\.datacite\.org|handle\.test\.datacite\.org)/)?(doi:)?(10\.\d{4,5}/.+)$`, doi)
+	if err != nil {
+		return "", err
+	}
+	if !matched {
+		return "", nil
+	}
+	return doi, nil
+}
+
+// Return a DOI resolver for a given DOI
+func DOIResolver(doi string, sandbox bool) string {
+	d, err := url.Parse(doi)
+	if err != nil {
+		return ""
+	}
+	if d.Host == "stage.datacite.org" || sandbox {
+		return "https://handle.stage.datacite.org/"
+	}
+	return "https://doi.org/"
+}

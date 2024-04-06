@@ -2,6 +2,7 @@ package datacite
 
 import (
 	"commonmeta/doiutils"
+	"commonmeta/metadata"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -78,4 +79,9 @@ func GetDatacite(pid string) (Record, error) {
 		fmt.Println("error:", err)
 	}
 	return result.Data, err
+}
+
+func ReadDatacite(record Record) (metadata.Metadata, error) {
+	var m metadata.Metadata
+	return m, nil
 }
