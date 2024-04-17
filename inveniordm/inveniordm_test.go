@@ -2,6 +2,7 @@ package inveniordm_test
 
 import (
 	"commonmeta/inveniordm"
+	"commonmeta/types"
 	"testing"
 )
 
@@ -9,31 +10,29 @@ func TestGetInvenioRDM(t *testing.T) {
 	t.Parallel()
 
 	type testCase struct {
-		id   string
+		pid  string
 		want string
 		err  error
 	}
 
-	publication := inveniordm.Record{
-		ID:    "5244404",
-		DOI:   "10.5281/zenodo.5244404",
+	publication := types.Content{
+		PID:   "5244404",
 		Title: "The Origins of SARS-CoV-2: A Critical Review",
 	}
-	presentation := inveniordm.Record{
-		ID:    "8173303",
-		DOI:   "10.5281/zenodo.8173303",
+	presentation := types.Content{
+		PID:   "8173303",
 		Title: "11 July 2023 (Day 2) CERN – NASA Open Science Summit Sketch Notes",
 	}
 
 	testCases := []testCase{
-		{id: presentation.ID, want: presentation.Title, err: nil},
-		{id: publication.ID, want: publication.Title, err: nil},
+		{pid: presentation.PID, want: presentation.Title, err: nil},
+		{pid: publication.PID, want: publication.Title, err: nil},
 	}
 	for _, tc := range testCases {
-		got, err := inveniordm.GetInvenioRDM(tc.id)
+		got, err := inveniordm.GetInvenioRDM(tc.pid)
 		if tc.want != got.Title {
 			t.Errorf("InvenioRDM ID(%v): want %v, got %v, error %v",
-				tc.id, tc.want, got, err)
+				tc.pid, tc.want, got, err)
 		}
 	}
 }

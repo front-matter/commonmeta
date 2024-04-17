@@ -1,7 +1,7 @@
 package inveniordm
 
 import (
-	"commonmeta/metadata"
+	"commonmeta/types"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -9,40 +9,32 @@ import (
 	"time"
 )
 
-// the JSON response containing the InvenioRDM metadata
-type Record struct {
-	ID    string `json:"id"`
-	DOI   string `json:"doi"`
-	Title string `json:"title"`
-}
-
-var result Record
-
-func GetInvenioRDM(pid string) (Record, error) {
+func GetInvenioRDM(pid string) (types.Content, error) {
+	var content types.Content
 	client := http.Client{
 		Timeout: time.Second * 10,
 	}
 	url := "https://zenodo.org/api/records/" + pid
 	resp, err := client.Get(url)
 	if err != nil {
-		return Record{}, err
+		return content, err
 	}
 	if resp.StatusCode != 200 {
-		return Record{}, fmt.Errorf("status code error: %d %s", resp.StatusCode, resp.Status)
+		return content, fmt.Errorf("status code error: %d %s", resp.StatusCode, resp.Status)
 	}
 	defer resp.Body.Close()
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return Record{}, err
+		return content, err
 	}
-	err = json.Unmarshal(body, &result)
+	err = json.Unmarshal(body, &content)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
-	return result, err
+	return content, err
 }
 
-func ReadInvenioRDM(record Record) (metadata.Metadata, error) {
-	var m metadata.Metadata
-	return m, nil
+func ReadInvenioRDM(content types.Content) (types.Data, error) {
+	var data types.Data
+	return data, nil
 }

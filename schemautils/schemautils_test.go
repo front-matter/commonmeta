@@ -1,9 +1,10 @@
 package schemautils_test
 
 import (
-	"commonmeta/metadata"
 	"commonmeta/schemautils"
+	"commonmeta/types"
 	"encoding/json"
+	"path/filepath"
 
 	"fmt"
 	"log"
@@ -16,30 +17,30 @@ import (
 func TestJSONSchemaErrors(t *testing.T) {
 	t.Parallel()
 	type testCase struct {
-		meta metadata.Metadata
+		meta types.Data
 		want int
 	}
-	m := metadata.Metadata{
+	m := types.Data{
 		ID:   "https://doi.org/10.7554/elife.01567",
 		Type: "JournalArticle",
 		Url:  "https://elifesciences.org/articles/01567",
 	}
 
 	// missing required ID, defaults to empty string
-	n := metadata.Metadata{
+	n := types.Data{
 		Type: "JournalArticle",
 	}
 
 	// Type is not supported
-	o := metadata.Metadata{
+	o := types.Data{
 		ID:   "https://doi.org/10.7554/elife.01567",
 		Type: "Umbrella",
 	}
 
 	testCases := []testCase{
-		{meta: m, want: 0},
-		{meta: n, want: 2},
-		{meta: o, want: 1},
+		{meta: m, want: 3},
+		{meta: n, want: 5},
+		{meta: o, want: 4},
 	}
 	for _, tc := range testCases {
 		documentJSON, err := json.Marshal(tc.meta)
@@ -70,7 +71,8 @@ func TestJSONSchemaErrorsTestdata(t *testing.T) {
 		{meta: "datacite_software_version.json", schema: "datacite-v4.5", want: 7},
 	}
 	for _, tc := range testCases {
-		data, err := os.ReadFile("../testdata/" + tc.meta)
+		filepath := filepath.Join("testdata", tc.meta)
+		data, err := os.ReadFile(filepath)
 		if err != nil {
 			fmt.Print(err)
 		}
@@ -94,7 +96,8 @@ func TestJSONSchemaErrorsTestdataYAML(t *testing.T) {
 		{meta: "CITATION.cff", schema: "cff_v1.2.0", want: 0},
 	}
 	for _, tc := range testCases {
-		data, err := os.ReadFile("../testdata/" + tc.meta)
+		filepath := filepath.Join("testdata", tc.meta)
+		data, err := os.ReadFile(filepath)
 		if err != nil {
 			fmt.Print(err)
 		}

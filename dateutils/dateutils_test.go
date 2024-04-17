@@ -36,7 +36,7 @@ func TestGetDateFromUnixTimestamp(t *testing.T) {
 	}
 	testCases := []testCase{
 		{timestamp: 0, want: "1970-01-01"},
-		{timestamp: 1611312000, want: "2022-01-22"},
+		{timestamp: 1611312000, want: "2021-01-22"},
 	}
 	for _, tc := range testCases {
 		got := dateutils.GetDateFromUnixTimestamp(tc.timestamp)

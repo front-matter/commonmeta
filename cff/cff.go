@@ -1,19 +1,13 @@
 package cff
 
-import "commonmeta/metadata"
+import "commonmeta/types"
 
-type Record struct {
-	URL string `json:"URL"`
+func GetCFF(pid string) (types.Content, error) {
+	var content types.Content
+	return content, nil
 }
 
-var result Record
-
-func GetCFF(pid string) (Record, error) {
-	var r Record
-	return r, nil
-}
-
-func ReadCFF(record Record) (metadata.Metadata, error) {
-	var m metadata.Metadata
-	return m, nil
+func ReadCFF(content types.Content) (types.Data, error) {
+	var data types.Data
+	return data, nil
 }

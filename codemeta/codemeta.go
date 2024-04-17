@@ -1,19 +1,13 @@
 package codemeta
 
-import "commonmeta/metadata"
+import "commonmeta/types"
 
-type Record struct {
-	URL string `json:"URL"`
+func GetCodemeta(pid string) (types.Content, error) {
+	var content types.Content
+	return content, nil
 }
 
-var result Record
-
-func GetCodemeta(pid string) (Record, error) {
-	var r Record
-	return r, nil
-}
-
-func ReadCodemeta(record Record) (metadata.Metadata, error) {
-	var m metadata.Metadata
-	return m, nil
+func ReadCodemeta(content types.Content) (types.Data, error) {
+	var data types.Data
+	return data, nil
 }

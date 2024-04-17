@@ -1,41 +1,109 @@
 package crossref
 
 import (
+	"commonmeta/dateutils"
 	"commonmeta/doiutils"
-	"commonmeta/metadata"
+	"commonmeta/types"
+	"commonmeta/utils"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
+	"reflect"
+	"slices"
+	"sort"
+	"strings"
 	"time"
 )
 
-// the envelope for the JSON response from the Crossref API
-type Result struct {
-	Status         string `json:"status"`
-	MessageType    string `json:"message-type"`
-	MessageVersion string `json:"message-version"`
-	Message        Record `json:"message"`
+// source: http://api.crossref.org/types
+var CRToCMMappings = map[string]string{
+	"book-chapter":        "BookChapter",
+	"book-part":           "BookPart",
+	"book-section":        "BookSection",
+	"book-series":         "BookSeries",
+	"book-set":            "BookSet",
+	"book-track":          "BookTrack",
+	"book":                "Book",
+	"component":           "Component",
+	"database":            "Database",
+	"dataset":             "Dataset",
+	"dissertation":        "Dissertation",
+	"edited-book":         "Book",
+	"grant":               "Grant",
+	"journal-article":     "JournalArticle",
+	"journal-issue":       "JournalIssue",
+	"journal-volume":      "JournalVolume",
+	"journal":             "Journal",
+	"monograph":           "Book",
+	"other":               "Other",
+	"peer-review":         "PeerReview",
+	"posted-content":      "Article",
+	"proceedings-article": "ProceedingsArticle",
+	"proceedings-series":  "ProceedingsSeries",
+	"proceedings":         "Proceedings",
+	"reference-book":      "Book",
+	"reference-entry":     "Entry",
+	"report-component":    "ReportComponent",
+	"report-series":       "ReportSeries",
+	"report":              "Report",
+	"standard":            "Standard",
 }
 
-// the JSON response containing the metadata for the DOI
-type Record struct {
-	URL       string   `json:"URL"`
-	DOI       string   `json:"DOI"`
-	Type      string   `json:"type"`
-	Title     []string `json:"title"`
-	Publisher string   `json:"publisher"`
-	Volume    string   `json:"volume"`
-	Issue     string   `json:"issue"`
-	Page      string   `json:"page"`
+var CrossrefContainerTypes = map[string]string{
+	"book-chapter":        "book",
+	"dataset":             "database",
+	"journal-article":     "journal",
+	"journal-issue":       "journal",
+	"monograph":           "book-series",
+	"proceedings-article": "proceedings",
+	"posted-content":      "periodical",
 }
 
-var result Result
+var CRToCMContainerTranslations = map[string]string{
+	"book":        "Book",
+	"book-series": "BookSeries",
+	"database":    "DataRepository",
+	"journal":     "Journal",
+	"proceedings": "Proceedings",
+	"periodical":  "Periodical",
+}
 
-func GetCrossref(pid string) (Record, error) {
-	doi, err := doiutils.DOIFromUrl(pid)
+// relation types to include
+var relationTypes = []string{"IsPartOf", "HasPart", "IsVariantFormOf", "IsOriginalFormOf", "IsIdenticalTo", "IsTranslationOf", "IsReviewedBy", "Reviews", "HasReview", "IsPreprintOf", "HasPreprint", "IsSupplementTo", "IsSupplementedBy"}
+
+func FetchCrossref(str string) (types.Data, error) {
+	var data types.Data
+	id, ok := doiutils.ValidateDOI(str)
+	if !ok {
+		return data, errors.New("invalid DOI")
+	}
+	content, err := GetCrossref(id)
 	if err != nil {
-		return Record{}, err
+		return data, err
+	}
+	data, err = ReadCrossref(content)
+	if err != nil {
+		return data, err
+	}
+	return data, nil
+}
+
+func GetCrossref(pid string) (types.Content, error) {
+	// the envelope for the JSON response from the Crossref API
+	type Response struct {
+		Status         string        `json:"status"`
+		MessageType    string        `json:"message-type"`
+		MessageVersion string        `json:"message-version"`
+		Message        types.Content `json:"message"`
+	}
+
+	var response Response
+	doi, ok := doiutils.ValidateDOI(pid)
+	if !ok {
+		return response.Message, errors.New("invalid DOI")
 	}
 	url := "https://api.crossref.org/works/" + doi
 	client := http.Client{
@@ -43,24 +111,242 @@ func GetCrossref(pid string) (Record, error) {
 	}
 	resp, err := client.Get(url)
 	if err != nil {
-		return Record{}, err
+		return response.Message, err
 	}
 	if resp.StatusCode >= 400 {
-		return Record{}, fmt.Errorf("status code error: %d %s", resp.StatusCode, resp.Status)
+		return response.Message, errors.New(resp.Status)
 	}
 	defer resp.Body.Close()
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return Record{}, err
+		return response.Message, err
 	}
-	err = json.Unmarshal(body, &result)
+	err = json.Unmarshal(body, &response)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
-	return result.Message, err
+	return response.Message, err
 }
 
-func ReadCrossref(record Record) (metadata.Metadata, error) {
-	var m metadata.Metadata
-	return m, nil
+// read Crossref JSON response and return work struct in Commonmeta format
+func ReadCrossref(content types.Content) (types.Data, error) {
+	var data = types.Data{}
+
+	data.ID = doiutils.DOIAsUrl(content.DOI)
+	data.Type = CRToCMMappings[content.Type]
+	data.Url = content.Resource.Primary.URL
+
+	for _, v := range content.Author {
+		if v.Name != "" || v.Given != "" || v.Family != "" {
+			var ID, Type string
+			if v.ORCID != "" {
+				// enforce HTTPS
+				ID, _ = utils.NormalizeUrl(v.ORCID, true, false)
+			}
+			if v.Name != "" {
+				Type = "Organization"
+			} else {
+				Type = "Person"
+			}
+			var affiliations []types.Affiliation
+			if len(v.Affiliation) > 0 {
+				for _, a := range v.Affiliation {
+					affiliations = append(affiliations, types.Affiliation{
+						Name: a.Name,
+					})
+					log.Printf("Affiliation: %v", a)
+				}
+			}
+			data.Contributors = append(data.Contributors, types.Contributor{
+				ID:               ID,
+				Type:             Type,
+				GivenName:        v.Given,
+				FamilyName:       v.Family,
+				Name:             v.Name,
+				ContributorRoles: []string{"Author"},
+				Affiliations:     affiliations,
+			})
+
+		}
+	}
+
+	if content.Publisher != "" {
+		data.Publisher = types.Publisher{
+			Name: content.Publisher,
+		}
+	}
+
+	if content.Published.DateTime != "" {
+		data.Date.Published = content.Published.DateTime
+	} else if len(content.Published.DateAsParts) > 0 {
+		data.Date.Published = dateutils.GetDateFromDateParts(content.Published.DateAsParts)
+	} else if content.Issued.DateTime != "" {
+		data.Date.Published = content.Issued.DateTime
+	} else if len(content.Issued.DateAsParts) > 0 {
+		data.Date.Published = dateutils.GetDateFromDateParts(content.Issued.DateAsParts)
+	}
+	if data.Date.Published == "" {
+		if content.Created.DateTime != "" {
+			data.Date.Published = content.Created.DateTime
+		} else if len(content.Created.DateAsParts) > 0 {
+			data.Date.Published = dateutils.GetDateFromDateParts(content.Created.DateAsParts)
+		}
+	}
+
+	if len(content.Title) > 0 {
+		data.Titles = append(data.Titles, types.Title{
+			Title: content.Title[0],
+		})
+	}
+	if len(content.Subtitle) > 0 {
+		data.Titles = append(data.Titles, types.Title{
+			Title:     content.Subtitle[0],
+			TitleType: "Subtitle",
+		})
+	}
+
+	if content.Abstract != "" {
+		abstract := utils.Sanitize(content.Abstract)
+		data.Descriptions = append(data.Descriptions, types.Description{
+			Description:     abstract,
+			DescriptionType: "Abstract",
+		})
+	}
+
+	containerType := CrossrefContainerTypes[content.Type]
+	containerType = CRToCMContainerTranslations[containerType]
+	var identifier, identifierType string
+	if content.ISSN != nil {
+		identifier = content.ISSN[0]
+		identifierType = "ISSN"
+	}
+	if len(content.ISBNType) > 0 {
+		i := make(map[string]string)
+		for _, isbn := range content.ISBNType {
+			i[isbn.Type] = isbn.Value
+		}
+		if i["electronic"] != "" {
+			identifier = i["electronic"]
+			identifierType = "ISBN"
+		} else if i["print"] != "" {
+			identifier = i["print"]
+			identifierType = "ISBN"
+		}
+	}
+	var containerTitle string
+	if len(content.ContainerTitle) > 0 {
+		containerTitle = content.ContainerTitle[0]
+	}
+	var lastPage string
+	pages := strings.Split(content.Page, "-")
+	firstPage := pages[0]
+	if len(pages) > 1 {
+		lastPage = pages[1]
+	}
+	data.Container = types.Container{
+		Identifier:     identifier,
+		IdentifierType: identifierType,
+		Type:           containerType,
+		Title:          containerTitle,
+		Volume:         content.Volume,
+		Issue:          content.Issue,
+		FirstPage:      firstPage,
+		LastPage:       lastPage,
+	}
+
+	for _, v := range content.Subject {
+		data.Subjects = append(data.Subjects, types.Subject{
+			Subject: v,
+		})
+	}
+
+	if content.GroupTitle != "" {
+		data.Subjects = append(data.Subjects, types.Subject{
+			Subject: content.GroupTitle,
+		})
+	}
+
+	for _, v := range content.Reference {
+		data.References = append(data.References, types.Reference{
+			Key:             v.Key,
+			Doi:             doiutils.DOIAsUrl(v.DOI),
+			Title:           v.ArticleTitle,
+			PublicationYear: v.Year,
+			Unstructured:    v.Unstructured,
+		})
+	}
+
+	fields := reflect.VisibleFields(reflect.TypeOf(content.Relation))
+	for _, field := range fields {
+		if slices.Contains(relationTypes, field.Name) {
+			relationByType := reflect.ValueOf(content.Relation).FieldByName(field.Name)
+			for _, v := range relationByType.Interface().([]struct {
+				ID     string `json:"id"`
+				IDType string `json:"id-type"`
+			}) {
+				data.Relations = append(data.Relations, types.Relation{
+					ID:   doiutils.DOIAsUrl(v.ID),
+					Type: field.Name,
+				})
+			}
+			sort.Slice(data.Relations, func(i, j int) bool {
+				return data.Relations[i].Type < data.Relations[j].Type
+			})
+		}
+	}
+	if content.ISSN != nil {
+		data.Relations = append(data.Relations, types.Relation{
+			ID:   utils.IssnAsUrl(content.ISSN[0]),
+			Type: "IsPartOf",
+		})
+	}
+
+	for _, v := range content.Funder {
+		funderIdentifier := doiutils.DOIAsUrl(v.DOI)
+		var funderIdentifierType string
+		if strings.HasPrefix(v.DOI, "10.13039") {
+			funderIdentifierType = "Crossref Funder ID"
+		}
+		if len(v.Award) > 0 {
+			for _, award := range v.Award {
+				data.FundingReferences = append(data.FundingReferences, types.FundingReference{
+					FunderIdentifier:     funderIdentifier,
+					FunderIdentifierType: funderIdentifierType,
+					FunderName:           v.Name,
+					AwardNumber:          award,
+				})
+			}
+		} else {
+			data.FundingReferences = append(data.FundingReferences, types.FundingReference{
+				FunderIdentifier:     funderIdentifier,
+				FunderIdentifierType: funderIdentifierType,
+				FunderName:           v.Name,
+			})
+		}
+	}
+	data.FundingReferences = utils.DedupeSlice(data.FundingReferences)
+
+	data.Language = content.Language
+	if content.License != nil && len(content.License) > 0 {
+		url, _ := utils.NormalizeCCUrl(content.License[0].Url)
+		id := utils.UrlToSPDX(url)
+		data.License = types.License{
+			ID:  id,
+			Url: url,
+		}
+	}
+	data.Provider = "Crossref"
+	for _, v := range content.Link {
+		if v.ContentType != "unspecified" {
+			data.Files = append(data.Files, types.File{
+				Url:      v.Url,
+				MimeType: v.ContentType,
+			})
+		}
+	}
+	data.Files = utils.DedupeSlice(data.Files)
+
+	copy(data.ArchiveLocations, content.Archive)
+
+	return data, nil
 }

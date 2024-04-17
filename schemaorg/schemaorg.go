@@ -1,16 +1,13 @@
 package schemaorg
 
-import "commonmeta/metadata"
+import "commonmeta/types"
 
-type Record struct {
-	ID string `json:"id"`
+func GetSchemaOrg(pid string) (types.Content, error) {
+	var content types.Content
+	return content, nil
 }
 
-func GetSchemaOrg(pid string) string {
-	return "Schema.org"
-}
-
-func ReadSchemaorg(record Record) (metadata.Metadata, error) {
-	var m metadata.Metadata
-	return m, nil
+func ReadSchemaorg(content types.Content) (types.Data, error) {
+	var data types.Data
+	return data, nil
 }

@@ -9,7 +9,7 @@ import (
 )
 
 func JSONSchemaErrors(document []byte, schema ...string) *gojsonschema.Result {
-	// If no schema is provided, default to commonmeta_v0.12
+	// If no schema is provided, default to commonmeta_v0.13
 	if len(schema) == 0 {
 		schema = append(schema, "commonmeta_v0.12")
 	}

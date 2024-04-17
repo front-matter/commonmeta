@@ -1,0 +1,275 @@
+{
+  "id": "https://doi.org/10.1007/978-3-662-46370-3_13",
+  "type": "BookChapter",
+  "url": "https://link.springer.com/10.1007/978-3-662-46370-3_13",
+  "contributors": [
+    {
+      "type": "Person",
+      "contributorRoles": ["Author"],
+      "givenName": "Ronald L.",
+      "familyName": "Diercks",
+      "affiliation": []
+    },
+    {
+      "type": "Person",
+      "contributorRoles": ["Author"],
+      "givenName": "Tom Clement",
+      "familyName": "Ludvigsen",
+      "affiliation": []
+    }
+  ],
+  "titles": [{ "title": "Clinical Symptoms and Physical Examinations" }],
+  "publisher": { "name": "Springer Berlin Heidelberg" },
+  "date": { "published": "2015" },
+  "license": {
+    "url": "https://www.springernature.com/gp/researchers/text-and-data-mining"
+  },
+  "references": [
+    {
+      "key": "13_CR1",
+      "doi": "https://doi.org/10.1007/s00256-012-1391-8",
+      "contributor": "KS Ahn",
+      "publicationYear": "2012",
+      "volume": "41",
+      "issue": "10",
+      "firstPage": "1301",
+      "containerTitle": "Skeletal Radiol",
+      "unstructured": "Ahn KS, Kang CH, Oh YW, Jeong WK. Correlation between magnetic resonance imaging and clinical impairment in patients with adhesive capsulitis. Skeletal Radiol. 2012;41(10):1301–8."
+    },
+    {
+      "key": "13_CR2",
+      "doi": "https://doi.org/10.1016/j.arthro.2004.11.003",
+      "contributor": "JR Andrews",
+      "publicationYear": "2005",
+      "volume": "21",
+      "issue": "3",
+      "firstPage": "333",
+      "containerTitle": "Arthroscopy",
+      "unstructured": "Andrews JR. Diagnosis and treatment of chronic painful shoulder: review of nonsurgical interventions. Arthroscopy. 2005;21(3):333–47."
+    },
+    {
+      "key": "13_CR3",
+      "contributor": "HA Anton",
+      "publicationYear": "1993",
+      "volume": "39",
+      "firstPage": "1773",
+      "containerTitle": "Can Fam Physician",
+      "unstructured": "Anton HA. Frozen shoulder. Can Fam Physician. 1993;39:1773–8."
+    },
+    {
+      "key": "13_CR4",
+      "doi": "https://doi.org/10.3109/03009749009096786",
+      "contributor": "B Baslund",
+      "publicationYear": "1990",
+      "volume": "19",
+      "issue": "5",
+      "firstPage": "321",
+      "containerTitle": "Scand J Rheumatol",
+      "unstructured": "Baslund B, Thomsen BS, Jensen EM. Frozen shoulder: current concepts. Scand J Rheumatol. 1990;19(5):321–5."
+    },
+    {
+      "key": "13_CR5",
+      "doi": "https://doi.org/10.1007/s00167-007-0291-2",
+      "contributor": "S Brue",
+      "publicationYear": "2007",
+      "volume": "15",
+      "issue": "8",
+      "firstPage": "1048",
+      "containerTitle": "Knee Surg Sports Traumatol Arthrosc",
+      "unstructured": "Brue S, Valentin A, Forssblad M, Werner S, Mikkelsen C, Cerulli G. Idiopathic adhesive capsulitis of the shoulder: a review. Knee Surg Sports Traumatol Arthrosc. 2007;15(8):1048–54."
+    },
+    {
+      "key": "13_CR6",
+      "contributor": "S Cutts",
+      "publicationYear": "2002",
+      "volume": "246",
+      "issue": "1640",
+      "firstPage": "730",
+      "containerTitle": "Practitioner",
+      "unstructured": "Cutts S, Clarke D. The patient with frozen shoulder. Practitioner. 2002;246(1640):730, 734–6, 738–9."
+    },
+    {
+      "key": "13_CR7",
+      "doi": "https://doi.org/10.1136/bmj.331.7530.1453",
+      "contributor": "R Dias",
+      "publicationYear": "2005",
+      "volume": "331",
+      "issue": "7530",
+      "firstPage": "1453",
+      "containerTitle": "BMJ",
+      "unstructured": "Dias R, Cutts S, Massoud S. Frozen shoulder. BMJ. 2005;331(7530):1453–6."
+    },
+    {
+      "key": "13_CR8",
+      "doi": "https://doi.org/10.1016/j.jse.2004.03.002",
+      "contributor": "RL Diercks",
+      "publicationYear": "2004",
+      "volume": "13",
+      "issue": "5",
+      "firstPage": "499",
+      "containerTitle": "J Shoulder Elbow Surg",
+      "unstructured": "Diercks RL, Stevens M. Gentle thawing of the frozen shoulder: a prospective study of supervised neglect versus intensive physical therapy in seventy-seven patients with frozen shoulder syndrome followed up for two years. J Shoulder Elbow Surg. 2004;13(5):499–502."
+    },
+    {
+      "key": "13_CR9",
+      "doi": "https://doi.org/10.2214/ajr.164.6.7754892",
+      "contributor": "EW Emig",
+      "publicationYear": "1995",
+      "volume": "164",
+      "issue": "6",
+      "firstPage": "1457",
+      "containerTitle": "AJR Am J Roentgenol",
+      "unstructured": "Emig EW, Schweitzer ME, Karasick D, Lubowitz J. Adhesive capsulitis of the shoulder: MR diagnosis. AJR Am J Roentgenol. 1995;164(6):1457–9."
+    },
+    {
+      "key": "13_CR10",
+      "doi": "https://doi.org/10.1016/j.physio.2012.01.001",
+      "contributor": "NC Hanchard",
+      "publicationYear": "2012",
+      "volume": "98",
+      "issue": "2",
+      "firstPage": "117",
+      "containerTitle": "Physiotherapy",
+      "unstructured": "Hanchard NC, Goodchild L, Thompson J, O’Brien T, Davison D, Richardson C. Evidence-based clinical guidelines for the diagnosis, assessment and physiotherapy management of contracted (frozen) shoulder: quick reference summary. Physiotherapy. 2012;98(2):117–20."
+    },
+    {
+      "key": "13_CR11",
+      "doi": "https://doi.org/10.1136/oem.55.4.264",
+      "contributor": "JM Harrington",
+      "publicationYear": "1998",
+      "volume": "55",
+      "issue": "4",
+      "firstPage": "264",
+      "containerTitle": "Occup Environ Med",
+      "unstructured": "Harrington JM, Carter JT, Birrell L, Gompertz D. Surveillance case definitions for work related upper limb pain syndromes. Occup Environ Med. 1998;55(4):264–71."
+    },
+    {
+      "key": "13_CR12",
+      "contributor": "R Hertel",
+      "publicationYear": "2000",
+      "volume": "29",
+      "issue": "10",
+      "firstPage": "845",
+      "containerTitle": "Orthopade",
+      "unstructured": "Hertel R. The frozen shoulder. Orthopade. 2000;29(10):845–51."
+    },
+    {
+      "key": "13_CR13",
+      "doi": "https://doi.org/10.1016/j.jse.2010.08.023",
+      "contributor": "JE Hsu",
+      "publicationYear": "2011",
+      "volume": "20",
+      "issue": "3",
+      "firstPage": "502",
+      "containerTitle": "J Shoulder Elbow Surg",
+      "unstructured": "Hsu JE, Anakwenze OA, Warrender WJ, Abboud JA. Current review of adhesive capsulitis. J Shoulder Elbow Surg. 2011;20(3):502–14."
+    },
+    {
+      "key": "13_CR14",
+      "doi": "https://doi.org/10.3109/ort.1969.40.suppl-119.01",
+      "contributor": "J Lundberg",
+      "publicationYear": "1969",
+      "volume": "Suppl 119",
+      "firstPage": "1",
+      "containerTitle": "Acta Orthop Scand",
+      "unstructured": "Lundberg J. The frozen shoulder. Clinical and radiographical observations. The effect of manipulation under general anesthesia. Structure and glycosaminoglycan content of the joint capsule. Local bone metabolism. Acta Orthop Scand. 1969;Suppl 119:1–59."
+    },
+    {
+      "key": "13_CR15",
+      "doi": "https://doi.org/10.1177/0363546509348048",
+      "contributor": "AS Neviaser",
+      "publicationYear": "2010",
+      "volume": "38",
+      "issue": "11",
+      "firstPage": "2346",
+      "containerTitle": "Am J Sports Med",
+      "unstructured": "Neviaser AS, Hannafin JA. Adhesive capsulitis: a review of current treatment. Am J Sports Med. 2010;38(11):2346–56."
+    },
+    {
+      "key": "13_CR16",
+      "contributor": "RJ Neviaser",
+      "publicationYear": "1987",
+      "volume": "223",
+      "issue": "223",
+      "firstPage": "59",
+      "containerTitle": "Clin Orthop Relat Res",
+      "unstructured": "Neviaser RJ, Neviaser TJ. The frozen shoulder. Diagnosis and management. Clin Orthop Relat Res. 1987;223(223):59–64."
+    },
+    {
+      "key": "13_CR17",
+      "contributor": "E Noel",
+      "publicationYear": "1997",
+      "volume": "64",
+      "issue": "11",
+      "firstPage": "619",
+      "containerTitle": "Rev Rhum Engl Ed",
+      "unstructured": "Noel E. Treatment of calcific tendinitis and adhesive capsulitis of the shoulder. Rev Rhum Engl Ed. 1997;64(11):619–28."
+    },
+    {
+      "key": "13_CR18",
+      "contributor": "E Noel",
+      "publicationYear": "2000",
+      "volume": "67",
+      "issue": "5",
+      "firstPage": "393",
+      "containerTitle": "Joint Bone Spine",
+      "unstructured": "Noel E, Thomas T, Schaeverbeke T, Thomas P, Bonjean M, Revel M. Frozen shoulder. Joint Bone Spine. 2000;67(5):393–400."
+    },
+    {
+      "key": "13_CR19",
+      "doi": "https://doi.org/10.1136/ard.57.8.445",
+      "contributor": "K Palmer",
+      "publicationYear": "1998",
+      "volume": "57",
+      "issue": "8",
+      "firstPage": "445",
+      "containerTitle": "Ann Rheum Dis",
+      "unstructured": "Palmer K, Coggon D, Cooper C, Doherty M. Work related upper limb disorders: getting down to specifics. Ann Rheum Dis. 1998;57(8):445–6."
+    },
+    {
+      "key": "13_CR20",
+      "doi": "https://doi.org/10.1016/j.math.2008.04.005",
+      "contributor": "JM Schellingerhout",
+      "publicationYear": "2008",
+      "volume": "13",
+      "issue": "6",
+      "firstPage": "478",
+      "containerTitle": "Man Ther",
+      "unstructured": "Schellingerhout JM, Verhagen AP, Thomas S, Koes BW. Lack of uniformity in diagnostic labeling of shoulder pain: time for a different approach. Man Ther. 2008;13(6):478–83."
+    },
+    {
+      "key": "13_CR21",
+      "doi": "https://doi.org/10.3928/01477447-20090101-29",
+      "contributor": "JC Yoo",
+      "publicationYear": "2009",
+      "volume": "32",
+      "issue": "1",
+      "firstPage": "22",
+      "containerTitle": "Orthopedics",
+      "unstructured": "Yoo JC, Ahn JH, Lee YS, Koh KH. Magnetic resonance arthrographic findings of presumed stage-2 adhesive capsulitis: focus on combined rotator cuff pathology. Orthopedics. 2009;32(1):22."
+    },
+    {
+      "key": "13_CR22",
+      "doi": "https://doi.org/10.1016/j.jse.2010.07.008",
+      "contributor": "JD Zuckerman",
+      "publicationYear": "2011",
+      "volume": "20",
+      "issue": "2",
+      "firstPage": "322",
+      "containerTitle": "J Shoulder Elbow Surg",
+      "unstructured": "Zuckerman JD, Rokito A. Frozen shoulder: a consensus definition. J Shoulder Elbow Surg. 2011;20(2):322–5."
+    }
+  ],
+  "files": [],
+  "container": {
+    "type": "Book",
+    "identifier": "9783662463703",
+    "identifierType": "ISBN",
+    "title": "Shoulder Stiffness",
+    "firstPage": "155",
+    "lastPage": "158"
+  },
+  "provider": "Crossref",
+  "schema_version": "https://commonmeta.org/commonmeta_v0.12",
+  "state": "findable"
+}

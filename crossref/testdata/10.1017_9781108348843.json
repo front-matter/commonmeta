@@ -1,0 +1,1447 @@
+{
+  "id": "https://doi.org/10.1017/9781108348843",
+  "type": "Book",
+  "url": "https://www.cambridge.org/core/product/identifier/9781108348843/type/book",
+  "contributors": [
+    {
+      "type": "Person",
+      "contributorRoles": ["Author"],
+      "givenName": "Vincent S.",
+      "familyName": "Leung"
+    }
+  ],
+  "titles": [{ "title": "The Politics of the Past in Early China" }],
+  "publisher": { "name": "Cambridge University Press" },
+  "date": { "published": "2019-07-01" },
+  "license": { "url": "https://www.cambridge.org/core/terms" },
+  "references": [
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-273",
+      "contributor": "Qiusheng",
+      "title": "Lu Jia de lishi yishi ji qi wenhua yiyi",
+      "publicationYear": "1997",
+      "volume": "5",
+      "firstPage": "67",
+      "containerTitle": "Qilu xuekan"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-271",
+      "contributor": "Zhang",
+      "publicationYear": "1986"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-270",
+      "contributor": "Yuan",
+      "publicationYear": "1990"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-269",
+      "contributor": "Yuan",
+      "publicationYear": "1960"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-266",
+      "doi": "https://doi.org/10.1093/acprof:oso/9780199367344.001.0001"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-264",
+      "contributor": "Fuchang",
+      "publicationYear": "1993"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-261",
+      "contributor": "Wei",
+      "publicationYear": "1995"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-259",
+      "contributor": "Watson",
+      "publicationYear": "1993"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-258",
+      "contributor": "Watson",
+      "publicationYear": "1993"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-257",
+      "contributor": "Watson",
+      "publicationYear": "2003"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-256",
+      "contributor": "Watson",
+      "publicationYear": "2007"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-255",
+      "contributor": "Takashi",
+      "publicationYear": "1973"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-253",
+      "contributor": "Shumin",
+      "publicationYear": "1997"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-252",
+      "contributor": "Wang",
+      "publicationYear": "2001"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-251",
+      "contributor": "Wang",
+      "title": "Western Zhou Remembering and Forgetting",
+      "publicationYear": "1999",
+      "volume": "1",
+      "firstPage": "231",
+      "containerTitle": "Journal of East Asian Archaeology"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-247",
+      "contributor": "Vogelsang",
+      "title": "Getting the Terms Right: Political Realism, Politics, and the State in Ancient China",
+      "publicationYear": "2016",
+      "volume": "55",
+      "firstPage": "39",
+      "containerTitle": "Oriens Extremus"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-241",
+      "doi": "https://doi.org/10.1017/cbo9780511606960.009"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-239",
+      "contributor": "Van Norden",
+      "publicationYear": "2002"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-238",
+      "doi": "https://doi.org/10.1017/chol9780521243278"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-237",
+      "contributor": "Tucker",
+      "publicationYear": "1978"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-234",
+      "doi": "https://doi.org/10.2307/1398936"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-230",
+      "contributor": "Slingerland",
+      "publicationYear": "2017",
+      "volume": "41",
+      "firstPage": "465"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-229",
+      "contributor": "Shun",
+      "publicationYear": "2002",
+      "firstPage": "53"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-254",
+      "contributor": "Xiaobo",
+      "publicationYear": "1991"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-224",
+      "contributor": "Shaughnessy",
+      "publicationYear": "1991"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-222",
+      "doi": "https://doi.org/10.4159/9780674043312",
+      "contributor": "Schwartz",
+      "publicationYear": "1985"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-221",
+      "contributor": "Schüssler",
+      "publicationYear": "1987"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-218",
+      "doi": "https://doi.org/10.1163/ej.9789004194854.i-354.54"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-215",
+      "doi": "https://doi.org/10.2307/j.ctt1tg5npx"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-214",
+      "contributor": "Schaberg",
+      "publicationYear": "2011",
+      "firstPage": "392"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-211",
+      "contributor": "Sanft",
+      "title": "Rituals That Don’t Reach, Punishments That Don’t Impugn: Jia Yi on the Exclusions from Punishment and Ritual",
+      "publicationYear": "2005",
+      "volume": "125",
+      "firstPage": "31",
+      "containerTitle": "Journal of the American Oriental Society"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-209",
+      "contributor": "Roth",
+      "publicationYear": "1999"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-272",
+      "contributor": "Dake",
+      "publicationYear": "2011"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-208",
+      "contributor": "Roetz",
+      "publicationYear": "2005",
+      "firstPage": "80"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-205",
+      "doi": "https://doi.org/10.1163/156852006778388754"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-202",
+      "contributor": "Yuzhang",
+      "publicationYear": "1969"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-199",
+      "contributor": "193Puett",
+      "publicationYear": "2014",
+      "firstPage": "267"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-198",
+      "contributor": "Puett",
+      "title": "Listening to Sages: Divination, Omens, and the Rhetoric of Antiquity in Wang Chong’s Lunheng",
+      "publicationYear": "2005",
+      "volume": "45",
+      "firstPage": "271",
+      "containerTitle": "Oriens Extremus"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-197",
+      "contributor": "Puett",
+      "publicationYear": "2001"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-196",
+      "contributor": "Popkin",
+      "publicationYear": "2015"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-194",
+      "doi": "https://doi.org/10.1007/978-94-007-4318-2_4"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-191",
+      "doi": "https://doi.org/10.1007/978-94-007-4318-2_2"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-190",
+      "doi": "https://doi.org/10.1515/9780824862572",
+      "contributor": "Pines",
+      "publicationYear": "2002"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-189",
+      "contributor": "Pines",
+      "publicationYear": "2017"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-188",
+      "contributor": "Pines",
+      "title": "Biases and Their Sources: Qin History in the Shiji",
+      "publicationYear": "2005",
+      "volume": "45",
+      "firstPage": "10",
+      "containerTitle": "Oriens Extremus"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-184",
+      "contributor": "Perkins",
+      "title": "The Laozi and the Cosmogonic Turn in Classical Chinese Philosophy",
+      "publicationYear": "2016",
+      "volume": "11",
+      "firstPage": "185",
+      "containerTitle": "Frontiers of Philosophy in China"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-242",
+      "contributor": "Vandermeersch",
+      "publicationYear": "1965"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-183",
+      "doi": "https://doi.org/10.1017/eac.2015.7"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-180",
+      "contributor": "Pan",
+      "publicationYear": "2017"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-179",
+      "doi": "https://doi.org/10.2307/3558570"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-178",
+      "contributor": "Owen",
+      "publicationYear": "1996"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-177",
+      "doi": "https://doi.org/10.1353/book21286",
+      "contributor": "Olberding",
+      "publicationYear": "2012"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-176",
+      "doi": "https://doi.org/10.4324/9780203804599"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-175",
+      "doi": "https://doi.org/10.1111/j.1540-6253.2008.00508.x"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-173",
+      "contributor": "Osamu",
+      "publicationYear": "1982"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-172",
+      "contributor": "Osamu",
+      "publicationYear": "2017"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-169",
+      "doi": "https://doi.org/10.1163/26669323-04301004",
+      "contributor": "Nylan",
+      "title": "Mapping Time in the Shiji and Hanshu Tables 表",
+      "publicationYear": "2016",
+      "volume": "43",
+      "firstPage": "61",
+      "containerTitle": "East Asian Science, Technology, and Medicine"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-167",
+      "doi": "https://doi.org/10.2307/2928520"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-165",
+      "doi": "https://doi.org/10.2307/2719108"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-164",
+      "doi": "https://doi.org/10.1515/9780824843205",
+      "contributor": "Ng",
+      "publicationYear": "2005"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-163",
+      "contributor": "Nakoto",
+      "publicationYear": "1943"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-161",
+      "contributor": "Masao",
+      "publicationYear": "2002"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-160",
+      "contributor": "Ichisada",
+      "publicationYear": "1965"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-159",
+      "contributor": "Ichisada",
+      "title": "Riku Ka Shingo dōki hen no kenkyū” 陸賈新語道基編の研究",
+      "publicationYear": "1963",
+      "volume": "25",
+      "firstPage": "1",
+      "containerTitle": "Tōhō gaku"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-181",
+      "contributor": "Peerenboom",
+      "publicationYear": "1993"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-158",
+      "doi": "https://doi.org/10.1163/9789004208087",
+      "contributor": "Meyer",
+      "publicationYear": "2012"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-157",
+      "contributor": "Marx",
+      "publicationYear": "1981"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-156",
+      "contributor": "Major",
+      "publicationYear": "2010"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-152",
+      "contributor": "Loewe",
+      "publicationYear": "1993"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-151",
+      "contributor": "Lloyd",
+      "publicationYear": "1996"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-150",
+      "contributor": "Rongmao",
+      "title": "Han-chu rusheng Lu Jia de shengping ji qi zhushu” 漢初儒生陸賈的生平及其著述",
+      "publicationYear": "1969",
+      "volume": "7",
+      "firstPage": "21",
+      "containerTitle": "Kong–Meng Yuekan"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-149",
+      "contributor": "Liang",
+      "publicationYear": "1962",
+      "volume": "2",
+      "firstPage": "352"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-147",
+      "contributor": "Wai-yee",
+      "publicationYear": "2008"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-213",
+      "doi": "https://doi.org/10.1017/s0362502800003667"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-203",
+      "doi": "https://doi.org/10.1007/s11466-009-0006-5"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-144",
+      "contributor": "Li",
+      "publicationYear": "2008"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-143",
+      "contributor": "Li",
+      "publicationYear": "1963"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-142",
+      "contributor": "Lewis",
+      "publicationYear": "1999"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-141",
+      "doi": "https://doi.org/10.1017/chol9780521470308.011"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-195",
+      "contributor": "Poo",
+      "publicationYear": "2008",
+      "firstPage": "85"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-135",
+      "contributor": "Lau",
+      "publicationYear": "1970"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-134",
+      "contributor": "Latour",
+      "publicationYear": "2005"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-226",
+      "doi": "https://doi.org/10.1525/9780520949669",
+      "contributor": "Shryock",
+      "publicationYear": "2011"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-122",
+      "doi": "https://doi.org/10.1163/9789004343504"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-130",
+      "doi": "https://doi.org/10.2307/2652033"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-233",
+      "contributor": "Kametarō",
+      "publicationYear": "1958"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-185",
+      "doi": "https://doi.org/10.5790/hongkong/9789888028931.003.0004"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-212",
+      "doi": "https://doi.org/10.1353/mln.2000.0075"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-050",
+      "contributor": "Mengjia",
+      "publicationYear": "2004",
+      "volume": "2"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-070",
+      "doi": "https://doi.org/10.7591/9781501734137",
+      "contributor": "Doyle",
+      "publicationYear": "1986"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-145",
+      "contributor": "Li",
+      "publicationYear": "2006"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-099",
+      "contributor": "Hall",
+      "publicationYear": "1987"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-067",
+      "contributor": "Derrida",
+      "publicationYear": "1994"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-039",
+      "doi": "https://doi.org/10.21313/hawaii/9780824833862.001.0001"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-260",
+      "contributor": "Watson",
+      "publicationYear": "1958"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-217",
+      "doi": "https://doi.org/10.2307/2652717"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-155",
+      "doi": "https://doi.org/10.4159/9780674040458"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-138",
+      "contributor": "Lewis",
+      "publicationYear": "2007"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-042",
+      "doi": "https://doi.org/10.1163/9789004246201_006"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-036",
+      "doi": "https://doi.org/10.2307/j.ctt1dnnb5m"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-201",
+      "contributor": "Pulleyblank",
+      "publicationYear": "1961",
+      "firstPage": "135"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-249",
+      "doi": "https://doi.org/10.1017/eac.2014.20"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-132",
+      "doi": "https://doi.org/10.1007/978-94-007-7113-0_5"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-055",
+      "doi": "https://doi.org/10.1017/s0041977x00036399"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-235",
+      "doi": "https://doi.org/10.1093/past/38.1.56"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-081",
+      "doi": "https://doi.org/10.1525/9780520933767",
+      "contributor": "Feeney",
+      "publicationYear": "2007"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-032",
+      "contributor": "Bloom",
+      "publicationYear": "2009"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-057",
+      "contributor": "Cook",
+      "publicationYear": "2012"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-034",
+      "contributor": "William John",
+      "publicationYear": "1968"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-166",
+      "contributor": "Nivison",
+      "publicationYear": "2002",
+      "firstPage": "282"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-162",
+      "contributor": "Needham",
+      "publicationYear": "1965"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-123",
+      "doi": "https://doi.org/10.1007/978-94-007-7113-0_2"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-193",
+      "contributor": "Pines",
+      "publicationYear": "2014",
+      "firstPage": "258"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-117",
+      "contributor": "Jiang Runxun",
+      "publicationYear": "1958"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-148",
+      "contributor": "Liang",
+      "publicationYear": "1996",
+      "firstPage": "35"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-227",
+      "doi": "https://doi.org/10.1017/cbo9780511606960.010"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-9",
+      "contributor": "Shirakawa",
+      "publicationYear": "1964",
+      "volume": "7"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-265",
+      "contributor": "Fuguang",
+      "publicationYear": "1975"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-096",
+      "contributor": "Graham",
+      "publicationYear": "1990",
+      "firstPage": "283"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-6",
+      "contributor": "Xiangfeng",
+      "publicationYear": "2004"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-116",
+      "contributor": "Ivanhoe",
+      "publicationYear": "2002"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-064",
+      "contributor": "Defoort",
+      "title": "The Profit That Does Not Profit: Paradoxes with ‘Li’ in Early Chinese Texts",
+      "publicationYear": "2008",
+      "volume": "21",
+      "firstPage": "153",
+      "containerTitle": "Asia Major"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-048",
+      "contributor": "Chen",
+      "publicationYear": "2005",
+      "firstPage": "33"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-029",
+      "contributor": "Behuniak",
+      "publicationYear": "2005"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-231",
+      "doi": "https://doi.org/10.1111/j.1540-6253.1999.tb00531.x"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-243",
+      "contributor": "Vervoorn",
+      "title": "Boyi and Shuqi: Worthy Men of Old?",
+      "publicationYear": "1983",
+      "volume": "28",
+      "firstPage": "1",
+      "containerTitle": "Papers on Far Eastern History"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-7",
+      "contributor": "Wanli",
+      "publicationYear": "1983"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-080",
+      "doi": "https://doi.org/10.2307/j.ctvdmwwt6"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-037",
+      "doi": "https://doi.org/10.2307/j.ctt1dnnb3k"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-090",
+      "doi": "https://doi.org/10.26530/oapen_625891"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-18",
+      "contributor": "Yang",
+      "publicationYear": "1981"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-174",
+      "doi": "https://doi.org/10.4159/9780674915992"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-182",
+      "contributor": "Xinwei",
+      "publicationYear": "1958"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-192",
+      "unstructured": "Pines, Yuri , “Legalism in Chinese Philosophy,” The Stanford Encyclopedia of Philosophy, 2017 https://plato.stanford.edu/archives/spr2017/entries/chinese-legalism, accessed May 31, 2018"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-204",
+      "contributor": "Queen",
+      "publicationYear": "2017"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-240",
+      "doi": "https://doi.org/10.1017/cbo9780511497995"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-1",
+      "unstructured": "Ban Gu 班固, Hanshu 漢書 (Beijing: Zhonghua shuju, 1962)"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-051",
+      "doi": "https://doi.org/10.1163/23521341-12340035",
+      "contributor": "Chen",
+      "title": "The Difference between Confucian and Mencian Benevolence",
+      "publicationYear": "2016",
+      "volume": "2",
+      "firstPage": "217",
+      "containerTitle": "Journal of Chinese Humanities"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-268",
+      "contributor": "Shengping",
+      "publicationYear": "1992"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-171",
+      "doi": "https://doi.org/10.1017/s0362502800000985"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-098",
+      "contributor": "Jiegang",
+      "publicationYear": "1982",
+      "volume": "7",
+      "firstPage": "63"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-040",
+      "doi": "https://doi.org/10.1111/j.1540-6253.2011.01648.x"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-068",
+      "doi": "https://doi.org/10.1017/cbo9780511511967"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-10",
+      "contributor": "Shuihudi Qin mu zhujian",
+      "publicationYear": "1990"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-126",
+      "contributor": "Knoblock",
+      "publicationYear": "2013"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-094",
+      "contributor": "Graham",
+      "publicationYear": "1989"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-146",
+      "contributor": "Li",
+      "title": "Qin ‘fazhi’ de Lilun Kunjin Touxi: Yi Shuihudi Qin Jian ‘Yushu’ ‘Wei Li Zhi Dao’ Wei Zhongxin” 秦“法治”的理論困境透析——以睡虎地秦简《語書》、《為吏之道》為中心",
+      "publicationYear": "2012",
+      "volume": "11",
+      "firstPage": "28",
+      "containerTitle": "Xueshu tanshuo"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-027",
+      "contributor": "Ōtsuka",
+      "publicationYear": "1980"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-128",
+      "contributor": "Krijgsman",
+      "publicationYear": "2017",
+      "firstPage": "347"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-200",
+      "contributor": "Puett",
+      "title": "Violent Misreadings: The Hermeneutics of Cosmology in the Huainanzi",
+      "publicationYear": "2000",
+      "volume": "72",
+      "firstPage": "29",
+      "containerTitle": "Bulletin of the Museum of Far Eastern Antiquities"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-170",
+      "doi": "https://doi.org/10.1515/asia-2014-0052",
+      "contributor": "Nylan",
+      "title": "On the Antique Rhetoric of Friendship",
+      "publicationYear": "2014",
+      "volume": "68",
+      "firstPage": "1225",
+      "containerTitle": "Asiatische Studien–Études asiatiques"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-187",
+      "contributor": "Peterson",
+      "publicationYear": "2000",
+      "firstPage": "31"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-079",
+      "doi": "https://doi.org/10.1353/pew.2012.0041"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-052",
+      "doi": "https://doi.org/10.2307/j.ctt1dnn9vg"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-244",
+      "contributor": "Vervoorn",
+      "title": "Friendship in Ancient China",
+      "publicationYear": "2004",
+      "volume": "27",
+      "firstPage": "1",
+      "containerTitle": "East Asian history"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-121",
+      "contributor": "Kern",
+      "publicationYear": "2000"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-20",
+      "contributor": "Zhu",
+      "publicationYear": "1956"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-262",
+      "contributor": "Wilson",
+      "publicationYear": "2002",
+      "firstPage": "94"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-236",
+      "contributor": "Thompson",
+      "publicationYear": "1979"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-16",
+      "contributor": "Zhenyi",
+      "publicationYear": "2000"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-093",
+      "doi": "https://doi.org/10.1111/j.1540-6253.2010.01629.x"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-228",
+      "contributor": "195Shun",
+      "publicationYear": "1997"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-14",
+      "contributor": "Wang",
+      "publicationYear": "1986"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-186",
+      "doi": "https://doi.org/10.1080/02549948.1995.11731268"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-263",
+      "contributor": "Woolf",
+      "publicationYear": "2011"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-097",
+      "contributor": "Jiegang",
+      "publicationYear": "1982",
+      "volume": "7",
+      "firstPage": "43"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-088",
+      "doi": "https://doi.org/10.17875/gup2009-452"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-225",
+      "doi": "https://doi.org/10.1353/jas.2015.0022"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-232",
+      "doi": "https://doi.org/10.1525/9780520922785",
+      "contributor": "Strassberg",
+      "publicationYear": "2002"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-087",
+      "contributor": "Gardner",
+      "publicationYear": "1938"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-246",
+      "contributor": "Vogelsang",
+      "publicationYear": "2007"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-216",
+      "doi": "https://doi.org/10.1017/s0362502800003266"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-103",
+      "doi": "https://doi.org/10.7312/harr17766"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-139",
+      "contributor": "Lewis",
+      "publicationYear": "2011",
+      "firstPage": "440"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-219",
+      "doi": "https://doi.org/10.1163/9789047406914",
+      "contributor": "Schmidt-Glintzer",
+      "publicationYear": "2005"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-114",
+      "doi": "https://doi.org/10.1163/15685322-10013p02"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-038",
+      "doi": "https://doi.org/10.1111/j.1540-6253.2007.00426.x"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-2",
+      "contributor": "Chen",
+      "publicationYear": "1974"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-3",
+      "contributor": "Chen",
+      "publicationYear": "1984"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-104",
+      "contributor": "He Lingxu 賀凌虛",
+      "publicationYear": "1988"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-136",
+      "contributor": "Lau",
+      "publicationYear": "2003"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-4",
+      "contributor": "Cook",
+      "publicationYear": "2012",
+      "firstPage": "164"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-065",
+      "doi": "https://doi.org/10.1163/9789004246201",
+      "contributor": "Defoort",
+      "publicationYear": "2013"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-207",
+      "contributor": "Roetz",
+      "publicationYear": "1993"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-11",
+      "contributor": "Sima Qian",
+      "publicationYear": "1956"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-250",
+      "contributor": "Waley",
+      "publicationYear": "1996"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-12",
+      "contributor": "Sun",
+      "publicationYear": "2001"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-13",
+      "contributor": "Hui",
+      "publicationYear": "2006"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-8",
+      "contributor": "Wanli",
+      "publicationYear": "1983"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-060",
+      "contributor": "Creel",
+      "publicationYear": "1974"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-15",
+      "contributor": "Wang",
+      "publicationYear": "1987"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-17",
+      "contributor": "Yang",
+      "publicationYear": "1980"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-120",
+      "contributor": "Keightley",
+      "publicationYear": "2000"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-21",
+      "contributor": "Qianzhi",
+      "publicationYear": "1984"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-022",
+      "doi": "https://doi.org/10.1111/j.1540-6253.1976.tb00388.x"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-109",
+      "contributor": "Hobsbawm",
+      "publicationYear": "1983",
+      "firstPage": "1"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-023",
+      "contributor": "Ames",
+      "publicationYear": "1983"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-025",
+      "contributor": "Bakhtin",
+      "publicationYear": "2004"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-026",
+      "contributor": "Balazs",
+      "publicationYear": "1964"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-076",
+      "contributor": "Durrant",
+      "publicationYear": "2016",
+      "volume": "3"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-153",
+      "contributor": "Loewe",
+      "publicationYear": "2006"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-028",
+      "contributor": "Beasley",
+      "publicationYear": "1961"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-092",
+      "contributor": "Goldin",
+      "publicationYear": "2017",
+      "firstPage": "54"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-030",
+      "contributor": "Bloom",
+      "publicationYear": "2002",
+      "firstPage": "91"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-031",
+      "doi": "https://doi.org/10.2307/1400248"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-083",
+      "contributor": "Feng",
+      "publicationYear": "1948"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-033",
+      "contributor": "Bodde",
+      "publicationYear": "1938"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-035",
+      "contributor": "Bourdieu",
+      "publicationYear": "2002"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-069",
+      "contributor": "Döring",
+      "publicationYear": "2008",
+      "firstPage": "189"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-107",
+      "contributor": "Henricks",
+      "publicationYear": "2000"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-041",
+      "contributor": "Brooks",
+      "publicationYear": "1998"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-082",
+      "doi": "https://doi.org/10.1353/nlh.2011.0045"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-043",
+      "contributor": "Xianqun",
+      "publicationYear": "2002"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-024",
+      "doi": "https://doi.org/10.18399/acta.2017.20.1.001"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-111",
+      "unstructured": "Huang Peirong 黃沛榮, “Zhoushu yanjiu” 周書研究, PhD dissertation (Guoli Taiwan daxue zhongwen yanjiusuo 國立台灣大學中文研究所, 1976)"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-5",
+      "contributor": "Fei Zhen’gang",
+      "publicationYear": "1993"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-044",
+      "contributor": "Burbank",
+      "publicationYear": "2010"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-137",
+      "doi": "https://doi.org/10.4324/9781315773605-8"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-084",
+      "doi": "https://doi.org/10.7312/fras14926"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-045",
+      "contributor": "Butterfield",
+      "publicationYear": "1961"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-046",
+      "doi": "https://doi.org/10.1007/s40636-015-0044-8"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-131",
+      "doi": "https://doi.org/10.2307/j.ctv2n7r6s.13"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-047",
+      "contributor": "Certeau",
+      "publicationYear": "1988"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-168",
+      "contributor": "Nylan",
+      "publicationYear": "2015",
+      "firstPage": "131"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-075",
+      "contributor": "Durrant",
+      "publicationYear": "2017",
+      "firstPage": "184"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-220",
+      "contributor": "Schumpeter",
+      "publicationYear": "1955"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-095",
+      "contributor": "Graham",
+      "publicationYear": "1985"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-049",
+      "contributor": "Mengjia",
+      "publicationYear": "1945"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-053",
+      "doi": "https://doi.org/10.1179/tcr.2011.18.1.1"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-210",
+      "doi": "https://doi.org/10.1080/02549948.2017.1393950"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-066",
+      "contributor": "Denecke",
+      "publicationYear": "2010"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-054",
+      "contributor": "Collingwood",
+      "publicationYear": "1962"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-056",
+      "contributor": "Cook",
+      "publicationYear": "2016"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-223",
+      "contributor": "Sena",
+      "title": "Arraying the Ancestors in Ancient China: Narratives of Lineage History in the ‘Scribe Qiang’ and ‘Qiu’ Bronzes",
+      "publicationYear": "2012",
+      "volume": "25",
+      "firstPage": "63",
+      "containerTitle": "Asia Major"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-058",
+      "contributor": "Cook",
+      "title": "The Use and Abuse of History in Early China from Xun Zi to Lüshi Chunqiu",
+      "publicationYear": "2005",
+      "volume": "18",
+      "firstPage": "45",
+      "containerTitle": "Asia Major"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-059",
+      "contributor": "Creel",
+      "publicationYear": "1970",
+      "firstPage": "92"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-061",
+      "doi": "https://doi.org/10.1163/9789047406778",
+      "contributor": "Csikszentmihalyi",
+      "publicationYear": "2004"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-062",
+      "doi": "https://doi.org/10.1007/978-90-481-2927-0_3"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-206",
+      "contributor": "Robinet",
+      "publicationYear": "1999",
+      "firstPage": "127"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-089",
+      "doi": "https://doi.org/10.1111/j.1540-6253.2007.00464.x"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-245",
+      "contributor": "196Vervoorn",
+      "publicationYear": "1990"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-154",
+      "contributor": "Loewe",
+      "publicationYear": "2010",
+      "firstPage": "308"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-063",
+      "doi": "https://doi.org/10.1017/cbo9781107477711"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-127",
+      "contributor": "Kojève",
+      "publicationYear": "1980"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-19",
+      "publicationYear": "2007",
+      "volume": "8"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-071",
+      "contributor": "Weiyun",
+      "publicationYear": "1993"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-140",
+      "contributor": "Lewis",
+      "publicationYear": "1990"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-072",
+      "contributor": "Weiyun",
+      "publicationYear": "2008"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-073",
+      "doi": "https://doi.org/10.2307/2049671"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-074",
+      "contributor": "Durrant",
+      "publicationYear": "1995"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-133",
+      "contributor": "Peter",
+      "publicationYear": "2017"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-077",
+      "doi": "https://doi.org/10.1215/9780822386889-003"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-078",
+      "contributor": "Duyvendak",
+      "publicationYear": "1928",
+      "volume": "XVII"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-085",
+      "contributor": "Fukuyama",
+      "publicationYear": "1992"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-105",
+      "doi": "https://doi.org/10.1007/s11466-007-0019-x"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-086",
+      "doi": "https://doi.org/10.1007/978-94-007-4318-2_5"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-091",
+      "doi": "https://doi.org/10.1179/mon.2008.56.1.001"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-100",
+      "contributor": "Han",
+      "publicationYear": "1955"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-101",
+      "contributor": "Hardt",
+      "publicationYear": "2000"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-102",
+      "contributor": "Hardy",
+      "publicationYear": "1999"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-106",
+      "contributor": "Hegel",
+      "publicationYear": "1967"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-108",
+      "contributor": "Herzfeld",
+      "publicationYear": "2001"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-110",
+      "doi": "https://doi.org/10.1093/past/55.1.3"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-112",
+      "doi": "https://doi.org/10.1515/9781503621190",
+      "contributor": "Hucker",
+      "publicationYear": "1975"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-113",
+      "doi": "https://doi.org/10.1163/9789004339026"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-124",
+      "doi": "https://doi.org/10.1163/9789004376878"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-267",
+      "contributor": "Yates",
+      "publicationYear": "1997"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-115",
+      "doi": "https://doi.org/10.1093/acprof:oso/9780190679118.001.0001"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-248",
+      "contributor": "Vogelsang",
+      "title": "The Scribes’ Genealogy",
+      "publicationYear": "2003",
+      "volume": "44",
+      "firstPage": "3",
+      "containerTitle": "Oriens Extremus"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-118",
+      "doi": "https://doi.org/10.1353/pew.2011.0021"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-119",
+      "contributor": "Johnston",
+      "publicationYear": "2010"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-125",
+      "contributor": "Knoblock",
+      "publicationYear": "2000"
+    },
+    {
+      "key": "9781108348843#EMT-rl-1_BIBe-r-129",
+      "contributor": "Ku",
+      "publicationYear": "1988"
+    }
+  ],
+  "container": {
+    "type": "BookSeries",
+    "identifier": "9781108348843",
+    "identifierType": "ISBN"
+  },
+  "provider": "Crossref",
+  "schema_version": "https://commonmeta.org/commonmeta_v0.12",
+  "state": "findable"
+}

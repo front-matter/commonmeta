@@ -1,0 +1,128 @@
+{
+  "id": "https://doi.org/10.5061/dryad.8515",
+  "type": "Dataset",
+  "url": "https://datadryad.org/stash/dataset/doi:10.5061/dryad.8515",
+  "contributors": [
+    {
+      "type": "Person",
+      "contributorRoles": ["Author"],
+      "givenName": "Benjamin",
+      "familyName": "Ollomo",
+      "affiliation": [
+        {
+          "name": "Centre International de Recherches Médicales de Franceville"
+        }
+      ]
+    },
+    {
+      "type": "Person",
+      "contributorRoles": ["Author"],
+      "givenName": "Patrick",
+      "familyName": "Durand",
+      "affiliation": [
+        { "name": "French National Centre for Scientific Research" }
+      ]
+    },
+    {
+      "type": "Person",
+      "contributorRoles": ["Author"],
+      "givenName": "Franck",
+      "familyName": "Prugnolle",
+      "affiliation": [
+        { "name": "French National Centre for Scientific Research" }
+      ]
+    },
+    {
+      "type": "Person",
+      "contributorRoles": ["Author"],
+      "givenName": "Emmanuel J. P.",
+      "familyName": "Douzery",
+      "affiliation": []
+    },
+    {
+      "type": "Person",
+      "contributorRoles": ["Author"],
+      "givenName": "Céline",
+      "familyName": "Arnathau",
+      "affiliation": [
+        { "name": "French National Centre for Scientific Research" }
+      ]
+    },
+    {
+      "type": "Person",
+      "contributorRoles": ["Author"],
+      "givenName": "Dieudonné",
+      "familyName": "Nkoghe",
+      "affiliation": [
+        {
+          "name": "Centre International de Recherches Médicales de Franceville"
+        }
+      ]
+    },
+    {
+      "type": "Person",
+      "contributorRoles": ["Author"],
+      "givenName": "Eric",
+      "familyName": "Leroy",
+      "affiliation": [
+        {
+          "name": "Centre International de Recherches Médicales de Franceville"
+        }
+      ]
+    },
+    {
+      "type": "Person",
+      "contributorRoles": ["Author"],
+      "givenName": "François",
+      "familyName": "Renaud",
+      "affiliation": [
+        { "name": "French National Centre for Scientific Research" }
+      ]
+    }
+  ],
+  "titles": [
+    { "title": "Data from: A new malaria agent in African hominids." }
+  ],
+  "publisher": { "name": "Dryad" },
+  "date": {
+    "published": "2011-02-01T17:22:41Z",
+    "available": "2011-02-01T17:22:41Z"
+  },
+  "additional_type": "dataset",
+  "subjects": [
+    {
+      "subject": "Plasmodium",
+      "schemeUri": "https://github.com/PLOS/plos-thesaurus",
+      "subjectScheme": "PLOS Subject Area Thesaurus"
+    },
+    {
+      "subject": "Malaria",
+      "schemeUri": "https://github.com/PLOS/plos-thesaurus",
+      "subjectScheme": "PLOS Subject Area Thesaurus"
+    },
+    { "subject": "mitochondrial genome" },
+    { "subject": "Parasites" }
+  ],
+  "language": "en",
+  "sizes": ["128717 bytes"],
+  "version": "1",
+  "license": {
+    "id": "CC0-1.0",
+    "url": "https://creativecommons.org/publicdomain/zero/1.0/legalcode"
+  },
+  "descriptions": [
+    {
+      "description": "Plasmodium falciparum is the major human malaria agent responsible for 200\n to 300 million infections and one to three million deaths annually, mainly\n among African infants. The origin and evolution of this pathogen within\n the human lineage is still unresolved. A single species, P. reichenowi,\n which infects chimpanzees, is known to be a close sister lineage of P.\n falciparum. Here we report the discovery of a new Plasmodium species\n infecting Hominids. This new species has been isolated in two chimpanzees\n (Pan troglodytes) kept as pets by villagers in Gabon (Africa). Analysis of\n its complete mitochondrial genome (5529 nucleotides including Cyt b, Cox I\n and Cox III genes) reveals an older divergence of this lineage from the\n clade that includes P. falciparum and P. reichenowi (approximately 21+/-9\n Myrs ago using Bayesian methods and considering that the divergence\n between P. falciparum and P. reichenowi occurred 4 to 7 million years ago\n as generally considered in the literature). This time frame would be\n congruent with the radiation of hominoids, suggesting that this Plasmodium\n lineage might have been present in early hominoids and that they may both\n have experienced a simultaneous diversification. Investigation of the\n nuclear genome of this new species will further the understanding of the\n genetic adaptations of P. falciparum to humans. The risk of transfer and\n emergence of this new species in humans must be now seriously considered\n given that it was found in two chimpanzees living in contact with humans\n and its close relatedness to the most virulent agent of malaria.",
+      "type": "Abstract"
+    },
+    {
+      "description": "Ollomo_PLoSPathog_2009Nucleotide alignment concatenation of 4\n mitochondrial genes for 17 Plasmodium species and one\n outgroup.Ollomo_PLoSPathog_2009_PHYMLMaximum likelihood tree inferred from\n the 4-gene concatenation using PHYML.",
+      "type": "Other"
+    }
+  ],
+  "geo_locations": [{ "geoLocationPlace": "Africa" }],
+  "files": [],
+  "provider": "DataCite",
+  "schema_version": "https://commonmeta.org/commonmeta_v0.12",
+  "state": "findable"
+}

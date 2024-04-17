@@ -1,17 +1,15 @@
 package crossrefxml
 
-import "commonmeta/metadata"
+import (
+	"commonmeta/types"
+)
 
-type Record struct {
-	URL string `json:"URL"`
+func GetCrossrefXML(pid string) (types.Content, error) {
+	var result types.Content
+	return result, nil
 }
 
-func GetCrossrefXML(pid string) (Record, error) {
-	var r Record
-	return r, nil
-}
-
-func ReadCrossrefXML(record Record) (metadata.Metadata, error) {
-	var m metadata.Metadata
-	return m, nil
+func ReadCrossrefXML(content types.Content) (types.Data, error) {
+	var data types.Data
+	return data, nil
 }

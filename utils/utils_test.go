@@ -46,3 +46,63 @@ func TestIssnAsUrl(t *testing.T) {
 		}
 	}
 }
+
+func TestNormalizeORCID(t *testing.T) {
+	t.Parallel()
+	type testCase struct {
+		input string
+		want  string
+	}
+	testCases := []testCase{
+		{input: "0000-0002-1825-0097", want: "https://orcid.org/0000-0002-1825-0097"},
+		{input: "https://orcid.org/0000-0002-1825-0097", want: "https://orcid.org/0000-0002-1825-0097"},
+	}
+	for _, tc := range testCases {
+		got := utils.NormalizeORCID(tc.input)
+		if tc.want != got {
+			t.Errorf("Normalize ORCID(%v): want %v, got %v",
+				tc.input, tc.want, got)
+		}
+	}
+}
+
+func TestValidateORCID(t *testing.T) {
+	t.Parallel()
+	type testCase struct {
+		input string
+		want  string
+	}
+	testCases := []testCase{
+		{input: "http://orcid.org/0000-0002-2590-225X", want: "0000-0002-2590-225X"},
+		{input: "https://orcid.org/0000-0002-1825-0097", want: "0000-0002-1825-0097"},
+		{input: "https://www.orcid.org/0000-0002-1825-0097", want: "0000-0002-1825-0097"},
+		{input: "https://sandbox.orcid.org/0000-0002-1825-0097", want: "0000-0002-1825-0097"},
+		{input: "0000-0002-1825-009", want: ""}, // invalid ORCID
+	}
+	for _, tc := range testCases {
+		got, ok := utils.ValidateORCID(tc.input)
+		if tc.want != got {
+			t.Errorf("Validate ORCID(%v): want %v, got %v, ok %v",
+				tc.input, tc.want, got, ok)
+		}
+	}
+}
+
+func TestSanitize(t *testing.T) {
+	t.Parallel()
+	type testCase struct {
+		input string
+		want  string
+	}
+	testCases := []testCase{
+		{input: "<p>The Origins of SARS-CoV-2: A Critical <a href=\"index.html\">Review</a></p>", want: "The Origins of SARS-CoV-2: A Critical Review"},
+		{input: "11 July 2023 (Day 2) <i>CERN</i> – NASA Open Science Summit <b>Sketch</b> Notes", want: "11 July 2023 (Day 2) CERN – NASA Open Science Summit Sketch Notes"},
+	}
+	for _, tc := range testCases {
+		got := utils.Sanitize(tc.input)
+		if tc.want != got {
+			t.Errorf("Sanitize String(%v): want %v, got %v",
+				tc.input, tc.want, got)
+		}
+	}
+}

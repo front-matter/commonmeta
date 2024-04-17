@@ -1,0 +1,243 @@
+{
+  "id": "https://doi.org/10.1101/097196",
+  "type": "Article",
+  "url": "http://biorxiv.org/lookup/doi/10.1101/097196",
+  "contributors": [
+    {
+      "id": "https://orcid.org/0000-0003-1419-2405",
+      "type": "Person",
+      "contributorRoles": ["Author"],
+      "givenName": "Martin",
+      "familyName": "Fenner",
+      "affiliation": []
+    },
+    {
+      "id": "https://orcid.org/0000-0003-1304-1939",
+      "type": "Person",
+      "contributorRoles": ["Author"],
+      "givenName": "Mercè",
+      "familyName": "Crosas",
+      "affiliation": []
+    },
+    {
+      "id": "https://orcid.org/0000-0001-5212-7052",
+      "type": "Person",
+      "contributorRoles": ["Author"],
+      "givenName": "Jeffrey",
+      "familyName": "Grethe",
+      "affiliation": []
+    },
+    {
+      "id": "https://orcid.org/0000-0002-9377-0797",
+      "type": "Person",
+      "contributorRoles": ["Author"],
+      "givenName": "David",
+      "familyName": "Kennedy",
+      "affiliation": []
+    },
+    {
+      "id": "https://orcid.org/0000-0001-8479-0262",
+      "type": "Person",
+      "contributorRoles": ["Author"],
+      "givenName": "Henning",
+      "familyName": "Hermjakob",
+      "affiliation": []
+    },
+    {
+      "id": "https://orcid.org/0000-0001-9853-5668",
+      "type": "Person",
+      "contributorRoles": ["Author"],
+      "givenName": "Philippe",
+      "familyName": "Rocca-Serra",
+      "affiliation": []
+    },
+    {
+      "id": "https://orcid.org/0000-0002-2188-2570",
+      "type": "Person",
+      "contributorRoles": ["Author"],
+      "givenName": "Gustavo",
+      "familyName": "Durand",
+      "affiliation": []
+    },
+    {
+      "id": "https://orcid.org/0000-0002-1731-5346",
+      "type": "Person",
+      "contributorRoles": ["Author"],
+      "givenName": "Robin",
+      "familyName": "Berjon",
+      "affiliation": []
+    },
+    {
+      "id": "https://orcid.org/0000-0001-8249-7388",
+      "type": "Person",
+      "contributorRoles": ["Author"],
+      "givenName": "Sebastian",
+      "familyName": "Karcher",
+      "affiliation": []
+    },
+    {
+      "id": "https://orcid.org/0000-0002-8406-3871",
+      "type": "Person",
+      "contributorRoles": ["Author"],
+      "givenName": "Maryann",
+      "familyName": "Martone",
+      "affiliation": []
+    },
+    {
+      "id": "https://orcid.org/0000-0003-4060-7360",
+      "type": "Person",
+      "contributorRoles": ["Author"],
+      "givenName": "Timothy",
+      "familyName": "Clark",
+      "affiliation": []
+    }
+  ],
+  "titles": [
+    { "title": "A Data Citation Roadmap for Scholarly Data Repositories" }
+  ],
+  "publisher": { "name": "Cold Spring Harbor Laboratory" },
+  "date": { "published": "2016-12-28" },
+  "subjects": [{ "subject": "Scientific Communication and Education" }],
+  "relations": [
+    {
+      "type": "IsPreprintOf",
+      "id": "https://doi.org/10.1038/s41597-019-0031-8"
+    }
+  ],
+  "descriptions": [
+    {
+      "description": "AbstractThis article presents a practical roadmap for scholarly data repositories to implement data citation in accordance with the Joint Declaration of Data Citation Principles, a synopsis and harmonization of the recommendations of major science policy bodies. The roadmap was developed by the Repositories Expert Group, as part of the Data Citation Implementation Pilot (DCIP) project, an initiative of FORCE11.org and the NIH BioCADDIE (https://biocaddie.org) program. The roadmap makes 11 specific recommendations, grouped into three phases of implementation: a) required steps needed to support the Joint Declaration of Data Citation Principles, b) recommended steps that facilitate article/data publication workflows, and c) optional steps that further improve data citation support provided by data repositories.",
+      "descriptionType": "Abstract"
+    }
+  ],
+  "references": [
+    {
+      "key": "2019071613381284000_097196v2.1",
+      "title": "An introduction to the joint principles for data citation",
+      "publicationYear": "2015",
+      "volume": "41",
+      "issue": "3",
+      "firstPage": "43",
+      "containerTitle": "Bulletin of the American \\ldots"
+    },
+    {
+      "key": "2019071613381284000_097196v2.2",
+      "unstructured": "Altman, M. , & Crosas, M. (2013). The Evolution of Data Citation: From Principles to Implementation. IASSIST Quarterly. Retrieved from http://scholar.harvard.edu/mercecrosas/publications/evolution-data-citation-principles-implementation"
+    },
+    {
+      "key": "2019071613381284000_097196v2.3",
+      "unstructured": "BioSchemas. (2016). Retrieved December 22, 2016, from http://bioschemas.org/"
+    },
+    {
+      "key": "2019071613381284000_097196v2.4",
+      "doi": "https://doi.org/10.2481/dsj.osom13-043",
+      "unstructured": "CODATA-ICSTI Task Group on Data Citation Standards and Practice. (2013). Out of Cite, Out of Mind: The Current State of Practice, Policy, and Technology for the Citation of Data. Data Science Journal, 12(0). https://doi.org/10.2481/dsj.OSOM13-043"
+    },
+    {
+      "key": "2019071613381284000_097196v2.5",
+      "unstructured": "Data Citation Synthesis Group. (2014). Data Citation Synthesis Group. (2014). Joint Declaration of Data Citation Principles. Force11. https://doi.org/10.25490/a97f-egyk"
+    },
+    {
+      "key": "2019071613381284000_097196v2.6",
+      "unstructured": "Data Citations: A Primer. (2016). Retrieved December 22, 2016, from http://force11.github.io/data-citation-primer/"
+    },
+    {
+      "key": "2019071613381284000_097196v2.7",
+      "unstructured": "DataCite Metadata Working. (2016). DataCite Metadata Schema for the Publication and Citation of Research Data v4.0. DataCite. Retrieved from http://search.datacite.org/works/10.5438/0013"
+    },
+    {
+      "key": "2019071613381284000_097196v2.8",
+      "unstructured": "DataCite Search. (2016). Retrieved December 22, 2016, from https://search.datacite.org/"
+    },
+    {
+      "key": "2019071613381284000_097196v2.9",
+      "unstructured": "DataMed | bioCADDIE DDI. (2016). Retrieved December 22, 2016, from https://datamed.org/"
+    },
+    {
+      "key": "2019071613381284000_097196v2.10",
+      "unstructured": "Dataset - schema.org. (2016). Retrieved December 12, 2016, from https://schema.org/Dataset"
+    },
+    {
+      "key": "2019071613381284000_097196v2.11",
+      "unstructured": "Dublin Core Metadata Element Set, Version 1.1. (2012). Retrieved December 22, 2016, from http://dublincore.org/documents/2012/06/14/dces/"
+    },
+    {
+      "key": "2019071613381284000_097196v2.12",
+      "unstructured": "ELIXIR Data for life. (2016). Retrieved December 22, 2016, from https://www.elixir-europe.org/"
+    },
+    {
+      "key": "2019071613381284000_097196v2.13",
+      "unstructured": "Hammond, T. , Hannay, T. , & Lund, B. (2004). RDF Site Summary 1.0 Modules: PRISM."
+    },
+    {
+      "key": "2019071613381284000_097196v2.14",
+      "unstructured": "Publishing Requirements for Industry Standard Metadata (PRISM). Retrieved from http://purl.org/rss/1.0/modules/prism/"
+    },
+    {
+      "key": "2019071613381284000_097196v2.15",
+      "doi": "https://doi.org/10.3389/fninf.2016.00034",
+      "unstructured": "Honor, L. B. , Haselgrove, C. , Frazier, J. A. , & Kennedy, D. N. (2016). Data Citation in Neuroimaging: Proposed Best Practices for Data Identification and Attribution. Frontiers in Neuroinformatics, 10. https://doi.org/10.3389/fninf.2016.00034"
+    },
+    {
+      "key": "2019071613381284000_097196v2.16",
+      "unstructured": "King, Gary , & Altman, Micah . (2007). A Proposed Standard for the Scholarly Citation of Quantitative Data. https://doi.org/10.1045/march2007-altman"
+    },
+    {
+      "key": "2019071613381284000_097196v2.17",
+      "doi": "https://doi.org/10.15252/msb.20156658"
+    },
+    {
+      "key": "2019071613381284000_097196v2.18",
+      "unstructured": "Prefix Commons. (2016). Retrieved December 22, 2016, from https://github.com/prefixcommons/prefixes"
+    },
+    {
+      "key": "2019071613381284000_097196v2.19",
+      "unstructured": "RFC 3986 - Uniform Resource Identifier (URI): Generic Syntax. (2005). Retrieved December 22, 2016, from http://www.rfc-base.org/rfc-3986.html"
+    },
+    {
+      "key": "2019071613381284000_097196v2.20",
+      "doi": "https://doi.org/10.1038/sdata.2017.59",
+      "unstructured": "Sansone, A. , Gonzalez-Beltran, A. , & Rocca-Serra, P. (2016). DATS, the data tag suite to enable discoverability of datasets. Scientific Data 4, Article number: 170059 (2017) https://doi.org/10.1038/sdata.2017.59"
+    },
+    {
+      "key": "2019071613381284000_097196v2.21",
+      "doi": "https://doi.org/10.7717/peerj-cs.86",
+      "title": "Software citation principles",
+      "publicationYear": "2016",
+      "volume": "2",
+      "firstPage": "e86",
+      "containerTitle": "PeerJ Computer Science"
+    },
+    {
+      "key": "2019071613381284000_097196v2.22",
+      "doi": "https://doi.org/10.7717/peerj-cs.1",
+      "title": "Achieving human and machine accessibility of cited data in scholarly publications",
+      "publicationYear": "2015",
+      "volume": "1",
+      "firstPage": "e1",
+      "containerTitle": "PeerJ Computer Science"
+    },
+    {
+      "key": "2019071613381284000_097196v2.23",
+      "doi": "https://doi.org/10.1126/science.aah6168"
+    },
+    {
+      "key": "2019071613381284000_097196v2.24",
+      "unstructured": "Treloar, A. (2011). Den Haag Persistent Object Identifier – Linked Open Data Manifesto. Zenodo. https://doi.org/10.5281/zenodo.55666"
+    },
+    {
+      "key": "2019071613381284000_097196v2.25",
+      "unstructured": "Uhlir, P. E. (Ed.). (2012). For Attribution: Developing Data Attribution and Citation Practices and Standards: Summary of an International Workshop. Retrieved from https://www.nap.edu/catalog/13564/for-attribution-developing-data-attribution-and-citation-practices-and-standards"
+    },
+    {
+      "key": "2019071613381284000_097196v2.26",
+      "doi": "https://doi.org/10.1045/november2015-vandesompel",
+      "unstructured": "Van de Sompel, H. , & Nelson, M. L. (2015). Reminiscing About 15 Years of Interoperability Efforts. D-Lib Magazine, 21(11/12). https://doi.org/10.1045/november2015-vandesompel"
+    }
+  ],
+  "files": [],
+  "container": { "type": "Periodical" },
+  "provider": "Crossref",
+  "schema_version": "https://commonmeta.org/commonmeta_v0.12",
+  "state": "findable"
+}

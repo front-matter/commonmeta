@@ -1,0 +1,32 @@
+{
+  "id": "https://doi.org/10.2210/pdb4hhb/pdb",
+  "type": "Component",
+  "url": "https://www.wwpdb.org/pdb?id=pdb_00004hhb",
+  "contributors": [
+    {
+      "type": "Person",
+      "contributorRoles": ["Author"],
+      "givenName": "G.",
+      "familyName": "Fermi",
+      "affiliation": []
+    },
+    {
+      "type": "Person",
+      "contributorRoles": ["Author"],
+      "givenName": "M.F.",
+      "familyName": "Perutz",
+      "affiliation": []
+    }
+  ],
+  "titles": [
+    {
+      "title": "THE CRYSTAL STRUCTURE OF HUMAN DEOXYHAEMOGLOBIN AT 1.74 ANGSTROMS RESOLUTION"
+    }
+  ],
+  "publisher": { "name": "Worldwide Protein Data Bank" },
+  "date": { "published": "1984-07-17" },
+  "files": [],
+  "provider": "Crossref",
+  "schema_version": "https://commonmeta.org/commonmeta_v0.12",
+  "state": "findable"
+}
