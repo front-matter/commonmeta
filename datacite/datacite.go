@@ -165,10 +165,12 @@ func ReadDatacite(content types.Content) (types.Data, error) {
 	})
 	if len(content.Attributes.AlternateIdentifiers) > 0 {
 		for _, v := range content.Attributes.AlternateIdentifiers {
-			data.Identifiers = append(data.Identifiers, types.Identifier{
-				Identifier:     v.Identifier,
-				IdentifierType: v.IdentifierType,
-			})
+			if content.Attributes.AlternateIdentifiers[0].Identifier != "" {
+				data.Identifiers = append(data.Identifiers, types.Identifier{
+					Identifier:     v.Identifier,
+					IdentifierType: v.IdentifierType,
+				})
+			}
 		}
 	}
 
@@ -374,6 +376,8 @@ func ReadDatacite(content types.Content) (types.Data, error) {
 				identifier := v.RelatedIdentifier
 				if isDoi {
 					identifier = doiutils.NormalizeDOI(v.RelatedIdentifier)
+				} else if {
+					identifier = v.RelatedIdentifier
 				}
 				data.Relations = append(data.Relations, types.Relation{
 					ID:   identifier,
@@ -417,8 +421,6 @@ func ReadDatacite(content types.Content) (types.Data, error) {
 
 	data.Files = []types.File{}
 	// sizes and formats are part of the file object, but can't be mapped directly
-	// copy(data.Sizes, content.Attributes.Sizes)
-	// copy(data.Formats, content.Attributes.Formats)
 
 	data.ArchiveLocations = []string{}
 
@@ -457,7 +459,7 @@ func GetContributor(v types.DCContributor) types.Contributor {
 		// split name for type Person into given/family name if not already provided
 		names := strings.Split(name, ",")
 		if len(names) == 2 {
-			GivenName = names[1]
+			GivenName = strings.TrimSpace(names[1])
 			FamilyName = names[0]
 			name = ""
 		}
