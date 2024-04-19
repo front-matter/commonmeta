@@ -387,10 +387,15 @@ func GetCrossrefSample(number int, prefix string, _type string) ([]types.Content
 		number = 100
 	}
 	url := CrossrefApiSampleUrl(number, prefix, _type)
+	req, err := http.NewRequest("GET", url, nil)
+	req.Header.Set("User-Agent", "commonmeta-go/0.1 (https://commonmeta.org/commonmeta-go/; mailto:info@front-matter.io)")
+	if err != nil {
+		log.Fatalln(err)
+	}
 	client := http.Client{
 		Timeout: time.Second * 10,
 	}
-	resp, err := client.Get(url)
+	resp, err := client.Do(req)
 	if err != nil {
 		return nil, err
 	}
