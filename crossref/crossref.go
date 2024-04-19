@@ -272,9 +272,12 @@ func ReadCrossref(content types.Content) (types.Data, error) {
 	}
 
 	for _, v := range content.Subject {
-		data.Subjects = append(data.Subjects, types.Subject{
+		subject := types.Subject{
 			Subject: v,
-		})
+		}
+		if !slices.Contains(data.Subjects, subject) {
+			data.Subjects = append(data.Subjects, subject)
+		}
 	}
 
 	if content.GroupTitle != "" {
