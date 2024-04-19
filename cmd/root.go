@@ -66,4 +66,16 @@ func Execute() {
 func init() {
 	rootCmd.PersistentFlags().StringP("from", "f", "crossref", "the format to convert from")
 	rootCmd.PersistentFlags().StringP("to", "t", "commonmeta", "the format to convert to")
+
+	rootCmd.PersistentFlags().StringP("number", "n", "10", "number of samples")
+	rootCmd.PersistentFlags().StringP("member", "m", "", "Crossref member ID")
+	rootCmd.PersistentFlags().StringP("type", "", "journal-article", "work type")
+	rootCmd.PersistentFlags().BoolP("has-orcid", "", false, "has one or more ORCID IDs")
+	rootCmd.PersistentFlags().BoolP("has-ror-id", "", false, "has one or more ROR IDs")
+	rootCmd.PersistentFlags().BoolP("has-references", "", false, "has references")
+	rootCmd.PersistentFlags().BoolP("has-relation", "", false, "has relation")
+	rootCmd.PersistentFlags().BoolP("has-abstract", "", false, "has abstract")
+	rootCmd.PersistentFlags().BoolP("has-award", "", false, "has award")
+	rootCmd.PersistentFlags().BoolP("has-license", "", false, "has license")
+	rootCmd.PersistentFlags().BoolP("has-archive", "", false, "has archive")
 }

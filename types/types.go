@@ -63,10 +63,11 @@ type Content struct {
 		ContentType string `json:"content-type"`
 		Url         string `json:"url"`
 	} `json:"link"`
-	Page        string `json:"page"`
-	PublishedAt string `json:"published_at"`
-	Publisher   string `json:"publisher"`
-	Reference   []struct {
+	OriginalTitle []string `json:"original-title"`
+	Page          string   `json:"page"`
+	PublishedAt   string   `json:"published_at"`
+	Publisher     string   `json:"publisher"`
+	Reference     []struct {
 		Key          string `json:"key"`
 		DOI          string `json:"DOI"`
 		ArticleTitle string `json:"article-title"`
@@ -170,19 +171,8 @@ type Attributes struct {
 		Identifier     string `json:"identifier"`
 		IdentifierType string `json:"identifierType"`
 	} `json:"alternateIdentifiers"`
-	Creators []struct {
-		Name            string `json:"name"`
-		GivenName       string `json:"givenName"`
-		FamilyName      string `json:"familyName"`
-		NameType        string `json:"nameType"`
-		NameIdentifiers []struct {
-			SchemeURI            string `json:"schemeUri"`
-			NameIdentifier       string `json:"nameIdentifier"`
-			NameIdentifierScheme string `json:"nameIdentifierScheme"`
-		} `json:"nameIdentifiers"`
-		Affiliation []string `json:"affiliation"`
-	} `json:"creators"`
-	Publisher string `json:"publisher"`
+	Creators  []DCContributor `json:"creators"`
+	Publisher string          `json:"publisher"`
 	Container struct {
 		Type           string `json:"type"`
 		Identifier     string `json:"identifier"`
@@ -203,20 +193,8 @@ type Attributes struct {
 	Subjects []struct {
 		Subject string `json:"subject"`
 	} `json:"subjects"`
-	Contributors []struct {
-		Name            string `json:"name"`
-		GivenName       string `json:"givenName"`
-		FamilyName      string `json:"familyName"`
-		NameType        string `json:"nameType"`
-		NameIdentifiers []struct {
-			SchemeURI            string `json:"schemeUri"`
-			NameIdentifier       string `json:"nameIdentifier"`
-			NameIdentifierScheme string `json:"nameIdentifierScheme"`
-		} `json:"nameIdentifiers"`
-		Affiliation     []string `json:"affiliation"`
-		ContributorType string   `json:"contributorType"`
-	} `json:"contributors"`
-	Dates []struct {
+	Contributors []DCContributor `json:"contributors"`
+	Dates        []struct {
 		Date            string `json:"date"`
 		DateType        string `json:"dateType"`
 		DateInformation string `json:"dateInformation"`
@@ -274,38 +252,31 @@ type Data struct {
 	Type string `db:"type" json:"type"`
 
 	// optional fields
-	AdditionalType       string                `db:"additional_type" json:"additional_type,omitempty"`
-	Url                  string                `db:"url" json:"url,omitempty"`
-	Contributors         []Contributor         `db:"contributors" json:"contributors,omitempty"`
-	Publisher            Publisher             `db:"publisher" json:"publisher,omitempty"`
-	Date                 Date                  `db:"date" json:"date,omitempty"`
-	Titles               []Title               `db:"titles" json:"titles,omitempty"`
-	Container            Container             `db:"container" json:"container,omitempty"`
-	Subjects             []Subject             `db:"subjects" json:"subjects,omitempty"`
-	Sizes                []string              `db:"sizes" json:"sizes,omitempty"`
-	Formats              []string              `db:"formats" json:"formats,omitempty"`
-	Language             string                `db:"language" json:"language,omitempty"`
-	License              License               `db:"license" json:"license,omitempty"`
-	Version              string                `db:"version" json:"version,omitempty"`
-	References           []Reference           `db:"references" json:"references,omitempty"`
-	Relations            []Relation            `db:"relations" json:"relations,omitempty"`
-	FundingReferences    []FundingReference    `db:"funding_references" json:"funding_references,omitempty"`
-	Descriptions         []Description         `db:"descriptions" json:"descriptions,omitempty"`
-	GeoLocations         []GeoLocation         `db:"geo_locations" json:"geo_locations,omitempty"`
-	Provider             string                `db:"provider" json:"provider,omitempty"`
-	AlternateIdentifiers []AlternateIdentifier `db:"alternate_identifiers" json:"alternate_identifiers,omitempty"`
-	Files                []File                `db:"files" json:"files,omitempty"`
-	ArchiveLocations     []string              `db:"archive_locations" json:"archive_locations,omitempty"`
+	AdditionalType    string             `db:"additional_type" json:"additional_type,omitempty"`
+	Identifiers       []Identifier       `db:"identifiers" json:"identifiers,omitempty"`
+	Url               string             `db:"url" json:"url,omitempty"`
+	Contributors      []Contributor      `db:"contributors" json:"contributors,omitempty"`
+	Titles            []Title            `db:"titles" json:"titles,omitempty"`
+	Publisher         Publisher          `db:"publisher" json:"publisher,omitempty"`
+	Date              Date               `db:"date" json:"date,omitempty"`
+	Container         Container          `db:"container" json:"container,omitempty"`
+	Descriptions      []Description      `db:"descriptions" json:"descriptions,omitempty"`
+	Subjects          []Subject          `db:"subjects" json:"subjects,omitempty"`
+	Language          string             `db:"language" json:"language,omitempty"`
+	License           License            `db:"license" json:"license,omitempty"`
+	Version           string             `db:"version" json:"version,omitempty"`
+	References        []Reference        `db:"references" json:"references,omitempty"`
+	Relations         []Relation         `db:"relations" json:"relations,omitempty"`
+	FundingReferences []FundingReference `db:"funding_references" json:"funding_references,omitempty"`
+	GeoLocations      []GeoLocation      `db:"geo_locations" json:"geo_locations,omitempty"`
+	Files             []File             `db:"files" json:"files,omitempty"`
+	ArchiveLocations  []string           `db:"archive_locations" json:"archive_locations,omitempty"`
+	Provider          string             `db:"provider" json:"provider"`
 }
 
 type Affiliation struct {
 	ID   string `json:"id,omitempty"`
-	Name string `json:"name"`
-}
-
-type AlternateIdentifier struct {
-	Identifier     string `json:"identifier"`
-	IdentifierType string `json:"identifierType"`
+	Name string `json:"name,omitempty"`
 }
 
 type Container struct {
@@ -344,10 +315,24 @@ type Date struct {
 	Other       string `json:"other,omitempty"`
 }
 
+type DCContributor struct {
+	Name            string `json:"name"`
+	GivenName       string `json:"givenName"`
+	FamilyName      string `json:"familyName"`
+	NameType        string `json:"nameType"`
+	NameIdentifiers []struct {
+		SchemeURI            string `json:"schemeUri"`
+		NameIdentifier       string `json:"nameIdentifier"`
+		NameIdentifierScheme string `json:"nameIdentifierScheme"`
+	} `json:"nameIdentifiers"`
+	Affiliation     []string `json:"affiliation"`
+	ContributorType string   `json:"contributorType"`
+}
+
 type Description struct {
-	Description     string `json:"description"`
-	DescriptionType string `json:"descriptionType,omitempty"`
-	Language        string `json:"language,omitempty"`
+	Description string `json:"description"`
+	Type        string `json:"type,omitempty"`
+	Language    string `json:"language,omitempty"`
 }
 
 type File struct {
@@ -390,6 +375,11 @@ type GeoLocationPolygon struct {
 	InPolygonPoint GeoLocationPoint   `json:"in_polygon_point,omitempty"`
 }
 
+type Identifier struct {
+	Identifier     string `json:"identifier"`
+	IdentifierType string `json:"identifierType"`
+}
+
 type License struct {
 	ID  string `json:"id,omitempty"`
 	Url string `json:"url,omitempty"`
@@ -418,7 +408,7 @@ type Subject struct {
 }
 
 type Title struct {
-	Title     string `json:"title"`
-	TitleType string `json:"titleType,omitempty"`
-	Language  string `json:"language,omitempty"`
+	Title    string `json:"title,omitempty"`
+	Type     string `json:"type,omitempty"`
+	Language string `json:"language,omitempty"`
 }

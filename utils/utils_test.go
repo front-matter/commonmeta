@@ -75,7 +75,7 @@ func TestValidateORCID(t *testing.T) {
 	testCases := []testCase{
 		{input: "http://orcid.org/0000-0002-2590-225X", want: "0000-0002-2590-225X"},
 		{input: "https://orcid.org/0000-0002-1825-0097", want: "0000-0002-1825-0097"},
-		{input: "https://www.orcid.org/0000-0002-1825-0097", want: "0000-0002-1825-0097"},
+		{input: "0000-0002-1825-0097", want: "0000-0002-1825-0097"},
 		{input: "https://sandbox.orcid.org/0000-0002-1825-0097", want: "0000-0002-1825-0097"},
 		{input: "0000-0002-1825-009", want: ""}, // invalid ORCID
 	}
@@ -83,6 +83,43 @@ func TestValidateORCID(t *testing.T) {
 		got, ok := utils.ValidateORCID(tc.input)
 		if tc.want != got {
 			t.Errorf("Validate ORCID(%v): want %v, got %v, ok %v",
+				tc.input, tc.want, got, ok)
+		}
+	}
+}
+
+func TestNormalizeROR(t *testing.T) {
+	t.Parallel()
+	type testCase struct {
+		input string
+		want  string
+	}
+	testCases := []testCase{
+		{input: "https://ror.org/0342dzm54", want: "https://ror.org/0342dzm54"},
+		{input: "http://ror.org/0342dzm54", want: "https://ror.org/0342dzm54"},
+	}
+	for _, tc := range testCases {
+		got := utils.NormalizeROR(tc.input)
+		if tc.want != got {
+			t.Errorf("Normalize ORCID(%v): want %v, got %v",
+				tc.input, tc.want, got)
+		}
+	}
+}
+
+func TestValidateROR(t *testing.T) {
+	t.Parallel()
+	type testCase struct {
+		input string
+		want  string
+	}
+	testCases := []testCase{
+		{input: "https://ror.org/0342dzm54", want: "0342dzm54"},
+	}
+	for _, tc := range testCases {
+		got, ok := utils.ValidateROR(tc.input)
+		if tc.want != got {
+			t.Errorf("Validate ROR(%v): want %v, got %v, ok %v",
 				tc.input, tc.want, got, ok)
 		}
 	}

@@ -93,9 +93,10 @@ func FetchCrossref(str string) (types.Data, error) {
 	return data, nil
 }
 
-func FetchCrossrefSample(number int, member string, _type string) ([]types.Data, error) {
+func FetchCrossrefSample(number int, member string, _type string, hasORCID bool, hasROR bool, hasReferences bool, hasRelation bool, hasAbstract bool, hasAward bool, hasLicense bool, hasArchive bool) ([]types.Data, error) {
+
 	var data []types.Data
-	content, err := GetCrossrefSample(number, member, _type)
+	content, err := GetCrossrefSample(number, member, _type, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
 	if err != nil {
 		return data, err
 	}
@@ -158,8 +159,12 @@ func GetCrossref(pid string) (types.Content, error) {
 func ReadCrossref(content types.Content) (types.Data, error) {
 	var data = types.Data{}
 
-	data.ID = doiutils.DOIAsUrl(content.DOI)
+	data.ID = doiutils.NormalizeDOI(content.DOI)
 	data.Type = CRToCMMappings[content.Type]
+	data.Identifiers = append(data.Identifiers, types.Identifier{
+		Identifier:     data.ID,
+		IdentifierType: "DOI",
+	})
 	data.Url = content.Resource.Primary.URL
 
 	for _, v := range content.Author {
@@ -177,7 +182,12 @@ func ReadCrossref(content types.Content) (types.Data, error) {
 			var affiliations []types.Affiliation
 			if len(v.Affiliation) > 0 {
 				for _, a := range v.Affiliation {
+					var ID string
+					if len(a.ID) > 0 && a.ID[0].IDType == "ROR" {
+						ID = utils.NormalizeROR(a.ID[0].ID)
+					}
 					affiliations = append(affiliations, types.Affiliation{
+						ID:   ID,
 						Name: a.Name,
 					})
 				}
@@ -193,6 +203,24 @@ func ReadCrossref(content types.Content) (types.Data, error) {
 			})
 
 		}
+	}
+
+	if len(content.Title) > 0 && content.Title[0] != "" {
+		data.Titles = append(data.Titles, types.Title{
+			Title: content.Title[0],
+		})
+	}
+	if len(content.Subtitle) > 0 {
+		data.Titles = append(data.Titles, types.Title{
+			Title: content.Subtitle[0],
+			Type:  "Subtitle",
+		})
+	}
+	if len(content.OriginalTitle) > 0 {
+		data.Titles = append(data.Titles, types.Title{
+			Title: content.OriginalTitle[0],
+			Type:  "TranslatedTitle",
+		})
 	}
 
 	if content.Publisher != "" {
@@ -216,26 +244,6 @@ func ReadCrossref(content types.Content) (types.Data, error) {
 		} else if len(content.Created.DateAsParts) > 0 {
 			data.Date.Published = dateutils.GetDateFromDateParts(content.Created.DateAsParts)
 		}
-	}
-
-	if len(content.Title) > 0 {
-		data.Titles = append(data.Titles, types.Title{
-			Title: content.Title[0],
-		})
-	}
-	if len(content.Subtitle) > 0 {
-		data.Titles = append(data.Titles, types.Title{
-			Title:     content.Subtitle[0],
-			TitleType: "Subtitle",
-		})
-	}
-
-	if content.Abstract != "" {
-		abstract := utils.Sanitize(content.Abstract)
-		data.Descriptions = append(data.Descriptions, types.Description{
-			Description:     abstract,
-			DescriptionType: "Abstract",
-		})
 	}
 
 	containerType := CrossrefContainerTypes[content.Type]
@@ -279,6 +287,14 @@ func ReadCrossref(content types.Content) (types.Data, error) {
 		LastPage:       lastPage,
 	}
 
+	if content.Abstract != "" {
+		abstract := utils.Sanitize(content.Abstract)
+		data.Descriptions = append(data.Descriptions, types.Description{
+			Description: abstract,
+			Type:        "Abstract",
+		})
+	}
+
 	for _, v := range content.Subject {
 		subject := types.Subject{
 			Subject: v,
@@ -294,10 +310,20 @@ func ReadCrossref(content types.Content) (types.Data, error) {
 		})
 	}
 
+	data.Language = content.Language
+	if content.License != nil && len(content.License) > 0 {
+		url, _ := utils.NormalizeCCUrl(content.License[0].Url)
+		id := utils.UrlToSPDX(url)
+		data.License = types.License{
+			ID:  id,
+			Url: url,
+		}
+	}
+
 	for _, v := range content.Reference {
 		data.References = append(data.References, types.Reference{
 			Key:             v.Key,
-			Doi:             doiutils.DOIAsUrl(v.DOI),
+			Doi:             doiutils.NormalizeDOI(v.DOI),
 			Title:           v.ArticleTitle,
 			PublicationYear: v.Year,
 			Unstructured:    v.Unstructured,
@@ -313,7 +339,7 @@ func ReadCrossref(content types.Content) (types.Data, error) {
 				IDType string `json:"id-type"`
 			}) {
 				data.Relations = append(data.Relations, types.Relation{
-					ID:   doiutils.DOIAsUrl(v.ID),
+					ID:   doiutils.NormalizeDOI(v.ID),
 					Type: field.Name,
 				})
 			}
@@ -330,7 +356,7 @@ func ReadCrossref(content types.Content) (types.Data, error) {
 	}
 
 	for _, v := range content.Funder {
-		funderIdentifier := doiutils.DOIAsUrl(v.DOI)
+		funderIdentifier := doiutils.NormalizeDOI(v.DOI)
 		var funderIdentifierType string
 		if strings.HasPrefix(v.DOI, "10.13039") {
 			funderIdentifierType = "Crossref Funder ID"
@@ -354,16 +380,6 @@ func ReadCrossref(content types.Content) (types.Data, error) {
 	}
 	data.FundingReferences = utils.DedupeSlice(data.FundingReferences)
 
-	data.Language = content.Language
-	if content.License != nil && len(content.License) > 0 {
-		url, _ := utils.NormalizeCCUrl(content.License[0].Url)
-		id := utils.UrlToSPDX(url)
-		data.License = types.License{
-			ID:  id,
-			Url: url,
-		}
-	}
-	data.Provider = "Crossref"
 	for _, v := range content.Link {
 		if v.ContentType != "unspecified" {
 			data.Files = append(data.Files, types.File{
@@ -374,12 +390,16 @@ func ReadCrossref(content types.Content) (types.Data, error) {
 	}
 	data.Files = utils.DedupeSlice(data.Files)
 
-	copy(data.ArchiveLocations, content.Archive)
+	if len(content.Archive) > 0 {
+		data.ArchiveLocations = append(data.ArchiveLocations, content.Archive...)
+	}
+
+	data.Provider = "Crossref"
 
 	return data, nil
 }
 
-func GetCrossrefSample(number int, member string, _type string) ([]types.Content, error) {
+func GetCrossrefSample(number int, member string, _type string, hasORCID bool, hasROR bool, hasReferences bool, hasRelation bool, hasAbstract bool, hasAward bool, hasLicense bool, hasArchive bool) ([]types.Content, error) {
 	// the envelope for the JSON response from the Crossref API
 	type Response struct {
 		Status         string `json:"status"`
@@ -394,7 +414,7 @@ func GetCrossrefSample(number int, member string, _type string) ([]types.Content
 	if number > 100 {
 		number = 100
 	}
-	url := CrossrefApiSampleUrl(number, member, _type)
+	url := CrossrefApiSampleUrl(number, member, _type, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
 	req, err := http.NewRequest("GET", url, nil)
 	v := "0.1"
 	u := "info@front-matter.io"
@@ -426,7 +446,7 @@ func GetCrossrefSample(number int, member string, _type string) ([]types.Content
 	return response.Message.Items, nil
 }
 
-func CrossrefApiSampleUrl(number int, member string, _type string) string {
+func CrossrefApiSampleUrl(number int, member string, _type string, hasORCID bool, hasROR bool, hasReferences bool, hasRelation bool, hasAbstract bool, hasAward bool, hasLicense bool, hasArchive bool) string {
 	types := []string{
 		"book-section",
 		"monograph",
@@ -480,6 +500,30 @@ func CrossrefApiSampleUrl(number int, member string, _type string) string {
 	}
 	if _type != "" && slices.Contains(types, _type) {
 		filters = append(filters, "type:"+_type)
+	}
+	if hasORCID {
+		filters = append(filters, "has-orcid:true")
+	}
+	if hasROR {
+		filters = append(filters, "has-ror-id:true")
+	}
+	if hasReferences {
+		filters = append(filters, "has-references:true")
+	}
+	if hasRelation {
+		filters = append(filters, "has-relation:true")
+	}
+	if hasAbstract {
+		filters = append(filters, "has-abstract:true")
+	}
+	if hasAward {
+		filters = append(filters, "has-award:true")
+	}
+	if hasLicense {
+		filters = append(filters, "has-license:true")
+	}
+	if hasArchive {
+		filters = append(filters, "has-archive:true")
 	}
 	if len(filters) > 0 {
 		values.Add("filter", strings.Join(filters[:], ","))

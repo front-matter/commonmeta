@@ -63,6 +63,7 @@ func TestFetchCrossref(t *testing.T) {
 		{name: "peer review", id: "https://doi.org/10.7554/elife.55167.sa2"},
 		{name: "blog post", id: "https://doi.org/10.59350/2shz7-ehx26"},
 		{name: "dissertation", id: "https://doi.org/10.14264/uql.2020.791"},
+		{name: "with ror id", id: "https://doi.org/10.1364/oe.490112"},
 	}
 	for _, tc := range testCases {
 		got, err := crossref.FetchCrossref(tc.id)
@@ -108,7 +109,7 @@ func TestCrossrefApiSampleUrl(t *testing.T) {
 		{number: 120, member: "", _type: "", want: "https://api.crossref.org/works?sample=120"},
 	}
 	for _, tc := range testCases {
-		got := crossref.CrossrefApiSampleUrl(tc.number, tc.member, tc._type)
+		got := crossref.CrossrefApiSampleUrl(tc.number, tc.member, tc._type, false, false, false, false, false, false, false, false)
 		if diff := cmp.Diff(tc.want, got); diff != "" {
 			t.Errorf("CrossrefApiSampleUrl mismatch (-want +got):\n%s", diff)
 		}
@@ -130,7 +131,7 @@ func TestGetCrossrefSample(t *testing.T) {
 		{number: 2, member: "", _type: ""},
 	}
 	for _, tc := range testCases {
-		got, err := crossref.GetCrossrefSample(tc.number, tc.member, tc._type)
+		got, err := crossref.GetCrossrefSample(tc.number, tc.member, tc._type, false, false, false, false, false, false, false, false)
 		if err != nil {
 			t.Errorf("GetCrossrefSample(%v): error %v", tc.number, err)
 		}

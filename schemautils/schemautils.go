@@ -15,13 +15,13 @@ import (
 var JsonSchemas embed.FS
 
 func JSONSchemaErrors(document []byte, schema ...string) *gojsonschema.Result {
-	// If no schema is provided, default to commonmeta_v0.12
+	// If no schema is provided, default to commonmeta_v0.13
 	if len(schema) == 0 {
-		schema = append(schema, "commonmeta_v0.12")
+		schema = append(schema, "commonmeta_v0.13")
 	}
 	s := schema[len(schema)-1]
 	// JSON Schema files stored locally to validate against
-	schemata := []string{"commonmeta_v0.12", "datacite-v4.5", "crossref-v0.2", "csl-data", "cff_v1.2.0"}
+	schemata := []string{"commonmeta_v0.13", "datacite-v4.5", "crossref-v0.2", "csl-data", "cff_v1.2.0"}
 	if !slices.Contains(schemata, s) {
 		log.Fatalf("Schema %s not found", s)
 	}

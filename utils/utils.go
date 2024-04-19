@@ -326,3 +326,24 @@ func ValidateORCID(orcid string) (string, bool) {
 	}
 	return matched[1], true
 }
+
+func NormalizeROR(ror string) string {
+	ror_str, ok := ValidateROR(ror)
+	if !ok {
+		return ""
+	}
+	return "https://ror.org/" + ror_str
+}
+
+func ValidateROR(ror string) (string, bool) {
+	r, err := regexp.Compile(`^(?:(?:http|https)://ror\.org/)?([0-9a-z]{7}\d{2})$`)
+	if err != nil {
+		log.Printf("Error compiling regex: %v", err)
+		return "", false
+	}
+	matched := r.FindStringSubmatch(ror)
+	if len(matched) == 0 {
+		return "", false
+	}
+	return matched[1], true
+}

@@ -26,8 +26,16 @@ var sampleCmd = &cobra.Command{
 		number, _ := cmd.Flags().GetInt("number")
 		member, _ := cmd.Flags().GetString("member")
 		type_, _ := cmd.Flags().GetString("type")
+		hasORCID, _ := cmd.Flags().GetBool("has-orcid")
+		hasROR, _ := cmd.Flags().GetBool("has-ror-id")
+		hasReferences, _ := cmd.Flags().GetBool("has-references")
+		hasRelation, _ := cmd.Flags().GetBool("has-relation")
+		hasAbstract, _ := cmd.Flags().GetBool("has-abstract")
+		hasAward, _ := cmd.Flags().GetBool("has-award")
+		hasLicense, _ := cmd.Flags().GetBool("has-license")
+		hasArchive, _ := cmd.Flags().GetBool("has-archive")
 
-		data, err := crossref.FetchCrossrefSample(number, member, type_)
+		data, err := crossref.FetchCrossrefSample(number, member, type_, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
 		if err != nil {
 			fmt.Println(err)
 		}
@@ -44,8 +52,4 @@ var sampleCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(sampleCmd)
-
-	rootCmd.PersistentFlags().StringP("number", "n", "10", "number of samples")
-	rootCmd.PersistentFlags().StringP("member", "m", "", "Crossref member ID")
-	rootCmd.PersistentFlags().StringP("type", "", "journal-article", "work type")
 }

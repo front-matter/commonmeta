@@ -20,13 +20,6 @@ func PrefixFromUrl(str string) (string, error) {
 	return path[1], nil
 }
 
-func DOIAsUrl(str string) string {
-	if str == "" {
-		return ""
-	}
-	return "https://doi.org/" + strings.ToLower(str)
-}
-
 // Normalize a DOI
 func NormalizeDOI(doi string) string {
 	doistr, ok := ValidateDOI(doi)

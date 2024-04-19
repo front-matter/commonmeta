@@ -10,10 +10,10 @@ import (
 	"io"
 	"log"
 	"net/http"
-	"net/url"
 	"regexp"
 	"slices"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -104,7 +104,7 @@ func FetchDatacite(str string) (types.Data, error) {
 	var data types.Data
 	id, ok := doiutils.ValidateDOI(str)
 	if !ok {
-		return data, errors.New("Invalid DOI")
+		return data, errors.New("invalid doi")
 	}
 	content, err := GetDatacite(id)
 	if err != nil {
@@ -155,13 +155,23 @@ func GetDatacite(pid string) (types.Content, error) {
 func ReadDatacite(content types.Content) (types.Data, error) {
 	var data = types.Data{}
 
-	data.ID = doiutils.DOIAsUrl(content.Attributes.DOI)
+	data.ID = doiutils.NormalizeDOI(content.Attributes.DOI)
 	data.Type = DCToCMTranslations[content.Attributes.Types.ResourceTypeGeneral]
 	var err error
-	data.Url, err = utils.NormalizeUrl(content.Attributes.Url, true, false)
-	if err != nil {
-		log.Println(err)
+
+	data.Identifiers = append(data.Identifiers, types.Identifier{
+		Identifier:     data.ID,
+		IdentifierType: "DOI",
+	})
+	if len(content.Attributes.AlternateIdentifiers) > 0 {
+		for _, v := range content.Attributes.AlternateIdentifiers {
+			data.Identifiers = append(data.Identifiers, types.Identifier{
+				Identifier:     v.Identifier,
+				IdentifierType: v.IdentifierType,
+			})
+		}
 	}
+
 	data.AdditionalType = DCToCMTranslations[content.Attributes.Types.ResourceType]
 	if data.AdditionalType != "" {
 		data.Type = data.AdditionalType
@@ -169,115 +179,55 @@ func ReadDatacite(content types.Content) (types.Data, error) {
 	} else {
 		data.AdditionalType = content.Attributes.Types.ResourceType
 	}
+	data.Url, err = utils.NormalizeUrl(content.Attributes.Url, true, false)
+	if err != nil {
+		log.Println(err)
+	}
 
 	if len(content.Attributes.Creators) > 0 {
 		for _, v := range content.Attributes.Creators {
 			if v.Name != "" || v.GivenName != "" || v.FamilyName != "" {
-				var t string
-				if len(v.NameType) > 2 {
-					t = v.NameType[:len(v.NameType)-2]
-				}
-				var id string
-				if len(v.NameIdentifiers) > 0 {
-					ni := v.NameIdentifiers[0]
-					id = ni.NameIdentifier
-					u, _ := url.Parse(ni.NameIdentifier)
-					schemeUri := ni.SchemeURI
-					if schemeUri == "" {
-						u.Path = ""
-						schemeUri = u.String()
-					}
-					if schemeUri == "https://orcid.org" {
-						t = "Person"
-					} else if schemeUri == "https://ror.org" {
-						t = "Organization"
-					}
-				}
-				name := v.Name
-				if t == "" && (v.GivenName != "" || v.FamilyName != "") {
-					t = "Person"
-				} else if t == "" {
-					t = "Organization"
-				}
-				if t == "Person" {
-					name = ""
-				}
-				var affiliations []types.Affiliation
-				for _, a := range v.Affiliation {
-					affiliations = append(affiliations, types.Affiliation{
-						ID:   "",
-						Name: a,
-					})
-				}
-				data.Contributors = append(data.Contributors, types.Contributor{
-					ID:               id,
-					Type:             t,
-					GivenName:        v.GivenName,
-					FamilyName:       v.FamilyName,
-					Name:             name,
-					ContributorRoles: []string{"Author"},
-					Affiliations:     affiliations,
+				contributor := GetContributor(v)
+				containsID := slices.ContainsFunc(data.Contributors, func(e types.Contributor) bool {
+					return e.ID != "" && e.ID == contributor.ID
 				})
+				if containsID {
+					log.Printf("Contributor with ID %s already exists", contributor.ID)
+				} else {
+					data.Contributors = append(data.Contributors, contributor)
+
+				}
 			}
 		}
 
 		// merge creators and contributors
 		for _, v := range content.Attributes.Contributors {
 			if v.Name != "" || v.GivenName != "" || v.FamilyName != "" {
-				var t string
-				if len(v.NameType) > 2 {
-					t = v.NameType[:len(v.NameType)-2]
-				}
-				var id string
-				if len(v.NameIdentifiers) > 0 {
-					ni := v.NameIdentifiers[0]
-					if ni.NameIdentifierScheme == "ORCID" || ni.NameIdentifierScheme == "https://orcid.org" {
-						id = ni.NameIdentifier
-						t = "Person"
-					} else if ni.NameIdentifierScheme == "ROR" {
-						id = ni.NameIdentifier
-						t = "Organization"
-					} else {
-						id = ni.NameIdentifier
-					}
-				}
-				name := v.Name
-				if t == "" && (v.GivenName != "" || v.FamilyName != "") {
-					t = "Person"
-				} else if t == "" {
-					t = "Organization"
-				}
-				if t == "Person" {
-					name = ""
-				}
-				var affiliations []types.Affiliation
-				for _, a := range v.Affiliation {
-					affiliations = append(affiliations, types.Affiliation{
-						ID:   "",
-						Name: a,
-					})
-				}
-				var roles []string
-				if slices.Contains(CommonmetaContributorRoles, v.ContributorType) {
-					roles = append(roles, v.ContributorType)
-				}
+				contributor := GetContributor(v)
 				containsID := slices.ContainsFunc(data.Contributors, func(e types.Contributor) bool {
-					return e.ID != "" && e.ID == id
+					return e.ID != "" && e.ID == contributor.ID
 				})
 				if containsID {
-					log.Printf("Contributor with ID %s already exists", id)
+					log.Printf("Contributor with ID %s already exists", contributor.ID)
 				} else {
-					data.Contributors = append(data.Contributors, types.Contributor{
-						ID:               id,
-						Type:             t,
-						GivenName:        v.GivenName,
-						FamilyName:       v.FamilyName,
-						Name:             name,
-						ContributorRoles: roles,
-						Affiliations:     affiliations,
-					})
+					data.Contributors = append(data.Contributors, contributor)
+
 				}
 			}
+		}
+	}
+
+	if len(content.Attributes.Titles) > 0 {
+		for _, v := range content.Attributes.Titles {
+			var t string
+			if slices.Contains([]string{"MainTitle", "Subtitle", "TranslatedTitle"}, v.TitleType) {
+				t = v.TitleType
+			}
+			data.Titles = append(data.Titles, types.Title{
+				Title:    v.Title,
+				Type:     t,
+				Language: v.Lang,
+			})
 		}
 	}
 
@@ -325,20 +275,6 @@ func ReadDatacite(content types.Content) (types.Data, error) {
 		}
 	}
 
-	if len(content.Attributes.Titles) > 0 {
-		for _, v := range content.Attributes.Titles {
-			var t string
-			if slices.Contains([]string{"MainTitle", "Subtitle", "TranslatedTitle"}, v.TitleType) {
-				t = v.TitleType
-			}
-			data.Titles = append(data.Titles, types.Title{
-				Title:     v.Title,
-				TitleType: t,
-				Language:  v.Lang,
-			})
-		}
-	}
-
 	data.Container = types.Container{
 		Identifier:     content.Attributes.Container.Identifier,
 		IdentifierType: content.Attributes.Container.IdentifierType,
@@ -350,6 +286,23 @@ func ReadDatacite(content types.Content) (types.Data, error) {
 		LastPage:       content.Attributes.Container.LastPage,
 	}
 
+	if len(content.Attributes.Descriptions) > 0 {
+		for _, v := range content.Attributes.Descriptions {
+			var t string
+			if slices.Contains([]string{"Abstract", "Summary", "Methods", "TechnicalInfo", "Other"}, v.DescriptionType) {
+				t = v.DescriptionType
+			} else {
+				t = "Other"
+			}
+			description := utils.Sanitize(v.Description)
+			data.Descriptions = append(data.Descriptions, types.Description{
+				Description: description,
+				Type:        t,
+				Language:    v.Lang,
+			})
+		}
+	}
+
 	if len(content.Attributes.Subjects) > 0 {
 		for _, v := range content.Attributes.Subjects {
 			data.Subjects = append(data.Subjects, types.Subject{
@@ -358,8 +311,6 @@ func ReadDatacite(content types.Content) (types.Data, error) {
 		}
 	}
 
-	copy(data.Sizes, content.Attributes.Sizes)
-	copy(data.Formats, content.Attributes.Formats)
 	data.Language = content.Attributes.Language
 
 	if len(content.Attributes.RightsList) > 0 {
@@ -386,7 +337,7 @@ func ReadDatacite(content types.Content) (types.Data, error) {
 				isDoi, _ := regexp.MatchString(`^10\.\d{4,9}/.+$`, v.RelatedIdentifier)
 				var doi, unstructured string
 				if isDoi {
-					doi = doiutils.DOIAsUrl(v.RelatedIdentifier)
+					doi = doiutils.NormalizeDOI(v.RelatedIdentifier)
 				} else {
 					unstructured = v.RelatedIdentifier
 				}
@@ -422,7 +373,7 @@ func ReadDatacite(content types.Content) (types.Data, error) {
 				isDoi, _ := regexp.MatchString(`^10\.\d{4,9}/.+$`, v.RelatedIdentifier)
 				identifier := v.RelatedIdentifier
 				if isDoi {
-					identifier = doiutils.DOIAsUrl(v.RelatedIdentifier)
+					identifier = doiutils.NormalizeDOI(v.RelatedIdentifier)
 				}
 				data.Relations = append(data.Relations, types.Relation{
 					ID:   identifier,
@@ -446,23 +397,6 @@ func ReadDatacite(content types.Content) (types.Data, error) {
 		data.FundingReferences = []types.FundingReference{}
 	}
 
-	if len(content.Attributes.Descriptions) > 0 {
-		for _, v := range content.Attributes.Descriptions {
-			var t string
-			if slices.Contains([]string{"Abstract", "Summary", "Methods", "TechnicalInfo", "Other"}, v.DescriptionType) {
-				t = v.DescriptionType
-			} else {
-				t = "Other"
-			}
-			description := utils.Sanitize(v.Description)
-			data.Descriptions = append(data.Descriptions, types.Description{
-				Description:     description,
-				DescriptionType: t,
-				Language:        v.Lang,
-			})
-		}
-	}
-
 	if len(content.Attributes.GeoLocations) > 0 {
 		for _, v := range content.Attributes.GeoLocations {
 			data.GeoLocations = append(data.GeoLocations, types.GeoLocation{
@@ -481,16 +415,73 @@ func ReadDatacite(content types.Content) (types.Data, error) {
 		}
 	}
 
-	data.Provider = "DataCite"
-	if len(content.Attributes.AlternateIdentifiers) > 0 {
-		for _, v := range content.Attributes.AlternateIdentifiers {
-			data.AlternateIdentifiers = append(data.AlternateIdentifiers, types.AlternateIdentifier{
-				Identifier:     v.Identifier,
-				IdentifierType: v.IdentifierType,
-			})
-		}
-	}
 	data.Files = []types.File{}
+	// sizes and formats are part of the file object, but can't be mapped directly
+	// copy(data.Sizes, content.Attributes.Sizes)
+	// copy(data.Formats, content.Attributes.Formats)
+
+	data.ArchiveLocations = []string{}
+
+	data.Provider = "DataCite"
 
 	return data, nil
+}
+
+func GetContributor(v types.DCContributor) types.Contributor {
+	var t string
+	if len(v.NameType) > 2 {
+		t = v.NameType[:len(v.NameType)-2]
+	}
+	var id string
+	if len(v.NameIdentifiers) > 0 {
+		ni := v.NameIdentifiers[0]
+		if ni.NameIdentifierScheme == "ORCID" || ni.NameIdentifierScheme == "https://orcid.org/" {
+			id = utils.NormalizeORCID(ni.NameIdentifier)
+			t = "Person"
+		} else if ni.NameIdentifierScheme == "ROR" {
+			id = ni.NameIdentifier
+			t = "Organization"
+		} else {
+			id = ni.NameIdentifier
+		}
+	}
+	name := v.Name
+	GivenName := v.GivenName
+	FamilyName := v.FamilyName
+	if t == "" && (v.GivenName != "" || v.FamilyName != "") {
+		t = "Person"
+	} else if t == "" {
+		t = "Organization"
+	}
+	if t == "Person" && name != "" {
+		// split name for type Person into given/family name if not already provided
+		names := strings.Split(name, ",")
+		if len(names) == 2 {
+			GivenName = names[1]
+			FamilyName = names[0]
+			name = ""
+		}
+	}
+	var affiliations []types.Affiliation
+	for _, a := range v.Affiliation {
+		affiliations = append(affiliations, types.Affiliation{
+			ID:   "",
+			Name: a,
+		})
+	}
+	var roles []string
+	if slices.Contains(CommonmetaContributorRoles, v.ContributorType) {
+		roles = append(roles, v.ContributorType)
+	} else {
+		roles = append(roles, "Author")
+	}
+	return types.Contributor{
+		ID:               id,
+		Type:             t,
+		Name:             name,
+		GivenName:        GivenName,
+		FamilyName:       FamilyName,
+		ContributorRoles: roles,
+		Affiliations:     affiliations,
+	}
 }
