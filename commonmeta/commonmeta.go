@@ -1,6 +1,7 @@
 package commonmeta
 
 import (
+	"bytes"
 	"commonmeta/schemautils"
 	"commonmeta/types"
 	"encoding/json"
@@ -27,13 +28,23 @@ func WriteCommonmeta(data types.Data) ([]byte, []gojsonschema.ResultError) {
 }
 
 func WriteCommonmetaList(list []types.Data) ([]byte, []gojsonschema.ResultError) {
+	for _, data := range list {
+		o, err := json.Marshal(data)
+		if err != nil {
+			fmt.Println(err)
+		}
+		validation := schemautils.JSONSchemaErrors(o)
+		if !validation.Valid() {
+			var out bytes.Buffer
+			json.Indent(&out, o, "=", "\t")
+			fmt.Println(out.String())
+			return nil, validation.Errors()
+		}
+	}
+
 	output, err := json.Marshal(list)
 	if err != nil {
 		fmt.Println(err)
-	}
-	validation := schemautils.JSONSchemaErrors(output)
-	if !validation.Valid() {
-		return nil, validation.Errors()
 	}
 	return output, nil
 }
