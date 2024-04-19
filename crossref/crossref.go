@@ -93,9 +93,9 @@ func FetchCrossref(str string) (types.Data, error) {
 	return data, nil
 }
 
-func FetchCrossrefSample(number int, prefix string, _type string) ([]types.Data, error) {
+func FetchCrossrefSample(number int, member string, _type string) ([]types.Data, error) {
 	var data []types.Data
-	content, err := GetCrossrefSample(number, prefix, _type)
+	content, err := GetCrossrefSample(number, member, _type)
 	if err != nil {
 		return data, err
 	}
@@ -124,10 +124,18 @@ func GetCrossref(pid string) (types.Content, error) {
 		return response.Message, errors.New("invalid DOI")
 	}
 	url := "https://api.crossref.org/works/" + doi
-	client := http.Client{
-		Timeout: time.Second * 10,
+	req, err := http.NewRequest("GET", url, nil)
+	v := "0.1"
+	u := "info@front-matter.io"
+	userAgent := fmt.Sprintf("commonmeta-go/%s (https://commonmeta.org/commonmeta-go/; mailto: %s)", v, u)
+	req.Header.Set("User-Agent", userAgent)
+	if err != nil {
+		log.Fatalln(err)
 	}
-	resp, err := client.Get(url)
+	client := http.Client{
+		Timeout: 10 * time.Second,
+	}
+	resp, err := client.Do(req)
 	if err != nil {
 		return response.Message, err
 	}
@@ -371,7 +379,7 @@ func ReadCrossref(content types.Content) (types.Data, error) {
 	return data, nil
 }
 
-func GetCrossrefSample(number int, prefix string, _type string) ([]types.Content, error) {
+func GetCrossrefSample(number int, member string, _type string) ([]types.Content, error) {
 	// the envelope for the JSON response from the Crossref API
 	type Response struct {
 		Status         string `json:"status"`
@@ -386,7 +394,7 @@ func GetCrossrefSample(number int, prefix string, _type string) ([]types.Content
 	if number > 100 {
 		number = 100
 	}
-	url := CrossrefApiSampleUrl(number, prefix, _type)
+	url := CrossrefApiSampleUrl(number, member, _type)
 	req, err := http.NewRequest("GET", url, nil)
 	v := "0.1"
 	u := "info@front-matter.io"
@@ -418,7 +426,7 @@ func GetCrossrefSample(number int, prefix string, _type string) ([]types.Content
 	return response.Message.Items, nil
 }
 
-func CrossrefApiSampleUrl(number int, prefix string, _type string) string {
+func CrossrefApiSampleUrl(number int, member string, _type string) string {
 	types := []string{
 		"book-section",
 		"monograph",
@@ -467,8 +475,8 @@ func CrossrefApiSampleUrl(number int, prefix string, _type string) string {
 	values := u.Query()
 	values.Add("sample", strconv.Itoa(number))
 	var filters []string
-	if prefix != "" {
-		filters = append(filters, "prefix:"+prefix)
+	if member != "" {
+		filters = append(filters, "member:"+member)
 	}
 	if _type != "" && slices.Contains(types, _type) {
 		filters = append(filters, "type:"+_type)
