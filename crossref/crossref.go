@@ -11,9 +11,11 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"net/url"
 	"reflect"
 	"slices"
 	"sort"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -91,6 +93,22 @@ func FetchCrossref(str string) (types.Data, error) {
 	return data, nil
 }
 
+func FetchCrossrefSample(number int, prefix string, _type string) ([]types.Data, error) {
+	var data []types.Data
+	content, err := GetCrossrefSample(number, prefix, _type)
+	if err != nil {
+		return data, err
+	}
+	for _, v := range content {
+		d, err := ReadCrossref(v)
+		if err != nil {
+			log.Println(err)
+		}
+		data = append(data, d)
+	}
+	return data, nil
+}
+
 func GetCrossref(pid string) (types.Content, error) {
 	// the envelope for the JSON response from the Crossref API
 	type Response struct {
@@ -154,7 +172,6 @@ func ReadCrossref(content types.Content) (types.Data, error) {
 					affiliations = append(affiliations, types.Affiliation{
 						Name: a.Name,
 					})
-					log.Printf("Affiliation: %v", a)
 				}
 			}
 			data.Contributors = append(data.Contributors, types.Contributor{
@@ -349,4 +366,105 @@ func ReadCrossref(content types.Content) (types.Data, error) {
 	copy(data.ArchiveLocations, content.Archive)
 
 	return data, nil
+}
+
+func GetCrossrefSample(number int, prefix string, _type string) ([]types.Content, error) {
+	// the envelope for the JSON response from the Crossref API
+	type Response struct {
+		Status         string `json:"status"`
+		MessageType    string `json:"message-type"`
+		MessageVersion string `json:"message-version"`
+		Message        struct {
+			TotalResults int             `json:"total-results"`
+			Items        []types.Content `json:"items"`
+		} `json:"message`
+	}
+	var response Response
+	if number > 100 {
+		number = 100
+	}
+	url := CrossrefApiSampleUrl(number, prefix, _type)
+	client := http.Client{
+		Timeout: time.Second * 10,
+	}
+	resp, err := client.Get(url)
+	if err != nil {
+		return nil, err
+	}
+	if resp.StatusCode >= 400 {
+		return nil, errors.New(resp.Status)
+	}
+	defer resp.Body.Close()
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	err = json.Unmarshal(body, &response)
+	if err != nil {
+		fmt.Println("error:", err)
+	}
+	log.Println("Total results:", response.Message.TotalResults)
+	return response.Message.Items, nil
+}
+
+func CrossrefApiSampleUrl(number int, prefix string, _type string) string {
+	types := []string{
+		"book-section",
+		"monograph",
+		"report-component",
+		"report",
+		"peer-review",
+		"book-track",
+		"journal-article",
+		"book-part",
+		"other",
+		"book",
+		"journal-volume",
+		"book-set",
+		"reference-entry",
+		"proceedings-article",
+		"journal",
+		"component",
+		"book-chapter",
+		"proceedings-series",
+		"report-series",
+		"proceedings",
+		"database",
+		"standard",
+		"reference-book",
+		"posted-content",
+		"journal-issue",
+		"dissertation",
+		"grant",
+		"dataset",
+		"book-series",
+		"edited-book",
+		"journal-section",
+		"monograph-series",
+		"journal-meta",
+		"book-series-meta",
+		"component-list",
+		"journal-issue-meta",
+		"journal-meta",
+		"book-part-meta",
+		"book-meta",
+		"proceedings-meta",
+		"book-series-meta",
+		"book-set",
+	}
+	u, _ := url.Parse("https://api.crossref.org/works")
+	values := u.Query()
+	values.Add("sample", strconv.Itoa(number))
+	var filters []string
+	if prefix != "" {
+		filters = append(filters, "prefix:"+prefix)
+	}
+	if _type != "" && slices.Contains(types, _type) {
+		filters = append(filters, "type:"+_type)
+	}
+	if len(filters) > 0 {
+		values.Add("filter", strings.Join(filters[:], ","))
+	}
+	u.RawQuery = values.Encode()
+	return u.String()
 }

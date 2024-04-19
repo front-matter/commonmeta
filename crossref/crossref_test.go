@@ -90,3 +90,52 @@ func TestFetchCrossref(t *testing.T) {
 		}
 	}
 }
+
+func TestCrossrefApiSampleUrl(t *testing.T) {
+	t.Parallel()
+
+	type testCase struct {
+		number int
+		prefix string
+		_type  string
+		want   string
+	}
+
+	testCases := []testCase{
+		{number: 10, prefix: "10.7554", _type: "journal-article", want: "https://api.crossref.org/works?filter=prefix%3A10.7554%2Ctype%3Ajournal-article&sample=10"},
+		{number: 1, prefix: "", _type: "posted-content", want: "https://api.crossref.org/works?filter=type%3Aposted-content&sample=1"},
+		{number: 20, prefix: "10.1371", _type: "", want: "https://api.crossref.org/works?filter=prefix%3A10.1371&sample=20"},
+		{number: 120, prefix: "", _type: "", want: "https://api.crossref.org/works?sample=120"},
+	}
+	for _, tc := range testCases {
+		got := crossref.CrossrefApiSampleUrl(tc.number, tc.prefix, tc._type)
+		if diff := cmp.Diff(tc.want, got); diff != "" {
+			t.Errorf("CrossrefApiSampleUrl mismatch (-want +got):\n%s", diff)
+		}
+	}
+}
+
+func TestGetCrossrefSample(t *testing.T) {
+	t.Parallel()
+
+	type testCase struct {
+		number int
+		prefix string
+		_type  string
+	}
+
+	testCases := []testCase{
+		{number: 3, prefix: "10.7554", _type: "journal-article"},
+		{number: 1, prefix: "", _type: "posted-content"},
+		{number: 2, prefix: "", _type: ""},
+	}
+	for _, tc := range testCases {
+		got, err := crossref.GetCrossrefSample(tc.number, tc.prefix, tc._type)
+		if err != nil {
+			t.Errorf("GetCrossrefSample(%v): error %v", tc.number, err)
+		}
+		if diff := cmp.Diff(tc.number, len(got)); diff != "" {
+			t.Errorf("GetCrossrefSample mismatch (-want +got):\n%s", diff)
+		}
+	}
+}

@@ -4,6 +4,10 @@ Copyright © 2024 Front Matter <info@front-matter.io>
 package cmd
 
 import (
+	"bytes"
+	"commonmeta/commonmeta"
+	"commonmeta/crossref"
+	"encoding/json"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -12,28 +16,36 @@ import (
 // sampleCmd represents the sample command
 var sampleCmd = &cobra.Command{
 	Use:   "sample",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short: "A random sample of works",
+	Long: `A random sample of works. Currently only available for
+	the Crossref API. Options include numnber of samples, DOI prefix
+	and work type. For example:
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	commonmeta sample --number 10 --prefix 10.7554 --type journal-article`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("sample called")
+		number, _ := cmd.Flags().GetInt("number")
+		prefix, _ := cmd.Flags().GetString("prefix")
+		type_, _ := cmd.Flags().GetString("type")
+
+		data, err := crossref.FetchCrossrefSample(number, prefix, type_)
+		if err != nil {
+			fmt.Println(err)
+		}
+		output, jsErr := commonmeta.WriteCommonmetaList(data)
+		var out bytes.Buffer
+		json.Indent(&out, output, "=", "\t")
+		fmt.Println(out.String())
+
+		if jsErr != nil {
+			fmt.Println(jsErr)
+		}
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(sampleCmd)
 
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// sampleCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// sampleCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	rootCmd.PersistentFlags().StringP("number", "n", "10", "number of samples")
+	rootCmd.PersistentFlags().StringP("prefix", "", "", "DOI prefix")
+	rootCmd.PersistentFlags().StringP("type", "", "journal-article", "work type")
 }

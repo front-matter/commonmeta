@@ -288,13 +288,13 @@ type Data struct {
 	License              License               `db:"license" json:"license,omitempty"`
 	Version              string                `db:"version" json:"version,omitempty"`
 	References           []Reference           `db:"references" json:"references,omitempty"`
-	Relations            []Relation            `db:"relations" json:"relations"`
-	FundingReferences    []FundingReference    `db:"funding_references" json:"funding_references"`
+	Relations            []Relation            `db:"relations" json:"relations,omitempty"`
+	FundingReferences    []FundingReference    `db:"funding_references" json:"funding_references,omitempty"`
 	Descriptions         []Description         `db:"descriptions" json:"descriptions,omitempty"`
 	GeoLocations         []GeoLocation         `db:"geo_locations" json:"geo_locations,omitempty"`
 	Provider             string                `db:"provider" json:"provider,omitempty"`
 	AlternateIdentifiers []AlternateIdentifier `db:"alternate_identifiers" json:"alternate_identifiers,omitempty"`
-	Files                []File                `db:"files" json:"files"`
+	Files                []File                `db:"files" json:"files,omitempty"`
 	ArchiveLocations     []string              `db:"archive_locations" json:"archive_locations,omitempty"`
 }
 
@@ -370,12 +370,7 @@ type FundingReference struct {
 type GeoLocation struct {
 	GeoLocationPlace string           `json:"geoLocationPlace,omitempty"`
 	GeoLocationPoint GeoLocationPoint `json:"geoLocationPoint,omitempty"`
-	GeoLocationBox   struct {
-		EastBoundLongitude float64 `json:"eastBoundLongitude"`
-		WestBoundLongitude float64 `json:"westBoundLongitude"`
-		SouthBoundLatitude float64 `json:"southBoundLatitude"`
-		NorthBoundLatitude float64 `json:"northBoundLatitude"`
-	} `json:"geoLocationBox,omitempty"`
+	GeoLocationBox   GeoLocationBox   `json:"geoLocationBox,omitempty"`
 }
 
 type GeoLocationPoint struct {
@@ -384,14 +379,14 @@ type GeoLocationPoint struct {
 }
 
 type GeoLocationBox struct {
-	EastBoundLongitude float64 `json:"eastBoundLongitude"`
-	WestBoundLongitude float64 `json:"westBoundLongitude"`
-	SouthBoundLatitude float64 `json:"southBoundLatitude"`
-	NorthBoundLatitude float64 `json:"northBoundLatitude"`
+	EastBoundLongitude float64 `json:"eastBoundLongitude,omitempty"`
+	WestBoundLongitude float64 `json:"westBoundLongitude,omitempty"`
+	SouthBoundLatitude float64 `json:"southBoundLatitude,omitempty"`
+	NorthBoundLatitude float64 `json:"northBoundLatitude,omitempty"`
 }
 
 type GeoLocationPolygon struct {
-	PolygonPoints  []GeoLocationPoint `json:"polygon_points"`
+	PolygonPoints  []GeoLocationPoint `json:"polygon_points,omitempty"`
 	InPolygonPoint GeoLocationPoint   `json:"in_polygon_point,omitempty"`
 }
 

@@ -27,6 +27,28 @@ func TestValidateDOI(t *testing.T) {
 	}
 }
 
+func TestValidatePrefix(t *testing.T) {
+	t.Parallel()
+	type testCase struct {
+		input string
+		want  string
+	}
+	testCases := []testCase{
+		{input: "10.7554/elife.01567", want: "10.7554"},
+		{input: "https://doi.org/10.7554/elife.01567", want: "10.7554"},
+		{input: "https://doi.org/10.7554", want: ""},
+		{input: "10.7554", want: ""},
+		{input: "", want: ""},
+	}
+	for _, tc := range testCases {
+		got, ok := doiutils.ValidatePrefix(tc.input)
+		if tc.want != got {
+			t.Errorf("Validate DOI(%v): want %v, got %v, ok %v",
+				tc.input, tc.want, got, ok)
+		}
+	}
+}
+
 func TestNormalizeDOI(t *testing.T) {
 	t.Parallel()
 	type testCase struct {

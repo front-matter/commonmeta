@@ -4,6 +4,8 @@ Copyright © 2024 Front Matter <info@front-matter.io>
 package cmd
 
 import (
+	"bytes"
+	"commonmeta/commonmeta"
 	"commonmeta/crossref"
 	"commonmeta/datacite"
 	"commonmeta/types"
@@ -31,6 +33,7 @@ commonmeta 10.5555/12345678`,
 		}
 		input := args[0]
 		from, _ := cmd.Flags().GetString("from")
+
 		var data types.Data
 		var err error
 		if from == "crossref" {
@@ -42,11 +45,14 @@ commonmeta 10.5555/12345678`,
 		if err != nil {
 			fmt.Println(err)
 		}
-		output, err := json.MarshalIndent(data, "", "  ")
-		if err != nil {
-			fmt.Println(err)
+		output, jsErr := commonmeta.WriteCommonmeta(data)
+		var out bytes.Buffer
+		json.Indent(&out, output, "=", "\t")
+		fmt.Println(out.String())
+
+		if jsErr != nil {
+			fmt.Println(jsErr)
 		}
-		fmt.Println(string(output))
 	},
 }
 

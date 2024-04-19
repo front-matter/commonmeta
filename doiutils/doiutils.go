@@ -51,6 +51,20 @@ func ValidateDOI(doi string) (string, bool) {
 	return matched[6], true
 }
 
+// Validate a DOI prefix for a given DOI
+func ValidatePrefix(doi string) (string, bool) {
+	r, err := regexp.Compile(`^(?:(http|https):/(/)?(dx\.)?(doi\.org|handle\.stage\.datacite\.org|handle\.test\.datacite\.org)/)?(doi:)?(10\.\d{4,5})/.+$`)
+	if err != nil {
+		log.Printf("Error compiling regex: %v", err)
+		return "", false
+	}
+	matched := r.FindStringSubmatch(doi)
+	if len(matched) == 0 {
+		return "", false
+	}
+	return matched[6], true
+}
+
 // Return a DOI resolver for a given DOI
 func DOIResolver(doi string, sandbox bool) string {
 	d, err := url.Parse(doi)

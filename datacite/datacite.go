@@ -204,7 +204,6 @@ func ReadDatacite(content types.Content) (types.Data, error) {
 				}
 				var affiliations []types.Affiliation
 				for _, a := range v.Affiliation {
-					log.Printf("Affiliation: %v", a)
 					affiliations = append(affiliations, types.Affiliation{
 						ID:   "",
 						Name: a,
@@ -253,7 +252,6 @@ func ReadDatacite(content types.Content) (types.Data, error) {
 				}
 				var affiliations []types.Affiliation
 				for _, a := range v.Affiliation {
-					log.Printf("Affiliation: %v", a)
 					affiliations = append(affiliations, types.Affiliation{
 						ID:   "",
 						Name: a,
@@ -457,7 +455,6 @@ func ReadDatacite(content types.Content) (types.Data, error) {
 				t = "Other"
 			}
 			description := utils.Sanitize(v.Description)
-			log.Printf("Description type: %s", t)
 			data.Descriptions = append(data.Descriptions, types.Description{
 				Description:     description,
 				DescriptionType: t,

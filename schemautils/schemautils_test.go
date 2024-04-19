@@ -33,14 +33,14 @@ func TestJSONSchemaErrors(t *testing.T) {
 
 	// Type is not supported
 	o := types.Data{
-		ID:   "https://doi.org/10.7554/elife.01567",
+		ID:   "https://doi.org/10.1515/9789048535248-011",
 		Type: "Umbrella",
 	}
 
 	testCases := []testCase{
-		{meta: m, want: 3},
-		{meta: n, want: 5},
-		{meta: o, want: 4},
+		{meta: m, want: 0},
+		{meta: n, want: 2},
+		{meta: o, want: 1},
 	}
 	for _, tc := range testCases {
 		documentJSON, err := json.Marshal(tc.meta)
@@ -51,6 +51,10 @@ func TestJSONSchemaErrors(t *testing.T) {
 		got := len(result.Errors())
 		if tc.want != got {
 			t.Errorf("want %d, got %d", tc.want, got)
+			fmt.Printf("The document %s is not valid. see errors :\n", tc.meta.ID)
+			for _, desc := range result.Errors() {
+				fmt.Printf("- %s\n", desc)
+			}
 		}
 	}
 }
