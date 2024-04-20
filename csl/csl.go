@@ -2,7 +2,12 @@ package csl
 
 import "commonmeta/types"
 
-func ReadCsl(content types.Content) (types.Data, error) {
+type Content struct {
+	ID    string `json:"id"`
+	Title string `json:"title"`
+}
+
+func ReadCsl(content Content) (types.Data, error) {
 	var data types.Data
 	return data, nil
 }

@@ -1,166 +1,166 @@
 package types
 
-type Content struct {
-	ID         string     `json:"id"`
-	Type       string     `json:"type"`
-	Attributes Attributes `json:"attributes"`
-	Abstract   string     `json:"abstract"`
-	Archive    []string   `json:"archive"`
-	Author     []struct {
-		Given       string `json:"given"`
-		Family      string `json:"family"`
-		Name        string `json:"name"`
-		ORCID       string `json:"ORCID"`
-		Sequence    string `json:"sequence"`
-		Affiliation []struct {
-			ID []struct {
-				ID     string `json:"id"`
-				IDType string `json:"id-type"`
-			} `json:"id"`
-			Name string `json:"name"`
-		} `json:"affiliation"`
-	} `json:"author"`
-	Blog struct {
-		ISSN        string `json:"issn"`
-		License     string `json:"license"`
-		Title       string `json:"title"`
-		HomePageUrl string `json:"home_page_url"`
-	} `json:"blog"`
-	ContainerTitle []string   `json:"container-title"`
-	DOI            string     `json:"doi"`
-	Files          []struct{} `json:"files"`
-	Funder         []struct {
-		DOI   string   `json:"DOI"`
-		Name  string   `json:"name"`
-		Award []string `json:"award"`
-	} `json:"funder"`
-	GroupTitle string `json:"group-title"`
-	GUID       string `json:"guid"`
-	Issue      string `json:"issue"`
-	Published  struct {
-		DateAsParts [][]int `json:"date-parts"`
-		DateTime    string  `json:"date-time"`
-	} `json:"published"`
-	Issued struct {
-		DateAsParts [][]int `json:"date-parts"`
-		DateTime    string  `json:"date-time"`
-	} `json:"issued"`
-	Created struct {
-		DateAsParts [][]int `json:"date-parts"`
-		DateTime    string  `json:"date-time"`
-	} `json:"created"`
-	ISSN     []string `json:"ISSN"`
-	ISBNType []struct {
-		Value string `json:"value"`
-		Type  string `json:"type"`
-	} `json:"isbn-type"`
-	Language string `json:"language"`
-	License  []struct {
-		Url            string `json:"URL"`
-		ContentVersion string `json:"content-version"`
-	} `json:"license"`
-	Link []struct {
-		ContentType string `json:"content-type"`
-		Url         string `json:"url"`
-	} `json:"link"`
-	OriginalTitle []string `json:"original-title"`
-	Page          string   `json:"page"`
-	PublishedAt   string   `json:"published_at"`
-	Publisher     string   `json:"publisher"`
-	Reference     []struct {
-		Key          string `json:"key"`
-		DOI          string `json:"DOI"`
-		ArticleTitle string `json:"article-title"`
-		Year         string `json:"year"`
-		Unstructured string `json:"unstructured"`
-	} `json:"reference"`
-	Relation struct {
-		IsNewVersionOf []struct {
-			ID     string `json:"id"`
-			IDType string `json:"id-type"`
-		} `json:"is-new-version-of"`
-		IsPreviousVersionOf []struct {
-			ID     string `json:"id"`
-			IDType string `json:"id-type"`
-		} `json:"is-previous-version-of"`
-		IsVersionOf []struct {
-			ID     string `json:"id"`
-			IDType string `json:"id-type"`
-		} `json:"is-version-of"`
-		HasVersion []struct {
-			ID     string `json:"id"`
-			IDType string `json:"id-type"`
-		} `json:"has-version"`
-		IsPartOf []struct {
-			ID     string `json:"id"`
-			IDType string `json:"id-type"`
-		} `json:"is-part-of"`
-		HasPart []struct {
-			ID     string `json:"id"`
-			IDType string `json:"id-type"`
-		} `json:"has-part"`
-		IsVariantFormOf []struct {
-			ID     string `json:"id"`
-			IDType string `json:"id-type"`
-		} `json:"is-variant-form-of"`
-		IsOriginalFormOf []struct {
-			ID     string `json:"id"`
-			IDType string `json:"id-type"`
-		} `json:"is-original-form-of"`
-		IsIdenticalTo []struct {
-			ID     string `json:"id"`
-			IDType string `json:"id-type"`
-		} `json:"is-identical-to"`
-		IsTranslationOf []struct {
-			ID     string `json:"id"`
-			IDType string `json:"id-type"`
-		} `json:"is-translation-of"`
-		IsReviewedBy []struct {
-			ID     string `json:"id"`
-			IDType string `json:"id-type"`
-		} `json:"is-reviewed-by"`
-		Reviews []struct {
-			ID     string `json:"id"`
-			IDType string `json:"id-type"`
-		} `json:"reviews"`
-		HasReview []struct {
-			ID     string `json:"id"`
-			IDType string `json:"id-type"`
-		} `json:"has-review"`
-		IsPreprintOf []struct {
-			ID     string `json:"id"`
-			IDType string `json:"id-type"`
-		} `json:"is-preprint-of"`
-		HasPreprint []struct {
-			ID     string `json:"id"`
-			IDType string `json:"id-type"`
-		} `json:"has-preprint"`
-		IsSupplementTo []struct {
-			ID     string `json:"id"`
-			IDType string `json:"id-type"`
-		} `json:"is-supplement-to"`
-		IsSupplementedBy []struct {
-			ID     string `json:"id"`
-			IDType string `json:"id-type"`
-		} `json:"is-supplemented-by"`
-	} `json:"relation"`
-	Resource struct {
-		Primary struct {
-			ContentType string `json:"content_type"`
-			URL         string `json:"url"`
-		} `json:"primary"`
-	} `json:"resource"`
-	Subject   []string `json:"subject"`
-	Subtitle  []string `json:"subtitle"`
-	Summary   string   `json:"summary"`
-	Tags      []string `json:"tags"`
-	Title     []string `json:"title"`
-	UpdatedAt string   `json:"updated_at"`
-	Url       string   `json:"url"`
-	Version   string   `json:"version"`
-	Via       string   `json:"via"`
-	Volume    string   `json:"volume"`
-}
+// type Content struct {
+// 	ID         string     `json:"id"`
+// 	Type       string     `json:"type"`
+// 	Attributes Attributes `json:"attributes"`
+// 	Abstract   string     `json:"abstract"`
+// 	Archive    []string   `json:"archive"`
+// 	Author     []struct {
+// 		Given       string `json:"given"`
+// 		Family      string `json:"family"`
+// 		Name        string `json:"name"`
+// 		ORCID       string `json:"ORCID"`
+// 		Sequence    string `json:"sequence"`
+// 		Affiliation []struct {
+// 			ID []struct {
+// 				ID     string `json:"id"`
+// 				IDType string `json:"id-type"`
+// 			} `json:"id"`
+// 			Name string `json:"name"`
+// 		} `json:"affiliation"`
+// 	} `json:"author"`
+// 	Blog struct {
+// 		ISSN        string `json:"issn"`
+// 		License     string `json:"license"`
+// 		Title       string `json:"title"`
+// 		HomePageUrl string `json:"home_page_url"`
+// 	} `json:"blog"`
+// 	ContainerTitle []string   `json:"container-title"`
+// 	DOI            string     `json:"doi"`
+// 	Files          []struct{} `json:"files"`
+// 	Funder         []struct {
+// 		DOI   string   `json:"DOI"`
+// 		Name  string   `json:"name"`
+// 		Award []string `json:"award"`
+// 	} `json:"funder"`
+// 	GroupTitle string `json:"group-title"`
+// 	GUID       string `json:"guid"`
+// 	Issue      string `json:"issue"`
+// 	Published  struct {
+// 		DateAsParts [][]int `json:"date-parts"`
+// 		DateTime    string  `json:"date-time"`
+// 	} `json:"published"`
+// 	Issued struct {
+// 		DateAsParts [][]int `json:"date-parts"`
+// 		DateTime    string  `json:"date-time"`
+// 	} `json:"issued"`
+// 	Created struct {
+// 		DateAsParts [][]int `json:"date-parts"`
+// 		DateTime    string  `json:"date-time"`
+// 	} `json:"created"`
+// 	ISSN     []string `json:"ISSN"`
+// 	ISBNType []struct {
+// 		Value string `json:"value"`
+// 		Type  string `json:"type"`
+// 	} `json:"isbn-type"`
+// 	Language string `json:"language"`
+// 	License  []struct {
+// 		Url            string `json:"URL"`
+// 		ContentVersion string `json:"content-version"`
+// 	} `json:"license"`
+// 	Link []struct {
+// 		ContentType string `json:"content-type"`
+// 		Url         string `json:"url"`
+// 	} `json:"link"`
+// 	OriginalTitle []string `json:"original-title"`
+// 	Page          string   `json:"page"`
+// 	PublishedAt   string   `json:"published_at"`
+// 	Publisher     string   `json:"publisher"`
+// 	Reference     []struct {
+// 		Key          string `json:"key"`
+// 		DOI          string `json:"DOI"`
+// 		ArticleTitle string `json:"article-title"`
+// 		Year         string `json:"year"`
+// 		Unstructured string `json:"unstructured"`
+// 	} `json:"reference"`
+// 	Relation struct {
+// 		IsNewVersionOf []struct {
+// 			ID     string `json:"id"`
+// 			IDType string `json:"id-type"`
+// 		} `json:"is-new-version-of"`
+// 		IsPreviousVersionOf []struct {
+// 			ID     string `json:"id"`
+// 			IDType string `json:"id-type"`
+// 		} `json:"is-previous-version-of"`
+// 		IsVersionOf []struct {
+// 			ID     string `json:"id"`
+// 			IDType string `json:"id-type"`
+// 		} `json:"is-version-of"`
+// 		HasVersion []struct {
+// 			ID     string `json:"id"`
+// 			IDType string `json:"id-type"`
+// 		} `json:"has-version"`
+// 		IsPartOf []struct {
+// 			ID     string `json:"id"`
+// 			IDType string `json:"id-type"`
+// 		} `json:"is-part-of"`
+// 		HasPart []struct {
+// 			ID     string `json:"id"`
+// 			IDType string `json:"id-type"`
+// 		} `json:"has-part"`
+// 		IsVariantFormOf []struct {
+// 			ID     string `json:"id"`
+// 			IDType string `json:"id-type"`
+// 		} `json:"is-variant-form-of"`
+// 		IsOriginalFormOf []struct {
+// 			ID     string `json:"id"`
+// 			IDType string `json:"id-type"`
+// 		} `json:"is-original-form-of"`
+// 		IsIdenticalTo []struct {
+// 			ID     string `json:"id"`
+// 			IDType string `json:"id-type"`
+// 		} `json:"is-identical-to"`
+// 		IsTranslationOf []struct {
+// 			ID     string `json:"id"`
+// 			IDType string `json:"id-type"`
+// 		} `json:"is-translation-of"`
+// 		IsReviewedBy []struct {
+// 			ID     string `json:"id"`
+// 			IDType string `json:"id-type"`
+// 		} `json:"is-reviewed-by"`
+// 		Reviews []struct {
+// 			ID     string `json:"id"`
+// 			IDType string `json:"id-type"`
+// 		} `json:"reviews"`
+// 		HasReview []struct {
+// 			ID     string `json:"id"`
+// 			IDType string `json:"id-type"`
+// 		} `json:"has-review"`
+// 		IsPreprintOf []struct {
+// 			ID     string `json:"id"`
+// 			IDType string `json:"id-type"`
+// 		} `json:"is-preprint-of"`
+// 		HasPreprint []struct {
+// 			ID     string `json:"id"`
+// 			IDType string `json:"id-type"`
+// 		} `json:"has-preprint"`
+// 		IsSupplementTo []struct {
+// 			ID     string `json:"id"`
+// 			IDType string `json:"id-type"`
+// 		} `json:"is-supplement-to"`
+// 		IsSupplementedBy []struct {
+// 			ID     string `json:"id"`
+// 			IDType string `json:"id-type"`
+// 		} `json:"is-supplemented-by"`
+// 	} `json:"relation"`
+// 	Resource struct {
+// 		Primary struct {
+// 			ContentType string `json:"content_type"`
+// 			URL         string `json:"url"`
+// 		} `json:"primary"`
+// 	} `json:"resource"`
+// 	Subject   []string `json:"subject"`
+// 	Subtitle  []string `json:"subtitle"`
+// 	Summary   string   `json:"summary"`
+// 	Tags      []string `json:"tags"`
+// 	Title     []string `json:"title"`
+// 	UpdatedAt string   `json:"updated_at"`
+// 	Url       string   `json:"url"`
+// 	Version   string   `json:"version"`
+// 	Via       string   `json:"via"`
+// 	Volume    string   `json:"volume"`
+// }
 
 // used by Datacite API
 type Attributes struct {
@@ -253,25 +253,25 @@ type Data struct {
 
 	// optional fields
 	AdditionalType    string             `db:"additional_type" json:"additional_type,omitempty"`
-	Identifiers       []Identifier       `db:"identifiers" json:"identifiers,omitempty"`
-	Url               string             `db:"url" json:"url,omitempty"`
+	ArchiveLocations  []string           `db:"archive_locations" json:"archive_locations,omitempty"`
 	Contributors      []Contributor      `db:"contributors" json:"contributors,omitempty"`
-	Titles            []Title            `db:"titles" json:"titles,omitempty"`
-	Publisher         Publisher          `db:"publisher" json:"publisher,omitempty"`
 	Date              Date               `db:"date" json:"date,omitempty"`
 	Container         Container          `db:"container" json:"container,omitempty"`
 	Descriptions      []Description      `db:"descriptions" json:"descriptions,omitempty"`
-	Subjects          []Subject          `db:"subjects" json:"subjects,omitempty"`
-	Language          string             `db:"language" json:"language,omitempty"`
-	License           License            `db:"license" json:"license,omitempty"`
-	Version           string             `db:"version" json:"version,omitempty"`
-	References        []Reference        `db:"references" json:"references,omitempty"`
-	Relations         []Relation         `db:"relations" json:"relations,omitempty"`
+	Files             []File             `db:"files" json:"files,omitempty"`
 	FundingReferences []FundingReference `db:"funding_references" json:"funding_references,omitempty"`
 	GeoLocations      []GeoLocation      `db:"geo_locations" json:"geo_locations,omitempty"`
-	Files             []File             `db:"files" json:"files,omitempty"`
-	ArchiveLocations  []string           `db:"archive_locations" json:"archive_locations,omitempty"`
+	Identifiers       []Identifier       `db:"identifiers" json:"identifiers,omitempty"`
+	Language          string             `db:"language" json:"language,omitempty"`
+	License           License            `db:"license" json:"license,omitempty"`
 	Provider          string             `db:"provider" json:"provider"`
+	Publisher         Publisher          `db:"publisher" json:"publisher,omitempty"`
+	References        []Reference        `db:"references" json:"references,omitempty"`
+	Relations         []Relation         `db:"relations" json:"relations,omitempty"`
+	Subjects          []Subject          `db:"subjects" json:"subjects,omitempty"`
+	Titles            []Title            `db:"titles" json:"titles,omitempty"`
+	Url               string             `db:"url" json:"url,omitempty"`
+	Version           string             `db:"version" json:"version,omitempty"`
 }
 
 type Affiliation struct {
@@ -297,7 +297,7 @@ type Contributor struct {
 	GivenName        string        `json:"givenName,omitempty"`
 	FamilyName       string        `json:"familyName,omitempty"`
 	Affiliations     []Affiliation `json:"affiliations,omitempty"`
-	ContributorRoles []string      `json:"contributorRoles"`
+	ContributorRoles []string      `json:"contributorRoles,omitempty"`
 }
 
 type Date struct {
@@ -392,7 +392,8 @@ type Publisher struct {
 
 type Reference struct {
 	Key             string `json:"key"`
-	Doi             string `json:"doi,omitempty"`
+	ID              string `json:"id,omitempty"`
+	Type            string `json:"type,omitempty"`
 	Title           string `json:"title,omitempty"`
 	PublicationYear string `json:"publicationYear,omitempty"`
 	Unstructured    string `json:"unstructured,omitempty"`

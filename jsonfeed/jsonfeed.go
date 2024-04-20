@@ -9,12 +9,17 @@ import (
 	"time"
 )
 
-func GetJsonFeedItem(pid string) (types.Content, error) {
-	var content types.Content
+type Content struct {
+	ID    string `json:"id"`
+	Title string `json:"title"`
+}
+
+func GetJsonFeedItem(id string) (Content, error) {
+	var content Content
 	client := http.Client{
 		Timeout: time.Second * 10,
 	}
-	url := "https://api.rogue-scholar.org/posts/" + pid
+	url := "https://api.rogue-scholar.org/posts/" + id
 	resp, err := client.Get(url)
 	if err != nil {
 		return content, err
@@ -34,7 +39,7 @@ func GetJsonFeedItem(pid string) (types.Content, error) {
 	return content, err
 }
 
-func ReadJsonFeedItem(content types.Content) (types.Data, error) {
+func ReadJsonFeedItem(content Content) (types.Data, error) {
 	var data types.Data
 	return data, nil
 }

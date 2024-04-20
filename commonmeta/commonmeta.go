@@ -10,7 +10,7 @@ import (
 	"github.com/xeipuuv/gojsonschema"
 )
 
-func ReadCommonmeta(content types.Content) (types.Data, error) {
+func ReadCommonmeta(content types.Data) (types.Data, error) {
 	var data types.Data
 	return data, nil
 }

@@ -24,16 +24,16 @@ func TestGetDatacite(t *testing.T) {
 	}
 
 	// PID as DOI Url
-	publication := types.Content{
+	publication := datacite.Content{
 		ID: "https://doi.org/10.5281/zenodo.5244404",
-		Attributes: types.Attributes{
+		Attributes: datacite.Attributes{
 			Url: "https://zenodo.org/record/5244404",
 		},
 	}
 	// PID as DOI string
-	presentation := types.Content{
+	presentation := datacite.Content{
 		ID: "10.5281/zenodo.8173303",
-		Attributes: types.Attributes{
+		Attributes: datacite.Attributes{
 			Url: "https://zenodo.org/record/8173303",
 		},
 	}
@@ -47,7 +47,7 @@ func TestGetDatacite(t *testing.T) {
 		got, err := datacite.GetDatacite(tc.id)
 		if tc.want != got.Attributes.Url {
 			t.Errorf("Get DataCite(%v): want %v, got %v, error %v",
-				tc.id, tc.want, got, err)
+				tc.id, tc.want, got.Attributes.Url, err)
 		}
 	}
 }
@@ -90,6 +90,31 @@ func TestFetchDatacite(t *testing.T) {
 		}
 		if diff := cmp.Diff(want, got); diff != "" {
 			t.Errorf("FetchDatacite(%s) mismatch (-want +got):\n%s", tc.id, diff)
+		}
+	}
+}
+
+func TestGetDataciteSample(t *testing.T) {
+	t.Parallel()
+
+	type testCase struct {
+		number int
+		want   string
+	}
+
+	testCases := []testCase{
+		{number: 10, want: "https://api.datacite.org/works?query=member:340,type:journal-article&rows=10"},
+		{number: 1, want: "https://api.datacite.org/works?query=type:posted-content&rows=1"},
+		{number: 20, want: "https://api.datacite.org/works?query=member:78&rows=20"},
+		{number: 120, want: "https://api.datacite.org/works?rows=120"},
+	}
+	for _, tc := range testCases {
+		got, err := datacite.GetDataciteSample(tc.number)
+		if err != nil {
+			t.Errorf("Datacite Sample(%v): error %v", tc.number, err)
+		}
+		if diff := cmp.Diff(tc.want, got); diff != "" {
+			t.Errorf("DataciteApiSampleUrl mismatch (-want +got):\n%s", diff)
 		}
 	}
 }

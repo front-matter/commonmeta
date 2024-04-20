@@ -7,6 +7,8 @@ import (
 	"bytes"
 	"commonmeta/commonmeta"
 	"commonmeta/crossref"
+	"commonmeta/datacite"
+	"commonmeta/types"
 	"encoding/json"
 	"fmt"
 
@@ -24,6 +26,8 @@ var sampleCmd = &cobra.Command{
 	commonmeta sample --number 10 --member 78 --type journal-article`,
 	Run: func(cmd *cobra.Command, args []string) {
 		number, _ := cmd.Flags().GetInt("number")
+		provider, _ := cmd.Flags().GetString("provider")
+
 		member, _ := cmd.Flags().GetString("member")
 		type_, _ := cmd.Flags().GetString("type")
 		hasORCID, _ := cmd.Flags().GetBool("has-orcid")
@@ -35,7 +39,13 @@ var sampleCmd = &cobra.Command{
 		hasLicense, _ := cmd.Flags().GetBool("has-license")
 		hasArchive, _ := cmd.Flags().GetBool("has-archive")
 
-		data, err := crossref.FetchCrossrefSample(number, member, type_, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
+		var data []types.Data
+		var err error
+		if provider == "crossref" {
+			data, err = crossref.FetchCrossrefSample(number, member, type_, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
+		} else if provider == "datacite" {
+			data, err = datacite.FetchDataciteSample(number)
+		}
 		if err != nil {
 			fmt.Println(err)
 		}
@@ -52,4 +62,6 @@ var sampleCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(sampleCmd)
+
+	sampleCmd.PersistentFlags().StringP("provider", "", "", "the provider to get a sample from")
 }

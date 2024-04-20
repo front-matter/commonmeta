@@ -9,12 +9,17 @@ import (
 	"time"
 )
 
-func GetInvenioRDM(pid string) (types.Content, error) {
-	var content types.Content
+type Content struct {
+	ID    string `json:"id"`
+	Title string `json:"title"`
+}
+
+func GetInvenioRDM(id string) (Content, error) {
+	var content Content
 	client := http.Client{
 		Timeout: time.Second * 10,
 	}
-	url := "https://zenodo.org/api/records/" + pid
+	url := "https://zenodo.org/api/records/" + id
 	resp, err := client.Get(url)
 	if err != nil {
 		return content, err
@@ -34,7 +39,7 @@ func GetInvenioRDM(pid string) (types.Content, error) {
 	return content, err
 }
 
-func ReadInvenioRDM(content types.Content) (types.Data, error) {
+func ReadInvenioRDM(content Content) (types.Data, error) {
 	var data types.Data
 	return data, nil
 }

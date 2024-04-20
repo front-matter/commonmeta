@@ -22,11 +22,11 @@ func TestGetCrossref(t *testing.T) {
 		err  error
 	}
 
-	journalArticle := types.Content{
+	journalArticle := crossref.Content{
 		ID:        "https://doi.org/10.7554/elife.01567",
 		Publisher: "eLife Sciences Publications, Ltd",
 	}
-	postedContent := types.Content{
+	postedContent := crossref.Content{
 		ID:        "https://doi.org/10.1101/097196",
 		Publisher: "Cold Spring Harbor Laboratory",
 	}

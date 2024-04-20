@@ -2,12 +2,17 @@ package schemaorg
 
 import "commonmeta/types"
 
-func GetSchemaOrg(pid string) (types.Content, error) {
-	var content types.Content
+type Content struct {
+	ID    string `json:"id"`
+	Title string `json:"title"`
+}
+
+func GetSchemaOrg(id string) (Content, error) {
+	var content Content
 	return content, nil
 }
 
-func ReadSchemaorg(content types.Content) (types.Data, error) {
+func ReadSchemaorg(content Content) (types.Data, error) {
 	var data types.Data
 	return data, nil
 }

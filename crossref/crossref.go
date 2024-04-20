@@ -20,6 +20,156 @@ import (
 	"time"
 )
 
+type Content struct {
+	ID       string   `json:"id"`
+	Type     string   `json:"type"`
+	Abstract string   `json:"abstract"`
+	Archive  []string `json:"archive"`
+	Author   []struct {
+		Given       string `json:"given"`
+		Family      string `json:"family"`
+		Name        string `json:"name"`
+		ORCID       string `json:"ORCID"`
+		Sequence    string `json:"sequence"`
+		Affiliation []struct {
+			ID []struct {
+				ID     string `json:"id"`
+				IDType string `json:"id-type"`
+			} `json:"id"`
+			Name string `json:"name"`
+		} `json:"affiliation"`
+	} `json:"author"`
+	ContainerTitle []string   `json:"container-title"`
+	DOI            string     `json:"doi"`
+	Files          []struct{} `json:"files"`
+	Funder         []struct {
+		DOI   string   `json:"DOI"`
+		Name  string   `json:"name"`
+		Award []string `json:"award"`
+	} `json:"funder"`
+	GroupTitle string `json:"group-title"`
+	Issue      string `json:"issue"`
+	Published  struct {
+		DateAsParts [][]int `json:"date-parts"`
+		DateTime    string  `json:"date-time"`
+	} `json:"published"`
+	Issued struct {
+		DateAsParts [][]int `json:"date-parts"`
+		DateTime    string  `json:"date-time"`
+	} `json:"issued"`
+	Created struct {
+		DateAsParts [][]int `json:"date-parts"`
+		DateTime    string  `json:"date-time"`
+	} `json:"created"`
+	ISSN     []string `json:"ISSN"`
+	ISBNType []struct {
+		Value string `json:"value"`
+		Type  string `json:"type"`
+	} `json:"isbn-type"`
+	Language string `json:"language"`
+	License  []struct {
+		Url            string `json:"URL"`
+		ContentVersion string `json:"content-version"`
+	} `json:"license"`
+	Link []struct {
+		ContentType string `json:"content-type"`
+		Url         string `json:"url"`
+	} `json:"link"`
+	OriginalTitle []string `json:"original-title"`
+	Page          string   `json:"page"`
+	PublishedAt   string   `json:"published_at"`
+	Publisher     string   `json:"publisher"`
+	Reference     []struct {
+		Key          string `json:"key"`
+		DOI          string `json:"DOI"`
+		ArticleTitle string `json:"article-title"`
+		Year         string `json:"year"`
+		Unstructured string `json:"unstructured"`
+	} `json:"reference"`
+	Relation struct {
+		IsNewVersionOf []struct {
+			ID     string `json:"id"`
+			IDType string `json:"id-type"`
+		} `json:"is-new-version-of"`
+		IsPreviousVersionOf []struct {
+			ID     string `json:"id"`
+			IDType string `json:"id-type"`
+		} `json:"is-previous-version-of"`
+		IsVersionOf []struct {
+			ID     string `json:"id"`
+			IDType string `json:"id-type"`
+		} `json:"is-version-of"`
+		HasVersion []struct {
+			ID     string `json:"id"`
+			IDType string `json:"id-type"`
+		} `json:"has-version"`
+		IsPartOf []struct {
+			ID     string `json:"id"`
+			IDType string `json:"id-type"`
+		} `json:"is-part-of"`
+		HasPart []struct {
+			ID     string `json:"id"`
+			IDType string `json:"id-type"`
+		} `json:"has-part"`
+		IsVariantFormOf []struct {
+			ID     string `json:"id"`
+			IDType string `json:"id-type"`
+		} `json:"is-variant-form-of"`
+		IsOriginalFormOf []struct {
+			ID     string `json:"id"`
+			IDType string `json:"id-type"`
+		} `json:"is-original-form-of"`
+		IsIdenticalTo []struct {
+			ID     string `json:"id"`
+			IDType string `json:"id-type"`
+		} `json:"is-identical-to"`
+		IsTranslationOf []struct {
+			ID     string `json:"id"`
+			IDType string `json:"id-type"`
+		} `json:"is-translation-of"`
+		IsReviewedBy []struct {
+			ID     string `json:"id"`
+			IDType string `json:"id-type"`
+		} `json:"is-reviewed-by"`
+		Reviews []struct {
+			ID     string `json:"id"`
+			IDType string `json:"id-type"`
+		} `json:"reviews"`
+		HasReview []struct {
+			ID     string `json:"id"`
+			IDType string `json:"id-type"`
+		} `json:"has-review"`
+		IsPreprintOf []struct {
+			ID     string `json:"id"`
+			IDType string `json:"id-type"`
+		} `json:"is-preprint-of"`
+		HasPreprint []struct {
+			ID     string `json:"id"`
+			IDType string `json:"id-type"`
+		} `json:"has-preprint"`
+		IsSupplementTo []struct {
+			ID     string `json:"id"`
+			IDType string `json:"id-type"`
+		} `json:"is-supplement-to"`
+		IsSupplementedBy []struct {
+			ID     string `json:"id"`
+			IDType string `json:"id-type"`
+		} `json:"is-supplemented-by"`
+	} `json:"relation"`
+	Resource struct {
+		Primary struct {
+			ContentType string `json:"content_type"`
+			URL         string `json:"url"`
+		} `json:"primary"`
+	} `json:"resource"`
+	Subject  []string `json:"subject"`
+	Subtitle []string `json:"subtitle"`
+	Title    []string `json:"title"`
+	Url      string   `json:"url"`
+	Version  string   `json:"version"`
+	Volume   string   `json:"volume"`
+}
+
 // source: http://api.crossref.org/types
 var CRToCMMappings = map[string]string{
 	"book-chapter":        "BookChapter",
@@ -110,13 +260,13 @@ func FetchCrossrefSample(number int, member string, _type string, hasORCID bool,
 	return data, nil
 }
 
-func GetCrossref(pid string) (types.Content, error) {
+func GetCrossref(pid string) (Content, error) {
 	// the envelope for the JSON response from the Crossref API
 	type Response struct {
-		Status         string        `json:"status"`
-		MessageType    string        `json:"message-type"`
-		MessageVersion string        `json:"message-version"`
-		Message        types.Content `json:"message"`
+		Status         string  `json:"status"`
+		MessageType    string  `json:"message-type"`
+		MessageVersion string  `json:"message-version"`
+		Message        Content `json:"message"`
 	}
 
 	var response Response
@@ -156,7 +306,7 @@ func GetCrossref(pid string) (types.Content, error) {
 }
 
 // read Crossref JSON response and return work struct in Commonmeta format
-func ReadCrossref(content types.Content) (types.Data, error) {
+func ReadCrossref(content Content) (types.Data, error) {
 	var data = types.Data{}
 
 	data.ID = doiutils.NormalizeDOI(content.DOI)
@@ -323,7 +473,7 @@ func ReadCrossref(content types.Content) (types.Data, error) {
 	for _, v := range content.Reference {
 		data.References = append(data.References, types.Reference{
 			Key:             v.Key,
-			Doi:             doiutils.NormalizeDOI(v.DOI),
+			ID:              doiutils.NormalizeDOI(v.DOI),
 			Title:           v.ArticleTitle,
 			PublicationYear: v.Year,
 			Unstructured:    v.Unstructured,
@@ -399,15 +549,15 @@ func ReadCrossref(content types.Content) (types.Data, error) {
 	return data, nil
 }
 
-func GetCrossrefSample(number int, member string, _type string, hasORCID bool, hasROR bool, hasReferences bool, hasRelation bool, hasAbstract bool, hasAward bool, hasLicense bool, hasArchive bool) ([]types.Content, error) {
+func GetCrossrefSample(number int, member string, _type string, hasORCID bool, hasROR bool, hasReferences bool, hasRelation bool, hasAbstract bool, hasAward bool, hasLicense bool, hasArchive bool) ([]Content, error) {
 	// the envelope for the JSON response from the Crossref API
 	type Response struct {
 		Status         string `json:"status"`
 		MessageType    string `json:"message-type"`
 		MessageVersion string `json:"message-version"`
 		Message        struct {
-			TotalResults int             `json:"total-results"`
-			Items        []types.Content `json:"items"`
+			TotalResults int       `json:"total-results"`
+			Items        []Content `json:"items"`
 		} `json:"message`
 	}
 	var response Response
@@ -420,6 +570,7 @@ func GetCrossrefSample(number int, member string, _type string, hasORCID bool, h
 	u := "info@front-matter.io"
 	userAgent := fmt.Sprintf("commonmeta-go/%s (https://commonmeta.org/commonmeta-go/; mailto: %s)", v, u)
 	req.Header.Set("User-Agent", userAgent)
+	req.Header.Set("Cache-Control", "private")
 	if err != nil {
 		log.Fatalln(err)
 	}

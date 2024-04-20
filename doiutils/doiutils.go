@@ -1,7 +1,11 @@
 package doiutils
 
 import (
+	"encoding/json"
+	"fmt"
+	"io"
 	"log"
+	"net/http"
 	"net/url"
 	"regexp"
 	"strings"
@@ -68,4 +72,64 @@ func DOIResolver(doi string, sandbox bool) string {
 		return "https://handle.stage.datacite.org/"
 	}
 	return "https://doi.org/"
+}
+
+// return the DOI registration agency for a given DOI
+func GetDOIRA(doi string) (string, bool) {
+	prefix, ok := ValidatePrefix(doi)
+	if !ok {
+		return "", false
+	}
+	type Response []struct {
+		DOI string `json:"DOI"`
+		RA  string `json:"RA"`
+	}
+	var result Response
+	resp, err := http.Get(fmt.Sprintf("https://doi.org/ra/%s", prefix))
+	if err != nil {
+		return "", false
+	}
+	if resp.StatusCode == 404 {
+		return "", false
+	}
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return "", false
+	}
+	defer resp.Body.Close()
+	err = json.Unmarshal(body, &result)
+	if err != nil {
+		return "", false
+	}
+	return result[0].RA, true
+}
+
+// Get the Crossref member name for a given member_id
+func GetCrossrefMember(memberId string) (string, bool) {
+	type Response struct {
+		Message struct {
+			PrimaryName string `json:"primary-name"`
+		} `json:"message"`
+	}
+	var result Response
+	if memberId == "" {
+		return "", false
+	}
+	resp, err := http.Get(fmt.Sprintf("https://api.crossref.org/members/%s", memberId))
+	if err != nil {
+		return "", false
+	}
+	if resp.StatusCode == 404 {
+		return "", false
+	}
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return "", false
+	}
+	defer resp.Body.Close()
+	err = json.Unmarshal(body, &result)
+	if err != nil {
+		return "", false
+	}
+	return result.Message.PrimaryName, true
 }

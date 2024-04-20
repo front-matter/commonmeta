@@ -17,6 +17,109 @@ import (
 	"time"
 )
 
+type Content struct {
+	ID         string     `json:"id"`
+	Type       string     `json:"type"`
+	Attributes Attributes `json:"attributes"`
+}
+
+type Attributes struct {
+	DOI                  string `json:"doi"`
+	Prefix               string `json:"prefix"`
+	Suffix               string `json:"suffix"`
+	AlternateIdentifiers []struct {
+		Identifier     string `json:"identifier"`
+		IdentifierType string `json:"identifierType"`
+	} `json:"alternateIdentifiers"`
+	Creators  []Contributor `json:"creators"`
+	Publisher string        `json:"publisher"`
+	Container struct {
+		Type           string `json:"type"`
+		Identifier     string `json:"identifier"`
+		IdentifierType string `json:"identifierType"`
+		Title          string `json:"title"`
+		Volume         string `json:"volume"`
+		Issue          string `json:"issue"`
+		FirstPage      string `json:"firstPage"`
+		LastPage       string `json:"lastPage"`
+	} `json:"container"`
+	PublicationYear int `json:"publicationYear"`
+	Titles          []struct {
+		Title     string `json:"title"`
+		TitleType string `json:"titleType"`
+		Lang      string `json:"lang"`
+	} `json:"titles"`
+	Url      string `json:"url"`
+	Subjects []struct {
+		Subject string `json:"subject"`
+	} `json:"subjects"`
+	Contributors []Contributor `json:"contributors"`
+	Dates        []struct {
+		Date            string `json:"date"`
+		DateType        string `json:"dateType"`
+		DateInformation string `json:"dateInformation"`
+	} `json:"dates"`
+	Language string `json:"language"`
+	Types    struct {
+		ResourceTypeGeneral string `json:"resourceTypeGeneral"`
+		ResourceType        string `json:"resourceType"`
+	} `json:"types"`
+	RelatedIdentifiers []struct {
+		RelatedIdentifier     string `json:"relatedIdentifier"`
+		RelatedIdentifierType string `json:"relatedIdentifierType"`
+		RelationType          string `json:"relationType"`
+	} `json:"relatedIdentifiers"`
+	Sizes      []string `json:"sizes"`
+	Formats    []string `json:"formats"`
+	Version    string   `json:"version"`
+	RightsList []struct {
+		Rights                 string `json:"rights"`
+		RightsURI              string `json:"rightsUri"`
+		SchemeURI              string `json:"schemeUri"`
+		RightsIdentifier       string `json:"rightsIdentifier"`
+		RightsIdentifierScheme string `json:"rightsIdentifierScheme"`
+	}
+	Descriptions []struct {
+		Description     string `json:"description"`
+		DescriptionType string `json:"descriptionType"`
+		Lang            string `json:"lang"`
+	} `json:"descriptions"`
+	GeoLocations []struct {
+		GeoLocationPoint struct {
+			PointLongitude float64 `json:"pointLongitude,string"`
+			PointLatitude  float64 `json:"pointLatitude,string"`
+		} `json:"geoLocationPoint"`
+		GeoLocationBox struct {
+			WestBoundLongitude float64 `json:"westBoundLongitude,string"`
+			EastBoundLongitude float64 `json:"eastBoundLongitude,string"`
+			SouthBoundLatitude float64 `json:"southBoundLatitude,string"`
+			NorthBoundLatitude float64 `json:"northBoundLatitude,string"`
+		} `json:"geoLocationBox"`
+		GeoLocationPlace string `json:"geoLocationPlace"`
+	} `json:"geoLocations"`
+	FundingReferences []struct {
+		FunderName           string `json:"funderName"`
+		FunderIdentifier     string `json:"funderIdentifier"`
+		FunderIdentifierType string `json:"funderIdentifierType"`
+		AwardNumber          string `json:"awardNumber"`
+		AwardURI             string `json:"awardUri"`
+	} `json:"fundingReferences"`
+}
+
+type Contributor struct {
+	Name            string `json:"name"`
+	GivenName       string `json:"givenName"`
+	FamilyName      string `json:"familyName"`
+	NameType        string `json:"nameType"`
+	NameIdentifiers []struct {
+		SchemeURI            string `json:"schemeUri"`
+		NameIdentifier       string `json:"nameIdentifier"`
+		NameIdentifierScheme string `json:"nameIdentifierScheme"`
+	} `json:"nameIdentifiers"`
+	Affiliation     []string `json:"affiliation"`
+	ContributorType string   `json:"contributorType"`
+}
+
 // source: https://github.com/datacite/schema/blob/master/source/meta/kernel-4/include/datacite-resourceType-v4.xsd
 var DCToCMTranslations = map[string]string{
 	"Audiovisual":           "Audiovisual",
@@ -117,10 +220,27 @@ func FetchDatacite(str string) (types.Data, error) {
 	return data, nil
 }
 
-func GetDatacite(pid string) (types.Content, error) {
+func FetchDataciteSample(number int) ([]types.Data, error) {
+
+	var data []types.Data
+	content, err := GetDataciteSample(number)
+	if err != nil {
+		return data, err
+	}
+	for _, v := range content {
+		d, err := ReadDatacite(v)
+		if err != nil {
+			log.Println(err)
+		}
+		data = append(data, d)
+	}
+	return data, nil
+}
+
+func GetDatacite(pid string) (Content, error) {
 	// the envelope for the JSON response from the DataCite API
 	type Response struct {
-		Data types.Content `json:"data"`
+		Data Content `json:"data"`
 	}
 
 	var response Response
@@ -152,7 +272,7 @@ func GetDatacite(pid string) (types.Content, error) {
 }
 
 // read DataCite JSON response and return work struct in Commonmeta format
-func ReadDatacite(content types.Content) (types.Data, error) {
+func ReadDatacite(content Content) (types.Data, error) {
 	var data = types.Data{}
 
 	data.ID = doiutils.NormalizeDOI(content.Attributes.DOI)
@@ -307,9 +427,12 @@ func ReadDatacite(content types.Content) (types.Data, error) {
 
 	if len(content.Attributes.Subjects) > 0 {
 		for _, v := range content.Attributes.Subjects {
-			data.Subjects = append(data.Subjects, types.Subject{
+			subject := types.Subject{
 				Subject: v.Subject,
-			})
+			}
+			if !slices.Contains(data.Subjects, subject) {
+				data.Subjects = append(data.Subjects, subject)
+			}
 		}
 	}
 
@@ -345,7 +468,7 @@ func ReadDatacite(content types.Content) (types.Data, error) {
 				}
 				data.References = append(data.References, types.Reference{
 					Key:          "ref" + strconv.Itoa(i+1),
-					Doi:          doi,
+					ID:           doi,
 					Unstructured: unstructured,
 				})
 			}
@@ -376,7 +499,7 @@ func ReadDatacite(content types.Content) (types.Data, error) {
 				identifier := v.RelatedIdentifier
 				if isDoi {
 					identifier = doiutils.NormalizeDOI(v.RelatedIdentifier)
-				} else if {
+				} else {
 					identifier = v.RelatedIdentifier
 				}
 				data.Relations = append(data.Relations, types.Relation{
@@ -429,7 +552,7 @@ func ReadDatacite(content types.Content) (types.Data, error) {
 	return data, nil
 }
 
-func GetContributor(v types.DCContributor) types.Contributor {
+func GetContributor(v Contributor) types.Contributor {
 	var t string
 	if len(v.NameType) > 2 {
 		t = v.NameType[:len(v.NameType)-2]
@@ -486,4 +609,45 @@ func GetContributor(v types.DCContributor) types.Contributor {
 		ContributorRoles: roles,
 		Affiliations:     affiliations,
 	}
+}
+
+func GetDataciteSample(number int) ([]Content, error) {
+	// the envelope for the JSON response from the DataCite API
+	type Response struct {
+		Data []Content `json:"data"`
+	}
+	if number > 100 {
+		number = 100
+	}
+	var response Response
+	url := DataciteApiSampleUrl(number)
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	client := http.Client{
+		Timeout: 60 * time.Second,
+	}
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	if resp.StatusCode >= 400 {
+		return nil, errors.New(resp.Status)
+	}
+	defer resp.Body.Close()
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	err = json.Unmarshal(body, &response)
+	if err != nil {
+		fmt.Println("error:", err)
+	}
+	return response.Data, nil
+}
+
+func DataciteApiSampleUrl(number int) string {
+	url := "https://api.datacite.org/dois?random=true&page[size]=" + strconv.Itoa(number)
+	return url
 }
