@@ -10,7 +10,6 @@ import (
 	"io"
 	"log"
 	"net/http"
-	"regexp"
 	"slices"
 	"strconv"
 	"strings"
@@ -459,17 +458,13 @@ func ReadDatacite(content Content) (types.Data, error) {
 		}
 		for i, v := range content.Attributes.RelatedIdentifiers {
 			if slices.Contains(supportedRelations, v.RelationType) {
-				isDoi, _ := regexp.MatchString(`^10\.\d{4,9}/.+$`, v.RelatedIdentifier)
-				var doi, unstructured string
-				if isDoi {
-					doi = doiutils.NormalizeDOI(v.RelatedIdentifier)
-				} else {
-					unstructured = v.RelatedIdentifier
+				id := doiutils.NormalizeDOI(v.RelatedIdentifier)
+				if id == "" {
+					id = v.RelatedIdentifier
 				}
 				data.References = append(data.References, types.Reference{
-					Key:          "ref" + strconv.Itoa(i+1),
-					ID:           doi,
-					Unstructured: unstructured,
+					Key: "ref" + strconv.Itoa(i+1),
+					ID:  id,
 				})
 			}
 		}
@@ -495,11 +490,8 @@ func ReadDatacite(content Content) (types.Data, error) {
 		}
 		for _, v := range content.Attributes.RelatedIdentifiers {
 			if slices.Contains(supportedRelations, v.RelationType) {
-				isDoi, _ := regexp.MatchString(`^10\.\d{4,9}/.+$`, v.RelatedIdentifier)
-				identifier := v.RelatedIdentifier
-				if isDoi {
-					identifier = doiutils.NormalizeDOI(v.RelatedIdentifier)
-				} else {
+				identifier := doiutils.NormalizeDOI(v.RelatedIdentifier)
+				if identifier == "" {
 					identifier = v.RelatedIdentifier
 				}
 				data.Relations = append(data.Relations, types.Relation{
