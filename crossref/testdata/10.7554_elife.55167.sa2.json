@@ -1,7 +1,6 @@
 {
   "id": "https://doi.org/10.7554/elife.55167.sa2",
   "type": "PeerReview",
-  "url": "https://elifesciences.org/articles/55167#sa2",
   "contributors": [
     {
       "id": "https://orcid.org/0000-0002-5286-4375",
@@ -9,7 +8,7 @@
       "contributorRoles": ["Author"],
       "givenName": "Jeremy",
       "familyName": "Magland",
-      "affiliation": [
+      "affiliations": [
         {
           "name": "Center for Computational Mathematics, Flatiron Institute, New York, United States"
         }
@@ -20,7 +19,7 @@
       "contributorRoles": ["Author"],
       "givenName": "James J",
       "familyName": "Jun",
-      "affiliation": [
+      "affiliations": [
         {
           "name": "Center for Computational Mathematics, Flatiron Institute, New York, United States"
         }
@@ -32,7 +31,7 @@
       "contributorRoles": ["Author"],
       "givenName": "Elizabeth",
       "familyName": "Lovero",
-      "affiliation": [
+      "affiliations": [
         {
           "name": "Scientific Computing Core, Flatiron Institute, New York, United States"
         }
@@ -44,7 +43,7 @@
       "contributorRoles": ["Author"],
       "givenName": "Alexander J",
       "familyName": "Morley",
-      "affiliation": [
+      "affiliations": [
         {
           "name": "Medical Research Council Brain Network Dynamics Unit, University of Oxford, Oxford, United Kingdom"
         }
@@ -56,7 +55,7 @@
       "contributorRoles": ["Author"],
       "givenName": "Cole Lincoln",
       "familyName": "Hurwitz",
-      "affiliation": [
+      "affiliations": [
         {
           "name": "Institute for Adaptive and Neural Computation Informatics, University of Edinburgh, Edinburgh, United Kingdom"
         }
@@ -67,7 +66,7 @@
       "contributorRoles": ["Author"],
       "givenName": "Alessio Paolo",
       "familyName": "Buccino",
-      "affiliation": [
+      "affiliations": [
         {
           "name": "Centre for IntegrativeNeuroplasticity (CINPLA), University of Oslo, Oslo, Norway"
         }
@@ -78,7 +77,7 @@
       "contributorRoles": ["Author"],
       "givenName": "Samuel",
       "familyName": "Garcia",
-      "affiliation": [
+      "affiliations": [
         {
           "name": "Centre de Recherche en Neuroscience de Lyon, Université de Lyon, Lyon, France"
         }
@@ -89,26 +88,30 @@
       "contributorRoles": ["Author"],
       "givenName": "Alex H",
       "familyName": "Barnett",
-      "affiliation": [
+      "affiliations": [
         {
           "name": "Center for Computational Mathematics, Flatiron Institute, New York, United States"
         }
       ]
     }
   ],
+  "date": { "published": "2020-04-29" },
+  "identifiers": [
+    {
+      "identifier": "https://doi.org/10.7554/elife.55167.sa2",
+      "identifierType": "DOI"
+    }
+  ],
+  "license": {
+    "id": "CC-BY-4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/legalcode"
+  },
+  "provider": "Crossref",
+  "publisher": { "name": "eLife Sciences Publications, Ltd" },
   "titles": [
     {
       "title": "Author response: SpikeForest, reproducible web-facing ground-truth validation of automated neural spike sorters"
     }
   ],
-  "publisher": { "name": "eLife Sciences Publications, Ltd" },
-  "date": { "published": "2020-04-29" },
-  "license": {
-    "id": "CC-BY-4.0",
-    "url": "https://creativecommons.org/licenses/by/4.0/legalcode"
-  },
-  "files": [],
-  "provider": "Crossref",
-  "schema_version": "https://commonmeta.org/commonmeta_v0.12",
-  "state": "findable"
+  "url": "https://elifesciences.org/articles/55167#sa2"
 }

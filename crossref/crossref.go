@@ -61,7 +61,10 @@ type Content struct {
 		DateAsParts [][]int `json:"date-parts"`
 		DateTime    string  `json:"date-time"`
 	} `json:"created"`
-	ISSN     []string `json:"ISSN"`
+	ISSNType []struct {
+		Value string `json:"value"`
+		Type  string `json:"type"`
+	} `json:"issn-type"`
 	ISBNType []struct {
 		Value string `json:"value"`
 		Type  string `json:"type"`
@@ -311,99 +314,25 @@ func ReadCrossref(content Content) (types.Data, error) {
 
 	data.ID = doiutils.NormalizeDOI(content.DOI)
 	data.Type = CRToCMMappings[content.Type]
-	data.Identifiers = append(data.Identifiers, types.Identifier{
-		Identifier:     data.ID,
-		IdentifierType: "DOI",
-	})
-	data.Url = content.Resource.Primary.URL
-
-	for _, v := range content.Author {
-		if v.Name != "" || v.Given != "" || v.Family != "" {
-			var ID, Type string
-			if v.ORCID != "" {
-				// enforce HTTPS
-				ID, _ = utils.NormalizeUrl(v.ORCID, true, false)
-			}
-			if v.Name != "" {
-				Type = "Organization"
-			} else {
-				Type = "Person"
-			}
-			var affiliations []types.Affiliation
-			if len(v.Affiliation) > 0 {
-				for _, a := range v.Affiliation {
-					var ID string
-					if len(a.ID) > 0 && a.ID[0].IDType == "ROR" {
-						ID = utils.NormalizeROR(a.ID[0].ID)
-					}
-					affiliations = append(affiliations, types.Affiliation{
-						ID:   ID,
-						Name: a.Name,
-					})
-				}
-			}
-			data.Contributors = append(data.Contributors, types.Contributor{
-				ID:               ID,
-				Type:             Type,
-				GivenName:        v.Given,
-				FamilyName:       v.Family,
-				Name:             v.Name,
-				ContributorRoles: []string{"Author"},
-				Affiliations:     affiliations,
-			})
-
-		}
-	}
-
-	if len(content.Title) > 0 && content.Title[0] != "" {
-		data.Titles = append(data.Titles, types.Title{
-			Title: content.Title[0],
-		})
-	}
-	if len(content.Subtitle) > 0 {
-		data.Titles = append(data.Titles, types.Title{
-			Title: content.Subtitle[0],
-			Type:  "Subtitle",
-		})
-	}
-	if len(content.OriginalTitle) > 0 {
-		data.Titles = append(data.Titles, types.Title{
-			Title: content.OriginalTitle[0],
-			Type:  "TranslatedTitle",
-		})
-	}
-
-	if content.Publisher != "" {
-		data.Publisher = types.Publisher{
-			Name: content.Publisher,
-		}
-	}
-
-	if content.Published.DateTime != "" {
-		data.Date.Published = content.Published.DateTime
-	} else if len(content.Published.DateAsParts) > 0 {
-		data.Date.Published = dateutils.GetDateFromDateParts(content.Published.DateAsParts)
-	} else if content.Issued.DateTime != "" {
-		data.Date.Published = content.Issued.DateTime
-	} else if len(content.Issued.DateAsParts) > 0 {
-		data.Date.Published = dateutils.GetDateFromDateParts(content.Issued.DateAsParts)
-	}
-	if data.Date.Published == "" {
-		if content.Created.DateTime != "" {
-			data.Date.Published = content.Created.DateTime
-		} else if len(content.Created.DateAsParts) > 0 {
-			data.Date.Published = dateutils.GetDateFromDateParts(content.Created.DateAsParts)
-		}
-	}
-
 	containerType := CrossrefContainerTypes[content.Type]
 	containerType = CRToCMContainerTranslations[containerType]
+
+	data.ArchiveLocations = append(data.ArchiveLocations, content.Archive...)
+
 	var identifier, identifierType string
-	if content.ISSN != nil {
-		identifier = content.ISSN[0]
-		identifierType = "ISSN"
-	}
-	if len(content.ISBNType) > 0 {
+	if len(content.ISSNType) > 0 {
+		i := make(map[string]string)
+		for _, issn := range content.ISSNType {
+			i[issn.Type] = issn.Value
+		}
+		if i["electronic"] != "" {
+			identifier = i["electronic"]
+			identifierType = "ISSN"
+		} else if i["print"] != "" {
+			identifier = i["print"]
+			identifierType = "ISSN"
+		}
+	} else if len(content.ISBNType) > 0 {
 		i := make(map[string]string)
 		for _, isbn := range content.ISBNType {
 			i[isbn.Type] = isbn.Value
@@ -437,6 +366,63 @@ func ReadCrossref(content Content) (types.Data, error) {
 		LastPage:       lastPage,
 	}
 
+	for _, v := range content.Author {
+		if v.Name != "" || v.Given != "" || v.Family != "" {
+			var ID, Type string
+			if v.ORCID != "" {
+				// enforce HTTPS
+				ID, _ = utils.NormalizeUrl(v.ORCID, true, false)
+			}
+			if v.Name != "" {
+				Type = "Organization"
+			} else {
+				Type = "Person"
+			}
+			var affiliations []types.Affiliation
+			if len(v.Affiliation) > 0 {
+				for _, a := range v.Affiliation {
+					var ID string
+					if len(a.ID) > 0 && a.ID[0].IDType == "ROR" {
+						ID = utils.NormalizeROR(a.ID[0].ID)
+					}
+					if a.Name != "" {
+						affiliations = append(affiliations, types.Affiliation{
+							ID:   ID,
+							Name: a.Name,
+						})
+					}
+				}
+			}
+			data.Contributors = append(data.Contributors, types.Contributor{
+				ID:               ID,
+				Type:             Type,
+				GivenName:        v.Given,
+				FamilyName:       v.Family,
+				Name:             v.Name,
+				ContributorRoles: []string{"Author"},
+				Affiliations:     affiliations,
+			})
+
+		}
+	}
+
+	if content.Published.DateTime != "" {
+		data.Date.Published = content.Published.DateTime
+	} else if len(content.Published.DateAsParts) > 0 {
+		data.Date.Published = dateutils.GetDateFromDateParts(content.Published.DateAsParts)
+	} else if content.Issued.DateTime != "" {
+		data.Date.Published = content.Issued.DateTime
+	} else if len(content.Issued.DateAsParts) > 0 {
+		data.Date.Published = dateutils.GetDateFromDateParts(content.Issued.DateAsParts)
+	}
+	if data.Date.Published == "" {
+		if content.Created.DateTime != "" {
+			data.Date.Published = content.Created.DateTime
+		} else if len(content.Created.DateAsParts) > 0 {
+			data.Date.Published = dateutils.GetDateFromDateParts(content.Created.DateAsParts)
+		}
+	}
+
 	if content.Abstract != "" {
 		abstract := utils.Sanitize(content.Abstract)
 		data.Descriptions = append(data.Descriptions, types.Description{
@@ -445,20 +431,49 @@ func ReadCrossref(content Content) (types.Data, error) {
 		})
 	}
 
-	for _, v := range content.Subject {
-		subject := types.Subject{
-			Subject: v,
+	for _, v := range content.Link {
+		if v.ContentType != "unspecified" {
+			data.Files = append(data.Files, types.File{
+				Url:      v.Url,
+				MimeType: v.ContentType,
+			})
 		}
-		if !slices.Contains(data.Subjects, subject) {
-			data.Subjects = append(data.Subjects, subject)
-		}
+	}
+	if len(content.Link) > 1 {
+		data.Files = utils.DedupeSlice(data.Files)
 	}
 
-	if content.GroupTitle != "" {
-		data.Subjects = append(data.Subjects, types.Subject{
-			Subject: content.GroupTitle,
-		})
+	for _, v := range content.Funder {
+		funderIdentifier := doiutils.NormalizeDOI(v.DOI)
+		var funderIdentifierType string
+		if strings.HasPrefix(v.DOI, "10.13039") {
+			funderIdentifierType = "Crossref Funder ID"
+		}
+		if len(v.Award) > 0 {
+			for _, award := range v.Award {
+				data.FundingReferences = append(data.FundingReferences, types.FundingReference{
+					FunderIdentifier:     funderIdentifier,
+					FunderIdentifierType: funderIdentifierType,
+					FunderName:           v.Name,
+					AwardNumber:          award,
+				})
+			}
+		} else {
+			data.FundingReferences = append(data.FundingReferences, types.FundingReference{
+				FunderIdentifier:     funderIdentifier,
+				FunderIdentifierType: funderIdentifierType,
+				FunderName:           v.Name,
+			})
+		}
 	}
+	// if len(content.Funder) > 1 {
+	data.FundingReferences = utils.DedupeSlice(data.FundingReferences)
+	// }
+
+	data.Identifiers = append(data.Identifiers, types.Identifier{
+		Identifier:     data.ID,
+		IdentifierType: "DOI",
+	})
 
 	data.Language = content.Language
 	if content.License != nil && len(content.License) > 0 {
@@ -467,6 +482,14 @@ func ReadCrossref(content Content) (types.Data, error) {
 		data.License = types.License{
 			ID:  id,
 			Url: url,
+		}
+	}
+
+	data.Provider = "Crossref"
+
+	if content.Publisher != "" {
+		data.Publisher = types.Publisher{
+			Name: content.Publisher,
 		}
 	}
 
@@ -498,53 +521,47 @@ func ReadCrossref(content Content) (types.Data, error) {
 			})
 		}
 	}
-	if content.ISSN != nil {
+	if data.Container.IdentifierType == "ISSN" {
 		data.Relations = append(data.Relations, types.Relation{
-			ID:   utils.IssnAsUrl(content.ISSN[0]),
+			ID:   utils.IssnAsUrl(data.Container.Identifier),
 			Type: "IsPartOf",
 		})
 	}
 
-	for _, v := range content.Funder {
-		funderIdentifier := doiutils.NormalizeDOI(v.DOI)
-		var funderIdentifierType string
-		if strings.HasPrefix(v.DOI, "10.13039") {
-			funderIdentifierType = "Crossref Funder ID"
+	for _, v := range content.Subject {
+		subject := types.Subject{
+			Subject: v,
 		}
-		if len(v.Award) > 0 {
-			for _, award := range v.Award {
-				data.FundingReferences = append(data.FundingReferences, types.FundingReference{
-					FunderIdentifier:     funderIdentifier,
-					FunderIdentifierType: funderIdentifierType,
-					FunderName:           v.Name,
-					AwardNumber:          award,
-				})
-			}
-		} else {
-			data.FundingReferences = append(data.FundingReferences, types.FundingReference{
-				FunderIdentifier:     funderIdentifier,
-				FunderIdentifierType: funderIdentifierType,
-				FunderName:           v.Name,
-			})
+		if !slices.Contains(data.Subjects, subject) {
+			data.Subjects = append(data.Subjects, subject)
 		}
 	}
-	data.FundingReferences = utils.DedupeSlice(data.FundingReferences)
 
-	for _, v := range content.Link {
-		if v.ContentType != "unspecified" {
-			data.Files = append(data.Files, types.File{
-				Url:      v.Url,
-				MimeType: v.ContentType,
-			})
-		}
-	}
-	data.Files = utils.DedupeSlice(data.Files)
-
-	if len(content.Archive) > 0 {
-		data.ArchiveLocations = append(data.ArchiveLocations, content.Archive...)
+	if content.GroupTitle != "" {
+		data.Subjects = append(data.Subjects, types.Subject{
+			Subject: content.GroupTitle,
+		})
 	}
 
-	data.Provider = "Crossref"
+	if len(content.Title) > 0 && content.Title[0] != "" {
+		data.Titles = append(data.Titles, types.Title{
+			Title: content.Title[0],
+		})
+	}
+	if len(content.Subtitle) > 0 {
+		data.Titles = append(data.Titles, types.Title{
+			Title: content.Subtitle[0],
+			Type:  "Subtitle",
+		})
+	}
+	if len(content.OriginalTitle) > 0 {
+		data.Titles = append(data.Titles, types.Title{
+			Title: content.OriginalTitle[0],
+			Type:  "TranslatedTitle",
+		})
+	}
+
+	data.Url = content.Resource.Primary.URL
 
 	return data, nil
 }
@@ -593,7 +610,6 @@ func GetCrossrefSample(number int, member string, _type string, hasORCID bool, h
 	if err != nil {
 		fmt.Println("error:", err)
 	}
-	log.Println("Total results:", response.Message.TotalResults)
 	return response.Message.Items, nil
 }
 

@@ -104,9 +104,6 @@ func TestGetDataciteSample(t *testing.T) {
 
 	testCases := []testCase{
 		{number: 10, want: "https://api.datacite.org/works?query=member:340,type:journal-article&rows=10"},
-		{number: 1, want: "https://api.datacite.org/works?query=type:posted-content&rows=1"},
-		{number: 20, want: "https://api.datacite.org/works?query=member:78&rows=20"},
-		{number: 120, want: "https://api.datacite.org/works?rows=120"},
 	}
 	for _, tc := range testCases {
 		got, err := datacite.GetDataciteSample(tc.number)

@@ -1,0 +1,247 @@
+{
+  "id": "https://doi.org/10.5694/j.1326-5377.1943.tb44329.x",
+  "type": "JournalArticle",
+  "archiveLocations": ["Portico"],
+  "container": {
+    "type": "Journal",
+    "identifier": "1326-5377",
+    "identifierType": "ISSN",
+    "title": "Medical Journal of Australia",
+    "volume": "1",
+    "issue": "13",
+    "firstPage": "267",
+    "lastPage": "279"
+  },
+  "contributors": [
+    {
+      "type": "Person",
+      "contributorRoles": ["Author"],
+      "givenName": "Morris C.",
+      "familyName": "Davis",
+      "affiliations": [{ "name": "Alfred HospitalMelbourne" }]
+    }
+  ],
+  "date": { "published": "1943-03" },
+  "files": [
+    {
+      "url": "https://onlinelibrary.wiley.com/doi/pdf/10.5694/j.1326-5377.1943.tb44329.x",
+      "mimeType": "application/pdf"
+    }
+  ],
+  "identifiers": [
+    {
+      "identifier": "https://doi.org/10.5694/j.1326-5377.1943.tb44329.x",
+      "identifierType": "DOI"
+    }
+  ],
+  "language": "en",
+  "license": {
+    "url": "https://onlinelibrary.wiley.com/termsAndConditions#vor"
+  },
+  "provider": "Crossref",
+  "publisher": { "name": "AMPCo" },
+  "references": [
+    {
+      "key": "e_1_2_1_2_1",
+      "id": "https://doi.org/10.1001/archinte.1922.00110110030004",
+      "contributor": "Addis T.",
+      "title": "Test of the Capacity of the Kidney to Produce a Urine of High Specific Gravity",
+      "publicationYear": "1922",
+      "firstPage": "559",
+      "containerTitle": "Archives of Internal Medicine"
+    },
+    {
+      "key": "e_1_2_1_3_1",
+      "contributor": "Ambard L.",
+      "publicationYear": "1910",
+      "firstPage": "411",
+      "containerTitle": "Rapports entre le taux de l'urée dans le sang et l'élimination de l'urée dans l'urine”, Comptes‐rendus de la Société de biologie"
+    },
+    {
+      "key": "e_1_2_1_4_1",
+      "unstructured": "L.AmbardandA.Weill: “Les lois numériques de la sécrétion rénale de l'urée et du chlorure de sodium” Journal de physiologie et de pathologie générale Volume 1912 page753."
+    },
+    {
+      "key": "e_1_2_1_5_1",
+      "contributor": "Addis T.",
+      "title": "Rate of Urea Excretion. II. Rate of Excretion of Administered Urea in Young Healthy Adults on a Constant Diet",
+      "publicationYear": "1916",
+      "firstPage": "249",
+      "containerTitle": "The Journal of Biological Chemistry"
+    },
+    {
+      "key": "e_1_2_1_6_1",
+      "id": "https://doi.org/10.1016/s0021-9258(18)86861-2",
+      "contributor": "Addis T.",
+      "title": "Method for the Measurement of the Urea Excreting Function of the Kidneys",
+      "publicationYear": "1916",
+      "firstPage": "251",
+      "containerTitle": "The Journal of Biological Chemistry"
+    },
+    {
+      "key": "e_1_2_1_7_1",
+      "id": "https://doi.org/10.1001/archinte.1922.00110090111008",
+      "contributor": "Addis T.",
+      "title": "Renal Function and the Amount of Functioning Tissue",
+      "publicationYear": "1922",
+      "firstPage": "378",
+      "containerTitle": "Archives of Internal Medicine"
+    },
+    {
+      "key": "e_1_2_1_8_1",
+      "id": "https://doi.org/10.1152/ajplegacy.1923.65.1.55",
+      "contributor": "Taylor F. B.",
+      "title": "Regulation of Renal Activity. VII. Relation between the Rate of Urea Excretion and the Size of the Kidneys",
+      "publicationYear": "1923",
+      "firstPage": "55",
+      "containerTitle": "The American Journal of Physiology"
+    },
+    {
+      "key": "e_1_2_1_9_1",
+      "contributor": "Maclean H.",
+      "title": "An Investigation into the Effects of War Nephritis on Kidney Function, with Observations on Methods for Estimating the Efficiency of the Kidneys",
+      "publicationYear": "1918",
+      "firstPage": "247",
+      "containerTitle": "The Quarterly Journal of Medicine"
+    },
+    {
+      "key": "e_1_2_1_10_1",
+      "contributor": "Maclean H.",
+      "title": "On the Testing of Renal Efficiency, with Observations on the Urea Coefficient",
+      "publicationYear": "1920",
+      "firstPage": "53",
+      "containerTitle": "The British Journal of Experimental Pathology"
+    },
+    {
+      "key": "e_1_2_1_11_1",
+      "id": "https://doi.org/10.1016/s0021-9258(18)86162-2",
+      "contributor": "Austin J. H.",
+      "title": "Factors Governing the Excretion Rate of Urea",
+      "publicationYear": "1921",
+      "firstPage": "91",
+      "containerTitle": "The Journal of Biological Chemistry"
+    },
+    {
+      "key": "e_1_2_1_12_1",
+      "contributor": "McIntosh J. F.",
+      "title": "Studies of Urea Excretion: Comparison of Blood Urea Clearance with Certain Other Measures of Renal Excretion",
+      "publicationYear": "1928",
+      "firstPage": "467",
+      "containerTitle": "Journal of Clinical Investigation"
+    },
+    {
+      "key": "e_1_2_1_13_1",
+      "contributor": "D. D. Van Slyke and others",
+      "title": "Studies of Urea Excretiou: Comparison of Blood Urea Clearance with Certain Other Measures of Renal Function",
+      "publicationYear": "1930",
+      "firstPage": "357",
+      "containerTitle": "Journal of Clinical Investigation"
+    },
+    {
+      "key": "e_1_2_1_14_1",
+      "contributor": "Urquhart R. W. I.",
+      "title": "Urea Clearance Test Compared with Other Renal Function Tests in Urology",
+      "publicationYear": "1935",
+      "firstPage": "251",
+      "containerTitle": "The Canadian Medical Association Journal"
+    },
+    {
+      "key": "e_1_2_1_15_1",
+      "id": "https://doi.org/10.1136/bmj.2.3992.54",
+      "contributor": "Don C. S. D.",
+      "title": "Tests for Renal Function",
+      "publicationYear": "1937",
+      "firstPage": "54",
+      "containerTitle": "British Medical Journal"
+    },
+    {
+      "key": "e_1_2_1_16_1",
+      "contributor": "Fowweather F. S.",
+      "title": "Blood Urea Clearance Before and After Giving Urea",
+      "publicationYear": "1934",
+      "firstPage": "63",
+      "containerTitle": "The Quarterly Journal of Medicine, New Series"
+    },
+    {
+      "key": "e_1_2_1_17_1",
+      "id": "https://doi.org/10.1136/bmj.2.3836.49",
+      "contributor": "Fowweather F. S.",
+      "title": "Examination of Renal Function",
+      "publicationYear": "1934",
+      "firstPage": "49",
+      "containerTitle": "British Medical Journal"
+    },
+    {
+      "key": "e_1_2_1_18_1",
+      "id": "https://doi.org/10.1016/s0140-6736(00)85277-0",
+      "contributor": "Cope C. L.",
+      "title": "Rational Assessment of Renal Drainage",
+      "publicationYear": "1934",
+      "firstPage": "799",
+      "containerTitle": "The Lancet"
+    },
+    {
+      "key": "e_1_2_1_19_1",
+      "contributor": "Cope C. L.",
+      "title": "Reliability of Clearance Tests for Renal Efficiency",
+      "publicationYear": "1935",
+      "firstPage": "35",
+      "containerTitle": "Clinical Science"
+    },
+    {
+      "key": "e_1_2_1_20_1",
+      "id": "https://doi.org/10.1136/bmj.2.3734.192",
+      "contributor": "Joly J. S.",
+      "title": "Removal of the Prostate: Indications and Methods",
+      "publicationYear": "1932",
+      "firstPage": "192",
+      "containerTitle": "British Medical Journal"
+    },
+    {
+      "key": "e_1_2_1_21_1",
+      "id": "https://doi.org/10.5694/j.1326-5377.1938.tb67266.x",
+      "contributor": "Krieger V. I.",
+      "title": "Interpretation of Maclean's Urea Concentration Test in Assessing Renal Function in Pregnancy",
+      "publicationYear": "1938",
+      "firstPage": "557",
+      "containerTitle": "The Medical Journal of Australia"
+    },
+    {
+      "key": "e_1_2_1_22_1",
+      "id": "https://doi.org/10.5694/j.1326-5377.1938.tb45567.x",
+      "contributor": "Krieger V. I.",
+      "title": "Critical Survey of Renal Function Tests in‐their Application to the Determination of Renal Insufficiency in Toxæmias of Pregnancy",
+      "publicationYear": "1938",
+      "firstPage": "457",
+      "containerTitle": "The Medical Journal of Australia"
+    },
+    {
+      "key": "e_1_2_1_23_1",
+      "contributor": "Richards A. N.",
+      "publicationYear": "1920",
+      "containerTitle": "Kidney Function”, “Harvey Lectures"
+    },
+    {
+      "key": "e_1_2_1_24_1",
+      "id": "https://doi.org/10.1152/ajplegacy.1924.71.1.178",
+      "contributor": "Richards A. N.",
+      "title": "Description of the Glomerular Circulation in the Frog's Kidney and Observations Concerning the Action of Adrenalin and Various Other Substances upon it",
+      "publicationYear": "1924",
+      "firstPage": "178",
+      "containerTitle": "The American Journal of Physiology"
+    }
+  ],
+  "relations": [
+    {
+      "id": "https://portal.issn.org/resource/ISSN/1326-5377",
+      "type": "IsPartOf"
+    }
+  ],
+  "subjects": [{ "subject": "General Medicine" }],
+  "titles": [
+    {
+      "title": "THE INVESTIGATION OF RENAL FUNCTION WITH A NEW NOMOGRAPHIC METHOD FOR THE DETERMINATION OF UREA CLEARANCE"
+    }
+  ],
+  "url": "https://onlinelibrary.wiley.com/doi/abs/10.5694/j.1326-5377.1943.tb44329.x"
+}

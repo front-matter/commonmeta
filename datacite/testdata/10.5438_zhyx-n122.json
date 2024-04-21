@@ -1,7 +1,7 @@
 {
   "id": "https://doi.org/10.5438/zhyx-n122",
   "type": "Document",
-  "url": "https://datacite.org/blog/datacite-member-survey-2022",
+  "additionalType": "blog post",
   "contributors": [
     {
       "type": "Person",
@@ -19,16 +19,7 @@
       "affiliation": [{ "name": "DataCite" }]
     }
   ],
-  "titles": [{ "title": "DataCite Member Survey 2022", "language": "en" }],
-  "publisher": { "name": "DataCite" },
   "date": { "published": "2023" },
-  "additional_type": "blog post",
-  "language": "en",
-  "version": "1.0",
-  "license": {
-    "id": "CC-BY-4.0",
-    "url": "https://creativecommons.org/licenses/by/4.0/legalcode"
-  },
   "descriptions": [
     {
       "description": "At the end of 2022, we conducted our annual member survey, asking our members about their experience being part of the DataCite community and how DataCite services might alleviate any challenges they are facing. We thank the many members who participated in the survey for sharing their valuable perspectives with us. After analyzing their insights, we are pleased to publish the following summary of the main outcomes.",
@@ -36,18 +27,30 @@
       "language": "en"
     }
   ],
-  "references": [
-    { "key": "ref1", "doi": "https://doi.org/10.5438/k1gw-y723" },
-    { "key": "ref2", "doi": "https://doi.org/10.5438/1tek-7522" },
-    { "key": "ref3", "doi": "https://doi.org/10.5438/cnsf-ec48" },
-    { "key": "ref4", "doi": "https://doi.org/10.5438/q34f-c696" },
-    { "key": "ref5", "doi": "https://doi.org/10.5438/vacd-ve62" },
-    { "key": "ref6", "doi": "https://doi.org/10.5438/h7x6-qf64" },
-    { "key": "ref7", "doi": "https://doi.org/10.5438/vjz9-kx84" },
-    { "key": "ref8", "doi": "https://doi.org/10.5438/ptv6-vf36" }
+  "identifiers": [
+    {
+      "identifier": "https://doi.org/10.5438/zhyx-n122",
+      "identifierType": "DOI"
+    }
   ],
-  "files": [],
+  "language": "en",
+  "license": {
+    "id": "CC-BY-4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/legalcode"
+  },
   "provider": "DataCite",
-  "schema_version": "https://commonmeta.org/commonmeta_v0.12",
-  "state": "findable"
+  "publisher": { "name": "DataCite" },
+  "references": [
+    { "key": "ref1", "id": "https://doi.org/10.5438/k1gw-y723" },
+    { "key": "ref2", "id": "https://doi.org/10.5438/1tek-7522" },
+    { "key": "ref3", "id": "https://doi.org/10.5438/cnsf-ec48" },
+    { "key": "ref4", "id": "https://doi.org/10.5438/q34f-c696" },
+    { "key": "ref5", "id": "https://doi.org/10.5438/vacd-ve62" },
+    { "key": "ref6", "id": "https://doi.org/10.5438/h7x6-qf64" },
+    { "key": "ref7", "id": "https://doi.org/10.5438/vjz9-kx84" },
+    { "key": "ref8", "id": "https://doi.org/10.5438/ptv6-vf36" }
+  ],
+  "titles": [{ "title": "DataCite Member Survey 2022", "language": "en" }],
+  "url": "https://datacite.org/blog/datacite-member-survey-2022",
+  "version": "1.0"
 }

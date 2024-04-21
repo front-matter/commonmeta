@@ -618,7 +618,7 @@ func GetDataciteSample(number int) ([]Content, error) {
 		log.Fatalln(err)
 	}
 	client := http.Client{
-		Timeout: 60 * time.Second,
+		Timeout: 30 * time.Second,
 	}
 	resp, err := client.Do(req)
 	if err != nil {

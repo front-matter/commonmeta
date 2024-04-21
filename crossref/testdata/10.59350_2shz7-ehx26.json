@@ -1,1 +1,40 @@
-{"id":"https://doi.org/10.59350/2shz7-ehx26","type":"Article","url":"https://libscie.org/ku-leuven-supports-researchequals","contributors":[{"type":"Organization","contributorRoles":["Author"],"name":"Liberate Science","affiliation":[]}],"titles":[{"title":"KU Leuven supports ResearchEquals"}],"publisher":{"name":"Front Matter"},"date":{"published":"2023-05-09"},"subjects":[{"subject":"Social sciences"}],"license":{"id":"CC-BY-4.0","url":"https://creativecommons.org/licenses/by/4.0/legalcode"},"descriptions":[{"description":"KU Leuven is now an inaugural supporting member of ResearchEquals, sustaining and governing the development of modular publishing.As part of their commitment to Open Science, KU Leuven supports sustainable implementations of Open Access and Open Science through the KU Leuven Fund for Fair OA. The fund is usually only","descriptionType":"Abstract"}],"files":[{"url":"https://libscie.org/ku-leuven-supports-researchequals","mimeType":"text/html"}],"container":{"type":"Periodical"},"provider":"Crossref","schema_version":"https://commonmeta.org/commonmeta_v0.12","state":"findable"}
+{
+  "id": "https://doi.org/10.59350/2shz7-ehx26",
+  "type": "Article",
+  "container": { "type": "Periodical" },
+  "contributors": [
+    {
+      "type": "Organization",
+      "contributorRoles": ["Author"],
+      "name": "Liberate Science"
+    }
+  ],
+  "date": { "published": "2023-05-09" },
+  "descriptions": [
+    {
+      "description": "KU Leuven is now an inaugural supporting member of ResearchEquals, sustaining and governing the development of modular publishing.As part of their commitment to Open Science, KU Leuven supports sustainable implementations of Open Access and Open Science through the KU Leuven Fund for Fair OA. The fund is usually only",
+      "type": "Abstract"
+    }
+  ],
+  "files": [
+    {
+      "url": "https://libscie.org/ku-leuven-supports-researchequals",
+      "mimeType": "text/html"
+    }
+  ],
+  "identifiers": [
+    {
+      "identifier": "https://doi.org/10.59350/2shz7-ehx26",
+      "identifierType": "DOI"
+    }
+  ],
+  "license": {
+    "id": "CC-BY-4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/legalcode"
+  },
+  "provider": "Crossref",
+  "publisher": { "name": "Front Matter" },
+  "subjects": [{ "subject": "Social sciences" }],
+  "titles": [{ "title": "KU Leuven supports ResearchEquals" }],
+  "url": "https://libscie.org/ku-leuven-supports-researchequals"
+}

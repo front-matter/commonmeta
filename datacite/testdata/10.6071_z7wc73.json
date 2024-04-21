@@ -1,7 +1,7 @@
 {
   "id": "https://doi.org/10.6071/z7wc73",
   "type": "Dataset",
-  "url": "https://datadryad.org/stash/dataset/doi:10.6071/Z7WC73",
+  "additionalType": "dataset",
   "contributors": [
     {
       "id": "https://orcid.org/0000-0002-0811-8535",
@@ -53,86 +53,30 @@
       "type": "Person",
       "contributorRoles": ["ProjectLeader"],
       "givenName": "Roger",
-      "familyName": "Bales",
-      "affiliation": []
+      "familyName": "Bales"
     },
     {
       "type": "Person",
       "contributorRoles": ["DataCollector"],
       "givenName": "Matt",
-      "familyName": "Meadows",
-      "affiliation": []
+      "familyName": "Meadows"
     },
     {
       "type": "Person",
       "contributorRoles": ["DataManager"],
       "givenName": "Xiande",
-      "familyName": "Meng",
-      "affiliation": []
+      "familyName": "Meng"
     },
     {
       "type": "Person",
       "contributorRoles": ["ResearchGroup"],
       "givenName": "Southern Sierra Critical Zone",
-      "familyName": "Observatory",
-      "affiliation": []
+      "familyName": "Observatory"
     }
   ],
-  "titles": [
-    {
-      "title": "Southern Sierra Critical Zone Observatory (SSCZO), Providence Creek meteorological data, soil moisture and temperature, snow depth and air temperature"
-    }
-  ],
-  "publisher": { "name": "Dryad" },
   "date": {
     "published": "2016-03-14T17:02:02Z",
     "available": "2016-03-14T17:02:02Z"
-  },
-  "additional_type": "dataset",
-  "subjects": [
-    {
-      "subject": "air temperature",
-      "schemeUri": "http://vocab.lternet.edu",
-      "subjectScheme": "LTER Controlled Vocabulary"
-    },
-    {
-      "subject": "Earth sciences",
-      "schemeUri": "https://github.com/PLOS/plos-thesaurus",
-      "subjectScheme": "PLOS Subject Area Thesaurus"
-    },
-    {
-      "subject": "Nevada, Sierra (mountain range)",
-      "schemeUri": "http://www.getty.edu/research/tools/vocabularies/tgn/",
-      "subjectScheme": "Getty Thesaurus of Geographic Names"
-    },
-    {
-      "subject": "snow depth",
-      "schemeUri": "http://vocab.lternet.edu",
-      "subjectScheme": "LTER Controlled Vocabulary"
-    },
-    {
-      "subject": "soil temperature",
-      "schemeUri": "http://vocab.lternet.edu",
-      "subjectScheme": "LTER Controlled Vocabulary"
-    },
-    {
-      "subject": "water balance",
-      "schemeUri": "http://vocab.lternet.edu",
-      "subjectScheme": "LTER Controlled Vocabulary"
-    },
-    { "subject": "FOS: Environmental engineering", "subjectScheme": "fos" },
-    {
-      "subject": "FOS: Environmental engineering",
-      "schemeUri": "http://www.oecd.org/science/inno/38235147.pdf",
-      "subjectScheme": "Fields of Science and Technology (FOS)"
-    }
-  ],
-  "language": "en",
-  "sizes": ["2592742591 bytes"],
-  "version": "7",
-  "license": {
-    "id": "CC-BY-4.0",
-    "url": "https://creativecommons.org/licenses/by/4.0/legalcode"
   },
   "descriptions": [
     {
@@ -148,7 +92,23 @@
       "type": "Other"
     }
   ],
-  "geo_locations": [
+  "fundingReferences": [
+    {
+      "schemeUri": "https://ror.org",
+      "funderName": "National Science Foundation",
+      "awardNumber": "1331939",
+      "funderIdentifier": "https://ror.org/021nxhr62",
+      "funderIdentifierType": "ROR"
+    },
+    {
+      "schemeUri": "https://ror.org",
+      "funderName": "National Science Foundation",
+      "awardNumber": "0725097",
+      "funderIdentifier": "https://ror.org/021nxhr62",
+      "funderIdentifierType": "ROR"
+    }
+  ],
+  "geoLocations": [
     {
       "geoLocationPoint": {
         "pointLatitude": 37.047756,
@@ -171,24 +131,30 @@
       }
     }
   ],
-  "funding_references": [
+  "identifiers": [
+    { "identifier": "https://doi.org/10.6071/z7wc73", "identifierType": "DOI" }
+  ],
+  "language": "en",
+  "license": {
+    "id": "CC-BY-4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/legalcode"
+  },
+  "provider": "DataCite",
+  "publisher": { "name": "Dryad" },
+  "subjects": [
+    { "subject": "air temperature" },
+    { "subject": "Earth sciences" },
+    { "subject": "Nevada, Sierra (mountain range)" },
+    { "subject": "snow depth" },
+    { "subject": "soil temperature" },
+    { "subject": "water balance" },
+    { "subject": "FOS: Environmental engineering" }
+  ],
+  "titles": [
     {
-      "schemeUri": "https://ror.org",
-      "funderName": "National Science Foundation",
-      "awardNumber": "1331939",
-      "funderIdentifier": "https://ror.org/021nxhr62",
-      "funderIdentifierType": "ROR"
-    },
-    {
-      "schemeUri": "https://ror.org",
-      "funderName": "National Science Foundation",
-      "awardNumber": "0725097",
-      "funderIdentifier": "https://ror.org/021nxhr62",
-      "funderIdentifierType": "ROR"
+      "title": "Southern Sierra Critical Zone Observatory (SSCZO), Providence Creek meteorological data, soil moisture and temperature, snow depth and air temperature"
     }
   ],
-  "files": [],
-  "provider": "DataCite",
-  "schema_version": "https://commonmeta.org/commonmeta_v0.12",
-  "state": "findable"
+  "url": "https://datadryad.org/stash/dataset/doi:10.6071/Z7WC73",
+  "version": "7"
 }

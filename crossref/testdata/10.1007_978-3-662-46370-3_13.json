@@ -1,33 +1,44 @@
 {
   "id": "https://doi.org/10.1007/978-3-662-46370-3_13",
   "type": "BookChapter",
-  "url": "https://link.springer.com/10.1007/978-3-662-46370-3_13",
+  "container": {
+    "type": "Book",
+    "identifier": "9783662463703",
+    "identifierType": "ISBN",
+    "title": "Shoulder Stiffness",
+    "firstPage": "155",
+    "lastPage": "158"
+  },
   "contributors": [
     {
       "type": "Person",
       "contributorRoles": ["Author"],
       "givenName": "Ronald L.",
-      "familyName": "Diercks",
-      "affiliation": []
+      "familyName": "Diercks"
     },
     {
       "type": "Person",
       "contributorRoles": ["Author"],
       "givenName": "Tom Clement",
-      "familyName": "Ludvigsen",
-      "affiliation": []
+      "familyName": "Ludvigsen"
     }
   ],
-  "titles": [{ "title": "Clinical Symptoms and Physical Examinations" }],
-  "publisher": { "name": "Springer Berlin Heidelberg" },
   "date": { "published": "2015" },
+  "identifiers": [
+    {
+      "identifier": "https://doi.org/10.1007/978-3-662-46370-3_13",
+      "identifierType": "DOI"
+    }
+  ],
   "license": {
     "url": "https://www.springernature.com/gp/researchers/text-and-data-mining"
   },
+  "provider": "Crossref",
+  "publisher": { "name": "Springer Berlin Heidelberg" },
   "references": [
     {
       "key": "13_CR1",
-      "doi": "https://doi.org/10.1007/s00256-012-1391-8",
+      "id": "https://doi.org/10.1007/s00256-012-1391-8",
       "contributor": "KS Ahn",
       "publicationYear": "2012",
       "volume": "41",
@@ -38,7 +49,7 @@
     },
     {
       "key": "13_CR2",
-      "doi": "https://doi.org/10.1016/j.arthro.2004.11.003",
+      "id": "https://doi.org/10.1016/j.arthro.2004.11.003",
       "contributor": "JR Andrews",
       "publicationYear": "2005",
       "volume": "21",
@@ -58,7 +69,7 @@
     },
     {
       "key": "13_CR4",
-      "doi": "https://doi.org/10.3109/03009749009096786",
+      "id": "https://doi.org/10.3109/03009749009096786",
       "contributor": "B Baslund",
       "publicationYear": "1990",
       "volume": "19",
@@ -69,7 +80,7 @@
     },
     {
       "key": "13_CR5",
-      "doi": "https://doi.org/10.1007/s00167-007-0291-2",
+      "id": "https://doi.org/10.1007/s00167-007-0291-2",
       "contributor": "S Brue",
       "publicationYear": "2007",
       "volume": "15",
@@ -90,7 +101,7 @@
     },
     {
       "key": "13_CR7",
-      "doi": "https://doi.org/10.1136/bmj.331.7530.1453",
+      "id": "https://doi.org/10.1136/bmj.331.7530.1453",
       "contributor": "R Dias",
       "publicationYear": "2005",
       "volume": "331",
@@ -101,7 +112,7 @@
     },
     {
       "key": "13_CR8",
-      "doi": "https://doi.org/10.1016/j.jse.2004.03.002",
+      "id": "https://doi.org/10.1016/j.jse.2004.03.002",
       "contributor": "RL Diercks",
       "publicationYear": "2004",
       "volume": "13",
@@ -112,7 +123,7 @@
     },
     {
       "key": "13_CR9",
-      "doi": "https://doi.org/10.2214/ajr.164.6.7754892",
+      "id": "https://doi.org/10.2214/ajr.164.6.7754892",
       "contributor": "EW Emig",
       "publicationYear": "1995",
       "volume": "164",
@@ -123,7 +134,7 @@
     },
     {
       "key": "13_CR10",
-      "doi": "https://doi.org/10.1016/j.physio.2012.01.001",
+      "id": "https://doi.org/10.1016/j.physio.2012.01.001",
       "contributor": "NC Hanchard",
       "publicationYear": "2012",
       "volume": "98",
@@ -134,7 +145,7 @@
     },
     {
       "key": "13_CR11",
-      "doi": "https://doi.org/10.1136/oem.55.4.264",
+      "id": "https://doi.org/10.1136/oem.55.4.264",
       "contributor": "JM Harrington",
       "publicationYear": "1998",
       "volume": "55",
@@ -155,7 +166,7 @@
     },
     {
       "key": "13_CR13",
-      "doi": "https://doi.org/10.1016/j.jse.2010.08.023",
+      "id": "https://doi.org/10.1016/j.jse.2010.08.023",
       "contributor": "JE Hsu",
       "publicationYear": "2011",
       "volume": "20",
@@ -166,7 +177,7 @@
     },
     {
       "key": "13_CR14",
-      "doi": "https://doi.org/10.3109/ort.1969.40.suppl-119.01",
+      "id": "https://doi.org/10.3109/ort.1969.40.suppl-119.01",
       "contributor": "J Lundberg",
       "publicationYear": "1969",
       "volume": "Suppl 119",
@@ -176,7 +187,7 @@
     },
     {
       "key": "13_CR15",
-      "doi": "https://doi.org/10.1177/0363546509348048",
+      "id": "https://doi.org/10.1177/0363546509348048",
       "contributor": "AS Neviaser",
       "publicationYear": "2010",
       "volume": "38",
@@ -217,7 +228,7 @@
     },
     {
       "key": "13_CR19",
-      "doi": "https://doi.org/10.1136/ard.57.8.445",
+      "id": "https://doi.org/10.1136/ard.57.8.445",
       "contributor": "K Palmer",
       "publicationYear": "1998",
       "volume": "57",
@@ -228,7 +239,7 @@
     },
     {
       "key": "13_CR20",
-      "doi": "https://doi.org/10.1016/j.math.2008.04.005",
+      "id": "https://doi.org/10.1016/j.math.2008.04.005",
       "contributor": "JM Schellingerhout",
       "publicationYear": "2008",
       "volume": "13",
@@ -239,7 +250,7 @@
     },
     {
       "key": "13_CR21",
-      "doi": "https://doi.org/10.3928/01477447-20090101-29",
+      "id": "https://doi.org/10.3928/01477447-20090101-29",
       "contributor": "JC Yoo",
       "publicationYear": "2009",
       "volume": "32",
@@ -250,7 +261,7 @@
     },
     {
       "key": "13_CR22",
-      "doi": "https://doi.org/10.1016/j.jse.2010.07.008",
+      "id": "https://doi.org/10.1016/j.jse.2010.07.008",
       "contributor": "JD Zuckerman",
       "publicationYear": "2011",
       "volume": "20",
@@ -260,16 +271,6 @@
       "unstructured": "Zuckerman JD, Rokito A. Frozen shoulder: a consensus definition. J Shoulder Elbow Surg. 2011;20(2):322–5."
     }
   ],
-  "files": [],
-  "container": {
-    "type": "Book",
-    "identifier": "9783662463703",
-    "identifierType": "ISBN",
-    "title": "Shoulder Stiffness",
-    "firstPage": "155",
-    "lastPage": "158"
-  },
-  "provider": "Crossref",
-  "schema_version": "https://commonmeta.org/commonmeta_v0.12",
-  "state": "findable"
+  "titles": [{ "title": "Clinical Symptoms and Physical Examinations" }],
+  "url": "https://link.springer.com/10.1007/978-3-662-46370-3_13"
 }

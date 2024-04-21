@@ -1,7 +1,11 @@
 {
   "id": "https://doi.org/10.1017/9781108348843",
   "type": "Book",
-  "url": "https://www.cambridge.org/core/product/identifier/9781108348843/type/book",
+  "container": {
+    "type": "BookSeries",
+    "identifier": "9781108348843",
+    "identifierType": "ISBN"
+  },
   "contributors": [
     {
       "type": "Person",
@@ -10,10 +14,16 @@
       "familyName": "Leung"
     }
   ],
-  "titles": [{ "title": "The Politics of the Past in Early China" }],
-  "publisher": { "name": "Cambridge University Press" },
   "date": { "published": "2019-07-01" },
+  "identifiers": [
+    {
+      "identifier": "https://doi.org/10.1017/9781108348843",
+      "identifierType": "DOI"
+    }
+  ],
   "license": { "url": "https://www.cambridge.org/core/terms" },
+  "provider": "Crossref",
+  "publisher": { "name": "Cambridge University Press" },
   "references": [
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-273",
@@ -41,7 +51,7 @@
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-266",
-      "doi": "https://doi.org/10.1093/acprof:oso/9780199367344.001.0001"
+      "id": "https://doi.org/10.1093/acprof:oso/9780199367344.001.0001"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-264",
@@ -108,7 +118,7 @@
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-241",
-      "doi": "https://doi.org/10.1017/cbo9780511606960.009"
+      "id": "https://doi.org/10.1017/cbo9780511606960.009"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-239",
@@ -117,7 +127,7 @@
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-238",
-      "doi": "https://doi.org/10.1017/chol9780521243278"
+      "id": "https://doi.org/10.1017/chol9780521243278"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-237",
@@ -126,7 +136,7 @@
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-234",
-      "doi": "https://doi.org/10.2307/1398936"
+      "id": "https://doi.org/10.2307/1398936"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-230",
@@ -153,7 +163,7 @@
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-222",
-      "doi": "https://doi.org/10.4159/9780674043312",
+      "id": "https://doi.org/10.4159/9780674043312",
       "contributor": "Schwartz",
       "publicationYear": "1985"
     },
@@ -164,11 +174,11 @@
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-218",
-      "doi": "https://doi.org/10.1163/ej.9789004194854.i-354.54"
+      "id": "https://doi.org/10.1163/ej.9789004194854.i-354.54"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-215",
-      "doi": "https://doi.org/10.2307/j.ctt1tg5npx"
+      "id": "https://doi.org/10.2307/j.ctt1tg5npx"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-214",
@@ -203,7 +213,7 @@
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-205",
-      "doi": "https://doi.org/10.1163/156852006778388754"
+      "id": "https://doi.org/10.1163/156852006778388754"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-202",
@@ -237,15 +247,15 @@
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-194",
-      "doi": "https://doi.org/10.1007/978-94-007-4318-2_4"
+      "id": "https://doi.org/10.1007/978-94-007-4318-2_4"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-191",
-      "doi": "https://doi.org/10.1007/978-94-007-4318-2_2"
+      "id": "https://doi.org/10.1007/978-94-007-4318-2_2"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-190",
-      "doi": "https://doi.org/10.1515/9780824862572",
+      "id": "https://doi.org/10.1515/9780824862572",
       "contributor": "Pines",
       "publicationYear": "2002"
     },
@@ -279,7 +289,7 @@
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-183",
-      "doi": "https://doi.org/10.1017/eac.2015.7"
+      "id": "https://doi.org/10.1017/eac.2015.7"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-180",
@@ -288,7 +298,7 @@
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-179",
-      "doi": "https://doi.org/10.2307/3558570"
+      "id": "https://doi.org/10.2307/3558570"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-178",
@@ -297,17 +307,17 @@
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-177",
-      "doi": "https://doi.org/10.1353/book21286",
+      "id": "https://doi.org/10.1353/book21286",
       "contributor": "Olberding",
       "publicationYear": "2012"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-176",
-      "doi": "https://doi.org/10.4324/9780203804599"
+      "id": "https://doi.org/10.4324/9780203804599"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-175",
-      "doi": "https://doi.org/10.1111/j.1540-6253.2008.00508.x"
+      "id": "https://doi.org/10.1111/j.1540-6253.2008.00508.x"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-173",
@@ -321,7 +331,7 @@
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-169",
-      "doi": "https://doi.org/10.1163/26669323-04301004",
+      "id": "https://doi.org/10.1163/26669323-04301004",
       "contributor": "Nylan",
       "title": "Mapping Time in the Shiji and Hanshu Tables 表",
       "publicationYear": "2016",
@@ -331,15 +341,15 @@
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-167",
-      "doi": "https://doi.org/10.2307/2928520"
+      "id": "https://doi.org/10.2307/2928520"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-165",
-      "doi": "https://doi.org/10.2307/2719108"
+      "id": "https://doi.org/10.2307/2719108"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-164",
-      "doi": "https://doi.org/10.1515/9780824843205",
+      "id": "https://doi.org/10.1515/9780824843205",
       "contributor": "Ng",
       "publicationYear": "2005"
     },
@@ -374,7 +384,7 @@
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-158",
-      "doi": "https://doi.org/10.1163/9789004208087",
+      "id": "https://doi.org/10.1163/9789004208087",
       "contributor": "Meyer",
       "publicationYear": "2012"
     },
@@ -421,11 +431,11 @@
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-213",
-      "doi": "https://doi.org/10.1017/s0362502800003667"
+      "id": "https://doi.org/10.1017/s0362502800003667"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-203",
-      "doi": "https://doi.org/10.1007/s11466-009-0006-5"
+      "id": "https://doi.org/10.1007/s11466-009-0006-5"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-144",
@@ -444,7 +454,7 @@
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-141",
-      "doi": "https://doi.org/10.1017/chol9780521470308.011"
+      "id": "https://doi.org/10.1017/chol9780521470308.011"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-195",
@@ -464,17 +474,17 @@
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-226",
-      "doi": "https://doi.org/10.1525/9780520949669",
+      "id": "https://doi.org/10.1525/9780520949669",
       "contributor": "Shryock",
       "publicationYear": "2011"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-122",
-      "doi": "https://doi.org/10.1163/9789004343504"
+      "id": "https://doi.org/10.1163/9789004343504"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-130",
-      "doi": "https://doi.org/10.2307/2652033"
+      "id": "https://doi.org/10.2307/2652033"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-233",
@@ -483,11 +493,11 @@
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-185",
-      "doi": "https://doi.org/10.5790/hongkong/9789888028931.003.0004"
+      "id": "https://doi.org/10.5790/hongkong/9789888028931.003.0004"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-212",
-      "doi": "https://doi.org/10.1353/mln.2000.0075"
+      "id": "https://doi.org/10.1353/mln.2000.0075"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-050",
@@ -497,7 +507,7 @@
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-070",
-      "doi": "https://doi.org/10.7591/9781501734137",
+      "id": "https://doi.org/10.7591/9781501734137",
       "contributor": "Doyle",
       "publicationYear": "1986"
     },
@@ -518,7 +528,7 @@
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-039",
-      "doi": "https://doi.org/10.21313/hawaii/9780824833862.001.0001"
+      "id": "https://doi.org/10.21313/hawaii/9780824833862.001.0001"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-260",
@@ -527,11 +537,11 @@
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-217",
-      "doi": "https://doi.org/10.2307/2652717"
+      "id": "https://doi.org/10.2307/2652717"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-155",
-      "doi": "https://doi.org/10.4159/9780674040458"
+      "id": "https://doi.org/10.4159/9780674040458"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-138",
@@ -540,11 +550,11 @@
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-042",
-      "doi": "https://doi.org/10.1163/9789004246201_006"
+      "id": "https://doi.org/10.1163/9789004246201_006"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-036",
-      "doi": "https://doi.org/10.2307/j.ctt1dnnb5m"
+      "id": "https://doi.org/10.2307/j.ctt1dnnb5m"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-201",
@@ -554,23 +564,23 @@
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-249",
-      "doi": "https://doi.org/10.1017/eac.2014.20"
+      "id": "https://doi.org/10.1017/eac.2014.20"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-132",
-      "doi": "https://doi.org/10.1007/978-94-007-7113-0_5"
+      "id": "https://doi.org/10.1007/978-94-007-7113-0_5"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-055",
-      "doi": "https://doi.org/10.1017/s0041977x00036399"
+      "id": "https://doi.org/10.1017/s0041977x00036399"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-235",
-      "doi": "https://doi.org/10.1093/past/38.1.56"
+      "id": "https://doi.org/10.1093/past/38.1.56"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-081",
-      "doi": "https://doi.org/10.1525/9780520933767",
+      "id": "https://doi.org/10.1525/9780520933767",
       "contributor": "Feeney",
       "publicationYear": "2007"
     },
@@ -602,7 +612,7 @@
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-123",
-      "doi": "https://doi.org/10.1007/978-94-007-7113-0_2"
+      "id": "https://doi.org/10.1007/978-94-007-7113-0_2"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-193",
@@ -623,7 +633,7 @@
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-227",
-      "doi": "https://doi.org/10.1017/cbo9780511606960.010"
+      "id": "https://doi.org/10.1017/cbo9780511606960.010"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-9",
@@ -674,7 +684,7 @@
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-231",
-      "doi": "https://doi.org/10.1111/j.1540-6253.1999.tb00531.x"
+      "id": "https://doi.org/10.1111/j.1540-6253.1999.tb00531.x"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-243",
@@ -692,15 +702,15 @@
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-080",
-      "doi": "https://doi.org/10.2307/j.ctvdmwwt6"
+      "id": "https://doi.org/10.2307/j.ctvdmwwt6"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-037",
-      "doi": "https://doi.org/10.2307/j.ctt1dnnb3k"
+      "id": "https://doi.org/10.2307/j.ctt1dnnb3k"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-090",
-      "doi": "https://doi.org/10.26530/oapen_625891"
+      "id": "https://doi.org/10.26530/oapen_625891"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-18",
@@ -709,7 +719,7 @@
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-174",
-      "doi": "https://doi.org/10.4159/9780674915992"
+      "id": "https://doi.org/10.4159/9780674915992"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-182",
@@ -727,7 +737,7 @@
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-240",
-      "doi": "https://doi.org/10.1017/cbo9780511497995"
+      "id": "https://doi.org/10.1017/cbo9780511497995"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-1",
@@ -735,7 +745,7 @@
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-051",
-      "doi": "https://doi.org/10.1163/23521341-12340035",
+      "id": "https://doi.org/10.1163/23521341-12340035",
       "contributor": "Chen",
       "title": "The Difference between Confucian and Mencian Benevolence",
       "publicationYear": "2016",
@@ -750,7 +760,7 @@
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-171",
-      "doi": "https://doi.org/10.1017/s0362502800000985"
+      "id": "https://doi.org/10.1017/s0362502800000985"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-098",
@@ -761,11 +771,11 @@
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-040",
-      "doi": "https://doi.org/10.1111/j.1540-6253.2011.01648.x"
+      "id": "https://doi.org/10.1111/j.1540-6253.2011.01648.x"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-068",
-      "doi": "https://doi.org/10.1017/cbo9780511511967"
+      "id": "https://doi.org/10.1017/cbo9780511511967"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-10",
@@ -813,7 +823,7 @@
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-170",
-      "doi": "https://doi.org/10.1515/asia-2014-0052",
+      "id": "https://doi.org/10.1515/asia-2014-0052",
       "contributor": "Nylan",
       "title": "On the Antique Rhetoric of Friendship",
       "publicationYear": "2014",
@@ -829,11 +839,11 @@
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-079",
-      "doi": "https://doi.org/10.1353/pew.2012.0041"
+      "id": "https://doi.org/10.1353/pew.2012.0041"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-052",
-      "doi": "https://doi.org/10.2307/j.ctt1dnn9vg"
+      "id": "https://doi.org/10.2307/j.ctt1dnn9vg"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-244",
@@ -872,7 +882,7 @@
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-093",
-      "doi": "https://doi.org/10.1111/j.1540-6253.2010.01629.x"
+      "id": "https://doi.org/10.1111/j.1540-6253.2010.01629.x"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-228",
@@ -886,7 +896,7 @@
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-186",
-      "doi": "https://doi.org/10.1080/02549948.1995.11731268"
+      "id": "https://doi.org/10.1080/02549948.1995.11731268"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-263",
@@ -902,15 +912,15 @@
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-088",
-      "doi": "https://doi.org/10.17875/gup2009-452"
+      "id": "https://doi.org/10.17875/gup2009-452"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-225",
-      "doi": "https://doi.org/10.1353/jas.2015.0022"
+      "id": "https://doi.org/10.1353/jas.2015.0022"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-232",
-      "doi": "https://doi.org/10.1525/9780520922785",
+      "id": "https://doi.org/10.1525/9780520922785",
       "contributor": "Strassberg",
       "publicationYear": "2002"
     },
@@ -926,11 +936,11 @@
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-216",
-      "doi": "https://doi.org/10.1017/s0362502800003266"
+      "id": "https://doi.org/10.1017/s0362502800003266"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-103",
-      "doi": "https://doi.org/10.7312/harr17766"
+      "id": "https://doi.org/10.7312/harr17766"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-139",
@@ -940,17 +950,17 @@
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-219",
-      "doi": "https://doi.org/10.1163/9789047406914",
+      "id": "https://doi.org/10.1163/9789047406914",
       "contributor": "Schmidt-Glintzer",
       "publicationYear": "2005"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-114",
-      "doi": "https://doi.org/10.1163/15685322-10013p02"
+      "id": "https://doi.org/10.1163/15685322-10013p02"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-038",
-      "doi": "https://doi.org/10.1111/j.1540-6253.2007.00426.x"
+      "id": "https://doi.org/10.1111/j.1540-6253.2007.00426.x"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-2",
@@ -980,7 +990,7 @@
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-065",
-      "doi": "https://doi.org/10.1163/9789004246201",
+      "id": "https://doi.org/10.1163/9789004246201",
       "contributor": "Defoort",
       "publicationYear": "2013"
     },
@@ -1041,7 +1051,7 @@
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-022",
-      "doi": "https://doi.org/10.1111/j.1540-6253.1976.tb00388.x"
+      "id": "https://doi.org/10.1111/j.1540-6253.1976.tb00388.x"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-109",
@@ -1094,7 +1104,7 @@
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-031",
-      "doi": "https://doi.org/10.2307/1400248"
+      "id": "https://doi.org/10.2307/1400248"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-083",
@@ -1129,7 +1139,7 @@
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-082",
-      "doi": "https://doi.org/10.1353/nlh.2011.0045"
+      "id": "https://doi.org/10.1353/nlh.2011.0045"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-043",
@@ -1138,7 +1148,7 @@
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-024",
-      "doi": "https://doi.org/10.18399/acta.2017.20.1.001"
+      "id": "https://doi.org/10.18399/acta.2017.20.1.001"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-111",
@@ -1156,11 +1166,11 @@
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-137",
-      "doi": "https://doi.org/10.4324/9781315773605-8"
+      "id": "https://doi.org/10.4324/9781315773605-8"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-084",
-      "doi": "https://doi.org/10.7312/fras14926"
+      "id": "https://doi.org/10.7312/fras14926"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-045",
@@ -1169,11 +1179,11 @@
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-046",
-      "doi": "https://doi.org/10.1007/s40636-015-0044-8"
+      "id": "https://doi.org/10.1007/s40636-015-0044-8"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-131",
-      "doi": "https://doi.org/10.2307/j.ctv2n7r6s.13"
+      "id": "https://doi.org/10.2307/j.ctv2n7r6s.13"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-047",
@@ -1209,11 +1219,11 @@
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-053",
-      "doi": "https://doi.org/10.1179/tcr.2011.18.1.1"
+      "id": "https://doi.org/10.1179/tcr.2011.18.1.1"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-210",
-      "doi": "https://doi.org/10.1080/02549948.2017.1393950"
+      "id": "https://doi.org/10.1080/02549948.2017.1393950"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-066",
@@ -1256,13 +1266,13 @@
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-061",
-      "doi": "https://doi.org/10.1163/9789047406778",
+      "id": "https://doi.org/10.1163/9789047406778",
       "contributor": "Csikszentmihalyi",
       "publicationYear": "2004"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-062",
-      "doi": "https://doi.org/10.1007/978-90-481-2927-0_3"
+      "id": "https://doi.org/10.1007/978-90-481-2927-0_3"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-206",
@@ -1272,7 +1282,7 @@
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-089",
-      "doi": "https://doi.org/10.1111/j.1540-6253.2007.00464.x"
+      "id": "https://doi.org/10.1111/j.1540-6253.2007.00464.x"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-245",
@@ -1287,7 +1297,7 @@
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-063",
-      "doi": "https://doi.org/10.1017/cbo9781107477711"
+      "id": "https://doi.org/10.1017/cbo9781107477711"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-127",
@@ -1316,7 +1326,7 @@
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-073",
-      "doi": "https://doi.org/10.2307/2049671"
+      "id": "https://doi.org/10.2307/2049671"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-074",
@@ -1330,7 +1340,7 @@
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-077",
-      "doi": "https://doi.org/10.1215/9780822386889-003"
+      "id": "https://doi.org/10.1215/9780822386889-003"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-078",
@@ -1345,15 +1355,15 @@
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-105",
-      "doi": "https://doi.org/10.1007/s11466-007-0019-x"
+      "id": "https://doi.org/10.1007/s11466-007-0019-x"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-086",
-      "doi": "https://doi.org/10.1007/978-94-007-4318-2_5"
+      "id": "https://doi.org/10.1007/978-94-007-4318-2_5"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-091",
-      "doi": "https://doi.org/10.1179/mon.2008.56.1.001"
+      "id": "https://doi.org/10.1179/mon.2008.56.1.001"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-100",
@@ -1382,21 +1392,21 @@
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-110",
-      "doi": "https://doi.org/10.1093/past/55.1.3"
+      "id": "https://doi.org/10.1093/past/55.1.3"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-112",
-      "doi": "https://doi.org/10.1515/9781503621190",
+      "id": "https://doi.org/10.1515/9781503621190",
       "contributor": "Hucker",
       "publicationYear": "1975"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-113",
-      "doi": "https://doi.org/10.1163/9789004339026"
+      "id": "https://doi.org/10.1163/9789004339026"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-124",
-      "doi": "https://doi.org/10.1163/9789004376878"
+      "id": "https://doi.org/10.1163/9789004376878"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-267",
@@ -1405,7 +1415,7 @@
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-115",
-      "doi": "https://doi.org/10.1093/acprof:oso/9780190679118.001.0001"
+      "id": "https://doi.org/10.1093/acprof:oso/9780190679118.001.0001"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-248",
@@ -1418,7 +1428,7 @@
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-118",
-      "doi": "https://doi.org/10.1353/pew.2011.0021"
+      "id": "https://doi.org/10.1353/pew.2011.0021"
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-119",
@@ -1436,12 +1446,6 @@
       "publicationYear": "1988"
     }
   ],
-  "container": {
-    "type": "BookSeries",
-    "identifier": "9781108348843",
-    "identifierType": "ISBN"
-  },
-  "provider": "Crossref",
-  "schema_version": "https://commonmeta.org/commonmeta_v0.12",
-  "state": "findable"
+  "titles": [{ "title": "The Politics of the Past in Early China" }],
+  "url": "https://www.cambridge.org/core/product/identifier/9781108348843/type/book"
 }

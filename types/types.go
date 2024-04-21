@@ -162,90 +162,6 @@ package types
 // 	Volume    string   `json:"volume"`
 // }
 
-// used by Datacite API
-type Attributes struct {
-	DOI                  string `json:"doi"`
-	Prefix               string `json:"prefix"`
-	Suffix               string `json:"suffix"`
-	AlternateIdentifiers []struct {
-		Identifier     string `json:"identifier"`
-		IdentifierType string `json:"identifierType"`
-	} `json:"alternateIdentifiers"`
-	Creators  []DCContributor `json:"creators"`
-	Publisher string          `json:"publisher"`
-	Container struct {
-		Type           string `json:"type"`
-		Identifier     string `json:"identifier"`
-		IdentifierType string `json:"identifierType"`
-		Title          string `json:"title"`
-		Volume         string `json:"volume"`
-		Issue          string `json:"issue"`
-		FirstPage      string `json:"firstPage"`
-		LastPage       string `json:"lastPage"`
-	} `json:"container"`
-	PublicationYear int `json:"publicationYear"`
-	Titles          []struct {
-		Title     string `json:"title"`
-		TitleType string `json:"titleType"`
-		Lang      string `json:"lang"`
-	} `json:"titles"`
-	Url      string `json:"url"`
-	Subjects []struct {
-		Subject string `json:"subject"`
-	} `json:"subjects"`
-	Contributors []DCContributor `json:"contributors"`
-	Dates        []struct {
-		Date            string `json:"date"`
-		DateType        string `json:"dateType"`
-		DateInformation string `json:"dateInformation"`
-	} `json:"dates"`
-	Language string `json:"language"`
-	Types    struct {
-		ResourceTypeGeneral string `json:"resourceTypeGeneral"`
-		ResourceType        string `json:"resourceType"`
-	} `json:"types"`
-	RelatedIdentifiers []struct {
-		RelatedIdentifier     string `json:"relatedIdentifier"`
-		RelatedIdentifierType string `json:"relatedIdentifierType"`
-		RelationType          string `json:"relationType"`
-	} `json:"relatedIdentifiers"`
-	Sizes      []string `json:"sizes"`
-	Formats    []string `json:"formats"`
-	Version    string   `json:"version"`
-	RightsList []struct {
-		Rights                 string `json:"rights"`
-		RightsURI              string `json:"rightsUri"`
-		SchemeURI              string `json:"schemeUri"`
-		RightsIdentifier       string `json:"rightsIdentifier"`
-		RightsIdentifierScheme string `json:"rightsIdentifierScheme"`
-	}
-	Descriptions []struct {
-		Description     string `json:"description"`
-		DescriptionType string `json:"descriptionType"`
-		Lang            string `json:"lang"`
-	} `json:"descriptions"`
-	GeoLocations []struct {
-		GeoLocationPoint struct {
-			PointLongitude float64 `json:"pointLongitude,string"`
-			PointLatitude  float64 `json:"pointLatitude,string"`
-		} `json:"geoLocationPoint"`
-		GeoLocationBox struct {
-			WestBoundLongitude float64 `json:"westBoundLongitude,string"`
-			EastBoundLongitude float64 `json:"eastBoundLongitude,string"`
-			SouthBoundLatitude float64 `json:"southBoundLatitude,string"`
-			NorthBoundLatitude float64 `json:"northBoundLatitude,string"`
-		} `json:"geoLocationBox"`
-		GeoLocationPlace string `json:"geoLocationPlace"`
-	} `json:"geoLocations"`
-	FundingReferences []struct {
-		FunderName           string `json:"funderName"`
-		FunderIdentifier     string `json:"funderIdentifier"`
-		FunderIdentifierType string `json:"funderIdentifierType"`
-		AwardNumber          string `json:"awardNumber"`
-		AwardURI             string `json:"awardUri"`
-	} `json:"fundingReferences"`
-}
-
 type Data struct {
 	// required fields
 	ID   string `db:"id" json:"id"`
@@ -254,9 +170,9 @@ type Data struct {
 	// optional fields
 	AdditionalType    string             `db:"additional_type" json:"additional_type,omitempty"`
 	ArchiveLocations  []string           `db:"archive_locations" json:"archive_locations,omitempty"`
-	Contributors      []Contributor      `db:"contributors" json:"contributors,omitempty"`
-	Date              Date               `db:"date" json:"date,omitempty"`
 	Container         Container          `db:"container" json:"container,omitempty"`
+	Contributors      []Contributor      `db:"contributors" json:"contributors"`
+	Date              Date               `db:"date" json:"date,omitempty"`
 	Descriptions      []Description      `db:"descriptions" json:"descriptions,omitempty"`
 	Files             []File             `db:"files" json:"files,omitempty"`
 	FundingReferences []FundingReference `db:"funding_references" json:"funding_references,omitempty"`
@@ -296,7 +212,7 @@ type Contributor struct {
 	Name             string        `json:"name,omitempty"`
 	GivenName        string        `json:"givenName,omitempty"`
 	FamilyName       string        `json:"familyName,omitempty"`
-	Affiliations     []Affiliation `json:"affiliations,omitempty"`
+	Affiliations     []Affiliation `json:"affiliations"`
 	ContributorRoles []string      `json:"contributorRoles,omitempty"`
 }
 
@@ -313,20 +229,6 @@ type Date struct {
 	Valid       string `json:"valid,omitempty"`
 	Withdrawn   string `json:"withdrawn,omitempty"`
 	Other       string `json:"other,omitempty"`
-}
-
-type DCContributor struct {
-	Name            string `json:"name"`
-	GivenName       string `json:"givenName"`
-	FamilyName      string `json:"familyName"`
-	NameType        string `json:"nameType"`
-	NameIdentifiers []struct {
-		SchemeURI            string `json:"schemeUri"`
-		NameIdentifier       string `json:"nameIdentifier"`
-		NameIdentifierScheme string `json:"nameIdentifierScheme"`
-	} `json:"nameIdentifiers"`
-	Affiliation     []string `json:"affiliation"`
-	ContributorType string   `json:"contributorType"`
 }
 
 type Description struct {

@@ -1,14 +1,17 @@
 {
   "id": "https://doi.org/10.1145/3448016.3452841",
   "type": "ProceedingsArticle",
-  "url": "https://dl.acm.org/doi/10.1145/3448016.3452841",
+  "container": {
+    "type": "Proceedings",
+    "title": "Proceedings of the 2021 International Conference on Management of Data"
+  },
   "contributors": [
     {
       "type": "Person",
       "contributorRoles": ["Author"],
       "givenName": "Prashant",
       "familyName": "Pandey",
-      "affiliation": [
+      "affiliations": [
         {
           "name": "Lawrence Berkeley National Lab &amp; University of California, Berkeley, Berkeley, CA, USA"
         }
@@ -19,21 +22,21 @@
       "contributorRoles": ["Author"],
       "givenName": "Alex",
       "familyName": "Conway",
-      "affiliation": [{ "name": "VMware Research, Palo Alto, CA, USA" }]
+      "affiliations": [{ "name": "VMware Research, Palo Alto, CA, USA" }]
     },
     {
       "type": "Person",
       "contributorRoles": ["Author"],
       "givenName": "Joe",
       "familyName": "Durie",
-      "affiliation": [{ "name": "Rutgers University, New Brunswick, NJ, USA" }]
+      "affiliations": [{ "name": "Rutgers University, New Brunswick, NJ, USA" }]
     },
     {
       "type": "Person",
       "contributorRoles": ["Author"],
       "givenName": "Michael A.",
       "familyName": "Bender",
-      "affiliation": [
+      "affiliations": [
         { "name": "Stony Brook University, Stony Brook, NY, USA" }
       ]
     },
@@ -42,29 +45,24 @@
       "contributorRoles": ["Author"],
       "givenName": "Martin",
       "familyName": "Farach-Colton",
-      "affiliation": [{ "name": "Rutgers University, New Brunswick, NJ, USA" }]
+      "affiliations": [{ "name": "Rutgers University, New Brunswick, NJ, USA" }]
     },
     {
       "type": "Person",
       "contributorRoles": ["Author"],
       "givenName": "Rob",
       "familyName": "Johnson",
-      "affiliation": [{ "name": "VMware Research, Palo Alto, CA, USA" }]
+      "affiliations": [{ "name": "VMware Research, Palo Alto, CA, USA" }]
     }
   ],
-  "titles": [
-    { "title": "Vector Quotient Filters" },
-    {
-      "title": "Overcoming the Time/Space Trade-Off in Filter Design",
-      "titleType": "Subtitle"
-    }
-  ],
-  "publisher": { "name": "ACM" },
   "date": { "published": "2021-06-09" },
-  "license": {
-    "url": "https://www.acm.org/publications/policies/copyright_policy#Background"
-  },
-  "funding_references": [
+  "files": [
+    {
+      "url": "https://dl.acm.org/doi/pdf/10.1145/3448016.3452841",
+      "mimeType": "application/pdf"
+    }
+  ],
+  "fundingReferences": [
     {
       "funderName": "NSF (National Science Foundation)",
       "funderIdentifier": "https://doi.org/10.13039/100000001",
@@ -78,38 +76,43 @@
       "awardNumber": "DE-AC02-05CH11231,17-SC-20-SC"
     }
   ],
-  "references": [
+  "identifiers": [
     {
-      "key": "e_1_3_2_2_1_1",
-      "doi": "https://doi.org/10.5555/1224252.1224501"
-    },
+      "identifier": "https://doi.org/10.1145/3448016.3452841",
+      "identifierType": "DOI"
+    }
+  ],
+  "license": {
+    "url": "https://www.acm.org/publications/policies/copyright_policy#Background"
+  },
+  "provider": "Crossref",
+  "publisher": { "name": "ACM" },
+  "references": [
+    { "key": "e_1_3_2_2_1_1", "id": "https://doi.org/10.5555/1224252.1224501" },
     {
       "key": "e_1_3_2_2_2_1",
-      "doi": "https://doi.org/10.1007/978-3-030-17083-7_1"
+      "id": "https://doi.org/10.1007/978-3-030-17083-7_1"
     },
-    { "key": "e_1_3_2_2_3_1", "doi": "https://doi.org/10.1089/cmb.2019.0322" },
+    { "key": "e_1_3_2_2_3_1", "id": "https://doi.org/10.1089/cmb.2019.0322" },
     {
       "key": "e_1_3_2_2_4_1",
-      "doi": "https://doi.org/10.14778/2732951.2732958"
+      "id": "https://doi.org/10.14778/2732951.2732958"
     },
-    {
-      "key": "e_1_3_2_2_5_1",
-      "doi": "https://doi.org/10.1145/2254756.2254766"
-    },
+    { "key": "e_1_3_2_2_5_1", "id": "https://doi.org/10.1145/2254756.2254766" },
     {
       "key": "e_1_3_2_2_6_1",
-      "doi": "https://doi.org/10.1137/s0097539795288490"
+      "id": "https://doi.org/10.1137/s0097539795288490"
     },
     {
       "key": "e_1_3_2_2_7_1",
-      "doi": "https://doi.org/10.14778/2350229.2350275"
+      "id": "https://doi.org/10.14778/2350229.2350275"
     },
     {
       "key": "e_1_3_2_2_8_1",
-      "doi": "https://doi.org/10.1137/s009753970444435x"
+      "id": "https://doi.org/10.1137/s009753970444435x"
     },
-    { "key": "e_1_3_2_2_9_1", "doi": "https://doi.org/10.1145/362686.362692" },
-    { "key": "e_1_3_2_2_10_1", "doi": "https://doi.org/10.1007/11841036_61" },
+    { "key": "e_1_3_2_2_9_1", "id": "https://doi.org/10.1145/362686.362692" },
+    { "key": "e_1_3_2_2_10_1", "id": "https://doi.org/10.1007/11841036_61" },
     {
       "key": "e_1_3_2_2_11_1",
       "contributor": "Bradley Phelim",
@@ -124,11 +127,11 @@
     },
     {
       "key": "e_1_3_2_2_13_1",
-      "doi": "https://doi.org/10.14778/3213880.3213884"
+      "id": "https://doi.org/10.14778/3213880.3213884"
     },
     {
       "key": "e_1_3_2_2_14_1",
-      "doi": "https://doi.org/10.1080/15427951.2004.10129096"
+      "id": "https://doi.org/10.1080/15427951.2004.10129096"
     },
     {
       "key": "e_1_3_2_2_15_1",
@@ -138,17 +141,14 @@
     },
     {
       "key": "e_1_3_2_2_16_1",
-      "doi": "https://doi.org/10.5555/3386691.3386712"
+      "id": "https://doi.org/10.5555/3386691.3386712"
     },
-    { "key": "e_1_3_2_2_17_1", "doi": "https://doi.org/10.1145/800133.804332" },
-    { "key": "e_1_3_2_2_18_1", "doi": "https://doi.org/10.1109/sfcs.1985.48" },
-    {
-      "key": "e_1_3_2_2_19_1",
-      "doi": "https://doi.org/10.1186/1748-7188-8-22"
-    },
+    { "key": "e_1_3_2_2_17_1", "id": "https://doi.org/10.1145/800133.804332" },
+    { "key": "e_1_3_2_2_18_1", "id": "https://doi.org/10.1109/sfcs.1985.48" },
+    { "key": "e_1_3_2_2_19_1", "id": "https://doi.org/10.1186/1748-7188-8-22" },
     {
       "key": "e_1_3_2_2_20_1",
-      "doi": "https://doi.org/10.1093/bioinformatics/btu558"
+      "id": "https://doi.org/10.1093/bioinformatics/btu558"
     },
     {
       "key": "e_1_3_2_2_21_1",
@@ -168,13 +168,13 @@
     },
     {
       "key": "e_1_3_2_2_23_1",
-      "doi": "https://doi.org/10.1145/3035918.3064054"
+      "id": "https://doi.org/10.1145/3035918.3064054"
     },
     {
       "key": "e_1_3_2_2_24_1",
-      "doi": "https://doi.org/10.1145/2883591.2883597"
+      "id": "https://doi.org/10.1145/2883591.2883597"
     },
-    { "key": "e_1_3_2_2_25_1", "doi": "https://doi.org/10.1109/icdcs.2011.44" },
+    { "key": "e_1_3_2_2_25_1", "id": "https://doi.org/10.1109/icdcs.2011.44" },
     {
       "key": "e_1_3_2_2_26_1",
       "contributor": "Debnath Biplob K",
@@ -188,7 +188,7 @@
     },
     {
       "key": "e_1_3_2_2_28_1",
-      "doi": "https://doi.org/10.1145/2833312.2833449"
+      "id": "https://doi.org/10.1145/2833312.2833449"
     },
     {
       "key": "e_1_3_2_2_29_1",
@@ -203,9 +203,9 @@
     },
     {
       "key": "e_1_3_2_2_31_1",
-      "doi": "https://doi.org/10.1145/2674005.2674994"
+      "id": "https://doi.org/10.1145/2674005.2674994"
     },
-    { "key": "e_1_3_2_2_32_1", "doi": "https://doi.org/10.1109/90.851975" },
+    { "key": "e_1_3_2_2_32_1", "id": "https://doi.org/10.1109/90.851975" },
     {
       "key": "e_1_3_2_2_33_1",
       "contributor": "Farach Martin",
@@ -214,11 +214,11 @@
     },
     {
       "key": "e_1_3_2_2_34_1",
-      "doi": "https://doi.org/10.1145/1597036.1597040"
+      "id": "https://doi.org/10.1145/1597036.1597040"
     },
     {
       "key": "e_1_3_2_2_35_1",
-      "doi": "https://doi.org/10.1109/ipdps.2018.00055"
+      "id": "https://doi.org/10.1109/ipdps.2018.00055"
     },
     {
       "key": "e_1_3_2_2_36_1",
@@ -234,11 +234,11 @@
     },
     {
       "key": "e_1_3_2_2_38_1",
-      "doi": "https://doi.org/10.5555/1070432.1070548"
+      "id": "https://doi.org/10.5555/1070432.1070548"
     },
     {
       "key": "e_1_3_2_2_39_1",
-      "doi": "https://doi.org/10.1007/3-540-44676-1_10"
+      "id": "https://doi.org/10.1007/3-540-44676-1_10"
     },
     {
       "key": "e_1_3_2_2_40_1",
@@ -254,32 +254,32 @@
     },
     {
       "key": "e_1_3_2_2_42_1",
-      "doi": "https://doi.org/10.1093/bioinformatics/btx261"
+      "id": "https://doi.org/10.1093/bioinformatics/btx261"
     },
     {
       "key": "e_1_3_2_2_43_1",
-      "doi": "https://doi.org/10.1145/3035918.3035963"
+      "id": "https://doi.org/10.1145/3035918.3035963"
     },
     {
       "key": "e_1_3_2_2_44_1",
-      "doi": "https://doi.org/10.1093/bioinformatics/btx636"
+      "id": "https://doi.org/10.1093/bioinformatics/btx636"
     },
     {
       "key": "e_1_3_2_2_45_1",
-      "doi": "https://doi.org/10.1145/3318464.3380598"
+      "id": "https://doi.org/10.1145/3318464.3380598"
     },
     {
       "key": "e_1_3_2_2_46_1",
-      "doi": "https://doi.org/10.1073/pnas.1121464109"
+      "id": "https://doi.org/10.1073/pnas.1121464109"
     },
     {
       "key": "e_1_3_2_2_47_1",
-      "doi": "https://doi.org/10.1007/978-3-540-72845-0_9"
+      "id": "https://doi.org/10.1007/978-3-540-72845-0_9"
     },
-    { "key": "e_1_3_2_2_48_1", "doi": "https://doi.org/10.1109/tpds.2013.46" },
+    { "key": "e_1_3_2_2_48_1", "id": "https://doi.org/10.1109/tpds.2013.46" },
     {
       "key": "e_1_3_2_2_49_1",
-      "doi": "https://doi.org/10.1145/3132747.3132765"
+      "id": "https://doi.org/10.1145/3132747.3132765"
     },
     {
       "key": "e_1_3_2_2_50_1",
@@ -301,7 +301,7 @@
     },
     {
       "key": "e_1_3_2_2_53_1",
-      "doi": "https://doi.org/10.1093/bioinformatics/btq230"
+      "id": "https://doi.org/10.1093/bioinformatics/btq230"
     },
     {
       "key": "e_1_3_2_2_54_1",
@@ -313,22 +313,14 @@
       "key": "e_1_3_2_2_55_1",
       "unstructured": "Maysam Yabandeh. 2017. Partitioned Index/Filters. https://rocksdb.org/blog/2017/ 05/12/partitioned-index-filter.html.  Maysam Yabandeh. 2017. Partitioned Index/Filters. https://rocksdb.org/blog/2017/ 05/12/partitioned-index-filter.html."
     },
+    { "key": "e_1_3_2_2_56_1", "id": "https://doi.org/10.5555/1364813.1364831" }
+  ],
+  "titles": [
+    { "title": "Vector Quotient Filters" },
     {
-      "key": "e_1_3_2_2_56_1",
-      "doi": "https://doi.org/10.5555/1364813.1364831"
+      "title": "Overcoming the Time/Space Trade-Off in Filter Design",
+      "titleType": "Subtitle"
     }
   ],
-  "files": [
-    {
-      "url": "https://dl.acm.org/doi/pdf/10.1145/3448016.3452841",
-      "mimeType": "application/pdf"
-    }
-  ],
-  "container": {
-    "type": "Proceedings",
-    "title": "Proceedings of the 2021 International Conference on Management of Data"
-  },
-  "provider": "Crossref",
-  "schema_version": "https://commonmeta.org/commonmeta_v0.12",
-  "state": "findable"
+  "url": "https://dl.acm.org/doi/10.1145/3448016.3452841"
 }
