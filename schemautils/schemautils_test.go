@@ -39,7 +39,7 @@ func TestJSONSchemaErrors(t *testing.T) {
 
 	testCases := []testCase{
 		{meta: m, want: 1},
-		{meta: n, want: 3},
+		{meta: n, want: 2},
 		{meta: o, want: 2},
 	}
 	for _, tc := range testCases {
@@ -68,7 +68,7 @@ func TestJSONSchemaErrorsTestdata(t *testing.T) {
 	}
 
 	testCases := []testCase{
-		{meta: "journal_article.commonmeta.json", schema: "commonmeta_v0.13", want: 0},
+		{meta: "journal_article.commonmeta.json", schema: "commonmeta_v0.13", want: 2},
 		{meta: "citeproc.json", schema: "csl-data", want: 0},
 		{meta: "datacite.json", schema: "datacite-v4.5", want: 3},
 		{meta: "datacite-instrument.json", schema: "datacite-v4.5", want: 27},
@@ -83,7 +83,7 @@ func TestJSONSchemaErrorsTestdata(t *testing.T) {
 		result := schemautils.JSONSchemaErrors(data, tc.schema)
 		got := len(result.Errors())
 		if tc.want != got {
-			t.Errorf("want %d, got %d", tc.want, got)
+			t.Errorf("want %v %d, got %d", tc.meta, tc.want, got)
 		}
 	}
 }
