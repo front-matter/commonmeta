@@ -9,14 +9,14 @@
       "contributorRoles": ["Author"],
       "givenName": "Roger",
       "familyName": "Bales",
-      "affiliation": [{ "name": "University of California, Merced" }]
+      "affiliations": [{ "name": "University of California, Merced" }]
     },
     {
       "type": "Person",
       "contributorRoles": ["Author"],
       "givenName": "Matt",
       "familyName": "Meadows",
-      "affiliation": [{ "name": "University of California, Merced" }]
+      "affiliations": [{ "name": "University of California, Merced" }]
     },
     {
       "id": "https://orcid.org/0000-0002-8862-1404",
@@ -24,7 +24,7 @@
       "contributorRoles": ["Author"],
       "givenName": "Erin",
       "familyName": "Stacy",
-      "affiliation": [{ "name": "University of California, Merced" }]
+      "affiliations": [{ "name": "University of California, Merced" }]
     },
     {
       "id": "https://orcid.org/0000-0002-9627-2427",
@@ -32,7 +32,7 @@
       "contributorRoles": ["Author"],
       "givenName": "Martha",
       "familyName": "Conklin",
-      "affiliation": [{ "name": "University of California, Merced" }]
+      "affiliations": [{ "name": "University of California, Merced" }]
     },
     {
       "id": "https://orcid.org/0000-0001-5344-0673",
@@ -40,14 +40,14 @@
       "contributorRoles": ["Author"],
       "givenName": "Xiande",
       "familyName": "Meng",
-      "affiliation": [{ "name": "University of California, Merced" }]
+      "affiliations": [{ "name": "University of California, Merced" }]
     },
     {
       "type": "Person",
       "contributorRoles": ["Author"],
       "givenName": "SSCZO",
       "familyName": "Southern Sierra Critical Zone Observatory",
-      "affiliation": [{ "name": "National Science Foundation" }]
+      "affiliations": [{ "name": "National Science Foundation" }]
     },
     {
       "type": "Person",

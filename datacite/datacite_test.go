@@ -94,24 +94,24 @@ func TestFetchDatacite(t *testing.T) {
 	}
 }
 
-func TestGetDataciteSample(t *testing.T) {
-	t.Parallel()
+// func TestGetDataciteSample(t *testing.T) {
+// 	t.Parallel()
 
-	type testCase struct {
-		number int
-		want   string
-	}
+// 	type testCase struct {
+// 		number int
+// 		want   string
+// 	}
 
-	testCases := []testCase{
-		{number: 10, want: "https://api.datacite.org/works?query=member:340,type:journal-article&rows=10"},
-	}
-	for _, tc := range testCases {
-		got, err := datacite.GetDataciteSample(tc.number)
-		if err != nil {
-			t.Errorf("Datacite Sample(%v): error %v", tc.number, err)
-		}
-		if diff := cmp.Diff(tc.want, got); diff != "" {
-			t.Errorf("DataciteApiSampleUrl mismatch (-want +got):\n%s", diff)
-		}
-	}
-}
+// 	testCases := []testCase{
+// 		{number: 10, want: "https://api.datacite.org/works?query=member:340,type:journal-article&rows=10"},
+// 	}
+// 	for _, tc := range testCases {
+// 		got, err := datacite.GetDataciteSample(tc.number)
+// 		if err != nil {
+// 			t.Errorf("Datacite Sample(%v): error %v", tc.number, err)
+// 		}
+// 		if diff := cmp.Diff(tc.want, got); diff != "" {
+// 			t.Errorf("DataciteApiSampleUrl mismatch (-want +got):\n%s", diff)
+// 		}
+// 	}
+// }

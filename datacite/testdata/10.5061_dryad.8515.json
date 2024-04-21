@@ -8,7 +8,7 @@
       "contributorRoles": ["Author"],
       "givenName": "Benjamin",
       "familyName": "Ollomo",
-      "affiliation": [
+      "affiliations": [
         {
           "name": "Centre International de Recherches Médicales de Franceville"
         }
@@ -19,7 +19,7 @@
       "contributorRoles": ["Author"],
       "givenName": "Patrick",
       "familyName": "Durand",
-      "affiliation": [
+      "affiliations": [
         { "name": "French National Centre for Scientific Research" }
       ]
     },
@@ -28,7 +28,7 @@
       "contributorRoles": ["Author"],
       "givenName": "Franck",
       "familyName": "Prugnolle",
-      "affiliation": [
+      "affiliations": [
         { "name": "French National Centre for Scientific Research" }
       ]
     },
@@ -43,7 +43,7 @@
       "contributorRoles": ["Author"],
       "givenName": "Céline",
       "familyName": "Arnathau",
-      "affiliation": [
+      "affiliations": [
         { "name": "French National Centre for Scientific Research" }
       ]
     },
@@ -52,7 +52,7 @@
       "contributorRoles": ["Author"],
       "givenName": "Dieudonné",
       "familyName": "Nkoghe",
-      "affiliation": [
+      "affiliations": [
         {
           "name": "Centre International de Recherches Médicales de Franceville"
         }
@@ -63,7 +63,7 @@
       "contributorRoles": ["Author"],
       "givenName": "Eric",
       "familyName": "Leroy",
-      "affiliation": [
+      "affiliations": [
         {
           "name": "Centre International de Recherches Médicales de Franceville"
         }
@@ -74,7 +74,7 @@
       "contributorRoles": ["Author"],
       "givenName": "François",
       "familyName": "Renaud",
-      "affiliation": [
+      "affiliations": [
         { "name": "French National Centre for Scientific Research" }
       ]
     }

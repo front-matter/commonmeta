@@ -168,15 +168,15 @@ type Data struct {
 	Type string `db:"type" json:"type"`
 
 	// optional fields
-	AdditionalType    string             `db:"additional_type" json:"additional_type,omitempty"`
-	ArchiveLocations  []string           `db:"archive_locations" json:"archive_locations,omitempty"`
+	AdditionalType    string             `db:"additional_type" json:"additionalType,omitempty"`
+	ArchiveLocations  []string           `db:"archive_locations" json:"archiveLocations,omitempty"`
 	Container         Container          `db:"container" json:"container,omitempty"`
 	Contributors      []Contributor      `db:"contributors" json:"contributors"`
 	Date              Date               `db:"date" json:"date,omitempty"`
 	Descriptions      []Description      `db:"descriptions" json:"descriptions,omitempty"`
 	Files             []File             `db:"files" json:"files,omitempty"`
-	FundingReferences []FundingReference `db:"funding_references" json:"funding_references,omitempty"`
-	GeoLocations      []GeoLocation      `db:"geo_locations" json:"geo_locations,omitempty"`
+	FundingReferences []FundingReference `db:"funding_references" json:"fundingReferences,omitempty"`
+	GeoLocations      []GeoLocation      `db:"geo_locations" json:"geoLocations,omitempty"`
 	Identifiers       []Identifier       `db:"identifiers" json:"identifiers,omitempty"`
 	Language          string             `db:"language" json:"language,omitempty"`
 	License           License            `db:"license" json:"license,omitempty"`
@@ -212,7 +212,7 @@ type Contributor struct {
 	Name             string        `json:"name,omitempty"`
 	GivenName        string        `json:"givenName,omitempty"`
 	FamilyName       string        `json:"familyName,omitempty"`
-	Affiliations     []Affiliation `json:"affiliations"`
+	Affiliations     []Affiliation `json:"affiliations,omitempty"`
 	ContributorRoles []string      `json:"contributorRoles,omitempty"`
 }
 

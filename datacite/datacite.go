@@ -1,6 +1,7 @@
 package datacite
 
 import (
+	"commonmeta/constants"
 	"commonmeta/doiutils"
 	"commonmeta/types"
 	"commonmeta/utils"
@@ -27,8 +28,8 @@ type Attributes struct {
 	Prefix               string `json:"prefix"`
 	Suffix               string `json:"suffix"`
 	AlternateIdentifiers []struct {
-		Identifier     string `json:"identifier"`
-		IdentifierType string `json:"identifierType"`
+		AlternateIdentifier     string `json:"alternateIdentifier"`
+		AlternateIdentifierType string `json:"alternateIdentifierType"`
 	} `json:"alternateIdentifiers"`
 	Creators  []Contributor `json:"creators"`
 	Publisher string        `json:"publisher"`
@@ -156,52 +157,6 @@ var DCToCMTranslations = map[string]string{
 	"Other":                 "Other",
 }
 
-// from commonmeta schema
-var CommonmetaContributorRoles = []string{
-	"Author",
-	"Editor",
-	"Chair",
-	"Reviewer",
-	"ReviewAssistant",
-	"StatsReviewer",
-	"ReviewerExternal",
-	"Reader",
-	"Translator",
-	"ContactPerson",
-	"DataCollector",
-	"DataManager",
-	"Distributor",
-	"HostingInstitution",
-	"Producer",
-	"ProjectLeader",
-	"ProjectManager",
-	"ProjectMember",
-	"RegistrationAgency",
-	"RegistrationAuthority",
-	"RelatedPerson",
-	"ResearchGroup",
-	"RightsHolder",
-	"Researcher",
-	"Sponsor",
-	"WorkPackageLeader",
-	"Conceptualization",
-	"DataCuration",
-	"FormalAnalysis",
-	"FundingAcquisition",
-	"Investigation",
-	"Methodology",
-	"ProjectAdministration",
-	"Resources",
-	"Software",
-	"Supervision",
-	"Validation",
-	"Visualization",
-	"WritingOriginalDraft",
-	"WritingReviewEditing",
-	"Maintainer",
-	"Other",
-}
-
 func FetchDatacite(str string) (types.Data, error) {
 	var data types.Data
 	id, ok := doiutils.ValidateDOI(str)
@@ -273,88 +228,60 @@ func GetDatacite(pid string) (Content, error) {
 // read DataCite JSON response and return work struct in Commonmeta format
 func ReadDatacite(content Content) (types.Data, error) {
 	var data = types.Data{}
+	var err error
 
 	data.ID = doiutils.NormalizeDOI(content.Attributes.DOI)
 	data.Type = DCToCMTranslations[content.Attributes.Types.ResourceTypeGeneral]
-	var err error
 
-	data.Identifiers = append(data.Identifiers, types.Identifier{
-		Identifier:     data.ID,
-		IdentifierType: "DOI",
-	})
-	if len(content.Attributes.AlternateIdentifiers) > 0 {
-		for _, v := range content.Attributes.AlternateIdentifiers {
-			if content.Attributes.AlternateIdentifiers[0].Identifier != "" {
-				data.Identifiers = append(data.Identifiers, types.Identifier{
-					Identifier:     v.Identifier,
-					IdentifierType: v.IdentifierType,
-				})
-			}
-		}
-	}
+	// ArchiveLocations not yet supported
 
-	data.AdditionalType = DCToCMTranslations[content.Attributes.Types.ResourceType]
-	if data.AdditionalType != "" {
-		data.Type = data.AdditionalType
-		data.AdditionalType = ""
-	} else {
+	// Support the additional types added in schema 4.4
+	AdditionalType := DCToCMTranslations[content.Attributes.Types.ResourceType]
+	if AdditionalType != "" {
+		data.Type = AdditionalType
+	} else if content.Attributes.Types.ResourceType != "" {
 		data.AdditionalType = content.Attributes.Types.ResourceType
 	}
-	data.Url, err = utils.NormalizeUrl(content.Attributes.Url, true, false)
-	if err != nil {
-		log.Println(err)
+
+	data.Container = types.Container{
+		Identifier:     content.Attributes.Container.Identifier,
+		IdentifierType: content.Attributes.Container.IdentifierType,
+		Type:           content.Attributes.Container.Type,
+		Title:          content.Attributes.Container.Title,
+		Volume:         content.Attributes.Container.Volume,
+		Issue:          content.Attributes.Container.Issue,
+		FirstPage:      content.Attributes.Container.FirstPage,
+		LastPage:       content.Attributes.Container.LastPage,
 	}
 
-	if len(content.Attributes.Creators) > 0 {
-		for _, v := range content.Attributes.Creators {
-			if v.Name != "" || v.GivenName != "" || v.FamilyName != "" {
-				contributor := GetContributor(v)
-				containsID := slices.ContainsFunc(data.Contributors, func(e types.Contributor) bool {
-					return e.ID != "" && e.ID == contributor.ID
-				})
-				if containsID {
-					log.Printf("Contributor with ID %s already exists", contributor.ID)
-				} else {
-					data.Contributors = append(data.Contributors, contributor)
-
-				}
-			}
-		}
-
-		// merge creators and contributors
-		for _, v := range content.Attributes.Contributors {
-			if v.Name != "" || v.GivenName != "" || v.FamilyName != "" {
-				contributor := GetContributor(v)
-				containsID := slices.ContainsFunc(data.Contributors, func(e types.Contributor) bool {
-					return e.ID != "" && e.ID == contributor.ID
-				})
-				if containsID {
-					log.Printf("Contributor with ID %s already exists", contributor.ID)
-				} else {
-					data.Contributors = append(data.Contributors, contributor)
-
-				}
-			}
-		}
-	}
-
-	if len(content.Attributes.Titles) > 0 {
-		for _, v := range content.Attributes.Titles {
-			var t string
-			if slices.Contains([]string{"MainTitle", "Subtitle", "TranslatedTitle"}, v.TitleType) {
-				t = v.TitleType
-			}
-			data.Titles = append(data.Titles, types.Title{
-				Title:    v.Title,
-				Type:     t,
-				Language: v.Lang,
+	for _, v := range content.Attributes.Creators {
+		if v.Name != "" || v.GivenName != "" || v.FamilyName != "" {
+			contributor := GetContributor(v)
+			containsID := slices.ContainsFunc(data.Contributors, func(e types.Contributor) bool {
+				return e.ID != "" && e.ID == contributor.ID
 			})
+			if containsID {
+				log.Printf("Contributor with ID %s already exists", contributor.ID)
+			} else {
+				data.Contributors = append(data.Contributors, contributor)
+
+			}
 		}
 	}
 
-	if content.Attributes.Publisher != "" {
-		data.Publisher = types.Publisher{
-			Name: content.Attributes.Publisher,
+	// merge creators and contributors
+	for _, v := range content.Attributes.Contributors {
+		if v.Name != "" || v.GivenName != "" || v.FamilyName != "" {
+			contributor := GetContributor(v)
+			containsID := slices.ContainsFunc(data.Contributors, func(e types.Contributor) bool {
+				return e.ID != "" && e.ID == contributor.ID
+			})
+			if containsID {
+				log.Printf("Contributor with ID %s already exists", contributor.ID)
+			} else {
+				data.Contributors = append(data.Contributors, contributor)
+
+			}
 		}
 	}
 
@@ -395,43 +322,103 @@ func ReadDatacite(content Content) (types.Data, error) {
 			data.Date.Other = v.Date
 		}
 	}
-
-	data.Container = types.Container{
-		Identifier:     content.Attributes.Container.Identifier,
-		IdentifierType: content.Attributes.Container.IdentifierType,
-		Type:           content.Attributes.Container.Type,
-		Title:          content.Attributes.Container.Title,
-		Volume:         content.Attributes.Container.Volume,
-		Issue:          content.Attributes.Container.Issue,
-		FirstPage:      content.Attributes.Container.FirstPage,
-		LastPage:       content.Attributes.Container.LastPage,
+	if data.Date.Published == "" {
+		data.Date.Published = strconv.Itoa(content.Attributes.PublicationYear)
 	}
 
-	if len(content.Attributes.Descriptions) > 0 {
-		for _, v := range content.Attributes.Descriptions {
-			var t string
-			if slices.Contains([]string{"Abstract", "Summary", "Methods", "TechnicalInfo", "Other"}, v.DescriptionType) {
-				t = v.DescriptionType
-			} else {
-				t = "Other"
+	for _, v := range content.Attributes.Descriptions {
+		var t string
+		if slices.Contains([]string{"Abstract", "Summary", "Methods", "TechnicalInfo", "Other"}, v.DescriptionType) {
+			t = v.DescriptionType
+		} else {
+			t = "Other"
+		}
+		description := utils.Sanitize(v.Description)
+		data.Descriptions = append(data.Descriptions, types.Description{
+			Description: description,
+			Type:        t,
+			Language:    v.Lang,
+		})
+	}
+
+	// Files not yet supported. Sizes and formats are part of the file object,
+	// but can't be mapped directly
+
+	for _, v := range content.Attributes.FundingReferences {
+		data.FundingReferences = append(data.FundingReferences, types.FundingReference{
+			FunderIdentifier:     v.FunderIdentifier,
+			FunderIdentifierType: v.FunderIdentifierType,
+			FunderName:           v.FunderName,
+			AwardNumber:          v.AwardNumber,
+			AwardURI:             v.AwardURI,
+		})
+	}
+
+	for _, v := range content.Attributes.GeoLocations {
+		data.GeoLocations = append(data.GeoLocations, types.GeoLocation{
+			GeoLocationPoint: types.GeoLocationPoint{
+				PointLongitude: v.GeoLocationPoint.PointLongitude,
+				PointLatitude:  v.GeoLocationPoint.PointLatitude,
+			},
+			GeoLocationPlace: v.GeoLocationPlace,
+			GeoLocationBox: types.GeoLocationBox{
+				EastBoundLongitude: v.GeoLocationBox.EastBoundLongitude,
+				WestBoundLongitude: v.GeoLocationBox.WestBoundLongitude,
+				SouthBoundLatitude: v.GeoLocationBox.SouthBoundLatitude,
+				NorthBoundLatitude: v.GeoLocationBox.NorthBoundLatitude,
+			},
+		})
+	}
+
+	if len(content.Attributes.AlternateIdentifiers) > 0 {
+		supportedIdentifiers := []string{
+			"ARK",
+			"arXiv",
+			"Bibcode",
+			"DOI",
+			"Handle",
+			"ISBN",
+			"ISSN",
+			"PMID",
+			"PMCID",
+			"PURL",
+			"URL",
+			"URN",
+			"Other",
+		}
+		for _, v := range content.Attributes.AlternateIdentifiers {
+			identifierType := "Other"
+			if slices.Contains(supportedIdentifiers, v.AlternateIdentifierType) {
+				identifierType = v.AlternateIdentifierType
 			}
-			description := utils.Sanitize(v.Description)
-			data.Descriptions = append(data.Descriptions, types.Description{
-				Description: description,
-				Type:        t,
-				Language:    v.Lang,
-			})
+			if v.AlternateIdentifier == "" {
+				data.Identifiers = append(data.Identifiers, types.Identifier{
+					Identifier:     v.AlternateIdentifier,
+					IdentifierType: identifierType,
+				})
+			}
+		}
+	}
+	data.Identifiers = append(data.Identifiers, types.Identifier{
+		Identifier:     data.ID,
+		IdentifierType: "DOI",
+	})
+	if len(data.Identifiers) > 1 {
+		data.Identifiers = utils.DedupeSlice(data.Identifiers)
+	}
+
+	if content.Attributes.Publisher != "" {
+		data.Publisher = types.Publisher{
+			Name: content.Attributes.Publisher,
 		}
 	}
 
-	if len(content.Attributes.Subjects) > 0 {
-		for _, v := range content.Attributes.Subjects {
-			subject := types.Subject{
-				Subject: v.Subject,
-			}
-			if !slices.Contains(data.Subjects, subject) {
-				data.Subjects = append(data.Subjects, subject)
-			}
+	for _, v := range content.Attributes.Subjects {
+		subject := types.Subject{
+			Subject: v.Subject,
+		}
+		if !slices.Contains(data.Subjects, subject) {
+			data.Subjects = append(data.Subjects, subject)
 		}
 	}
 
@@ -449,7 +436,7 @@ func ReadDatacite(content Content) (types.Data, error) {
 		}
 	}
 
-	data.Version = content.Attributes.Version
+	data.Provider = "DataCite"
 
 	if len(content.Attributes.RelatedIdentifiers) > 0 {
 		supportedRelations := []string{
@@ -502,44 +489,24 @@ func ReadDatacite(content Content) (types.Data, error) {
 		}
 	}
 
-	if len(content.Attributes.FundingReferences) > 0 {
-		for _, v := range content.Attributes.FundingReferences {
-			data.FundingReferences = append(data.FundingReferences, types.FundingReference{
-				FunderIdentifier:     v.FunderIdentifier,
-				FunderIdentifierType: v.FunderIdentifierType,
-				FunderName:           v.FunderName,
-				AwardNumber:          v.AwardNumber,
-				AwardURI:             v.AwardURI,
-			})
+	for _, v := range content.Attributes.Titles {
+		var t string
+		if slices.Contains([]string{"MainTitle", "Subtitle", "TranslatedTitle"}, v.TitleType) {
+			t = v.TitleType
 		}
-	} else {
-		data.FundingReferences = []types.FundingReference{}
+		data.Titles = append(data.Titles, types.Title{
+			Title:    v.Title,
+			Type:     t,
+			Language: v.Lang,
+		})
 	}
 
-	if len(content.Attributes.GeoLocations) > 0 {
-		for _, v := range content.Attributes.GeoLocations {
-			data.GeoLocations = append(data.GeoLocations, types.GeoLocation{
-				GeoLocationPoint: types.GeoLocationPoint{
-					PointLongitude: v.GeoLocationPoint.PointLongitude,
-					PointLatitude:  v.GeoLocationPoint.PointLatitude,
-				},
-				GeoLocationPlace: v.GeoLocationPlace,
-				GeoLocationBox: types.GeoLocationBox{
-					EastBoundLongitude: v.GeoLocationBox.EastBoundLongitude,
-					WestBoundLongitude: v.GeoLocationBox.WestBoundLongitude,
-					SouthBoundLatitude: v.GeoLocationBox.SouthBoundLatitude,
-					NorthBoundLatitude: v.GeoLocationBox.NorthBoundLatitude,
-				},
-			})
-		}
+	data.Url, err = utils.NormalizeUrl(content.Attributes.Url, true, false)
+	if err != nil {
+		log.Println(err)
 	}
 
-	data.Files = []types.File{}
-	// sizes and formats are part of the file object, but can't be mapped directly
-
-	data.ArchiveLocations = []string{}
-
-	data.Provider = "DataCite"
+	data.Version = content.Attributes.Version
 
 	return data, nil
 }
@@ -587,7 +554,7 @@ func GetContributor(v Contributor) types.Contributor {
 		})
 	}
 	var roles []string
-	if slices.Contains(CommonmetaContributorRoles, v.ContributorType) {
+	if slices.Contains(constants.ContributorRoles, v.ContributorType) {
 		roles = append(roles, v.ContributorType)
 	} else {
 		roles = append(roles, "Author")
