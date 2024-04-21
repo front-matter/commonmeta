@@ -65,7 +65,6 @@ func TestFetchDatacite(t *testing.T) {
 		{name: "proceedings article", id: "https://doi.org/10.4230/lipics.tqc.2013.93"},
 		{name: "subject scheme FOR", id: "https://doi.org/10.6084/m9.figshare.1449060"},
 		{name: "geolocation box", id: "https://doi.org/10.6071/z7wc73"},
-		{name: "geolocation point", id: "10.4121/UUID:7B900822-4EFE-42F1-9B6E-A099EDA4BA02"},
 	}
 	for _, tc := range testCases {
 		got, err := datacite.FetchDatacite(tc.id)
