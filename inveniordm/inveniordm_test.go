@@ -3,7 +3,7 @@ package inveniordm_test
 import (
 	"testing"
 
-	"github.com/front-matter/commonmeta-go/inveniordm"
+	"commonmeta-go/inveniordm"
 )
 
 func TestGetInvenioRDM(t *testing.T) {

@@ -8,9 +8,10 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/front-matter/commonmeta-go/datacite"
-	"github.com/front-matter/commonmeta-go/doiutils"
-	"github.com/front-matter/commonmeta-go/types"
+	"commonmeta-go/datacite"
+
+	"commonmeta-go/doiutils"
+	"commonmeta-go/types"
 
 	"github.com/google/go-cmp/cmp"
 )

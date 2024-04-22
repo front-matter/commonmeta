@@ -3,7 +3,7 @@ package dateutils_test
 import (
 	"testing"
 
-	"github.com/front-matter/commonmeta-go/dateutils"
+	"commonmeta-go/dateutils"
 )
 
 // func TestGetDateParts(t *testing.T) {

@@ -1,6 +1,6 @@
 package codemeta
 
-import "github.com/front-matter/commonmeta-go/types"
+import "commonmeta-go/types"
 
 type Content struct {
 	ID    string `json:"id"`

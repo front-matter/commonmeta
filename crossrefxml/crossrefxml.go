@@ -1,7 +1,7 @@
 package crossrefxml
 
 import (
-	"github.com/front-matter/commonmeta-go/types"
+	"commonmeta-go/types"
 )
 
 type Content struct {

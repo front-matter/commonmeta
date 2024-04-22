@@ -3,7 +3,7 @@ package types_test
 import (
 	"testing"
 
-	"github.com/front-matter/commonmeta-go/types"
+	"commonmeta-go/types"
 )
 
 func TestMetadata(t *testing.T) {

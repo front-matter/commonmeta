@@ -15,10 +15,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/front-matter/commonmeta-go/dateutils"
-	"github.com/front-matter/commonmeta-go/doiutils"
-	"github.com/front-matter/commonmeta-go/types"
-	"github.com/front-matter/commonmeta-go/utils"
+	"commonmeta-go/dateutils"
+	"commonmeta-go/doiutils"
+	"commonmeta-go/types"
+	"commonmeta-go/utils"
 )
 
 type Content struct {
@@ -247,10 +247,10 @@ func FetchCrossref(str string) (types.Data, error) {
 	return data, nil
 }
 
-func FetchCrossrefSample(number int, member string, _type string, hasORCID bool, hasROR bool, hasReferences bool, hasRelation bool, hasAbstract bool, hasAward bool, hasLicense bool, hasArchive bool) ([]types.Data, error) {
+func FetchCrossrefList(number int, member string, _type string, sample bool, hasORCID bool, hasROR bool, hasReferences bool, hasRelation bool, hasAbstract bool, hasAward bool, hasLicense bool, hasArchive bool) ([]types.Data, error) {
 
 	var data []types.Data
-	content, err := GetCrossrefSample(number, member, _type, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
+	content, err := GetCrossrefList(number, member, _type, sample, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
 	if err != nil {
 		return data, err
 	}
@@ -566,7 +566,7 @@ func ReadCrossref(content Content) (types.Data, error) {
 	return data, nil
 }
 
-func GetCrossrefSample(number int, member string, _type string, hasORCID bool, hasROR bool, hasReferences bool, hasRelation bool, hasAbstract bool, hasAward bool, hasLicense bool, hasArchive bool) ([]Content, error) {
+func GetCrossrefList(number int, member string, _type string, sample bool, hasORCID bool, hasROR bool, hasReferences bool, hasRelation bool, hasAbstract bool, hasAward bool, hasLicense bool, hasArchive bool) ([]Content, error) {
 	// the envelope for the JSON response from the Crossref API
 	type Response struct {
 		Status         string `json:"status"`
@@ -581,11 +581,11 @@ func GetCrossrefSample(number int, member string, _type string, hasORCID bool, h
 	if number > 100 {
 		number = 100
 	}
-	url := CrossrefApiSampleUrl(number, member, _type, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
+	url := CrossrefQueryUrl(number, member, _type, sample, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
 	req, err := http.NewRequest("GET", url, nil)
 	v := "0.1"
 	u := "info@front-matter.io"
-	userAgent := fmt.Sprintf("commonmeta-go/%s (https://commonmeta.org/commonmeta-go/; mailto: %s)", v, u)
+	userAgent := fmt.Sprintf("commonmeta-go/%s (https://commonmeta.org; mailto: %s)", v, u)
 	req.Header.Set("User-Agent", userAgent)
 	req.Header.Set("Cache-Control", "private")
 	if err != nil {
@@ -613,7 +613,7 @@ func GetCrossrefSample(number int, member string, _type string, hasORCID bool, h
 	return response.Message.Items, nil
 }
 
-func CrossrefApiSampleUrl(number int, member string, _type string, hasORCID bool, hasROR bool, hasReferences bool, hasRelation bool, hasAbstract bool, hasAward bool, hasLicense bool, hasArchive bool) string {
+func CrossrefQueryUrl(number int, member string, _type string, sample bool, hasORCID bool, hasROR bool, hasReferences bool, hasRelation bool, hasAbstract bool, hasAward bool, hasLicense bool, hasArchive bool) string {
 	types := []string{
 		"book-section",
 		"monograph",
@@ -660,7 +660,11 @@ func CrossrefApiSampleUrl(number int, member string, _type string, hasORCID bool
 	}
 	u, _ := url.Parse("https://api.crossref.org/works")
 	values := u.Query()
-	values.Add("sample", strconv.Itoa(number))
+	if sample {
+		values.Add("sample", strconv.Itoa(number))
+	} else {
+		values.Add("rows", strconv.Itoa(number))
+	}
 	var filters []string
 	if member != "" {
 		filters = append(filters, "member:"+member)

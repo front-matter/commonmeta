@@ -8,11 +8,11 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/front-matter/commonmeta-go/datacite"
-	"github.com/front-matter/commonmeta-go/doiutils"
-	"github.com/front-matter/commonmeta-go/types"
+	"commonmeta-go/datacite"
+	"commonmeta-go/doiutils"
+	"commonmeta-go/types"
 
-	"github.com/front-matter/commonmeta-go/crossref"
+	"commonmeta-go/crossref"
 
 	"github.com/spf13/cobra"
 )

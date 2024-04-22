@@ -7,9 +7,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/front-matter/commonmeta-go/crossref"
-	"github.com/front-matter/commonmeta-go/doiutils"
-	"github.com/front-matter/commonmeta-go/types"
+	"commonmeta-go/crossref"
+	"commonmeta-go/doiutils"
+	"commonmeta-go/types"
 
 	"github.com/google/go-cmp/cmp"
 )
@@ -96,51 +96,53 @@ func TestFetchCrossref(t *testing.T) {
 	}
 }
 
-func TestCrossrefApiSampleUrl(t *testing.T) {
+func TestCrossrefQueryUrl(t *testing.T) {
 	t.Parallel()
 
 	type testCase struct {
 		number int
 		member string
 		_type  string
+		sample bool
 		want   string
 	}
 
 	testCases := []testCase{
-		{number: 10, member: "340", _type: "journal-article", want: "https://api.crossref.org/works?filter=member%3A340%2Ctype%3Ajournal-article&sample=10"},
-		{number: 1, member: "", _type: "posted-content", want: "https://api.crossref.org/works?filter=type%3Aposted-content&sample=1"},
-		{number: 20, member: "78", _type: "", want: "https://api.crossref.org/works?filter=member%3A78&sample=20"},
-		{number: 120, member: "", _type: "", want: "https://api.crossref.org/works?sample=120"},
+		{number: 10, member: "340", _type: "journal-article", sample: false, want: "https://api.crossref.org/works?filter=member%3A340%2Ctype%3Ajournal-article&sample=10"},
+		{number: 1, member: "", _type: "posted-content", sample: true, want: "https://api.crossref.org/works?filter=type%3Aposted-content&sample=1"},
+		{number: 20, member: "78", _type: "", sample: true, want: "https://api.crossref.org/works?filter=member%3A78&sample=20"},
+		{number: 120, member: "", _type: "", sample: true, want: "https://api.crossref.org/works?sample=120"},
 	}
 	for _, tc := range testCases {
-		got := crossref.CrossrefApiSampleUrl(tc.number, tc.member, tc._type, false, false, false, false, false, false, false, false)
+		got := crossref.CrossrefQueryUrl(tc.number, tc.member, tc._type, tc.sample, false, false, false, false, false, false, false, false)
 		if diff := cmp.Diff(tc.want, got); diff != "" {
-			t.Errorf("CrossrefApiSampleUrl mismatch (-want +got):\n%s", diff)
+			t.Errorf("CrossrefQueryUrl mismatch (-want +got):\n%s", diff)
 		}
 	}
 }
 
-func TestGetCrossrefSample(t *testing.T) {
+func TestGetCrossrefList(t *testing.T) {
 	t.Parallel()
 
 	type testCase struct {
 		number int
 		member string
 		_type  string
+		sample bool
 	}
 
 	testCases := []testCase{
-		{number: 3, member: "340", _type: "journal-article"},
-		{number: 1, member: "", _type: "posted-content"},
-		{number: 2, member: "", _type: ""},
+		{number: 3, member: "340", _type: "journal-article", sample: false},
+		{number: 1, member: "", _type: "posted-content", sample: true},
+		{number: 2, member: "", _type: "", sample: true},
 	}
 	for _, tc := range testCases {
-		got, err := crossref.GetCrossrefSample(tc.number, tc.member, tc._type, false, false, false, false, false, false, false, false)
+		got, err := crossref.GetCrossrefList(tc.number, tc.member, tc._type, true, false, false, false, false, false, false, false, false)
 		if err != nil {
 			t.Errorf("GetCrossrefSample(%v): error %v", tc.number, err)
 		}
 		if diff := cmp.Diff(tc.number, len(got)); diff != "" {
-			t.Errorf("GetCrossrefSample mismatch (-want +got):\n%s", diff)
+			t.Errorf("GetCrossrefList mismatch (-want +got):\n%s", diff)
 		}
 	}
 }

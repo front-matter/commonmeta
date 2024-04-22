@@ -36,7 +36,7 @@ func init() {
 	rootCmd.PersistentFlags().StringP("from", "f", "", "the format to convert from")
 	rootCmd.PersistentFlags().StringP("to", "t", "commonmeta", "the format to convert to")
 
-	rootCmd.PersistentFlags().StringP("number", "n", "10", "number of samples")
+	rootCmd.PersistentFlags().StringP("number", "n", "10", "number of results")
 	rootCmd.PersistentFlags().StringP("member", "m", "", "Crossref member ID")
 	rootCmd.PersistentFlags().StringP("type", "", "journal-article", "work type")
 	rootCmd.PersistentFlags().BoolP("has-orcid", "", false, "has one or more ORCID IDs")

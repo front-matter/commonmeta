@@ -8,10 +8,13 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/front-matter/commonmeta-go/commonmeta"
-	"github.com/front-matter/commonmeta-go/crossref"
-	"github.com/front-matter/commonmeta-go/datacite"
-	"github.com/front-matter/commonmeta-go/types"
+	"commonmeta-go/commonmeta"
+
+	"commonmeta-go/crossref"
+
+	"commonmeta-go/datacite"
+
+	"commonmeta-go/types"
 
 	"github.com/spf13/cobra"
 )
@@ -21,13 +24,15 @@ var sampleCmd = &cobra.Command{
 	Use:   "sample",
 	Short: "A random sample of works",
 	Long: `A random sample of works. Currently only available for
-	the Crossref API. Options include numnber of samples, Crossref
-	member id and work type. For example:
+	the Crossref and DataCite provider. Options include numnber of samples, 
+	work type, and Crossref member id or DataCite client id. For example:
 
-	commonmeta sample --number 10 --member 78 --type journal-article`,
+	commonmeta sample --number 10 --member 78 --type journal-article,
+	commonmeta sample --number 10 --member cern.zenodo --type dataset`,
+
 	Run: func(cmd *cobra.Command, args []string) {
 		number, _ := cmd.Flags().GetInt("number")
-		provider, _ := cmd.Flags().GetString("provider")
+		from, _ := cmd.Flags().GetString("from")
 
 		member, _ := cmd.Flags().GetString("member")
 		type_, _ := cmd.Flags().GetString("type")
@@ -42,10 +47,11 @@ var sampleCmd = &cobra.Command{
 
 		var data []types.Data
 		var err error
-		if provider == "crossref" {
-			data, err = crossref.FetchCrossrefSample(number, member, type_, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
-		} else if provider == "datacite" {
-			data, err = datacite.FetchDataciteSample(number)
+		sample := true
+		if from == "crossref" {
+			data, err = crossref.FetchCrossrefList(number, member, type_, sample, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
+		} else if from == "datacite" {
+			data, err = datacite.FetchDataciteList(number, sample)
 		}
 		if err != nil {
 			fmt.Println(err)
@@ -63,6 +69,4 @@ var sampleCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(sampleCmd)
-
-	sampleCmd.PersistentFlags().StringP("provider", "", "crossref", "the provider to get a sample from")
 }

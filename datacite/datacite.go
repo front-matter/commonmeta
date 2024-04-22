@@ -12,10 +12,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/front-matter/commonmeta-go/constants"
-	"github.com/front-matter/commonmeta-go/doiutils"
-	"github.com/front-matter/commonmeta-go/types"
-	"github.com/front-matter/commonmeta-go/utils"
+	"commonmeta-go/constants"
+	"commonmeta-go/doiutils"
+	"commonmeta-go/types"
+
+	"commonmeta-go/utils"
 )
 
 type Content struct {
@@ -175,10 +176,10 @@ func FetchDatacite(str string) (types.Data, error) {
 	return data, nil
 }
 
-func FetchDataciteSample(number int) ([]types.Data, error) {
+func FetchDataciteList(number int, sample bool) ([]types.Data, error) {
 
 	var data []types.Data
-	content, err := GetDataciteSample(number)
+	content, err := GetDataciteList(number, sample)
 	if err != nil {
 		return data, err
 	}
@@ -571,7 +572,7 @@ func GetContributor(v Contributor) types.Contributor {
 	}
 }
 
-func GetDataciteSample(number int) ([]Content, error) {
+func GetDataciteList(number int, sample bool) ([]Content, error) {
 	// the envelope for the JSON response from the DataCite API
 	type Response struct {
 		Data []Content `json:"data"`
@@ -580,7 +581,7 @@ func GetDataciteSample(number int) ([]Content, error) {
 		number = 100
 	}
 	var response Response
-	url := DataciteApiSampleUrl(number)
+	url := DataciteQueryUrl(number, sample)
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		log.Fatalln(err)
@@ -607,7 +608,10 @@ func GetDataciteSample(number int) ([]Content, error) {
 	return response.Data, nil
 }
 
-func DataciteApiSampleUrl(number int) string {
+func DataciteQueryUrl(number int, sample bool) string {
+	if sample {
+		number = 10
+	}
 	url := "https://api.datacite.org/dois?random=true&page[size]=" + strconv.Itoa(number)
 	return url
 }
