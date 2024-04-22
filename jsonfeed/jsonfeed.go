@@ -1,12 +1,13 @@
 package jsonfeed
 
 import (
-	"commonmeta/types"
 	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
 	"time"
+
+	"github.com/front-matter/commonmeta/types"
 )
 
 type Content struct {

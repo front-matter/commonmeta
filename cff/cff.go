@@ -1,6 +1,6 @@
 package cff
 
-import "commonmeta/types"
+import "github.com/front-matter/commonmeta/types"
 
 type Content struct {
 	ID    string `json:"id"`

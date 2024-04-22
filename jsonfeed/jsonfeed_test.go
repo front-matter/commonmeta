@@ -3,7 +3,7 @@ package jsonfeed_test
 import (
 	"testing"
 
-	"commonmeta/jsonfeed"
+	"github.com/front-matter/commonmeta/jsonfeed"
 )
 
 func TestGetJsonFeedItem(t *testing.T) {

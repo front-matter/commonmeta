@@ -3,7 +3,7 @@ package utils_test
 import (
 	"testing"
 
-	"commonmeta/utils"
+	"github.com/front-matter/commonmeta/utils"
 )
 
 func TestNormalizeUrl(t *testing.T) {

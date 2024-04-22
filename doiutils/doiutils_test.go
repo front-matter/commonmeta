@@ -3,7 +3,7 @@ package doiutils_test
 import (
 	"testing"
 
-	"commonmeta/doiutils"
+	"github.com/front-matter/commonmeta/doiutils"
 )
 
 func TestValidateDOI(t *testing.T) {

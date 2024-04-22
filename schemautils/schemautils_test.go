@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"path/filepath"
 
-	"commonmeta/schemautils"
-	"commonmeta/types"
+	"github.com/front-matter/commonmeta/schemautils"
+	"github.com/front-matter/commonmeta/types"
 
 	"fmt"
 	"log"

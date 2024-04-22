@@ -8,13 +8,13 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"commonmeta/commonmeta"
+	"github.com/front-matter/commonmeta/commonmeta"
 
-	"commonmeta/crossref"
+	"github.com/front-matter/commonmeta/crossref"
 
-	"commonmeta/datacite"
+	"github.com/front-matter/commonmeta/datacite"
 
-	"commonmeta/types"
+	"github.com/front-matter/commonmeta/types"
 
 	"github.com/spf13/cobra"
 )

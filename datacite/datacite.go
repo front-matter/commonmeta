@@ -12,11 +12,12 @@ import (
 	"strings"
 	"time"
 
-	"commonmeta/constants"
-	"commonmeta/doiutils"
-	"commonmeta/types"
+	"github.com/front-matter/commonmeta/types"
 
-	"commonmeta/utils"
+	"github.com/front-matter/commonmeta/constants"
+	"github.com/front-matter/commonmeta/doiutils"
+
+	"github.com/front-matter/commonmeta/utils"
 )
 
 type Content struct {

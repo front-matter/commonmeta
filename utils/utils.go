@@ -8,7 +8,7 @@ import (
 	"regexp"
 	"strings"
 
-	"commonmeta/doiutils"
+	"github.com/front-matter/commonmeta/doiutils"
 
 	"github.com/microcosm-cc/bluemonday"
 )

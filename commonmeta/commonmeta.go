@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"commonmeta/schemautils"
-	"commonmeta/types"
+	"github.com/front-matter/commonmeta/schemautils"
+	"github.com/front-matter/commonmeta/types"
 
 	"github.com/xeipuuv/gojsonschema"
 )

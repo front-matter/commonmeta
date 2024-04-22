@@ -15,10 +15,10 @@ import (
 	"strings"
 	"time"
 
-	"commonmeta/dateutils"
-	"commonmeta/doiutils"
-	"commonmeta/types"
-	"commonmeta/utils"
+	"github.com/front-matter/commonmeta/dateutils"
+	"github.com/front-matter/commonmeta/doiutils"
+	"github.com/front-matter/commonmeta/types"
+	"github.com/front-matter/commonmeta/utils"
 )
 
 type Content struct {
