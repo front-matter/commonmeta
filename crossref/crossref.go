@@ -412,7 +412,7 @@ func ReadCrossref(content Content) (types.Data, error) {
 				Affiliations:     affiliations,
 			}
 			containsName := slices.ContainsFunc(data.Contributors, func(e types.Contributor) bool {
-				return e.Name != "" && e.Name == contributor.Name
+				return e.Name != "" && e.Name == contributor.Name || e.GivenName != "" && e.GivenName == contributor.GivenName && e.FamilyName != "" && e.FamilyName == contributor.FamilyName
 			})
 			if !containsName {
 				data.Contributors = append(data.Contributors, contributor)
