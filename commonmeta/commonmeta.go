@@ -23,6 +23,9 @@ func WriteCommonmeta(data types.Data) ([]byte, []gojsonschema.ResultError) {
 	}
 	validation := schemautils.JSONSchemaErrors(output)
 	if !validation.Valid() {
+		var out bytes.Buffer
+		json.Indent(&out, output, "", "  ")
+		fmt.Println(out.String())
 		return nil, validation.Errors()
 	}
 	return output, nil
@@ -37,7 +40,7 @@ func WriteCommonmetaList(list []types.Data) ([]byte, []gojsonschema.ResultError)
 		validation := schemautils.JSONSchemaErrors(o)
 		if !validation.Valid() {
 			var out bytes.Buffer
-			json.Indent(&out, o, "=", "\t")
+			json.Indent(&out, o, "", "  ")
 			fmt.Println(out.String())
 			return nil, validation.Errors()
 		}

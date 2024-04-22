@@ -315,6 +315,9 @@ func ReadCrossref(content Content) (types.Data, error) {
 
 	data.ID = doiutils.NormalizeDOI(content.DOI)
 	data.Type = CRToCMMappings[content.Type]
+	if data.Type == "" {
+		data.Type = "Other"
+	}
 	containerType := CrossrefContainerTypes[content.Type]
 	containerType = CRToCMContainerTranslations[containerType]
 
@@ -556,13 +559,13 @@ func ReadCrossref(content Content) (types.Data, error) {
 			Title: content.Title[0],
 		})
 	}
-	if len(content.Subtitle) > 0 {
+	if len(content.Subtitle) > 0 && content.Subtitle[0] != "" {
 		data.Titles = append(data.Titles, types.Title{
 			Title: content.Subtitle[0],
 			Type:  "Subtitle",
 		})
 	}
-	if len(content.OriginalTitle) > 0 {
+	if len(content.OriginalTitle) > 0 && content.OriginalTitle[0] != "" {
 		data.Titles = append(data.Titles, types.Title{
 			Title: content.OriginalTitle[0],
 			Type:  "TranslatedTitle",
