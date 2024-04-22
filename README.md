@@ -14,11 +14,11 @@ Commonmeta-go reads and/or writes these metadata formats:
 | Format                                                                                           | Name          | Content Type                           | Read    | Write   |
 | ------------------------------------------------------------------------------------------------ | ------------- | -------------------------------------- | ------- | ------- |
 | [Commonmeta](https://docs.commonmeta.org)  | commonmeta    | application/vnd.commonmeta+json        | later     | yes     |
-| [CrossRef XML](https://www.crossref.org/schema/documentation/unixref1.1/unixref1.1.html) | crossref_xml      | application/vnd.crossref.unixref+xml   | later | later |
+| [CrossRef XML](https://www.crossref.org/schema/documentation/unixref1.1/unixref1.1.html) | crossrefxml      | application/vnd.crossref.unixref+xml   | later | later |
 | [Crossref](https://api.crossref.org)                                                             | crossref | application/vnd.crossref+json          | yes     | n/a     |
 | [DataCite](https://api.datacite.org/)                                                            | datacite | application/vnd.datacite.datacite+json | yes     | later |
-| [Schema.org (in JSON-LD)](http://schema.org/)                                                    | schema_org    | application/vnd.schemaorg.ld+json      | later     | later   |
-| [RDF XML](http://www.w3.org/TR/rdf-syntax-grammar/)                                              | rdf_xml       | application/rdf+xml                    | no      | later   |
+| [Schema.org (in JSON-LD)](http://schema.org/)                                                    | schemaorg    | application/vnd.schemaorg.ld+json      | later     | later   |
+| [RDF XML](http://www.w3.org/TR/rdf-syntax-grammar/)                                              | rdfxml       | application/rdf+xml                    | no      | later   |
 | [RDF Turtle](http://www.w3.org/TeamSubmission/turtle/)                                           | turtle        | text/turtle                            | no      | later   |
 | [CSL-JSON](https://citationstyles.org/)                                                     | csl      | application/vnd.citationstyles.csl+json | later | later   |
 | [Formatted text citation](https://citationstyles.org/)                                           | citation      | text/x-bibliography                    | n/a     | yes     |
@@ -29,7 +29,7 @@ Commonmeta-go reads and/or writes these metadata formats:
 | [BibTex](http://en.wikipedia.org/wiki/BibTeX)                                                    | bibtex        | application/x-bibtex                   | later | later   |
 | [RIS](http://en.wikipedia.org/wiki/RIS_(file_format))                                            | ris           | application/x-research-info-systems    | later | later   |
 | [InvenioRDM](https://inveniordm.docs.cern.ch/reference/metadata/)                                | inveniordm    | application/vnd.inveniordm.v1+json     | later | later   |
-| [JSON Feed](https://www.jsonfeed.org/)                                                           | json_feed_item     | application/feed+json    | later | later     |
+| [JSON Feed](https://www.jsonfeed.org/)                                                           | jsonfeed     | application/feed+json    | later | later     |
 
 _commonmeta_: the Commonmeta format is the native format for the library and used internally.
 _Planned_: we plan to implement this format for the v1.0 public release.  
