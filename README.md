@@ -1,15 +1,16 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Go Reference](https://pkg.go.dev/badge/github.com/front-matter/commonmeta.svg)](https://pkg.go.dev/github.com/front-matter/commonmeta)
+[![Go Report Card](https://goreportcard.com/badge/github.com/front-matter/commonmeta)](https://goreportcard.com/report/github.com/front-matter/commonmeta)
 
-# commonmeta-go
+# commonmeta
+commonmeta is a Go library to implement Commonmeta, the common Metadata Model for Scholarly Metadata. Use commonmeta to convert scholarly metadata, in a variety of formats, listed below. Commonmeta is work in progress, the first release was on April 19, 2024. Implementations in other languages are also available ([Ruby](https://github.com/front-matter/commonmeta-ruby), [Python](https://github.com/front-matter/commonmeta-py)).
 
-commonmeta-go is a Go library to implement Commonmeta, the common Metadata Model for Scholarly Metadata. Use commonmeta-go to convert scholarly metadata, in a variety of formats, listed below. Commonmeta-go is work in progress, the first release was on April 19, 2024. Implementations in other languages are also available ([Ruby](https://github.com/front-matter/commonmeta-ruby), [Python](https://github.com/front-matter/commonmeta-py)).
-
-commonmeta-go uses semantic versioning. Currently, its major version number is still at 0, meaning the API is not yet stable, and breaking changes are expected in the internal API and commonmeta JSON format.
+commonmeta uses semantic versioning. Currently, its major version number is still at 0, meaning the API is not yet stable, and breaking changes are expected in the internal API and commonmeta JSON format.
 
 
 ## Supported Metadata Formats
 
-Commonmeta-go reads and/or writes these metadata formats:
+Commonmeta reads and/or writes these metadata formats:
 
 | Format                                                                                           | Name          | Content Type                           | Read    | Write   |
 | ------------------------------------------------------------------------------------------------ | ------------- | -------------------------------------- | ------- | ------- |
@@ -37,6 +38,6 @@ _Later_: we plan to implement this format in a later release.
 
 ## Meta
 
-Please note that this project is released with a [Contributor Code of Conduct](https://github.com/front-matter/commonmeta-go/blob/main/CODE_OF_CONDUCT.md). By participating in this project you agree to abide by its terms.  
+Please note that this project is released with a [Contributor Code of Conduct](https://github.com/front-matter/commonmeta/blob/main/CODE_OF_CONDUCT.md). By participating in this project you agree to abide by its terms.  
 
-License: [MIT](https://github.com/front-matter/commonmeta-go/blob/main/LICENSE)
+License: [MIT](https://github.com/front-matter/commonmeta/blob/main/LICENSE)

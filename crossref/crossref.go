@@ -15,10 +15,10 @@ import (
 	"strings"
 	"time"
 
-	"commonmeta-go/dateutils"
-	"commonmeta-go/doiutils"
-	"commonmeta-go/types"
-	"commonmeta-go/utils"
+	"commonmeta/dateutils"
+	"commonmeta/doiutils"
+	"commonmeta/types"
+	"commonmeta/utils"
 )
 
 type Content struct {
@@ -282,7 +282,7 @@ func GetCrossref(pid string) (Content, error) {
 	req, err := http.NewRequest("GET", url, nil)
 	v := "0.1"
 	u := "info@front-matter.io"
-	userAgent := fmt.Sprintf("commonmeta-go/%s (https://commonmeta.org/commonmeta-go/; mailto: %s)", v, u)
+	userAgent := fmt.Sprintf("commonmeta/%s (https://commonmeta.org/; mailto: %s)", v, u)
 	req.Header.Set("User-Agent", userAgent)
 	if err != nil {
 		log.Fatalln(err)
@@ -585,7 +585,7 @@ func GetCrossrefList(number int, member string, _type string, sample bool, hasOR
 	req, err := http.NewRequest("GET", url, nil)
 	v := "0.1"
 	u := "info@front-matter.io"
-	userAgent := fmt.Sprintf("commonmeta-go/%s (https://commonmeta.org; mailto: %s)", v, u)
+	userAgent := fmt.Sprintf("commonmeta/%s (https://commonmeta.org; mailto: %s)", v, u)
 	req.Header.Set("User-Agent", userAgent)
 	req.Header.Set("Cache-Control", "private")
 	if err != nil {

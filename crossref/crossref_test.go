@@ -7,9 +7,9 @@ import (
 	"strings"
 	"testing"
 
-	"commonmeta-go/crossref"
-	"commonmeta-go/doiutils"
-	"commonmeta-go/types"
+	"commonmeta/crossref"
+	"commonmeta/doiutils"
+	"commonmeta/types"
 
 	"github.com/google/go-cmp/cmp"
 )

@@ -12,11 +12,11 @@ import (
 	"strings"
 	"time"
 
-	"commonmeta-go/constants"
-	"commonmeta-go/doiutils"
-	"commonmeta-go/types"
+	"commonmeta/constants"
+	"commonmeta/doiutils"
+	"commonmeta/types"
 
-	"commonmeta-go/utils"
+	"commonmeta/utils"
 )
 
 type Content struct {

@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"time"
 
-	"commonmeta-go/types"
+	"commonmeta/types"
 )
 
 type Content struct {

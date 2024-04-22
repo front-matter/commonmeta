@@ -1,7 +1,7 @@
 package jsonfeed
 
 import (
-	"commonmeta-go/types"
+	"commonmeta/types"
 	"encoding/json"
 	"fmt"
 	"io"

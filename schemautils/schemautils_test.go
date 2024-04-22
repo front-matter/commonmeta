@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"path/filepath"
 
-	"commonmeta-go/schemautils"
-	"commonmeta-go/types"
+	"commonmeta/schemautils"
+	"commonmeta/types"
 
 	"fmt"
 	"log"
