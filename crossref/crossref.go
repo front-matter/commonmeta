@@ -508,13 +508,19 @@ func ReadCrossref(content Content) (types.Data, error) {
 	}
 
 	for _, v := range content.Reference {
-		data.References = append(data.References, types.Reference{
+		reference := types.Reference{
 			Key:             v.Key,
 			ID:              doiutils.NormalizeDOI(v.DOI),
 			Title:           v.ArticleTitle,
 			PublicationYear: v.Year,
 			Unstructured:    v.Unstructured,
+		}
+		containsKey := slices.ContainsFunc(data.References, func(e types.Reference) bool {
+			return e.Key != "" && e.Key == reference.Key
 		})
+		if !containsKey {
+			data.References = append(data.References, reference)
+		}
 	}
 
 	fields := reflect.VisibleFields(reflect.TypeOf(content.Relation))
