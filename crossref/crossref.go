@@ -321,7 +321,11 @@ func ReadCrossref(content Content) (types.Data, error) {
 	containerType := CrossrefContainerTypes[content.Type]
 	containerType = CRToCMContainerTranslations[containerType]
 
-	data.ArchiveLocations = utils.AddAsSet(content.Archive)
+	for _, v := range content.Archive {
+		if !slices.Contains(data.ArchiveLocations, v) {
+			data.ArchiveLocations = append(data.ArchiveLocations, v)
+		}
+	}
 
 	var identifier, identifierType string
 	if len(content.ISSNType) > 0 {
