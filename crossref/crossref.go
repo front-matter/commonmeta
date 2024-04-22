@@ -402,7 +402,6 @@ func ReadCrossref(content Content) (types.Data, error) {
 				}
 			}
 
-			// TODO: check for duplicate contributors
 			contributor := types.Contributor{
 				ID:               ID,
 				Type:             Type,
@@ -412,7 +411,12 @@ func ReadCrossref(content Content) (types.Data, error) {
 				ContributorRoles: []string{"Author"},
 				Affiliations:     affiliations,
 			}
-			data.Contributors = append(data.Contributors, contributor)
+			containsName := slices.ContainsFunc(data.Contributors, func(e types.Contributor) bool {
+				return e.Name != "" && e.Name == contributor.Name
+			})
+			if !containsName {
+				data.Contributors = append(data.Contributors, contributor)
+			}
 		}
 	}
 

@@ -348,16 +348,3 @@ func ValidateROR(ror string) (string, bool) {
 	}
 	return matched[1], true
 }
-
-func AddAsSet(values []string) []string {
-	var m = make(map[string]bool)
-	var set = []string{}
-
-	for _, value := range values {
-		if !m[value] {
-			set = append(set, value)
-		}
-		m[value] = true
-	}
-	return set
-}
