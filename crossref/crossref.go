@@ -511,8 +511,16 @@ func ReadCrossref(content Content) (types.Data, error) {
 				ID     string `json:"id"`
 				IDType string `json:"id-type"`
 			}) {
+				var id string
+				if v.IDType == "doi" {
+					id = doiutils.NormalizeDOI(v.ID)
+				} else if v.IDType == "issn" {
+					id = utils.IssnAsUrl(v.ID)
+				} else {
+					id = v.ID
+				}
 				data.Relations = append(data.Relations, types.Relation{
-					ID:   doiutils.NormalizeDOI(v.ID),
+					ID:   id,
 					Type: field.Name,
 				})
 			}
@@ -658,6 +666,7 @@ func CrossrefQueryUrl(number int, member string, _type string, sample bool, hasO
 		"book-series-meta",
 		"book-set",
 	}
+
 	u, _ := url.Parse("https://api.crossref.org/works")
 	values := u.Query()
 	if sample {
@@ -665,6 +674,10 @@ func CrossrefQueryUrl(number int, member string, _type string, sample bool, hasO
 	} else {
 		values.Add("rows", strconv.Itoa(number))
 	}
+
+	// sort results by published date in descending order
+	values.Add("sort", "published")
+	values.Add("order", "desc")
 	var filters []string
 	if member != "" {
 		filters = append(filters, "member:"+member)

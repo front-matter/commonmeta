@@ -57,7 +57,7 @@ var listCmd = &cobra.Command{
 		}
 		output, jsErr := commonmeta.WriteCommonmetaList(data)
 		var out bytes.Buffer
-		json.Indent(&out, output, "=", "\t")
+		json.Indent(&out, output, "", "  ")
 		fmt.Println(out.String())
 
 		if jsErr != nil {

@@ -108,10 +108,10 @@ func TestCrossrefQueryUrl(t *testing.T) {
 	}
 
 	testCases := []testCase{
-		{number: 10, member: "340", _type: "journal-article", sample: false, want: "https://api.crossref.org/works?filter=member%3A340%2Ctype%3Ajournal-article&sample=10"},
-		{number: 1, member: "", _type: "posted-content", sample: true, want: "https://api.crossref.org/works?filter=type%3Aposted-content&sample=1"},
-		{number: 20, member: "78", _type: "", sample: true, want: "https://api.crossref.org/works?filter=member%3A78&sample=20"},
-		{number: 120, member: "", _type: "", sample: true, want: "https://api.crossref.org/works?sample=120"},
+		{number: 10, member: "340", _type: "journal-article", sample: false, want: "https://api.crossref.org/works?filter=member%3A340%2Ctype%3Ajournal-article&order=desc&rows=10&sort=published"},
+		{number: 1, member: "", _type: "posted-content", sample: true, want: "https://api.crossref.org/works?filter=type%3Aposted-content&order=desc&sample=1&sort=published"},
+		{number: 20, member: "78", _type: "", sample: true, want: "https://api.crossref.org/works?filter=member%3A78&order=desc&sample=20&sort=published"},
+		{number: 120, member: "", _type: "", sample: true, want: "https://api.crossref.org/works?order=desc&sample=120&sort=published"},
 	}
 	for _, tc := range testCases {
 		got := crossref.CrossrefQueryUrl(tc.number, tc.member, tc._type, tc.sample, false, false, false, false, false, false, false, false)
