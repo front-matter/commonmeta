@@ -34,3 +34,9 @@ Commometa-go reads and/or writes these metadata formats:
 _commonmeta_: the Commonmeta format is the native format for the library and used internally.
 _Planned_: we plan to implement this format for the v1.0 public release.  
 _Later_: we plan to implement this format in a later release.
+
+## Meta
+
+Please note that this project is released with a [Contributor Code of Conduct](https://github.com/front-matter/commonmeta-go/blob/main/CODE_OF_CONDUCT.md). By participating in this project you agree to abide by its terms.  
+
+License: [MIT](https://github.com/front-matter/commonmeta-go/blob/main/LICENSE)
