@@ -9,7 +9,7 @@ type Data struct {
 	AdditionalType    string             `db:"additional_type" json:"additionalType,omitempty"`
 	ArchiveLocations  []string           `db:"archive_locations" json:"archiveLocations,omitempty"`
 	Container         Container          `db:"container" json:"container,omitempty"`
-	Contributors      []Contributor      `db:"contributors" json:"contributors"`
+	Contributors      []Contributor      `db:"contributors" json:"contributors,omitempty"`
 	Date              Date               `db:"date" json:"date,omitempty"`
 	Descriptions      []Description      `db:"descriptions" json:"descriptions,omitempty"`
 	Files             []File             `db:"files" json:"files,omitempty"`
@@ -46,7 +46,7 @@ type Container struct {
 
 type Contributor struct {
 	ID               string        `json:"id,omitempty"`
-	Type             string        `json:"type"`
+	Type             string        `json:"type,omitempty"`
 	Name             string        `json:"name,omitempty"`
 	GivenName        string        `json:"givenName,omitempty"`
 	FamilyName       string        `json:"familyName,omitempty"`

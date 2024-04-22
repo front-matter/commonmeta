@@ -1,15 +1,16 @@
 package datacite_test
 
 import (
-	"commonmeta/datacite"
-	"commonmeta/doiutils"
-	"commonmeta/types"
 	"encoding/json"
 	"errors"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
+
+	"github.com/front-matter/commonmeta-go/datacite"
+	"github.com/front-matter/commonmeta-go/doiutils"
+	"github.com/front-matter/commonmeta-go/types"
 
 	"github.com/google/go-cmp/cmp"
 )

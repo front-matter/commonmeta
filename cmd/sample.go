@@ -5,12 +5,13 @@ package cmd
 
 import (
 	"bytes"
-	"commonmeta/commonmeta"
-	"commonmeta/crossref"
-	"commonmeta/datacite"
-	"commonmeta/types"
 	"encoding/json"
 	"fmt"
+
+	"github.com/front-matter/commonmeta-go/commonmeta"
+	"github.com/front-matter/commonmeta-go/crossref"
+	"github.com/front-matter/commonmeta-go/datacite"
+	"github.com/front-matter/commonmeta-go/types"
 
 	"github.com/spf13/cobra"
 )
@@ -63,5 +64,5 @@ var sampleCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(sampleCmd)
 
-	sampleCmd.PersistentFlags().StringP("provider", "", "", "the provider to get a sample from")
+	sampleCmd.PersistentFlags().StringP("provider", "", "crossref", "the provider to get a sample from")
 }

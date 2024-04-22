@@ -4,13 +4,15 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"commonmeta/crossref"
-	"commonmeta/datacite"
-	"commonmeta/doiutils"
-	"commonmeta/types"
 	"encoding/json"
 	"fmt"
 	"strings"
+
+	"github.com/front-matter/commonmeta-go/datacite"
+	"github.com/front-matter/commonmeta-go/doiutils"
+	"github.com/front-matter/commonmeta-go/types"
+
+	"github.com/front-matter/commonmeta-go/crossref"
 
 	"github.com/spf13/cobra"
 )

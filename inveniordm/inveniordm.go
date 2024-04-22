@@ -1,12 +1,13 @@
 package inveniordm
 
 import (
-	"commonmeta/types"
 	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
 	"time"
+
+	"github.com/front-matter/commonmeta-go/types"
 )
 
 type Content struct {

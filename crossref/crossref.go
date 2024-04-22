@@ -1,10 +1,6 @@
 package crossref
 
 import (
-	"commonmeta/dateutils"
-	"commonmeta/doiutils"
-	"commonmeta/types"
-	"commonmeta/utils"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -18,6 +14,11 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/front-matter/commonmeta-go/dateutils"
+	"github.com/front-matter/commonmeta-go/doiutils"
+	"github.com/front-matter/commonmeta-go/types"
+	"github.com/front-matter/commonmeta-go/utils"
 )
 
 type Content struct {
@@ -402,7 +403,6 @@ func ReadCrossref(content Content) (types.Data, error) {
 				ContributorRoles: []string{"Author"},
 				Affiliations:     affiliations,
 			})
-
 		}
 	}
 

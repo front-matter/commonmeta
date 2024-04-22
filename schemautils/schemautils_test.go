@@ -1,10 +1,11 @@
 package schemautils_test
 
 import (
-	"commonmeta/schemautils"
-	"commonmeta/types"
 	"encoding/json"
 	"path/filepath"
+
+	"github.com/front-matter/commonmeta-go/schemautils"
+	"github.com/front-matter/commonmeta-go/types"
 
 	"fmt"
 	"log"
@@ -38,9 +39,9 @@ func TestJSONSchemaErrors(t *testing.T) {
 	}
 
 	testCases := []testCase{
-		{meta: m, want: 1},
-		{meta: n, want: 2},
-		{meta: o, want: 2},
+		{meta: m, want: 0},
+		{meta: n, want: 1},
+		{meta: o, want: 1},
 	}
 	for _, tc := range testCases {
 		documentJSON, err := json.Marshal(tc.meta)

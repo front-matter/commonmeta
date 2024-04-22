@@ -1,4 +1,4 @@
-module github.com/front-matter/commonmeta
+module github.com/front-matter/commonmeta-go
 
 go 1.22.2
 

@@ -1,14 +1,15 @@
 package crossref_test
 
 import (
-	"commonmeta/crossref"
-	"commonmeta/doiutils"
-	"commonmeta/types"
 	"encoding/json"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
+
+	"github.com/front-matter/commonmeta-go/crossref"
+	"github.com/front-matter/commonmeta-go/doiutils"
+	"github.com/front-matter/commonmeta-go/types"
 
 	"github.com/google/go-cmp/cmp"
 )

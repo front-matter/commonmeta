@@ -1,10 +1,6 @@
 package datacite
 
 import (
-	"commonmeta/constants"
-	"commonmeta/doiutils"
-	"commonmeta/types"
-	"commonmeta/utils"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -15,6 +11,11 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/front-matter/commonmeta-go/constants"
+	"github.com/front-matter/commonmeta-go/doiutils"
+	"github.com/front-matter/commonmeta-go/types"
+	"github.com/front-matter/commonmeta-go/utils"
 )
 
 type Content struct {

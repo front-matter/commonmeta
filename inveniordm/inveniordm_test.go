@@ -1,8 +1,9 @@
 package inveniordm_test
 
 import (
-	"commonmeta/inveniordm"
 	"testing"
+
+	"github.com/front-matter/commonmeta-go/inveniordm"
 )
 
 func TestGetInvenioRDM(t *testing.T) {

@@ -2,10 +2,11 @@ package commonmeta
 
 import (
 	"bytes"
-	"commonmeta/schemautils"
-	"commonmeta/types"
 	"encoding/json"
 	"fmt"
+
+	"github.com/front-matter/commonmeta-go/schemautils"
+	"github.com/front-matter/commonmeta-go/types"
 
 	"github.com/xeipuuv/gojsonschema"
 )

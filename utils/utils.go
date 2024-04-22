@@ -1,13 +1,14 @@
 package utils
 
 import (
-	"commonmeta/doiutils"
 	"encoding/json"
 	"fmt"
 	"log"
 	"net/url"
 	"regexp"
 	"strings"
+
+	"github.com/front-matter/commonmeta-go/doiutils"
 
 	"github.com/microcosm-cc/bluemonday"
 )

@@ -1,8 +1,9 @@
 package jsonfeed_test
 
 import (
-	"commonmeta/jsonfeed"
 	"testing"
+
+	"github.com/front-matter/commonmeta-go/jsonfeed"
 )
 
 func TestGetJsonFeedItem(t *testing.T) {
