@@ -321,7 +321,7 @@ func ReadCrossref(content Content) (types.Data, error) {
 	containerType := CrossrefContainerTypes[content.Type]
 	containerType = CRToCMContainerTranslations[containerType]
 
-	data.ArchiveLocations = append(data.ArchiveLocations, content.Archive...)
+	data.ArchiveLocations = utils.AddAsSet(content.Archive)
 
 	var identifier, identifierType string
 	if len(content.ISSNType) > 0 {
@@ -397,7 +397,9 @@ func ReadCrossref(content Content) (types.Data, error) {
 					}
 				}
 			}
-			data.Contributors = append(data.Contributors, types.Contributor{
+
+			// TODO: check for duplicate contributors
+			contributor := types.Contributor{
 				ID:               ID,
 				Type:             Type,
 				GivenName:        v.Given,
@@ -405,7 +407,8 @@ func ReadCrossref(content Content) (types.Data, error) {
 				Name:             v.Name,
 				ContributorRoles: []string{"Author"},
 				Affiliations:     affiliations,
-			})
+			}
+			data.Contributors = append(data.Contributors, contributor)
 		}
 	}
 
@@ -522,10 +525,13 @@ func ReadCrossref(content Content) (types.Data, error) {
 				} else {
 					id = v.ID
 				}
-				data.Relations = append(data.Relations, types.Relation{
+				relation := types.Relation{
 					ID:   id,
 					Type: field.Name,
-				})
+				}
+				if !slices.Contains(data.Relations, relation) {
+					data.Relations = append(data.Relations, relation)
+				}
 			}
 			sort.Slice(data.Relations, func(i, j int) bool {
 				return data.Relations[i].Type < data.Relations[j].Type
