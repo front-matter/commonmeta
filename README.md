@@ -9,11 +9,11 @@ commonmeta-go uses semantic versioning. Currently, its major version number is s
 
 ## Supported Metadata Formats
 
-Commometa-go reads and/or writes these metadata formats:
+Commonmeta-go reads and/or writes these metadata formats:
 
 | Format                                                                                           | Name          | Content Type                           | Read    | Write   |
 | ------------------------------------------------------------------------------------------------ | ------------- | -------------------------------------- | ------- | ------- |
-| Commonmeta  | commonmeta    | application/vnd.commonmeta+json        | later     | yes     |
+| [Commonmeta](https://docs.commonmeta.org)  | commonmeta    | application/vnd.commonmeta+json        | later     | yes     |
 | [CrossRef XML](https://www.crossref.org/schema/documentation/unixref1.1/unixref1.1.html) | crossref_xml      | application/vnd.crossref.unixref+xml   | later | later |
 | [Crossref](https://api.crossref.org)                                                             | crossref | application/vnd.crossref+json          | yes     | n/a     |
 | [DataCite](https://api.datacite.org/)                                                            | datacite | application/vnd.datacite.datacite+json | yes     | later |
