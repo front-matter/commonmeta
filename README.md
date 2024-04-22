@@ -1,8 +1,8 @@
 ![GitHub](https://img.shields.io/github/license/front-matter/commonmeta-go?logo=MIT)
 
-# Commonmeta-go
+# commonmeta-go
 
-commonmeta-go is a Go library to implement Commonmeta, the common Metadata Model for Scholarly Metadata. Use commonmeta-py to convert scholarly metadata, in a variety of formats, listed below. Commonmeta-go is work in progress, the first release on on April 19, 2024.
+commonmeta-go is a Go library to implement Commonmeta, the common Metadata Model for Scholarly Metadata. Use commonmeta-go to convert scholarly metadata, in a variety of formats, listed below. Commonmeta-go is work in progress, the first release was on April 19, 2024. Implementations in other languages are also available ([Ruby](https://github.com/front-matter/commonmeta-ruby), [Python](https://github.com/front-matter/commonmeta-py)).
 
 commonmeta-go uses semantic versioning. Currently, its major version number is still at 0, meaning the API is not yet stable, and breaking changes are expected in the internal API and commonmeta JSON format.
 
