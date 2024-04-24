@@ -1,3 +1,4 @@
+// Package crossref provides function to convert Crossref metadata to/from the commonmeta metadata format.
 package crossref
 
 import (
@@ -15,12 +16,13 @@ import (
 	"strings"
 	"time"
 
+	"github.com/front-matter/commonmeta/commonmeta"
 	"github.com/front-matter/commonmeta/dateutils"
 	"github.com/front-matter/commonmeta/doiutils"
-	"github.com/front-matter/commonmeta/types"
 	"github.com/front-matter/commonmeta/utils"
 )
 
+// Content is the struct for the message in tge JSON response from the Crossref API
 type Content struct {
 	ID       string   `json:"id"`
 	Type     string   `json:"type"`
@@ -72,12 +74,12 @@ type Content struct {
 	} `json:"isbn-type"`
 	Language string `json:"language"`
 	License  []struct {
-		Url            string `json:"URL"`
+		URL            string `json:"URL"`
 		ContentVersion string `json:"content-version"`
 	} `json:"license"`
 	Link []struct {
 		ContentType string `json:"content-type"`
-		Url         string `json:"url"`
+		URL         string `json:"url"`
 	} `json:"link"`
 	OriginalTitle []string `json:"original-title"`
 	Page          string   `json:"page"`
@@ -169,11 +171,12 @@ type Content struct {
 	Subject  []string `json:"subject"`
 	Subtitle []string `json:"subtitle"`
 	Title    []string `json:"title"`
-	Url      string   `json:"url"`
+	URL      string   `json:"url"`
 	Version  string   `json:"version"`
 	Volume   string   `json:"volume"`
 }
 
+// CRToCMMappings maps Crossref types to Commonmeta types
 // source: http://api.crossref.org/types
 var CRToCMMappings = map[string]string{
 	"book-chapter":        "BookChapter",
@@ -208,6 +211,7 @@ var CRToCMMappings = map[string]string{
 	"standard":            "Standard",
 }
 
+// CrossrefContainerTypes maps Crossref types to Crossref container types
 var CrossrefContainerTypes = map[string]string{
 	"book-chapter":        "book",
 	"dataset":             "database",
@@ -218,6 +222,7 @@ var CrossrefContainerTypes = map[string]string{
 	"posted-content":      "periodical",
 }
 
+// CRToCMContainerTranslations maps Crossref container types to Commonmeta container types
 var CRToCMContainerTranslations = map[string]string{
 	"book":        "Book",
 	"book-series": "BookSeries",
@@ -230,32 +235,34 @@ var CRToCMContainerTranslations = map[string]string{
 // relation types to include
 var relationTypes = []string{"IsPartOf", "HasPart", "IsVariantFormOf", "IsOriginalFormOf", "IsIdenticalTo", "IsTranslationOf", "IsReviewedBy", "Reviews", "HasReview", "IsPreprintOf", "HasPreprint", "IsSupplementTo", "IsSupplementedBy"}
 
-func FetchCrossref(str string) (types.Data, error) {
-	var data types.Data
+// Fetch gets the metadata for a single work from the Crossref API and converts it to the Commonmeta format
+func Fetch(str string) (commonmeta.Data, error) {
+	var data commonmeta.Data
 	id, ok := doiutils.ValidateDOI(str)
 	if !ok {
 		return data, errors.New("invalid DOI")
 	}
-	content, err := GetCrossref(id)
+	content, err := Get(id)
 	if err != nil {
 		return data, err
 	}
-	data, err = ReadCrossref(content)
+	data, err = Read(content)
 	if err != nil {
 		return data, err
 	}
 	return data, nil
 }
 
-func FetchCrossrefList(number int, member string, _type string, sample bool, hasORCID bool, hasROR bool, hasReferences bool, hasRelation bool, hasAbstract bool, hasAward bool, hasLicense bool, hasArchive bool) ([]types.Data, error) {
+// FetchList gets the metadata for a list of works from the Crossref API and converts it to the Commonmeta format
+func FetchList(number int, member string, _type string, sample bool, hasORCID bool, hasROR bool, hasReferences bool, hasRelation bool, hasAbstract bool, hasAward bool, hasLicense bool, hasArchive bool) ([]commonmeta.Data, error) {
 
-	var data []types.Data
-	content, err := GetCrossrefList(number, member, _type, sample, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
+	var data []commonmeta.Data
+	content, err := GetList(number, member, _type, sample, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
 	if err != nil {
 		return data, err
 	}
 	for _, v := range content {
-		d, err := ReadCrossref(v)
+		d, err := Read(v)
 		if err != nil {
 			log.Println(err)
 		}
@@ -264,7 +271,8 @@ func FetchCrossrefList(number int, member string, _type string, sample bool, has
 	return data, nil
 }
 
-func GetCrossref(pid string) (Content, error) {
+// Get gets the metadata for a single work from the Crossref API
+func Get(pid string) (Content, error) {
 	// the envelope for the JSON response from the Crossref API
 	type Response struct {
 		Status         string  `json:"status"`
@@ -309,9 +317,9 @@ func GetCrossref(pid string) (Content, error) {
 	return response.Message, err
 }
 
-// read Crossref JSON response and return work struct in Commonmeta format
-func ReadCrossref(content Content) (types.Data, error) {
-	var data = types.Data{}
+// Read Crossref JSON response and return work struct in Commonmeta format
+func Read(content Content) (commonmeta.Data, error) {
+	var data = commonmeta.Data{}
 
 	data.ID = doiutils.NormalizeDOI(content.DOI)
 	data.Type = CRToCMMappings[content.Type]
@@ -363,7 +371,7 @@ func ReadCrossref(content Content) (types.Data, error) {
 	if len(pages) > 1 {
 		lastPage = pages[1]
 	}
-	data.Container = types.Container{
+	data.Container = commonmeta.Container{
 		Identifier:     identifier,
 		IdentifierType: identifierType,
 		Type:           containerType,
@@ -379,14 +387,14 @@ func ReadCrossref(content Content) (types.Data, error) {
 			var ID, Type string
 			if v.ORCID != "" {
 				// enforce HTTPS
-				ID, _ = utils.NormalizeUrl(v.ORCID, true, false)
+				ID, _ = utils.NormalizeURL(v.ORCID, true, false)
 			}
 			if v.Name != "" {
 				Type = "Organization"
 			} else {
 				Type = "Person"
 			}
-			var affiliations []types.Affiliation
+			var affiliations []commonmeta.Affiliation
 			if len(v.Affiliation) > 0 {
 				for _, a := range v.Affiliation {
 					var ID string
@@ -394,7 +402,7 @@ func ReadCrossref(content Content) (types.Data, error) {
 						ID = utils.NormalizeROR(a.ID[0].ID)
 					}
 					if a.Name != "" {
-						affiliations = append(affiliations, types.Affiliation{
+						affiliations = append(affiliations, commonmeta.Affiliation{
 							ID:   ID,
 							Name: a.Name,
 						})
@@ -402,7 +410,7 @@ func ReadCrossref(content Content) (types.Data, error) {
 				}
 			}
 
-			contributor := types.Contributor{
+			contributor := commonmeta.Contributor{
 				ID:               ID,
 				Type:             Type,
 				GivenName:        v.Given,
@@ -411,7 +419,7 @@ func ReadCrossref(content Content) (types.Data, error) {
 				ContributorRoles: []string{"Author"},
 				Affiliations:     affiliations,
 			}
-			containsName := slices.ContainsFunc(data.Contributors, func(e types.Contributor) bool {
+			containsName := slices.ContainsFunc(data.Contributors, func(e commonmeta.Contributor) bool {
 				return e.Name != "" && e.Name == contributor.Name || e.GivenName != "" && e.GivenName == contributor.GivenName && e.FamilyName != "" && e.FamilyName == contributor.FamilyName
 			})
 			if !containsName {
@@ -439,7 +447,7 @@ func ReadCrossref(content Content) (types.Data, error) {
 
 	if content.Abstract != "" {
 		abstract := utils.Sanitize(content.Abstract)
-		data.Descriptions = append(data.Descriptions, types.Description{
+		data.Descriptions = append(data.Descriptions, commonmeta.Description{
 			Description: abstract,
 			Type:        "Abstract",
 		})
@@ -447,8 +455,8 @@ func ReadCrossref(content Content) (types.Data, error) {
 
 	for _, v := range content.Link {
 		if v.ContentType != "unspecified" {
-			data.Files = append(data.Files, types.File{
-				Url:      v.Url,
+			data.Files = append(data.Files, commonmeta.File{
+				URL:      v.URL,
 				MimeType: v.ContentType,
 			})
 		}
@@ -465,7 +473,7 @@ func ReadCrossref(content Content) (types.Data, error) {
 		}
 		if len(v.Award) > 0 {
 			for _, award := range v.Award {
-				data.FundingReferences = append(data.FundingReferences, types.FundingReference{
+				data.FundingReferences = append(data.FundingReferences, commonmeta.FundingReference{
 					FunderIdentifier:     funderIdentifier,
 					FunderIdentifierType: funderIdentifierType,
 					FunderName:           v.Name,
@@ -473,7 +481,7 @@ func ReadCrossref(content Content) (types.Data, error) {
 				})
 			}
 		} else {
-			data.FundingReferences = append(data.FundingReferences, types.FundingReference{
+			data.FundingReferences = append(data.FundingReferences, commonmeta.FundingReference{
 				FunderIdentifier:     funderIdentifier,
 				FunderIdentifierType: funderIdentifierType,
 				FunderName:           v.Name,
@@ -484,38 +492,38 @@ func ReadCrossref(content Content) (types.Data, error) {
 	data.FundingReferences = utils.DedupeSlice(data.FundingReferences)
 	// }
 
-	data.Identifiers = append(data.Identifiers, types.Identifier{
+	data.Identifiers = append(data.Identifiers, commonmeta.Identifier{
 		Identifier:     data.ID,
 		IdentifierType: "DOI",
 	})
 
 	data.Language = content.Language
 	if content.License != nil && len(content.License) > 0 {
-		url, _ := utils.NormalizeCCUrl(content.License[0].Url)
-		id := utils.UrlToSPDX(url)
-		data.License = types.License{
+		url, _ := utils.NormalizeCCUrl(content.License[0].URL)
+		id := utils.URLToSPDX(url)
+		data.License = commonmeta.License{
 			ID:  id,
-			Url: url,
+			URL: url,
 		}
 	}
 
 	data.Provider = "Crossref"
 
 	if content.Publisher != "" {
-		data.Publisher = types.Publisher{
+		data.Publisher = commonmeta.Publisher{
 			Name: content.Publisher,
 		}
 	}
 
 	for _, v := range content.Reference {
-		reference := types.Reference{
+		reference := commonmeta.Reference{
 			Key:             v.Key,
 			ID:              doiutils.NormalizeDOI(v.DOI),
 			Title:           v.ArticleTitle,
 			PublicationYear: v.Year,
 			Unstructured:    v.Unstructured,
 		}
-		containsKey := slices.ContainsFunc(data.References, func(e types.Reference) bool {
+		containsKey := slices.ContainsFunc(data.References, func(e commonmeta.Reference) bool {
 			return e.Key != "" && e.Key == reference.Key
 		})
 		if !containsKey {
@@ -535,11 +543,11 @@ func ReadCrossref(content Content) (types.Data, error) {
 				if v.IDType == "doi" {
 					id = doiutils.NormalizeDOI(v.ID)
 				} else if v.IDType == "issn" {
-					id = utils.IssnAsUrl(v.ID)
+					id = utils.ISSNAsURL(v.ID)
 				} else {
 					id = v.ID
 				}
-				relation := types.Relation{
+				relation := commonmeta.Relation{
 					ID:   id,
 					Type: field.Name,
 				}
@@ -553,14 +561,14 @@ func ReadCrossref(content Content) (types.Data, error) {
 		}
 	}
 	if data.Container.IdentifierType == "ISSN" {
-		data.Relations = append(data.Relations, types.Relation{
-			ID:   utils.IssnAsUrl(data.Container.Identifier),
+		data.Relations = append(data.Relations, commonmeta.Relation{
+			ID:   utils.ISSNAsURL(data.Container.Identifier),
 			Type: "IsPartOf",
 		})
 	}
 
 	for _, v := range content.Subject {
-		subject := types.Subject{
+		subject := commonmeta.Subject{
 			Subject: v,
 		}
 		if !slices.Contains(data.Subjects, subject) {
@@ -569,35 +577,36 @@ func ReadCrossref(content Content) (types.Data, error) {
 	}
 
 	if content.GroupTitle != "" {
-		data.Subjects = append(data.Subjects, types.Subject{
+		data.Subjects = append(data.Subjects, commonmeta.Subject{
 			Subject: content.GroupTitle,
 		})
 	}
 
 	if len(content.Title) > 0 && content.Title[0] != "" {
-		data.Titles = append(data.Titles, types.Title{
+		data.Titles = append(data.Titles, commonmeta.Title{
 			Title: content.Title[0],
 		})
 	}
 	if len(content.Subtitle) > 0 && content.Subtitle[0] != "" {
-		data.Titles = append(data.Titles, types.Title{
+		data.Titles = append(data.Titles, commonmeta.Title{
 			Title: content.Subtitle[0],
 			Type:  "Subtitle",
 		})
 	}
 	if len(content.OriginalTitle) > 0 && content.OriginalTitle[0] != "" {
-		data.Titles = append(data.Titles, types.Title{
+		data.Titles = append(data.Titles, commonmeta.Title{
 			Title: content.OriginalTitle[0],
 			Type:  "TranslatedTitle",
 		})
 	}
 
-	data.Url = content.Resource.Primary.URL
+	data.URL = content.Resource.Primary.URL
 
 	return data, nil
 }
 
-func GetCrossrefList(number int, member string, _type string, sample bool, hasORCID bool, hasROR bool, hasReferences bool, hasRelation bool, hasAbstract bool, hasAward bool, hasLicense bool, hasArchive bool) ([]Content, error) {
+// GetList gets the metadata for a list of works from the Crossref API
+func GetList(number int, member string, _type string, sample bool, hasORCID bool, hasROR bool, hasReferences bool, hasRelation bool, hasAbstract bool, hasAward bool, hasLicense bool, hasArchive bool) ([]Content, error) {
 	// the envelope for the JSON response from the Crossref API
 	type Response struct {
 		Status         string `json:"status"`
@@ -612,7 +621,7 @@ func GetCrossrefList(number int, member string, _type string, sample bool, hasOR
 	if number > 100 {
 		number = 100
 	}
-	url := CrossrefQueryUrl(number, member, _type, sample, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
+	url := QueryURL(number, member, _type, sample, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
 	req, err := http.NewRequest("GET", url, nil)
 	v := "0.1"
 	u := "info@front-matter.io"
@@ -644,7 +653,8 @@ func GetCrossrefList(number int, member string, _type string, sample bool, hasOR
 	return response.Message.Items, nil
 }
 
-func CrossrefQueryUrl(number int, member string, _type string, sample bool, hasORCID bool, hasROR bool, hasReferences bool, hasRelation bool, hasAbstract bool, hasAward bool, hasLicense bool, hasArchive bool) string {
+// QueryURL returns the URL for the Crossref API query
+func QueryURL(number int, member string, _type string, sample bool, hasORCID bool, hasROR bool, hasReferences bool, hasRelation bool, hasAbstract bool, hasAward bool, hasLicense bool, hasArchive bool) string {
 	types := []string{
 		"book-section",
 		"monograph",
@@ -737,4 +747,34 @@ func CrossrefQueryUrl(number int, member string, _type string, sample bool, hasO
 	}
 	u.RawQuery = values.Encode()
 	return u.String()
+}
+
+// Get the Crossref member name for a given member_id
+func GetMember(memberId string) (string, bool) {
+	type Response struct {
+		Message struct {
+			PrimaryName string `json:"primary-name"`
+		} `json:"message"`
+	}
+	var result Response
+	if memberId == "" {
+		return "", false
+	}
+	resp, err := http.Get(fmt.Sprintf("https://api.crossref.org/members/%s", memberId))
+	if err != nil {
+		return "", false
+	}
+	if resp.StatusCode == 404 {
+		return "", false
+	}
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return "", false
+	}
+	defer resp.Body.Close()
+	err = json.Unmarshal(body, &result)
+	if err != nil {
+		return "", false
+	}
+	return result.Message.PrimaryName, true
 }

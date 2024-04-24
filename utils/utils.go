@@ -1,3 +1,4 @@
+// Package utils provides utility functions for commonmeta.
 package utils
 
 import (
@@ -13,7 +14,7 @@ import (
 	"github.com/microcosm-cc/bluemonday"
 )
 
-// Check for valid DOI or HTTP(S) Url
+// NormalizeID checks for valid DOI or HTTP(S) Urls and normalizes them
 func NormalizeID(pid string) string {
 	// check for valid DOI
 	doi := doiutils.NormalizeDOI(pid)
@@ -38,8 +39,8 @@ func NormalizeID(pid string) string {
 	return pid
 }
 
-// Normalize URL
-func NormalizeUrl(str string, secure bool, lower bool) (string, error) {
+// NormalizeURL normalizes URL
+func NormalizeURL(str string, secure bool, lower bool) (string, error) {
 	u, err := url.Parse(str)
 	if err != nil {
 		return "", err
@@ -56,7 +57,7 @@ func NormalizeUrl(str string, secure bool, lower bool) (string, error) {
 	return u.String(), nil
 }
 
-// return true if the URL is a Creative Commons License URL
+// NormalizeCCUrl returns the normalized Creative Commons License URL
 func NormalizeCCUrl(url string) (string, bool) {
 	NormalizedLicenses := map[string]string{
 		"https://creativecommons.org/licenses/by/1.0":          "https://creativecommons.org/licenses/by/1.0/legalcode",
@@ -104,18 +105,19 @@ func NormalizeCCUrl(url string) (string, bool) {
 		return "", false
 	}
 	var err error
-	url, err = NormalizeUrl(url, true, false)
+	url, err = NormalizeURL(url, true, false)
 	if err != nil {
 		return "", false
 	}
-	normalizedUrl, ok := NormalizedLicenses[url]
+	normalizedURL, ok := NormalizedLicenses[url]
 	if !ok {
 		return url, false
 	}
-	return normalizedUrl, true
+	return normalizedURL, true
 }
 
-func UrlToSPDX(url string) string {
+// URLToSPDX provides the SPDX license ID given a Creative Commons URL
+func URLToSPDX(url string) string {
 	// appreviated list from https://spdx.org/licenses/
 	SPDXLicenses := map[string]string{
 		"https://creativecommons.org/licenses/by/3.0/legalcode":       "CC-BY-3.0",
@@ -140,12 +142,13 @@ func UrlToSPDX(url string) string {
 	return id
 }
 
-type Params struct {
+type params struct {
 	Pid, Str, Ext, Filename string
 	Dct                     map[string]interface{}
 }
 
-func FindFromFormat(p Params) string {
+// FindFromFormat finds the commonmeta read format
+func FindFromFormat(p params) string {
 	// Find reader from format
 	if p.Pid != "" {
 		return FindFromFormatByID(p.Pid)
@@ -165,27 +168,28 @@ func FindFromFormat(p Params) string {
 	return "datacite"
 }
 
-// Find reader from format by id
-func FindFromFormatByID(pid string) string {
-	_, ok := doiutils.ValidateDOI(pid)
+// FindFromFormatByID finds the commonmeta reader from format by id
+func FindFromFormatByID(id string) string {
+	_, ok := doiutils.ValidateDOI(id)
 	if ok {
 		return "datacite"
 	}
-	if strings.Contains(pid, "github.com") {
+	if strings.Contains(id, "github.com") {
 		return "cff"
 	}
-	if strings.Contains(pid, "codemeta.json") {
+	if strings.Contains(id, "codemeta.json") {
 		return "codemeta"
 	}
-	if strings.Contains(pid, "json_feed_item") {
+	if strings.Contains(id, "json_feed_item") {
 		return "json_feed_item"
 	}
-	if strings.Contains(pid, "zenodo.org") {
+	if strings.Contains(id, "zenodo.org") {
 		return "inveniordm"
 	}
 	return "schema_org"
 }
 
+// FindFromFormatByExt finds the commonmeta reader from format by file extension
 func FindFromFormatByExt(ext string) string {
 	if ext == ".bib" {
 		return "bibtex"
@@ -196,6 +200,7 @@ func FindFromFormatByExt(ext string) string {
 	return ""
 }
 
+// FindFromFormatByDict finds the commonmeta reader from format by dictionary
 func FindFromFormatByDict(dct map[string]interface{}) string {
 	if dct == nil {
 		return ""
@@ -230,6 +235,7 @@ func FindFromFormatByDict(dct map[string]interface{}) string {
 	return ""
 }
 
+// FindFromFormatByString finds the commonmeta reader from format by string
 func FindFromFormatByString(str string) string {
 	if str == "" {
 		return ""
@@ -268,6 +274,7 @@ func FindFromFormatByString(str string) string {
 	return ""
 }
 
+// FindFromFormatByFilename finds the commonmeta reader from format by filename
 func FindFromFormatByFilename(filename string) string {
 	if filename == "CITATION.cff" {
 		return "cff"
@@ -275,14 +282,16 @@ func FindFromFormatByFilename(filename string) string {
 	return ""
 }
 
-// ISSN as URL
-func IssnAsUrl(issn string) string {
+// ISSNAsURL returns the ISSN expressed as URL
+func ISSNAsURL(issn string) string {
 	if issn == "" {
 		return ""
 	}
 	return fmt.Sprintf("https://portal.issn.org/resource/ISSN/%s", issn)
 }
 
+// Sanitize removes all HTML tags except for a whitelist of allowed tags. Used for
+// title and description fields.
 func Sanitize(html string) string {
 	policy := bluemonday.StrictPolicy()
 	policy.AllowElements("b", "br", "code", "em", "i", "sub", "sup", "strong")
@@ -292,6 +301,7 @@ func Sanitize(html string) string {
 	return str
 }
 
+// DedupeSlice removes duplicates from a slice
 // https://stackoverflow.com/questions/66643946/how-to-remove-duplicates-strings-or-int-from-slice-in-go/76948712#76948712
 func DedupeSlice[T comparable](sliceList []T) []T {
 	dedupeMap := make(map[T]struct{})
@@ -307,14 +317,16 @@ func DedupeSlice[T comparable](sliceList []T) []T {
 	return list
 }
 
+// NormalizeORCID returns a normalized ORCID URL
 func NormalizeORCID(orcid string) string {
-	orcid_str, ok := ValidateORCID(orcid)
+	orcidStr, ok := ValidateORCID(orcid)
 	if !ok {
 		return ""
 	}
-	return "https://orcid.org/" + orcid_str
+	return "https://orcid.org/" + orcidStr
 }
 
+// ValidateORCID validates an ORCID
 func ValidateORCID(orcid string) (string, bool) {
 	r, err := regexp.Compile(`^(?:(?:http|https)://(?:(?:www|sandbox)?\.)?orcid\.org/)?(\d{4}[ -]\d{4}[ -]\d{4}[ -]\d{3}[0-9X]+)$`)
 	if err != nil {
@@ -328,14 +340,16 @@ func ValidateORCID(orcid string) (string, bool) {
 	return matched[1], true
 }
 
+// NormalizeROR returns a normalized ROR URL
 func NormalizeROR(ror string) string {
-	ror_str, ok := ValidateROR(ror)
+	rorStr, ok := ValidateROR(ror)
 	if !ok {
 		return ""
 	}
-	return "https://ror.org/" + ror_str
+	return "https://ror.org/" + rorStr
 }
 
+// ValidateROR validates a ROR
 func ValidateROR(ror string) (string, bool) {
 	r, err := regexp.Compile(`^(?:(?:http|https)://ror\.org/)?([0-9a-z]{7}\d{2})$`)
 	if err != nil {

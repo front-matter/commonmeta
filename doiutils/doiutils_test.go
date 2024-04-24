@@ -92,23 +92,3 @@ func TestGetDOIRA(t *testing.T) {
 		}
 	}
 }
-
-func TestGetCrossrefMember(t *testing.T) {
-	t.Parallel()
-	type testCase struct {
-		input string
-		want  string
-	}
-	testCases := []testCase{
-		{input: "340", want: "Public Library of Science (PLoS)"},
-		{input: "1313", want: ""},
-		{input: "", want: ""},
-	}
-	for _, tc := range testCases {
-		got, _ := doiutils.GetCrossrefMember(tc.input)
-		if tc.want != got {
-			t.Errorf("Get Crossref Member(%v): want %v, got %v",
-				tc.input, tc.want, got)
-		}
-	}
-}

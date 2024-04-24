@@ -1,3 +1,4 @@
+// Package jsonfeed converts JSON Feed metadata to/from the commonmeta metadata format.
 package jsonfeed
 
 import (
@@ -7,15 +8,17 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/front-matter/commonmeta/types"
+	"github.com/front-matter/commonmeta/commonmeta"
 )
 
+// Content represents the JSON Feed metadata.
 type Content struct {
 	ID    string `json:"id"`
 	Title string `json:"title"`
 }
 
-func GetJsonFeedItem(id string) (Content, error) {
+// Get retrieves JSON Feed metadata.
+func Get(id string) (Content, error) {
 	var content Content
 	client := http.Client{
 		Timeout: time.Second * 10,
@@ -40,7 +43,9 @@ func GetJsonFeedItem(id string) (Content, error) {
 	return content, err
 }
 
-func ReadJsonFeedItem(content Content) (types.Data, error) {
-	var data types.Data
+// Read reads JSON Feed metadata and converts it into Commonmeta metadata.
+func Read(content Content) (commonmeta.Data, error) {
+	var data commonmeta.Data
+	data.ID = content.ID
 	return data, nil
 }

@@ -1,3 +1,4 @@
+// Package doiutils provides a set of functions to work with DOIs
 package doiutils
 
 import (
@@ -11,7 +12,7 @@ import (
 	"strings"
 )
 
-// extract DOI prefix from URL
+// PrefixFromUrl extracts DOI prefix from URL
 func PrefixFromUrl(str string) (string, error) {
 	u, err := url.Parse(str)
 	if err != nil {
@@ -24,7 +25,7 @@ func PrefixFromUrl(str string) (string, error) {
 	return path[1], nil
 }
 
-// Normalize a DOI
+// NormalizeDOI normalizes a DOI
 func NormalizeDOI(doi string) string {
 	doistr, ok := ValidateDOI(doi)
 	if !ok {
@@ -34,7 +35,7 @@ func NormalizeDOI(doi string) string {
 	return resolver + strings.ToLower(doistr)
 }
 
-// Validate a DOI
+// ValidateDOI validates a DOI
 func ValidateDOI(doi string) (string, bool) {
 	r, err := regexp.Compile(`^(?:(http|https):/(/)?(dx\.)?(doi\.org|handle\.stage\.datacite\.org|handle\.test\.datacite\.org)/)?(doi:)?(10\.\d{4,5}/.+)$`)
 	if err != nil {
@@ -48,7 +49,7 @@ func ValidateDOI(doi string) (string, bool) {
 	return matched[6], true
 }
 
-// Validate a DOI prefix for a given DOI
+// ValidatePrefix validates a DOI prefix for a given DOI
 func ValidatePrefix(doi string) (string, bool) {
 	r, err := regexp.Compile(`^(?:(http|https):/(/)?(dx\.)?(doi\.org|handle\.stage\.datacite\.org|handle\.test\.datacite\.org)/)?(doi:)?(10\.\d{4,5})/.+$`)
 	if err != nil {
@@ -62,7 +63,7 @@ func ValidatePrefix(doi string) (string, bool) {
 	return matched[6], true
 }
 
-// Return a DOI resolver for a given DOI
+// DOIResolver returns a DOI resolver for a given DOI
 func DOIResolver(doi string, sandbox bool) string {
 	d, err := url.Parse(doi)
 	if err != nil {
@@ -74,7 +75,7 @@ func DOIResolver(doi string, sandbox bool) string {
 	return "https://doi.org/"
 }
 
-// return the DOI registration agency for a given DOI
+// GetDOIRA returns the DOI registration agency for a given DOI
 func GetDOIRA(doi string) (string, bool) {
 	prefix, ok := ValidatePrefix(doi)
 	if !ok {
@@ -102,34 +103,4 @@ func GetDOIRA(doi string) (string, bool) {
 		return "", false
 	}
 	return result[0].RA, true
-}
-
-// Get the Crossref member name for a given member_id
-func GetCrossrefMember(memberId string) (string, bool) {
-	type Response struct {
-		Message struct {
-			PrimaryName string `json:"primary-name"`
-		} `json:"message"`
-	}
-	var result Response
-	if memberId == "" {
-		return "", false
-	}
-	resp, err := http.Get(fmt.Sprintf("https://api.crossref.org/members/%s", memberId))
-	if err != nil {
-		return "", false
-	}
-	if resp.StatusCode == 404 {
-		return "", false
-	}
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return "", false
-	}
-	defer resp.Body.Close()
-	err = json.Unmarshal(body, &result)
-	if err != nil {
-		return "", false
-	}
-	return result.Message.PrimaryName, true
 }

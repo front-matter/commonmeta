@@ -8,9 +8,9 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/front-matter/commonmeta/commonmeta"
 	"github.com/front-matter/commonmeta/datacite"
 	"github.com/front-matter/commonmeta/doiutils"
-	"github.com/front-matter/commonmeta/types"
 
 	"github.com/front-matter/commonmeta/crossref"
 
@@ -33,7 +33,7 @@ commonmeta 10.5555/12345678`,
 		}
 		input := args[0]
 		from, _ := cmd.Flags().GetString("from")
-		var data types.Data
+		var data commonmeta.Data
 		var err error
 		if from == "" {
 			var ok bool
@@ -50,9 +50,9 @@ commonmeta 10.5555/12345678`,
 			from = strings.ToLower(from)
 		}
 		if from == "crossref" {
-			data, err = crossref.FetchCrossref(input)
+			data, err = crossref.Fetch(input)
 		} else if from == "datacite" {
-			data, err = datacite.FetchDatacite(input)
+			data, err = datacite.Fetch(input)
 		}
 
 		if err != nil {

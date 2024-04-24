@@ -14,8 +14,6 @@ import (
 
 	"github.com/front-matter/commonmeta/datacite"
 
-	"github.com/front-matter/commonmeta/types"
-
 	"github.com/spf13/cobra"
 )
 
@@ -45,18 +43,18 @@ var sampleCmd = &cobra.Command{
 		hasLicense, _ := cmd.Flags().GetBool("has-license")
 		hasArchive, _ := cmd.Flags().GetBool("has-archive")
 
-		var data []types.Data
+		var data []commonmeta.Data
 		var err error
 		sample := true
 		if from == "crossref" {
-			data, err = crossref.FetchCrossrefList(number, member, type_, sample, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
+			data, err = crossref.FetchList(number, member, type_, sample, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
 		} else if from == "datacite" {
-			data, err = datacite.FetchDataciteList(number, sample)
+			data, err = datacite.FetchList(number, sample)
 		}
 		if err != nil {
 			fmt.Println(err)
 		}
-		output, jsErr := commonmeta.WriteCommonmetaList(data)
+		output, jsErr := commonmeta.WriteList(data)
 		var out bytes.Buffer
 		json.Indent(&out, output, "", "  ")
 		fmt.Println(out.String())

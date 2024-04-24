@@ -6,7 +6,7 @@ import (
 	"github.com/front-matter/commonmeta/jsonfeed"
 )
 
-func TestGetJsonFeedItem(t *testing.T) {
+func TestGet(t *testing.T) {
 	t.Parallel()
 
 	type testCase struct {
@@ -29,7 +29,7 @@ func TestGetJsonFeedItem(t *testing.T) {
 		{pid: wordpressPost.ID, want: wordpressPost.Title, err: nil},
 	}
 	for _, tc := range testCases {
-		got, err := jsonfeed.GetJsonFeedItem(tc.pid)
+		got, err := jsonfeed.Get(tc.pid)
 		if tc.want != got.Title {
 			t.Errorf("JSON Feed ID(%v): want %v, got %v, error %v",
 				tc.pid, tc.want, got, err)

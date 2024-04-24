@@ -1,3 +1,4 @@
+// Package datacite provides function to convert DataCite metadata to/from the commonmeta metadata format.
 package datacite
 
 import (
@@ -12,20 +13,20 @@ import (
 	"strings"
 	"time"
 
-	"github.com/front-matter/commonmeta/types"
-
-	"github.com/front-matter/commonmeta/constants"
+	"github.com/front-matter/commonmeta/commonmeta"
 	"github.com/front-matter/commonmeta/doiutils"
 
 	"github.com/front-matter/commonmeta/utils"
 )
 
+// Content represents the DataCite metadata.
 type Content struct {
 	ID         string     `json:"id"`
 	Type       string     `json:"type"`
 	Attributes Attributes `json:"attributes"`
 }
 
+// Attributes represents the attributes of the DataCite JSONAPI response.
 type Attributes struct {
 	DOI                  string `json:"doi"`
 	Prefix               string `json:"prefix"`
@@ -52,7 +53,7 @@ type Attributes struct {
 		TitleType string `json:"titleType"`
 		Lang      string `json:"lang"`
 	} `json:"titles"`
-	Url      string `json:"url"`
+	URL      string `json:"url"`
 	Subjects []struct {
 		Subject string `json:"subject"`
 	} `json:"subjects"`
@@ -109,6 +110,7 @@ type Attributes struct {
 	} `json:"fundingReferences"`
 }
 
+// Contributor represents the contributor of the DataCite JSONAPI response.
 type Contributor struct {
 	Name            string `json:"name"`
 	GivenName       string `json:"givenName"`
@@ -123,6 +125,7 @@ type Contributor struct {
 	ContributorType string   `json:"contributorType"`
 }
 
+// DCToCMTranslations maps DataCite resource types to Commonmeta types
 // source: https://github.com/datacite/schema/blob/master/source/meta/kernel-4/include/datacite-resourceType-v4.xsd
 var DCToCMTranslations = map[string]string{
 	"Audiovisual":           "Audiovisual",
@@ -160,32 +163,34 @@ var DCToCMTranslations = map[string]string{
 	"Other":                 "Other",
 }
 
-func FetchDatacite(str string) (types.Data, error) {
-	var data types.Data
+// Fetch fetches DataCite metadata for a given DOI and returns Commonmeta metadata.
+func Fetch(str string) (commonmeta.Data, error) {
+	var data commonmeta.Data
 	id, ok := doiutils.ValidateDOI(str)
 	if !ok {
 		return data, errors.New("invalid doi")
 	}
-	content, err := GetDatacite(id)
+	content, err := Get(id)
 	if err != nil {
 		return data, err
 	}
-	data, err = ReadDatacite(content)
+	data, err = Read(content)
 	if err != nil {
 		return data, err
 	}
 	return data, nil
 }
 
-func FetchDataciteList(number int, sample bool) ([]types.Data, error) {
+// FetchList gets the metadata for a list of works from the DataCite API and returns Commonmeta metadata.
+func FetchList(number int, sample bool) ([]commonmeta.Data, error) {
 
-	var data []types.Data
-	content, err := GetDataciteList(number, sample)
+	var data []commonmeta.Data
+	content, err := GetList(number, sample)
 	if err != nil {
 		return data, err
 	}
 	for _, v := range content {
-		d, err := ReadDatacite(v)
+		d, err := Read(v)
 		if err != nil {
 			log.Println(err)
 		}
@@ -194,7 +199,8 @@ func FetchDataciteList(number int, sample bool) ([]types.Data, error) {
 	return data, nil
 }
 
-func GetDatacite(pid string) (Content, error) {
+// Get gets DataCite metadata for a given DOI
+func Get(pid string) (Content, error) {
 	// the envelope for the JSON response from the DataCite API
 	type Response struct {
 		Data Content `json:"data"`
@@ -203,7 +209,7 @@ func GetDatacite(pid string) (Content, error) {
 	var response Response
 	doi, ok := doiutils.ValidateDOI(pid)
 	if !ok {
-		return response.Data, errors.New("Invalid DOI")
+		return response.Data, errors.New("invalid DOI")
 	}
 	url := "https://api.datacite.org/dois/" + doi
 	client := http.Client{
@@ -228,9 +234,9 @@ func GetDatacite(pid string) (Content, error) {
 	return response.Data, err
 }
 
-// read DataCite JSON response and return work struct in Commonmeta format
-func ReadDatacite(content Content) (types.Data, error) {
-	var data = types.Data{}
+// Read reads DataCite JSON response and return work struct in Commonmeta format
+func Read(content Content) (commonmeta.Data, error) {
+	var data = commonmeta.Data{}
 	var err error
 
 	data.ID = doiutils.NormalizeDOI(content.Attributes.DOI)
@@ -246,7 +252,7 @@ func ReadDatacite(content Content) (types.Data, error) {
 		data.AdditionalType = content.Attributes.Types.ResourceType
 	}
 
-	data.Container = types.Container{
+	data.Container = commonmeta.Container{
 		Identifier:     content.Attributes.Container.Identifier,
 		IdentifierType: content.Attributes.Container.IdentifierType,
 		Type:           content.Attributes.Container.Type,
@@ -260,7 +266,7 @@ func ReadDatacite(content Content) (types.Data, error) {
 	for _, v := range content.Attributes.Creators {
 		if v.Name != "" || v.GivenName != "" || v.FamilyName != "" {
 			contributor := GetContributor(v)
-			containsID := slices.ContainsFunc(data.Contributors, func(e types.Contributor) bool {
+			containsID := slices.ContainsFunc(data.Contributors, func(e commonmeta.Contributor) bool {
 				return e.ID != "" && e.ID == contributor.ID
 			})
 			if containsID {
@@ -276,7 +282,7 @@ func ReadDatacite(content Content) (types.Data, error) {
 	for _, v := range content.Attributes.Contributors {
 		if v.Name != "" || v.GivenName != "" || v.FamilyName != "" {
 			contributor := GetContributor(v)
-			containsID := slices.ContainsFunc(data.Contributors, func(e types.Contributor) bool {
+			containsID := slices.ContainsFunc(data.Contributors, func(e commonmeta.Contributor) bool {
 				return e.ID != "" && e.ID == contributor.ID
 			})
 			if containsID {
@@ -297,9 +303,6 @@ func ReadDatacite(content Content) (types.Data, error) {
 		}
 		if v.DateType == "Collected" {
 			data.Date.Collected = v.Date
-		}
-		if v.DateType == "Copyrighted" {
-			data.Date.Copyrighted = v.Date
 		}
 		if v.DateType == "Created" {
 			data.Date.Created = v.Date
@@ -337,7 +340,7 @@ func ReadDatacite(content Content) (types.Data, error) {
 			t = "Other"
 		}
 		description := utils.Sanitize(v.Description)
-		data.Descriptions = append(data.Descriptions, types.Description{
+		data.Descriptions = append(data.Descriptions, commonmeta.Description{
 			Description: description,
 			Type:        t,
 			Language:    v.Lang,
@@ -348,7 +351,7 @@ func ReadDatacite(content Content) (types.Data, error) {
 	// but can't be mapped directly
 
 	for _, v := range content.Attributes.FundingReferences {
-		data.FundingReferences = append(data.FundingReferences, types.FundingReference{
+		data.FundingReferences = append(data.FundingReferences, commonmeta.FundingReference{
 			FunderIdentifier:     v.FunderIdentifier,
 			FunderIdentifierType: v.FunderIdentifierType,
 			FunderName:           v.FunderName,
@@ -358,13 +361,13 @@ func ReadDatacite(content Content) (types.Data, error) {
 	}
 
 	for _, v := range content.Attributes.GeoLocations {
-		data.GeoLocations = append(data.GeoLocations, types.GeoLocation{
-			GeoLocationPoint: types.GeoLocationPoint{
+		data.GeoLocations = append(data.GeoLocations, commonmeta.GeoLocation{
+			GeoLocationPoint: commonmeta.GeoLocationPoint{
 				PointLongitude: v.GeoLocationPoint.PointLongitude,
 				PointLatitude:  v.GeoLocationPoint.PointLatitude,
 			},
 			GeoLocationPlace: v.GeoLocationPlace,
-			GeoLocationBox: types.GeoLocationBox{
+			GeoLocationBox: commonmeta.GeoLocationBox{
 				EastBoundLongitude: v.GeoLocationBox.EastBoundLongitude,
 				WestBoundLongitude: v.GeoLocationBox.WestBoundLongitude,
 				SouthBoundLatitude: v.GeoLocationBox.SouthBoundLatitude,
@@ -395,14 +398,14 @@ func ReadDatacite(content Content) (types.Data, error) {
 				identifierType = v.AlternateIdentifierType
 			}
 			if v.AlternateIdentifier == "" {
-				data.Identifiers = append(data.Identifiers, types.Identifier{
+				data.Identifiers = append(data.Identifiers, commonmeta.Identifier{
 					Identifier:     v.AlternateIdentifier,
 					IdentifierType: identifierType,
 				})
 			}
 		}
 	}
-	data.Identifiers = append(data.Identifiers, types.Identifier{
+	data.Identifiers = append(data.Identifiers, commonmeta.Identifier{
 		Identifier:     data.ID,
 		IdentifierType: "DOI",
 	})
@@ -411,13 +414,13 @@ func ReadDatacite(content Content) (types.Data, error) {
 	}
 
 	if content.Attributes.Publisher != "" {
-		data.Publisher = types.Publisher{
+		data.Publisher = commonmeta.Publisher{
 			Name: content.Attributes.Publisher,
 		}
 	}
 
 	for _, v := range content.Attributes.Subjects {
-		subject := types.Subject{
+		subject := commonmeta.Subject{
 			Subject: v.Subject,
 		}
 		if !slices.Contains(data.Subjects, subject) {
@@ -429,13 +432,13 @@ func ReadDatacite(content Content) (types.Data, error) {
 
 	if len(content.Attributes.RightsList) > 0 {
 		url := content.Attributes.RightsList[0].RightsURI
-		id := utils.UrlToSPDX(url)
+		id := utils.URLToSPDX(url)
 		if id == "" {
 			log.Printf("License URL %s not found in SPDX", url)
 		}
-		data.License = types.License{
+		data.License = commonmeta.License{
 			ID:  id,
-			Url: url,
+			URL: url,
 		}
 	}
 
@@ -452,7 +455,7 @@ func ReadDatacite(content Content) (types.Data, error) {
 				if id == "" {
 					id = v.RelatedIdentifier
 				}
-				data.References = append(data.References, types.Reference{
+				data.References = append(data.References, commonmeta.Reference{
 					Key: "ref" + strconv.Itoa(i+1),
 					ID:  id,
 				})
@@ -484,7 +487,7 @@ func ReadDatacite(content Content) (types.Data, error) {
 				if identifier == "" {
 					identifier = v.RelatedIdentifier
 				}
-				data.Relations = append(data.Relations, types.Relation{
+				data.Relations = append(data.Relations, commonmeta.Relation{
 					ID:   identifier,
 					Type: v.RelationType,
 				})
@@ -497,14 +500,14 @@ func ReadDatacite(content Content) (types.Data, error) {
 		if slices.Contains([]string{"MainTitle", "Subtitle", "TranslatedTitle"}, v.TitleType) {
 			t = v.TitleType
 		}
-		data.Titles = append(data.Titles, types.Title{
+		data.Titles = append(data.Titles, commonmeta.Title{
 			Title:    v.Title,
 			Type:     t,
 			Language: v.Lang,
 		})
 	}
 
-	data.Url, err = utils.NormalizeUrl(content.Attributes.Url, true, false)
+	data.URL, err = utils.NormalizeURL(content.Attributes.URL, true, false)
 	if err != nil {
 		log.Println(err)
 	}
@@ -514,7 +517,8 @@ func ReadDatacite(content Content) (types.Data, error) {
 	return data, nil
 }
 
-func GetContributor(v Contributor) types.Contributor {
+// GetContributor converts DataCite contributor metadata into the Commonmeta format
+func GetContributor(v Contributor) commonmeta.Contributor {
 	var t string
 	if len(v.NameType) > 2 {
 		t = v.NameType[:len(v.NameType)-2]
@@ -549,20 +553,20 @@ func GetContributor(v Contributor) types.Contributor {
 			name = ""
 		}
 	}
-	var affiliations []types.Affiliation
+	var affiliations []commonmeta.Affiliation
 	for _, a := range v.Affiliation {
-		affiliations = append(affiliations, types.Affiliation{
+		affiliations = append(affiliations, commonmeta.Affiliation{
 			ID:   "",
 			Name: a,
 		})
 	}
 	var roles []string
-	if slices.Contains(constants.ContributorRoles, v.ContributorType) {
+	if slices.Contains(commonmeta.ContributorRoles, v.ContributorType) {
 		roles = append(roles, v.ContributorType)
 	} else {
 		roles = append(roles, "Author")
 	}
-	return types.Contributor{
+	return commonmeta.Contributor{
 		ID:               id,
 		Type:             t,
 		Name:             name,
@@ -573,7 +577,8 @@ func GetContributor(v Contributor) types.Contributor {
 	}
 }
 
-func GetDataciteList(number int, sample bool) ([]Content, error) {
+// GetList gets the metadata for a list of works from the DataCite API
+func GetList(number int, sample bool) ([]Content, error) {
 	// the envelope for the JSON response from the DataCite API
 	type Response struct {
 		Data []Content `json:"data"`
@@ -582,7 +587,7 @@ func GetDataciteList(number int, sample bool) ([]Content, error) {
 		number = 100
 	}
 	var response Response
-	url := DataciteQueryUrl(number, sample)
+	url := QueryURL(number, sample)
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		log.Fatalln(err)
@@ -609,7 +614,8 @@ func GetDataciteList(number int, sample bool) ([]Content, error) {
 	return response.Data, nil
 }
 
-func DataciteQueryUrl(number int, sample bool) string {
+// QueryURL returns the URL for the DataCite API query
+func QueryURL(number int, sample bool) string {
 	if sample {
 		number = 10
 	}

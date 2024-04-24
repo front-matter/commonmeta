@@ -6,7 +6,7 @@ import (
 	"github.com/front-matter/commonmeta/inveniordm"
 )
 
-func TestGetInvenioRDM(t *testing.T) {
+func TestGet(t *testing.T) {
 	t.Parallel()
 
 	type testCase struct {
@@ -29,7 +29,7 @@ func TestGetInvenioRDM(t *testing.T) {
 		{pid: publication.ID, want: publication.Title, err: nil},
 	}
 	for _, tc := range testCases {
-		got, err := inveniordm.GetInvenioRDM(tc.pid)
+		got, err := inveniordm.Get(tc.pid)
 		if tc.want != got.Title {
 			t.Errorf("InvenioRDM ID(%v): want %v, got %v, error %v",
 				tc.pid, tc.want, got, err)

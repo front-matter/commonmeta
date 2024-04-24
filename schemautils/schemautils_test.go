@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"path/filepath"
 
+	"github.com/front-matter/commonmeta/commonmeta"
 	"github.com/front-matter/commonmeta/schemautils"
-	"github.com/front-matter/commonmeta/types"
 
 	"fmt"
 	"log"
@@ -18,22 +18,22 @@ import (
 func TestJSONSchemaErrors(t *testing.T) {
 	t.Parallel()
 	type testCase struct {
-		meta types.Data
+		meta commonmeta.Data
 		want int
 	}
-	m := types.Data{
+	m := commonmeta.Data{
 		ID:   "https://doi.org/10.7554/elife.01567",
 		Type: "JournalArticle",
-		Url:  "https://elifesciences.org/articles/01567",
+		URL:  "https://elifesciences.org/articles/01567",
 	}
 
 	// missing required ID, defaults to empty string
-	n := types.Data{
+	n := commonmeta.Data{
 		Type: "JournalArticle",
 	}
 
 	// Type is not supported
-	o := types.Data{
+	o := commonmeta.Data{
 		ID:   "https://doi.org/10.1515/9789048535248-011",
 		Type: "Umbrella",
 	}

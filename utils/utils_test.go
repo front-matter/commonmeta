@@ -1,12 +1,13 @@
 package utils_test
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/front-matter/commonmeta/utils"
 )
 
-func TestNormalizeUrl(t *testing.T) {
+func TestNormalizeURL(t *testing.T) {
 	t.Parallel()
 	type testCase struct {
 		input  string
@@ -22,7 +23,7 @@ func TestNormalizeUrl(t *testing.T) {
 		{input: "http://elifesciences.org/Articles/91729/", secure: false, lower: false, want: "http://elifesciences.org/Articles/91729"},
 	}
 	for _, tc := range testCases {
-		got, err := utils.NormalizeUrl(tc.input, tc.secure, tc.lower)
+		got, err := utils.NormalizeURL(tc.input, tc.secure, tc.lower)
 		if tc.want != got {
 			t.Errorf("Normalize URL(%v): want %v, got %v, error %v",
 				tc.input, tc.want, got, err)
@@ -30,7 +31,7 @@ func TestNormalizeUrl(t *testing.T) {
 	}
 }
 
-func TestIssnAsUrl(t *testing.T) {
+func TestISSNAsURL(t *testing.T) {
 	t.Parallel()
 	type testCase struct {
 		input string
@@ -40,12 +41,19 @@ func TestIssnAsUrl(t *testing.T) {
 		{input: "2146-8427", want: "https://portal.issn.org/resource/ISSN/2146-8427"},
 	}
 	for _, tc := range testCases {
-		got := utils.IssnAsUrl(tc.input)
+		got := utils.ISSNAsURL(tc.input)
 		if tc.want != got {
 			t.Errorf("ISSN as URL(%v): want %v, got %v",
 				tc.input, tc.want, got)
 		}
 	}
+}
+
+func ExampleISSNAsUrl() {
+	s := utils.ISSNAsURL("2146-8427")
+	fmt.Println(s)
+	// Output:
+	// https://portal.issn.org/resource/ISSN/2146-8427
 }
 
 func TestNormalizeORCID(t *testing.T) {
@@ -126,6 +134,13 @@ func TestValidateROR(t *testing.T) {
 	}
 }
 
+func ExampleValidateROR() {
+	s, _ := utils.ValidateROR("https://ror.org/0342dzm54")
+	fmt.Println(s)
+	// Output:
+	// 0342dzm54
+}
+
 func TestSanitize(t *testing.T) {
 	t.Parallel()
 	type testCase struct {
@@ -143,4 +158,11 @@ func TestSanitize(t *testing.T) {
 				tc.input, tc.want, got)
 		}
 	}
+}
+
+func ExampleSanitize() {
+	s := utils.Sanitize("<p>The Origins of SARS-CoV-2: A <i>Critical</i> <a href=\"index.html\">Review</a></p>")
+	fmt.Println(s)
+	// Output:
+	// The Origins of SARS-CoV-2: A <i>Critical</i> Review
 }

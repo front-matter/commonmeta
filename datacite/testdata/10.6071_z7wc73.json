@@ -43,10 +43,9 @@
       "affiliations": [{ "name": "University of California, Merced" }]
     },
     {
-      "type": "Person",
+      "type": "Organization",
       "contributorRoles": ["Author"],
-      "givenName": "SSCZO",
-      "familyName": "Southern Sierra Critical Zone Observatory",
+      "name": "Southern Sierra Critical Zone Observatory SSCZO",
       "affiliations": [{ "name": "National Science Foundation" }]
     },
     {
@@ -68,10 +67,9 @@
       "familyName": "Meng"
     },
     {
-      "type": "Person",
+      "type": "Organization",
       "contributorRoles": ["ResearchGroup"],
-      "givenName": "Southern Sierra Critical Zone",
-      "familyName": "Observatory"
+      "name": "Southern Sierra Critical Zone Observatory",
     }
   ],
   "date": {

@@ -1,3 +1,4 @@
+// Package dateutils provides functions to work with dates.
 package dateutils
 
 import (
@@ -6,6 +7,7 @@ import (
 	"time"
 )
 
+// Iso8601DateFormat is the ISO 8601 date format without time.
 const Iso8601DateFormat = "2006-01-02"
 
 // func MonthNames() struct {
@@ -57,10 +59,12 @@ const Iso8601DateFormat = "2006-01-02"
 // 	return map[string][]int{"date-parts": dateParts}
 // }
 
+// GetDateFromUnixTimestamp returns a date string from a Unix timestamp
 func GetDateFromUnixTimestamp(timestamp int64) string {
 	return time.Unix(timestamp, 0).Format(Iso8601DateFormat)
 }
 
+// GetDateFromDateParts returns a date string from date parts
 func GetDateFromDateParts(dateAsParts [][]int) string {
 	dateParts := dateAsParts[0]
 	switch len(dateParts) {
@@ -82,6 +86,7 @@ func GetDateFromDateParts(dateAsParts [][]int) string {
 	return ""
 }
 
+// GetDateFromParts returns a date string from parts
 func GetDateFromParts(parts ...int) string {
 	var arr []string
 	switch len(parts) {

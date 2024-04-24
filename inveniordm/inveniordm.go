@@ -1,3 +1,4 @@
+// Package inveniordm provides functions to convert InvenioRDM metadata to/from the commonmeta metadata format.
 package inveniordm
 
 import (
@@ -7,15 +8,17 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/front-matter/commonmeta/types"
+	"github.com/front-matter/commonmeta/commonmeta"
 )
 
+// Content represents the InvenioRDM JSON API response.
 type Content struct {
 	ID    string `json:"id"`
 	Title string `json:"title"`
 }
 
-func GetInvenioRDM(id string) (Content, error) {
+// Get retrieves InvenioRDM metadata.
+func Get(id string) (Content, error) {
 	var content Content
 	client := http.Client{
 		Timeout: time.Second * 10,
@@ -40,7 +43,9 @@ func GetInvenioRDM(id string) (Content, error) {
 	return content, err
 }
 
-func ReadInvenioRDM(content Content) (types.Data, error) {
-	var data types.Data
+// Read reads InvenioRDM JSON API response and converts it into Commonmeta metadata.
+func Read(content Content) (commonmeta.Data, error) {
+	var data commonmeta.Data
+	data.ID = content.ID
 	return data, nil
 }

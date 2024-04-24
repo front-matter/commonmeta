@@ -1,18 +1,19 @@
+// Package codemeta provides a function to read Codemeta metadata and convert it to commonmeta.
 package codemeta
 
-import "github.com/front-matter/commonmeta/types"
+import (
+	"github.com/front-matter/commonmeta/commonmeta"
+)
 
-type Content struct {
+type content struct {
 	ID    string `json:"id"`
 	Title string `json:"title"`
 }
 
-func GetCodemeta(id string) (Content, error) {
-	var content Content
-	return content, nil
-}
+// Read reads codemeta and converts it to commonmeta.
+func Read(content content) (commonmeta.Data, error) {
+	var data commonmeta.Data
 
-func ReadCodemeta(content Content) (types.Data, error) {
-	var data types.Data
+	data.ID = content.ID
 	return data, nil
 }

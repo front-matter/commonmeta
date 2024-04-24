@@ -1,3 +1,4 @@
+// Package authorutils provides utility functions to work with authors
 package authorutils
 
 import "strings"

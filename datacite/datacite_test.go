@@ -8,15 +8,15 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/front-matter/commonmeta/commonmeta"
 	"github.com/front-matter/commonmeta/datacite"
 
 	"github.com/front-matter/commonmeta/doiutils"
-	"github.com/front-matter/commonmeta/types"
 
 	"github.com/google/go-cmp/cmp"
 )
 
-func TestGetDatacite(t *testing.T) {
+func TestGet(t *testing.T) {
 	t.Parallel()
 
 	type testCase struct {
@@ -29,32 +29,32 @@ func TestGetDatacite(t *testing.T) {
 	publication := datacite.Content{
 		ID: "https://doi.org/10.5281/zenodo.5244404",
 		Attributes: datacite.Attributes{
-			Url: "https://zenodo.org/record/5244404",
+			URL: "https://zenodo.org/record/5244404",
 		},
 	}
 	// PID as DOI string
 	presentation := datacite.Content{
 		ID: "10.5281/zenodo.8173303",
 		Attributes: datacite.Attributes{
-			Url: "https://zenodo.org/record/8173303",
+			URL: "https://zenodo.org/record/8173303",
 		},
 	}
 
 	testCases := []testCase{
-		{id: presentation.ID, want: presentation.Attributes.Url, err: nil},
-		{id: publication.ID, want: publication.Attributes.Url, err: nil},
+		{id: presentation.ID, want: presentation.Attributes.URL, err: nil},
+		{id: publication.ID, want: publication.Attributes.URL, err: nil},
 	}
 
 	for _, tc := range testCases {
-		got, err := datacite.GetDatacite(tc.id)
-		if tc.want != got.Attributes.Url {
+		got, err := datacite.Get(tc.id)
+		if tc.want != got.Attributes.URL {
 			t.Errorf("Get DataCite(%v): want %v, got %v, error %v",
-				tc.id, tc.want, got.Attributes.Url, err)
+				tc.id, tc.want, got.Attributes.URL, err)
 		}
 	}
 }
 
-func TestFetchDatacite(t *testing.T) {
+func TestFetch(t *testing.T) {
 	t.Parallel()
 	type testCase struct {
 		name string
@@ -69,7 +69,7 @@ func TestFetchDatacite(t *testing.T) {
 		{name: "geolocation box", id: "https://doi.org/10.6071/z7wc73"},
 	}
 	for _, tc := range testCases {
-		got, err := datacite.FetchDatacite(tc.id)
+		got, err := datacite.Fetch(tc.id)
 		if err != nil {
 			t.Errorf("DataCite Metadata(%v): error %v", tc.id, err)
 		}
@@ -84,7 +84,7 @@ func TestFetchDatacite(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		want := types.Data{}
+		want := commonmeta.Data{}
 		err = json.Unmarshal(content, &want)
 		if err != nil {
 			t.Fatal(err)

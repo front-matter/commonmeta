@@ -39,7 +39,7 @@
     }
   ],
   "identifiers": [
-    { "identifier": "urn:nbn:de:0030-drops-43173", "identifierType": "Other" },
+    { "identifier": "urn:nbn:de:0030-drops-43173", "identifierType": "URN" },
     {
       "identifier": "https://doi.org/10.4230/lipics.tqc.2013.93",
       "identifierType": "DOI"
