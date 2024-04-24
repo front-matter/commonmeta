@@ -50,11 +50,13 @@ func IsPersonalName(name string) bool {
 	}
 
 	// check for suffixes, e.g. "John Smith, MD"
-	suffix := strings.Split(name, ", ")[1]
-	suffixes := []string{"MD", "PhD", "BS"}
-	for _, s := range suffixes {
-		if suffix == s {
-			return true
+	suffix := strings.Split(name, ", ")
+	if len(suffix) > 1 {
+		suffixes := []string{"MD", "PhD", "BS"}
+		for _, s := range suffixes {
+			if suffix[1] == s {
+				return true
+			}
 		}
 	}
 

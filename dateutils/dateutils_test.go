@@ -1,6 +1,7 @@
 package dateutils_test
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/front-matter/commonmeta/dateutils"
@@ -46,4 +47,11 @@ func TestGetDateFromUnixTimestamp(t *testing.T) {
 				tc.timestamp, tc.want, got)
 		}
 	}
+}
+
+func ExampleGetDateFromUnixTimestamp() {
+	s := dateutils.GetDateFromUnixTimestamp(1611312000)
+	fmt.Println(s)
+	// Output:
+	// 2021-01-22
 }

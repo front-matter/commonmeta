@@ -14,7 +14,7 @@ import (
 	"github.com/google/go-cmp/cmp"
 )
 
-func TestGetCrossref(t *testing.T) {
+func TestGet(t *testing.T) {
 	t.Parallel()
 
 	type testCase struct {
@@ -95,7 +95,7 @@ func TestFetch(t *testing.T) {
 	}
 }
 
-func TestCrossrefQueryUrl(t *testing.T) {
+func TestQueryURL(t *testing.T) {
 	t.Parallel()
 
 	type testCase struct {
@@ -120,7 +120,14 @@ func TestCrossrefQueryUrl(t *testing.T) {
 	}
 }
 
-func TestGetCrossrefList(t *testing.T) {
+func ExampleQueryURL() {
+	s := crossref.QueryURL(10, "340", "journal-article", false, false, false, false, false, false, false, false, false)
+	println(s)
+	// Output:
+	// https://api.crossref.org/works?filter=member%3A340%2Ctype%3Ajournal-article&order=desc&rows=10&sort=published
+}
+
+func TestGetList(t *testing.T) {
 	t.Parallel()
 
 	type testCase struct {
@@ -138,14 +145,14 @@ func TestGetCrossrefList(t *testing.T) {
 	for _, tc := range testCases {
 		got, err := crossref.GetList(tc.number, tc.member, tc._type, true, false, false, false, false, false, false, false, false)
 		if err != nil {
-			t.Errorf("GetCrossrefSample(%v): error %v", tc.number, err)
+			t.Errorf("GetList (%v): error %v", tc.number, err)
 		}
 		if diff := cmp.Diff(tc.number, len(got)); diff != "" {
-			t.Errorf("GetCrossrefList mismatch (-want +got):\n%s", diff)
+			t.Errorf("GetList mismatch (-want +got):\n%s", diff)
 		}
 	}
 }
-func TestGetCrossrefMember(t *testing.T) {
+func TestGetMember(t *testing.T) {
 	t.Parallel()
 	type testCase struct {
 		input string
@@ -163,4 +170,11 @@ func TestGetCrossrefMember(t *testing.T) {
 				tc.input, tc.want, got)
 		}
 	}
+}
+
+func ExampleGetMember() {
+	s, _ := crossref.GetMember("340")
+	println(s)
+	// Output:
+	// Public Library of Science (PLoS)
 }

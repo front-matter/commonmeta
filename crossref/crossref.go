@@ -751,7 +751,7 @@ func QueryURL(number int, member string, _type string, sample bool, hasORCID boo
 	return u.String()
 }
 
-// Get the Crossref member name for a given member_id
+// Get the Crossref member name for a given memberId
 func GetMember(memberId string) (string, bool) {
 	type Response struct {
 		Message struct {
