@@ -248,7 +248,7 @@ func Read(content Content) (commonmeta.Data, error) {
 	AdditionalType := DCToCMTranslations[content.Attributes.Types.ResourceType]
 	if AdditionalType != "" {
 		data.Type = AdditionalType
-	} else if content.Attributes.Types.ResourceType != "" {
+	} else if content.Attributes.Types.ResourceType != "" && !strings.EqualFold(content.Attributes.Types.ResourceType, data.Type) {
 		data.AdditionalType = content.Attributes.Types.ResourceType
 	}
 
@@ -265,6 +265,7 @@ func Read(content Content) (commonmeta.Data, error) {
 
 	for _, v := range content.Attributes.Creators {
 		if v.Name != "" || v.GivenName != "" || v.FamilyName != "" {
+			log.Println(v)
 			contributor := GetContributor(v)
 			containsID := slices.ContainsFunc(data.Contributors, func(e commonmeta.Contributor) bool {
 				return e.ID != "" && e.ID == contributor.ID
@@ -397,7 +398,7 @@ func Read(content Content) (commonmeta.Data, error) {
 			if slices.Contains(supportedIdentifiers, v.AlternateIdentifierType) {
 				identifierType = v.AlternateIdentifierType
 			}
-			if v.AlternateIdentifier == "" {
+			if v.AlternateIdentifier != "" {
 				data.Identifiers = append(data.Identifiers, commonmeta.Identifier{
 					Identifier:     v.AlternateIdentifier,
 					IdentifierType: identifierType,

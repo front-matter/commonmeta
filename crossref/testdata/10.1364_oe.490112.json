@@ -53,7 +53,7 @@
   "date": { "published": "2023-06-01" },
   "descriptions": [
     {
-      "description": "Scanning near-field optical microscopy (SNOM) is an important technique used to study the optical properties of material systems at the nanoscale. In previous work, we reported on the use of nanoimprinting to improve the reproducibility and throughput of near-field probes including complicated optical antenna structures such as the ‘campanile’ probe. However, precise control over the plasmonic gap size, which determines the near-field enhancement and spatial resolution, remains a challenge. Here, we present a novel approach to fabricating a sub-20 nm plasmonic gap in a near-field plasmonic probe through the controlled collapse of imprinted nanostructures using atomic layer deposition (ALD) coatings to define the gap width. The resulting ultranarrow gap at the apex of the probe provides a strong polarization-sensitive near-field optical response, which results in an enhancement of the optical transmission in a broad wavelength range from 620 to 820 nm, enabling tip-enhanced photoluminescence (TEPL) mapping of 2-dimensional (2D) materials. We demonstrate the potential of this near-field probe by mapping a 2D exciton coupled to a linearly polarized plasmonic resonance with below 30 nm spatial resolution. This work proposes a novel approach for integrating a plasmonic antenna at the apex of the near-field probe, paving the way for the fundamental study of light-matter interactions at the nanoscale.",
+      "description": "Scanning near-field optical microscopy (SNOM) is an important technique used to study the optical properties of material systems at the nanoscale. In previous work, we reported on the use of nanoimprinting to improve the reproducibility and throughput of near-field probes including complicated optical antenna structures such as the ‘campanile’ probe. However, precise control over the plasmonic gap size, which determines the near-field enhancement and spatial resolution, remains a challenge. Here, we present a novel approach to fabricating a sub-20\u2005nm plasmonic gap in a near-field plasmonic probe through the controlled collapse of imprinted nanostructures using atomic layer deposition (ALD) coatings to define the gap width. The resulting ultranarrow gap at the apex of the probe provides a strong polarization-sensitive near-field optical response, which results in an enhancement of the optical transmission in a broad wavelength range from 620 to 820\u2005nm, enabling tip-enhanced photoluminescence (TEPL) mapping of 2-dimensional (2D) materials. We demonstrate the potential of this near-field probe by mapping a 2D exciton coupled to a linearly polarized plasmonic resonance with below 30\u2005nm spatial resolution. This work proposes a novel approach for integrating a plasmonic antenna at the apex of the near-field probe, paving the way for the fundamental study of light-matter interactions at the nanoscale.",
       "type": "Abstract"
     }
   ],
@@ -342,7 +342,6 @@
       "type": "IsPartOf"
     }
   ],
-  "subjects": [{ "subject": "Atomic and Molecular Physics, and Optics" }],
   "titles": [
     {
       "title": "Integrating collapsible plasmonic gaps on near-field probes for polarization-resolved mapping of plasmon-enhanced emission in 2D material"

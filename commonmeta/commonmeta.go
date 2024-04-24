@@ -154,7 +154,7 @@ type File struct {
 type FundingReference struct {
 	FunderIdentifier     string `json:"funderIdentifier,omitempty"`
 	FunderIdentifierType string `json:"funderIdentifierType,omitempty"`
-	FunderName           string `json:"funderName"`
+	FunderName           string `json:"funderName,omitempty"`
 	AwardNumber          string `json:"awardNumber,omitempty"`
 	AwardURI             string `json:"award_uri,omitempty"`
 }

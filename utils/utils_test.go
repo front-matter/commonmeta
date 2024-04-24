@@ -166,3 +166,13 @@ func ExampleSanitize() {
 	// Output:
 	// The Origins of SARS-CoV-2: A <i>Critical</i> Review
 }
+
+func ExampleUnescapeUTF8() {
+	s, err := utils.UnescapeUTF8("capable of signi\"cance.")
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(s)
+	// Output:
+	// capable of signi"cance.
+}

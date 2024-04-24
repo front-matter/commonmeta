@@ -45,7 +45,7 @@ func TestGetCrossref(t *testing.T) {
 	}
 }
 
-func TestFetchCrossref(t *testing.T) {
+func TestFetch(t *testing.T) {
 	t.Parallel()
 	type testCase struct {
 		name string
@@ -79,19 +79,18 @@ func TestFetchCrossref(t *testing.T) {
 		}
 		filename := strings.ReplaceAll(doi, "/", "_") + ".json"
 		filepath := filepath.Join("testdata", filename)
-		content, err := os.ReadFile(filepath)
+		bytes, err := os.ReadFile(filepath)
 		if err != nil {
 			t.Fatal(err)
 		}
-		want := commonmeta.Data{
-			// FundingReferences: []commonmeta.FundingReference{},
-		}
-		err = json.Unmarshal(content, &want)
+
+		want := commonmeta.Data{}
+		err = json.Unmarshal(bytes, &want)
 		if err != nil {
 			t.Fatal(err)
 		}
 		if diff := cmp.Diff(want, got); diff != "" {
-			t.Errorf("FetchCrossref(%s) mismatch (-want +got):\n%s", tc.id, diff)
+			t.Errorf("Fetch (%s) mismatch (-want +got):\n%s", tc.id, diff)
 		}
 	}
 }

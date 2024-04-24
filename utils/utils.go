@@ -295,10 +295,16 @@ func ISSNAsURL(issn string) string {
 func Sanitize(html string) string {
 	policy := bluemonday.StrictPolicy()
 	policy.AllowElements("b", "br", "code", "em", "i", "sub", "sup", "strong")
-	policy.AllowElements("i")
 	sanitizedHTML := policy.Sanitize(html)
 	str := strings.Trim(sanitizedHTML, "\n")
 	return str
+}
+
+// UnescapeUTF8 unescapes UTF-8 characters
+func UnescapeUTF8(inStr string) (outStr string, err error) {
+	jsonStr := `"` + strings.ReplaceAll(inStr, `"`, `\"`) + `"`
+	err = json.Unmarshal([]byte(jsonStr), &outStr)
+	return
 }
 
 // DedupeSlice removes duplicates from a slice

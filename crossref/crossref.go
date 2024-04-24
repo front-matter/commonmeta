@@ -465,32 +465,34 @@ func Read(content Content) (commonmeta.Data, error) {
 		data.Files = utils.DedupeSlice(data.Files)
 	}
 
-	for _, v := range content.Funder {
-		funderIdentifier := doiutils.NormalizeDOI(v.DOI)
-		var funderIdentifierType string
-		if strings.HasPrefix(v.DOI, "10.13039") {
-			funderIdentifierType = "Crossref Funder ID"
-		}
-		if len(v.Award) > 0 {
-			for _, award := range v.Award {
+	if len(content.Funder) > 1 {
+		for _, v := range content.Funder {
+			funderIdentifier := doiutils.NormalizeDOI(v.DOI)
+			var funderIdentifierType string
+			if strings.HasPrefix(v.DOI, "10.13039") {
+				funderIdentifierType = "Crossref Funder ID"
+			}
+			if len(v.Award) > 0 {
+				for _, award := range v.Award {
+					data.FundingReferences = append(data.FundingReferences, commonmeta.FundingReference{
+						FunderIdentifier:     funderIdentifier,
+						FunderIdentifierType: funderIdentifierType,
+						FunderName:           v.Name,
+						AwardNumber:          award,
+					})
+				}
+			} else {
 				data.FundingReferences = append(data.FundingReferences, commonmeta.FundingReference{
 					FunderIdentifier:     funderIdentifier,
 					FunderIdentifierType: funderIdentifierType,
 					FunderName:           v.Name,
-					AwardNumber:          award,
 				})
 			}
-		} else {
-			data.FundingReferences = append(data.FundingReferences, commonmeta.FundingReference{
-				FunderIdentifier:     funderIdentifier,
-				FunderIdentifierType: funderIdentifierType,
-				FunderName:           v.Name,
-			})
 		}
+		// if len(content.Funder) > 1 {
+		data.FundingReferences = utils.DedupeSlice(data.FundingReferences)
+		// }
 	}
-	// if len(content.Funder) > 1 {
-	data.FundingReferences = utils.DedupeSlice(data.FundingReferences)
-	// }
 
 	data.Identifiers = append(data.Identifiers, commonmeta.Identifier{
 		Identifier:     data.ID,
