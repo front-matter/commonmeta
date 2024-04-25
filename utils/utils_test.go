@@ -7,6 +7,27 @@ import (
 	"github.com/front-matter/commonmeta/utils"
 )
 
+func TestNormalizeID(t *testing.T) {
+	t.Parallel()
+	type testCase struct {
+		input string
+		want  string
+	}
+	testCases := []testCase{
+		{input: "https://doi.org/10.7554/eLife.01567", want: "https://doi.org/10.7554/elife.01567"},
+		{input: "10.1101/097196", want: "https://doi.org/10.1101/097196"},
+		{input: "https://datadryad.org/stash/dataset/doi:10.5061/dryad.8515", want: "https://datadryad.org/stash/dataset/doi:10.5061/dryad.8515"},
+		{input: "dryad.8515", want: ""},
+	}
+	for _, tc := range testCases {
+		got := utils.NormalizeID(tc.input)
+		if tc.want != got {
+			t.Errorf("Normalize ID(%v): want %v, got %v",
+				tc.input, tc.want, got)
+		}
+	}
+}
+
 func TestNormalizeURL(t *testing.T) {
 	t.Parallel()
 	type testCase struct {
@@ -155,6 +176,28 @@ func TestSanitize(t *testing.T) {
 		got := utils.Sanitize(tc.input)
 		if tc.want != got {
 			t.Errorf("Sanitize String(%v): want %v, got %v",
+				tc.input, tc.want, got)
+		}
+	}
+}
+
+func TestValidateURL(t *testing.T) {
+	t.Parallel()
+	type testCase struct {
+		input string
+		want  string
+	}
+	testCases := []testCase{
+		{input: "https://elifesciences.org/articles/91729", want: "URL"},
+		{input: "https://doi.org/10.7554/eLife.91729.3", want: "DOI"},
+		{input: "10.7554/eLife.91729.3", want: "DOI"},
+		{input: "https://doi.org/10.1101", want: "URL"},
+		{input: "10.1101", want: ""},
+	}
+	for _, tc := range testCases {
+		got := utils.ValidateURL(tc.input)
+		if tc.want != got {
+			t.Errorf("Validate URL(%v): want %v, got %v",
 				tc.input, tc.want, got)
 		}
 	}

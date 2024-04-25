@@ -9,6 +9,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"os"
 	"reflect"
 	"slices"
 	"sort"
@@ -261,12 +262,10 @@ func FetchList(number int, member string, _type string, sample bool, hasORCID bo
 	if err != nil {
 		return data, err
 	}
-	for _, v := range content {
-		d, err := Read(v)
-		if err != nil {
-			log.Println(err)
-		}
-		data = append(data, d)
+
+	data, err = ReadList(content)
+	if err != nil {
+		return data, err
 	}
 	return data, nil
 }
@@ -315,6 +314,96 @@ func Get(pid string) (Content, error) {
 		fmt.Println("error:", err)
 	}
 	return response.Message, err
+}
+
+// GetList gets the metadata for a list of works from the Crossref API
+func GetList(number int, member string, _type string, sample bool, hasORCID bool, hasROR bool, hasReferences bool, hasRelation bool, hasAbstract bool, hasAward bool, hasLicense bool, hasArchive bool) ([]Content, error) {
+	// the envelope for the JSON response from the Crossref API
+	type Response struct {
+		Status         string `json:"status"`
+		MessageType    string `json:"message-type"`
+		MessageVersion string `json:"message-version"`
+		Message        struct {
+			TotalResults int       `json:"total-results"`
+			Items        []Content `json:"items"`
+		} `json:"message`
+	}
+	var response Response
+	if number > 100 {
+		number = 100
+	}
+	url := QueryURL(number, member, _type, sample, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
+	req, err := http.NewRequest("GET", url, nil)
+	v := "0.1"
+	u := "info@front-matter.io"
+	userAgent := fmt.Sprintf("commonmeta/%s (https://commonmeta.org; mailto: %s)", v, u)
+	req.Header.Set("User-Agent", userAgent)
+	req.Header.Set("Cache-Control", "private")
+	if err != nil {
+		log.Fatalln(err)
+	}
+	client := http.Client{
+		Timeout: 20 * time.Second,
+	}
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	if resp.StatusCode >= 400 {
+		return nil, errors.New(resp.Status)
+	}
+	defer resp.Body.Close()
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	err = json.Unmarshal(body, &response)
+	if err != nil {
+		fmt.Println("error:", err)
+	}
+	return response.Message.Items, nil
+}
+
+// Load loads the metadata for a single work from a JSON file
+func Load(filename string) (commonmeta.Data, error) {
+	var content Content
+	var data commonmeta.Data
+	bytes, err := os.ReadFile(filename)
+	if err != nil {
+		return data, err
+	}
+	err = json.Unmarshal(bytes, &content)
+	if err != nil {
+		return data, err
+	}
+	data, err = Read(content)
+	if err != nil {
+		return data, err
+	}
+	return data, nil
+}
+
+// LoadList loads the metadata for a list of works from a JSON file and converts it to the Commonmeta format
+func LoadList(filename string) ([]commonmeta.Data, error) {
+	type Response struct {
+		Items []Content `json:"items"`
+	}
+	var response Response
+	var data []commonmeta.Data
+	bytes, err := os.ReadFile(filename)
+	if err != nil {
+		return nil, err
+	}
+	err = json.Unmarshal(bytes, &response)
+	if err != nil {
+		return nil, err
+	}
+
+	data, err = ReadList(response.Items)
+	if err != nil {
+		return data, err
+	}
+	return data, nil
 }
 
 // Read Crossref JSON response and return work struct in Commonmeta format
@@ -546,14 +635,14 @@ func Read(content Content) (commonmeta.Data, error) {
 					id = doiutils.NormalizeDOI(v.ID)
 				} else if v.IDType == "issn" {
 					id = utils.ISSNAsURL(v.ID)
-				} else {
+				} else if utils.ValidateURL(v.ID) == "URL" {
 					id = v.ID
 				}
 				relation := commonmeta.Relation{
 					ID:   id,
 					Type: field.Name,
 				}
-				if !slices.Contains(data.Relations, relation) {
+				if id != "" && !slices.Contains(data.Relations, relation) {
 					data.Relations = append(data.Relations, relation)
 				}
 			}
@@ -607,52 +696,17 @@ func Read(content Content) (commonmeta.Data, error) {
 	return data, nil
 }
 
-// GetList gets the metadata for a list of works from the Crossref API
-func GetList(number int, member string, _type string, sample bool, hasORCID bool, hasROR bool, hasReferences bool, hasRelation bool, hasAbstract bool, hasAward bool, hasLicense bool, hasArchive bool) ([]Content, error) {
-	// the envelope for the JSON response from the Crossref API
-	type Response struct {
-		Status         string `json:"status"`
-		MessageType    string `json:"message-type"`
-		MessageVersion string `json:"message-version"`
-		Message        struct {
-			TotalResults int       `json:"total-results"`
-			Items        []Content `json:"items"`
-		} `json:"message`
+// ReadList reads a list of Crossref JSON responses and returns a list of works in Commonmeta format
+func ReadList(content []Content) ([]commonmeta.Data, error) {
+	var data []commonmeta.Data
+	for _, v := range content {
+		d, err := Read(v)
+		if err != nil {
+			log.Println(err)
+		}
+		data = append(data, d)
 	}
-	var response Response
-	if number > 100 {
-		number = 100
-	}
-	url := QueryURL(number, member, _type, sample, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
-	req, err := http.NewRequest("GET", url, nil)
-	v := "0.1"
-	u := "info@front-matter.io"
-	userAgent := fmt.Sprintf("commonmeta/%s (https://commonmeta.org; mailto: %s)", v, u)
-	req.Header.Set("User-Agent", userAgent)
-	req.Header.Set("Cache-Control", "private")
-	if err != nil {
-		log.Fatalln(err)
-	}
-	client := http.Client{
-		Timeout: 20 * time.Second,
-	}
-	resp, err := client.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	if resp.StatusCode >= 400 {
-		return nil, errors.New(resp.Status)
-	}
-	defer resp.Body.Close()
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-	err = json.Unmarshal(body, &response)
-	if err != nil {
-		fmt.Println("error:", err)
-	}
-	return response.Message.Items, nil
+	return data, nil
 }
 
 // QueryURL returns the URL for the Crossref API query

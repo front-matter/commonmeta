@@ -7,6 +7,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"os"
 
 	"github.com/front-matter/commonmeta/commonmeta"
 
@@ -28,6 +29,11 @@ var listCmd = &cobra.Command{
 	commonmeta list --number 10 --member 78 --type journal-article,
 	commonmeta list --number 10 --member cern.zenodo --type dataset`,
 	Run: func(cmd *cobra.Command, args []string) {
+		var str string // a string, content loaded from a file
+		var err error
+		var data []commonmeta.Data
+
+		input := args[0]
 		number, _ := cmd.Flags().GetInt("number")
 		from, _ := cmd.Flags().GetString("from")
 
@@ -41,11 +47,22 @@ var listCmd = &cobra.Command{
 		hasAward, _ := cmd.Flags().GetBool("has-award")
 		hasLicense, _ := cmd.Flags().GetBool("has-license")
 		hasArchive, _ := cmd.Flags().GetBool("has-archive")
-
-		var data []commonmeta.Data
-		var err error
 		sample := false
-		if from == "crossref" {
+
+		if input != "" {
+			_, err = os.Stat(input)
+			if err != nil {
+				fmt.Printf("File not found: %s", input)
+				return
+			}
+			str = input
+		}
+
+		if str != "" && from == "crossref" {
+			data, err = crossref.LoadList(str)
+		} else if str != "" && from == "datacite" {
+			data, err = datacite.LoadList(str)
+		} else if from == "crossref" {
 			data, err = crossref.FetchList(number, member, type_, sample, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
 		} else if from == "datacite" {
 			data, err = datacite.FetchList(number, sample)

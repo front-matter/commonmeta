@@ -8,6 +8,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"os"
 	"slices"
 	"strconv"
 	"strings"
@@ -195,6 +196,55 @@ func FetchList(number int, sample bool) ([]commonmeta.Data, error) {
 			log.Println(err)
 		}
 		data = append(data, d)
+	}
+	return data, nil
+}
+
+// Load loads the metadata for a single work from a JSON file
+func Load(filename string) (commonmeta.Data, error) {
+	var content Content
+	var data commonmeta.Data
+	bytes, err := os.ReadFile(filename)
+	if err != nil {
+		return data, err
+	}
+	err = json.Unmarshal(bytes, &content)
+	if err != nil {
+		return data, err
+	}
+	data, err = Read(content)
+	if err != nil {
+		return data, err
+	}
+	return data, nil
+}
+
+// LoadList loads a list of DataCite metadata from a JSON string and returns Commonmeta metadata.
+func LoadList(filename string) ([]commonmeta.Data, error) {
+	var response []Content
+	var data []commonmeta.Data
+
+	file, err := os.Open(filename)
+	if err != nil {
+		fmt.Printf("File not found: %s", err)
+		return nil, err
+	}
+	defer file.Close()
+
+	decoder := json.NewDecoder(file)
+	for {
+		var content Content
+		if err := decoder.Decode(&content); err == io.EOF {
+			break
+		} else if err != nil {
+			log.Fatal(err)
+		}
+		response = append(response, content)
+	}
+
+	data, err = ReadList(response)
+	if err != nil {
+		return data, err
 	}
 	return data, nil
 }
@@ -613,6 +663,19 @@ func GetList(number int, sample bool) ([]Content, error) {
 		fmt.Println("error:", err)
 	}
 	return response.Data, nil
+}
+
+// ReadList reads a list of DataCite JSON responses and returns a list of works in Commonmeta format
+func ReadList(content []Content) ([]commonmeta.Data, error) {
+	var data []commonmeta.Data
+	for _, v := range content {
+		d, err := Read(v)
+		if err != nil {
+			log.Println(err)
+		}
+		data = append(data, d)
+	}
+	return data, nil
 }
 
 // QueryURL returns the URL for the DataCite API query

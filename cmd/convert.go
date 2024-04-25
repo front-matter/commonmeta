@@ -6,11 +6,13 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
+	"os"
 	"strings"
 
 	"github.com/front-matter/commonmeta/commonmeta"
 	"github.com/front-matter/commonmeta/datacite"
 	"github.com/front-matter/commonmeta/doiutils"
+	"github.com/front-matter/commonmeta/utils"
 
 	"github.com/front-matter/commonmeta/crossref"
 
@@ -27,14 +29,27 @@ the only supported output format is Commonmeta. Example usage:
 commonmeta 10.5555/12345678`,
 
 	Run: func(cmd *cobra.Command, args []string) {
+		var id string  // an identifier, content fetched via API
+		var str string // a string, content loaded from a file
+		var err error
+		var data commonmeta.Data
+
 		if len(args) == 0 {
-			fmt.Println("Please provide an input DOI")
+			fmt.Println("Please provide an input")
 			return
 		}
 		input := args[0]
+		id = utils.NormalizeID(input)
+		if id == "" {
+			_, err = os.Stat(input)
+			if err != nil {
+				fmt.Printf("File not found: %s", input)
+				return
+			}
+			str = input
+		}
+
 		from, _ := cmd.Flags().GetString("from")
-		var data commonmeta.Data
-		var err error
 		if from == "" {
 			var ok bool
 			doi, ok := doiutils.ValidateDOI(input)
@@ -49,10 +64,25 @@ commonmeta 10.5555/12345678`,
 			}
 			from = strings.ToLower(from)
 		}
-		if from == "crossref" {
-			data, err = crossref.Fetch(input)
-		} else if from == "datacite" {
-			data, err = datacite.Fetch(input)
+
+		if id != "" {
+			if from == "crossref" {
+				data, err = crossref.Fetch(id)
+			} else if from == "datacite" {
+				data, err = datacite.Fetch(id)
+			} else {
+				fmt.Println("Please provide a valid input")
+				return
+			}
+		} else if str != "" {
+			if from == "crossref" {
+				data, err = crossref.Load(str)
+			} else if from == "datacite" {
+				data, err = datacite.Load(str)
+			} else {
+				fmt.Println("Please provide a valid input")
+				return
+			}
 		}
 
 		if err != nil {

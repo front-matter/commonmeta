@@ -14,7 +14,7 @@ import (
 	"github.com/microcosm-cc/bluemonday"
 )
 
-// NormalizeID checks for valid DOI or HTTP(S) Urls and normalizes them
+// NormalizeID checks for valid DOI or HTTP(S) URL and normalizes them
 func NormalizeID(pid string) string {
 	// check for valid DOI
 	doi := doiutils.NormalizeDOI(pid)
@@ -22,11 +22,16 @@ func NormalizeID(pid string) string {
 		return doi
 	}
 
-	// check for valid HTTP uri and ensure https
+	// check for valid URL
 	uri, err := url.Parse(pid)
 	if err != nil {
 		return ""
 	}
+	if uri.Scheme == "" {
+		return ""
+	}
+
+	// check for valid HTTP uri and ensure https
 	if uri.Scheme == "http" {
 		uri.Scheme = "https"
 	}
@@ -367,4 +372,20 @@ func ValidateROR(ror string) (string, bool) {
 		return "", false
 	}
 	return matched[1], true
+}
+
+// ValidateURL validates a URL and checks if it is a DOI
+func ValidateURL(str string) string {
+	_, ok := doiutils.ValidateDOI(str)
+	if ok {
+		return "DOI"
+	}
+	u, err := url.Parse(str)
+	if err != nil {
+		return ""
+	}
+	if u.Scheme == "http" || u.Scheme == "https" {
+		return "URL"
+	}
+	return ""
 }
