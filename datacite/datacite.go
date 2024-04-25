@@ -9,6 +9,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path"
 	"slices"
 	"strconv"
 	"strings"
@@ -122,8 +123,12 @@ type Contributor struct {
 		NameIdentifier       string `json:"nameIdentifier"`
 		NameIdentifierScheme string `json:"nameIdentifierScheme"`
 	} `json:"nameIdentifiers"`
-	Affiliation     []string `json:"affiliation"`
-	ContributorType string   `json:"contributorType"`
+	Affiliation []struct {
+		AffiliationIdentifier       string `json:"affiliationIdentifier"`
+		AffiliationIdentifierScheme string `json:"affiliationIdentifierScheme"`
+		Name                        string `json:"name"`
+	} `json:"affiliation"`
+	ContributorType string `json:"contributorType"`
 }
 
 // DCToCMTranslations maps DataCite resource types to Commonmeta types
@@ -202,13 +207,9 @@ func FetchList(number int, sample bool) ([]commonmeta.Data, error) {
 
 // Load loads the metadata for a single work from a JSON file
 func Load(filename string) (commonmeta.Data, error) {
-	var content Content
 	var data commonmeta.Data
-	bytes, err := os.ReadFile(filename)
-	if err != nil {
-		return data, err
-	}
-	err = json.Unmarshal(bytes, &content)
+
+	content, err := readJSON(filename)
 	if err != nil {
 		return data, err
 	}
@@ -221,25 +222,11 @@ func Load(filename string) (commonmeta.Data, error) {
 
 // LoadList loads a list of DataCite metadata from a JSON string and returns Commonmeta metadata.
 func LoadList(filename string) ([]commonmeta.Data, error) {
-	var response []Content
 	var data []commonmeta.Data
 
-	file, err := os.Open(filename)
+	response, err := readJSONLines(filename)
 	if err != nil {
-		fmt.Printf("File not found: %s", err)
-		return nil, err
-	}
-	defer file.Close()
-
-	decoder := json.NewDecoder(file)
-	for {
-		var content Content
-		if err := decoder.Decode(&content); err == io.EOF {
-			break
-		} else if err != nil {
-			log.Fatal(err)
-		}
-		response = append(response, content)
+		return data, err
 	}
 
 	data, err = ReadList(response)
@@ -315,16 +302,15 @@ func Read(content Content) (commonmeta.Data, error) {
 
 	for _, v := range content.Attributes.Creators {
 		if v.Name != "" || v.GivenName != "" || v.FamilyName != "" {
-			log.Println(v)
 			contributor := GetContributor(v)
 			containsID := slices.ContainsFunc(data.Contributors, func(e commonmeta.Contributor) bool {
 				return e.ID != "" && e.ID == contributor.ID
 			})
-			if containsID {
-				log.Printf("Contributor with ID %s already exists", contributor.ID)
-			} else {
+			containsName := slices.ContainsFunc(data.Contributors, func(e commonmeta.Contributor) bool {
+				return e.Name != "" && e.Name == contributor.Name || e.GivenName != "" && e.GivenName == contributor.GivenName && e.FamilyName != "" && e.FamilyName == contributor.FamilyName
+			})
+			if !containsID && !containsName {
 				data.Contributors = append(data.Contributors, contributor)
-
 			}
 		}
 	}
@@ -412,19 +398,23 @@ func Read(content Content) (commonmeta.Data, error) {
 	}
 
 	for _, v := range content.Attributes.GeoLocations {
-		data.GeoLocations = append(data.GeoLocations, commonmeta.GeoLocation{
-			GeoLocationPoint: commonmeta.GeoLocationPoint{
+		if v.GeoLocationPoint.PointLongitude != 0 && v.GeoLocationPoint.PointLatitude != 0 && v.GeoLocationBox.WestBoundLongitude != 0 && v.GeoLocationBox.EastBoundLongitude != 0 && v.GeoLocationBox.SouthBoundLatitude != 0 && v.GeoLocationBox.NorthBoundLatitude != 0 {
+			geoLocationPoint := commonmeta.GeoLocationPoint{
 				PointLongitude: v.GeoLocationPoint.PointLongitude,
 				PointLatitude:  v.GeoLocationPoint.PointLatitude,
-			},
-			GeoLocationPlace: v.GeoLocationPlace,
-			GeoLocationBox: commonmeta.GeoLocationBox{
+			}
+			geoLocationBox := commonmeta.GeoLocationBox{
 				EastBoundLongitude: v.GeoLocationBox.EastBoundLongitude,
 				WestBoundLongitude: v.GeoLocationBox.WestBoundLongitude,
 				SouthBoundLatitude: v.GeoLocationBox.SouthBoundLatitude,
 				NorthBoundLatitude: v.GeoLocationBox.NorthBoundLatitude,
-			},
-		})
+			}
+			geoLocation := commonmeta.GeoLocation{
+				GeoLocationPoint: geoLocationPoint,
+				GeoLocationPlace: v.GeoLocationPlace,
+				GeoLocationBox:   geoLocationBox}
+			data.GeoLocations = append(data.GeoLocations, geoLocation)
+		}
 	}
 
 	if len(content.Attributes.AlternateIdentifiers) > 0 {
@@ -482,11 +472,8 @@ func Read(content Content) (commonmeta.Data, error) {
 	data.Language = content.Attributes.Language
 
 	if len(content.Attributes.RightsList) > 0 {
-		url := content.Attributes.RightsList[0].RightsURI
+		url, _ := utils.NormalizeCCUrl(content.Attributes.RightsList[0].RightsURI)
 		id := utils.URLToSPDX(url)
-		if id == "" {
-			log.Printf("License URL %s not found in SPDX", url)
-		}
 		data.License = commonmeta.License{
 			ID:  id,
 			URL: url,
@@ -501,11 +488,8 @@ func Read(content Content) (commonmeta.Data, error) {
 			"References",
 		}
 		for i, v := range content.Attributes.RelatedIdentifiers {
-			if slices.Contains(supportedRelations, v.RelationType) {
-				id := doiutils.NormalizeDOI(v.RelatedIdentifier)
-				if id == "" {
-					id = v.RelatedIdentifier
-				}
+			id := utils.NormalizeID(v.RelatedIdentifier)
+			if id != "" && slices.Contains(supportedRelations, v.RelationType) {
 				data.References = append(data.References, commonmeta.Reference{
 					Key: "ref" + strconv.Itoa(i+1),
 					ID:  id,
@@ -533,15 +517,15 @@ func Read(content Content) (commonmeta.Data, error) {
 			"IsSupplementTo",
 		}
 		for _, v := range content.Attributes.RelatedIdentifiers {
-			if slices.Contains(supportedRelations, v.RelationType) {
-				identifier := doiutils.NormalizeDOI(v.RelatedIdentifier)
-				if identifier == "" {
-					identifier = v.RelatedIdentifier
-				}
-				data.Relations = append(data.Relations, commonmeta.Relation{
-					ID:   identifier,
+			id := utils.NormalizeID(v.RelatedIdentifier)
+			if id != "" && slices.Contains(supportedRelations, v.RelationType) {
+				relation := commonmeta.Relation{
+					ID:   id,
 					Type: v.RelationType,
-				})
+				}
+				if !slices.Contains(data.Relations, relation) {
+					data.Relations = append(data.Relations, relation)
+				}
 			}
 		}
 	}
@@ -606,9 +590,10 @@ func GetContributor(v Contributor) commonmeta.Contributor {
 	}
 	var affiliations []commonmeta.Affiliation
 	for _, a := range v.Affiliation {
+		id := utils.NormalizeROR(a.AffiliationIdentifier)
 		affiliations = append(affiliations, commonmeta.Affiliation{
-			ID:   "",
-			Name: a,
+			ID:   id,
+			Name: a.Name,
 		})
 	}
 	var roles []string
@@ -685,4 +670,54 @@ func QueryURL(number int, sample bool) string {
 	}
 	url := "https://api.datacite.org/dois?random=true&page[size]=" + strconv.Itoa(number)
 	return url
+}
+
+// readJSON reads JSON from a file and unmarshals it
+func readJSON(filename string) (Content, error) {
+	var content Content
+
+	extension := path.Ext(filename)
+	if extension != ".json" {
+		return content, errors.New("invalid file extension")
+	}
+	file, err := os.Open(filename)
+	if err != nil {
+		return content, errors.New("error reading file")
+	}
+	defer file.Close()
+
+	decoder := json.NewDecoder(file)
+	err = decoder.Decode(&content.Attributes)
+	if err != nil {
+		return content, err
+	}
+	return content, nil
+}
+
+// readJSONLines reads JSON lines from a file and unmarshals them
+func readJSONLines(filename string) ([]Content, error) {
+	var response []Content
+
+	extension := path.Ext(filename)
+	if extension != ".jsonl" && extension != ".jsonlines" {
+		return nil, errors.New("invalid file extension")
+	}
+	file, err := os.Open(filename)
+	if err != nil {
+		return nil, errors.New("error reading file")
+	}
+	defer file.Close()
+
+	decoder := json.NewDecoder(file)
+	for {
+		var attributes Attributes
+		if err := decoder.Decode(&attributes); err == io.EOF {
+			break
+		} else if err != nil {
+			log.Fatal(err)
+		}
+		response = append(response, Content{Attributes: attributes})
+	}
+
+	return response, nil
 }

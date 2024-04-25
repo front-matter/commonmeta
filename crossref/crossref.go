@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"path"
 	"reflect"
 	"slices"
 	"sort"
@@ -366,13 +367,21 @@ func GetList(number int, member string, _type string, sample bool, hasORCID bool
 
 // Load loads the metadata for a single work from a JSON file
 func Load(filename string) (commonmeta.Data, error) {
-	var content Content
 	var data commonmeta.Data
-	bytes, err := os.ReadFile(filename)
-	if err != nil {
-		return data, err
+	var content Content
+
+	extension := path.Ext(filename)
+	if extension != ".json" {
+		return data, errors.New("invalid file extension")
 	}
-	err = json.Unmarshal(bytes, &content)
+	file, err := os.Open(filename)
+	if err != nil {
+		return data, errors.New("error reading file")
+	}
+	defer file.Close()
+
+	decoder := json.NewDecoder(file)
+	err = decoder.Decode(&content)
 	if err != nil {
 		return data, err
 	}
@@ -385,24 +394,59 @@ func Load(filename string) (commonmeta.Data, error) {
 
 // LoadList loads the metadata for a list of works from a JSON file and converts it to the Commonmeta format
 func LoadList(filename string) ([]commonmeta.Data, error) {
-	type Response struct {
-		Items []Content `json:"items"`
-	}
-	var response Response
+	var response []Content
 	var data []commonmeta.Data
-	bytes, err := os.ReadFile(filename)
-	if err != nil {
-		return nil, err
-	}
-	err = json.Unmarshal(bytes, &response)
-	if err != nil {
-		return nil, err
+	// var err error
+
+	extension := path.Ext(filename)
+	if extension == ".jsonl" || extension == ".jsonlines" {
+		file, err := os.Open(filename)
+		if err != nil {
+			return nil, errors.New("error reading file")
+		}
+		defer file.Close()
+
+		decoder := json.NewDecoder(file)
+		for {
+			var content Content
+			if err := decoder.Decode(&content); err == io.EOF {
+				break
+			} else if err != nil {
+				log.Fatal(err)
+			}
+			response = append(response, content)
+		}
+	} else if extension == ".json" {
+		type Response struct {
+			Items []Content `json:"items"`
+		}
+		var response Response
+
+		extension := path.Ext(filename)
+		if extension != ".json" {
+			return data, errors.New("invalid file extension")
+		}
+		file, err := os.Open(filename)
+		if err != nil {
+			return data, errors.New("error reading file")
+		}
+		defer file.Close()
+
+		decoder := json.NewDecoder(file)
+		err = decoder.Decode(&response)
+		if err != nil {
+			return data, err
+		}
+	} else {
+		return data, errors.New("unsupported file format")
 	}
 
-	data, err = ReadList(response.Items)
-	if err != nil {
-		return data, err
-	}
+	log.Printf("Loaded %d items from %s", len(response), filename)
+
+	// data, err = ReadList(response.Items)
+	// if err != nil {
+	// 	return data, err
+	// }
 	return data, nil
 }
 
