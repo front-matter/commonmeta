@@ -90,11 +90,7 @@ type Attributes struct {
 		DescriptionType string `json:"descriptionType"`
 		Lang            string `json:"lang"`
 	} `json:"descriptions"`
-	GeoLocations []struct {
-		*GeoLocationPoint `json:"geoLocationPoint,omitempty"`
-		*GeoLocationBox   `json:"geoLocationBox,omitempty"`
-		GeoLocationPlace  string `json:"geoLocationPlace,omitempty"`
-	} `json:"geoLocations,omitempty"`
+	GeoLocations      []GeoLocation `json:"geoLocations"`
 	FundingReferences []struct {
 		FunderName           string `json:"funderName"`
 		FunderIdentifier     string `json:"funderIdentifier"`
@@ -115,12 +111,14 @@ type Contributor struct {
 		NameIdentifier       string `json:"nameIdentifier"`
 		NameIdentifierScheme string `json:"nameIdentifierScheme"`
 	} `json:"nameIdentifiers"`
-	Affiliation []struct {
-		AffiliationIdentifier       string `json:"affiliationIdentifier"`
-		AffiliationIdentifierScheme string `json:"affiliationIdentifierScheme"`
-		Name                        string `json:"name"`
-	} `json:"affiliation"`
-	ContributorType string `json:"contributorType"`
+	Affiliation     []string `json:"affiliation"`
+	ContributorType string   `json:"contributorType"`
+}
+
+type GeoLocation struct {
+	GeoLocationPoint `json:"geoLocationPoint,omitempty"`
+	GeoLocationBox   `json:"geoLocationBox,omitempty"`
+	GeoLocationPlace string `json:"geoLocationPlace,omitempty"`
 }
 
 type GeoLocationBox struct {
@@ -400,34 +398,21 @@ func Read(content Content) (commonmeta.Data, error) {
 			AwardURI:             v.AwardURI,
 		})
 	}
-
 	for _, v := range content.Attributes.GeoLocations {
 		geoLocation := commonmeta.GeoLocation{
 			GeoLocationPlace: v.GeoLocationPlace,
-		}
-		if v.GeoLocationPoint.PointLongitude != 0 && v.GeoLocationPoint.PointLatitude != 0 {
-			geoLocation.GeoLocationPoint = commonmeta.GeoLocationPoint{
+			GeoLocationPoint: commonmeta.GeoLocationPoint{
 				PointLongitude: v.GeoLocationPoint.PointLongitude,
 				PointLatitude:  v.GeoLocationPoint.PointLatitude,
-			}
-		}
-		if v.GeoLocationBox.WestBoundLongitude != 0 && v.GeoLocationBox.EastBoundLongitude != 0 && v.GeoLocationBox.SouthBoundLatitude != 0 && v.GeoLocationBox.NorthBoundLatitude != 0 {
-			geoLocation.GeoLocationBox = commonmeta.GeoLocationBox{
-				EastBoundLongitude: v.GeoLocationBox.EastBoundLongitude,
+			},
+			GeoLocationBox: commonmeta.GeoLocationBox{
 				WestBoundLongitude: v.GeoLocationBox.WestBoundLongitude,
+				EastBoundLongitude: v.GeoLocationBox.EastBoundLongitude,
 				SouthBoundLatitude: v.GeoLocationBox.SouthBoundLatitude,
 				NorthBoundLatitude: v.GeoLocationBox.NorthBoundLatitude,
-			}
-		} else {
-			geoLocation.GeoLocationBox = commonmeta.GeoLocationBox{
-				EastBoundLongitude: 0,
-				WestBoundLongitude: 0,
-				SouthBoundLatitude: 0,
-				NorthBoundLatitude: 0,
-			}
+			},
 		}
 		data.GeoLocations = append(data.GeoLocations, geoLocation)
-		//}
 	}
 
 	if len(content.Attributes.AlternateIdentifiers) > 0 {
@@ -603,10 +588,8 @@ func GetContributor(v Contributor) commonmeta.Contributor {
 	}
 	var affiliations []commonmeta.Affiliation
 	for _, a := range v.Affiliation {
-		id := utils.NormalizeROR(a.AffiliationIdentifier)
 		affiliations = append(affiliations, commonmeta.Affiliation{
-			ID:   id,
-			Name: a.Name,
+			Name: a,
 		})
 	}
 	var roles []string

@@ -394,12 +394,13 @@ func Load(filename string) (commonmeta.Data, error) {
 
 // LoadList loads the metadata for a list of works from a JSON file and converts it to the Commonmeta format
 func LoadList(filename string) ([]commonmeta.Data, error) {
-	var response []Content
 	var data []commonmeta.Data
-	// var err error
+	var content []Content
+	var err error
 
 	extension := path.Ext(filename)
 	if extension == ".jsonl" || extension == ".jsonlines" {
+		var response []Content
 		file, err := os.Open(filename)
 		if err != nil {
 			return nil, errors.New("error reading file")
@@ -408,14 +409,15 @@ func LoadList(filename string) ([]commonmeta.Data, error) {
 
 		decoder := json.NewDecoder(file)
 		for {
-			var content Content
-			if err := decoder.Decode(&content); err == io.EOF {
+			var c Content
+			if err := decoder.Decode(&c); err == io.EOF {
 				break
 			} else if err != nil {
 				log.Fatal(err)
 			}
-			response = append(response, content)
+			response = append(response, c)
 		}
+		content = response
 	} else if extension == ".json" {
 		type Response struct {
 			Items []Content `json:"items"`
@@ -437,16 +439,15 @@ func LoadList(filename string) ([]commonmeta.Data, error) {
 		if err != nil {
 			return data, err
 		}
+		content = response.Items
 	} else {
 		return data, errors.New("unsupported file format")
 	}
 
-	log.Printf("Loaded %d items from %s", len(response), filename)
-
-	// data, err = ReadList(response.Items)
-	// if err != nil {
-	// 	return data, err
-	// }
+	data, err = ReadList(content)
+	if err != nil {
+		return data, err
+	}
 	return data, nil
 }
 
@@ -553,7 +554,7 @@ func Read(content Content) (commonmeta.Data, error) {
 				Affiliations:     affiliations,
 			}
 			containsName := slices.ContainsFunc(data.Contributors, func(e commonmeta.Contributor) bool {
-				return e.Name != "" && e.Name == contributor.Name || e.GivenName != "" && e.GivenName == contributor.GivenName && e.FamilyName != "" && e.FamilyName == contributor.FamilyName
+				return e.Name != "" && e.Name == contributor.Name || e.GivenName == contributor.GivenName && e.FamilyName != "" && e.FamilyName == contributor.FamilyName
 			})
 			if !containsName {
 				data.Contributors = append(data.Contributors, contributor)

@@ -29,11 +29,14 @@ var listCmd = &cobra.Command{
 	commonmeta list --number 10 --member 78 --type journal-article,
 	commonmeta list --number 10 --member cern.zenodo --type dataset`,
 	Run: func(cmd *cobra.Command, args []string) {
+		var input string
 		var str string // a string, content loaded from a file
 		var err error
 		var data []commonmeta.Data
 
-		input := args[0]
+		if len(args) > 0 {
+			input = args[0]
+		}
 		number, _ := cmd.Flags().GetInt("number")
 		from, _ := cmd.Flags().GetString("from")
 

@@ -63,13 +63,21 @@
       ],
       "type": "string"
     },
+    "geoLocationBox": {
+      "type": "object",
+      "properties": {
+        "westBoundLongitude": { "$ref": "#/definitions/longitude" },
+        "eastBoundLongitude": { "$ref": "#/definitions/longitude" },
+        "southBoundLatitude": { "$ref": "#/definitions/latitude" },
+        "northBoundLatitude": { "$ref": "#/definitions/latitude" }
+      }
+    },
     "geoLocationPoint": {
       "type": "object",
       "properties": {
         "pointLongitude": { "$ref": "#/definitions/longitude" },
         "pointLatitude": { "$ref": "#/definitions/latitude" }
-      },
-      "required": ["pointLongitude", "pointLatitude"]
+      }
     },
     "id": {
       "description": "The unique identifier for the resource.",
@@ -369,21 +377,7 @@
         "properties": {
           "geoLocationPlace": { "type": "string" },
           "geoLocationPoint": { "$ref": "#/definitions/geoLocationPoint" },
-          "geoLocationBox": {
-            "type": "object",
-            "properties": {
-              "westBoundLongitude": { "$ref": "#/definitions/longitude" },
-              "eastBoundLongitude": { "$ref": "#/definitions/longitude" },
-              "southBoundLatitude": { "$ref": "#/definitions/latitude" },
-              "northBoundLatitude": { "$ref": "#/definitions/latitude" }
-            },
-            "required": [
-              "westBoundLongitude",
-              "eastBoundLongitude",
-              "southBoundLatitude",
-              "northBoundLatitude"
-            ]
-          },
+          "geoLocationBox": { "$ref": "#/definitions/geoLocationBox" },
           "geoLocationPolygons": {
             "type": "array",
             "items": {

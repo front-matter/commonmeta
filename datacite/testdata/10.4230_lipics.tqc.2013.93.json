@@ -54,8 +54,6 @@
   "publisher": { "name": "Schloss Dagstuhl – Leibniz-Zentrum für Informatik" },
   "relations": [
     { "id": "https://doi.org/10.4230/lipics.tqc.2013", "type": "IsPartOf" },
-    { "id": "978-3-939897-55-2", "type": "IsPartOf" },
-    { "id": "1868-8969", "type": "IsPartOf" }
   ],
   "subjects": [
     {
