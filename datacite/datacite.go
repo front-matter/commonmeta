@@ -91,18 +91,10 @@ type Attributes struct {
 		Lang            string `json:"lang"`
 	} `json:"descriptions"`
 	GeoLocations []struct {
-		GeoLocationPoint struct {
-			PointLongitude float64 `json:"pointLongitude,string"`
-			PointLatitude  float64 `json:"pointLatitude,string"`
-		} `json:"geoLocationPoint"`
-		GeoLocationBox struct {
-			WestBoundLongitude float64 `json:"westBoundLongitude,string"`
-			EastBoundLongitude float64 `json:"eastBoundLongitude,string"`
-			SouthBoundLatitude float64 `json:"southBoundLatitude,string"`
-			NorthBoundLatitude float64 `json:"northBoundLatitude,string"`
-		} `json:"geoLocationBox"`
-		GeoLocationPlace string `json:"geoLocationPlace"`
-	} `json:"geoLocations"`
+		*GeoLocationPoint `json:"geoLocationPoint,omitempty"`
+		*GeoLocationBox   `json:"geoLocationBox,omitempty"`
+		GeoLocationPlace  string `json:"geoLocationPlace,omitempty"`
+	} `json:"geoLocations,omitempty"`
 	FundingReferences []struct {
 		FunderName           string `json:"funderName"`
 		FunderIdentifier     string `json:"funderIdentifier"`
@@ -129,6 +121,18 @@ type Contributor struct {
 		Name                        string `json:"name"`
 	} `json:"affiliation"`
 	ContributorType string `json:"contributorType"`
+}
+
+type GeoLocationBox struct {
+	WestBoundLongitude float64 `json:"westBoundLongitude,string,omitempty"`
+	EastBoundLongitude float64 `json:"eastBoundLongitude,string,omitempty"`
+	SouthBoundLatitude float64 `json:"southBoundLatitude,string,omitempty"`
+	NorthBoundLatitude float64 `json:"northBoundLatitude,string,omitempty"`
+}
+
+type GeoLocationPoint struct {
+	PointLongitude float64 `json:"pointLongitude,string,omitempty"`
+	PointLatitude  float64 `json:"pointLatitude,string,omitempty"`
 }
 
 // DCToCMTranslations maps DataCite resource types to Commonmeta types
@@ -398,23 +402,32 @@ func Read(content Content) (commonmeta.Data, error) {
 	}
 
 	for _, v := range content.Attributes.GeoLocations {
-		if v.GeoLocationPoint.PointLongitude != 0 && v.GeoLocationPoint.PointLatitude != 0 && v.GeoLocationBox.WestBoundLongitude != 0 && v.GeoLocationBox.EastBoundLongitude != 0 && v.GeoLocationBox.SouthBoundLatitude != 0 && v.GeoLocationBox.NorthBoundLatitude != 0 {
-			geoLocationPoint := commonmeta.GeoLocationPoint{
+		geoLocation := commonmeta.GeoLocation{
+			GeoLocationPlace: v.GeoLocationPlace,
+		}
+		if v.GeoLocationPoint.PointLongitude != 0 && v.GeoLocationPoint.PointLatitude != 0 {
+			geoLocation.GeoLocationPoint = commonmeta.GeoLocationPoint{
 				PointLongitude: v.GeoLocationPoint.PointLongitude,
 				PointLatitude:  v.GeoLocationPoint.PointLatitude,
 			}
-			geoLocationBox := commonmeta.GeoLocationBox{
+		}
+		if v.GeoLocationBox.WestBoundLongitude != 0 && v.GeoLocationBox.EastBoundLongitude != 0 && v.GeoLocationBox.SouthBoundLatitude != 0 && v.GeoLocationBox.NorthBoundLatitude != 0 {
+			geoLocation.GeoLocationBox = commonmeta.GeoLocationBox{
 				EastBoundLongitude: v.GeoLocationBox.EastBoundLongitude,
 				WestBoundLongitude: v.GeoLocationBox.WestBoundLongitude,
 				SouthBoundLatitude: v.GeoLocationBox.SouthBoundLatitude,
 				NorthBoundLatitude: v.GeoLocationBox.NorthBoundLatitude,
 			}
-			geoLocation := commonmeta.GeoLocation{
-				GeoLocationPoint: geoLocationPoint,
-				GeoLocationPlace: v.GeoLocationPlace,
-				GeoLocationBox:   geoLocationBox}
-			data.GeoLocations = append(data.GeoLocations, geoLocation)
+		} else {
+			geoLocation.GeoLocationBox = commonmeta.GeoLocationBox{
+				EastBoundLongitude: 0,
+				WestBoundLongitude: 0,
+				SouthBoundLatitude: 0,
+				NorthBoundLatitude: 0,
+			}
 		}
+		data.GeoLocations = append(data.GeoLocations, geoLocation)
+		//}
 	}
 
 	if len(content.Attributes.AlternateIdentifiers) > 0 {
