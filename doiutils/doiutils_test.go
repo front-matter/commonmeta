@@ -37,14 +37,14 @@ func TestValidatePrefix(t *testing.T) {
 	testCases := []testCase{
 		{input: "10.7554/elife.01567", want: "10.7554"},
 		{input: "https://doi.org/10.7554/elife.01567", want: "10.7554"},
-		{input: "https://doi.org/10.7554", want: ""},
-		{input: "10.7554", want: ""},
+		{input: "https://doi.org/10.7554", want: "10.7554"},
+		{input: "10.7554", want: "10.7554"},
 		{input: "", want: ""},
 	}
 	for _, tc := range testCases {
 		got, ok := doiutils.ValidatePrefix(tc.input)
 		if tc.want != got {
-			t.Errorf("Validate DOI(%v): want %v, got %v, ok %v",
+			t.Errorf("Validate Prefix (%v): want %v, got %v, ok %v",
 				tc.input, tc.want, got, ok)
 		}
 	}
@@ -82,6 +82,7 @@ func TestGetDOIRA(t *testing.T) {
 		{input: "10.7554/elife.01567", want: "Crossref"},
 		{input: "https://doi.org/10.5061/dryad.8515", want: "DataCite"},
 		{input: "10.9999", want: ""},
+		{input: "10.7554", want: "Crossref"},
 		{input: "", want: ""},
 	}
 	for _, tc := range testCases {

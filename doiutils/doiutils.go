@@ -51,7 +51,7 @@ func ValidateDOI(doi string) (string, bool) {
 
 // ValidatePrefix validates a DOI prefix for a given DOI
 func ValidatePrefix(doi string) (string, bool) {
-	r, err := regexp.Compile(`^(?:(http|https):/(/)?(dx\.)?(doi\.org|handle\.stage\.datacite\.org|handle\.test\.datacite\.org)/)?(doi:)?(10\.\d{4,5})/.+$`)
+	r, err := regexp.Compile(`^(?:(http|https):/(/)?(dx\.)?(doi\.org|handle\.stage\.datacite\.org|handle\.test\.datacite\.org)/)?(doi:)?(10\.\d{4,5})`)
 	if err != nil {
 		log.Printf("Error compiling regex: %v", err)
 		return "", false
@@ -75,7 +75,7 @@ func DOIResolver(doi string, sandbox bool) string {
 	return "https://doi.org/"
 }
 
-// GetDOIRA returns the DOI registration agency for a given DOI
+// GetDOIRA returns the DOI registration agency for a given DOI or prefix
 func GetDOIRA(doi string) (string, bool) {
 	prefix, ok := ValidatePrefix(doi)
 	if !ok {
