@@ -12,8 +12,7 @@
         "properties": {
           "organization": { "$ref": "#/definitions/organization" }
         }
-      },
-      "uniqueItems": true
+      }
     },
     "contributorRole": {
       "description": "The type of contribution made by a contributor",
@@ -192,8 +191,7 @@
           "Internet Archive",
           "DWT"
         ]
-      },
-      "uniqueItems": true
+      }
     },
     "container": {
       "description": "The container of the resource.",
@@ -257,13 +255,11 @@
             "items": {
               "$ref": "#/definitions/contributorRole"
             },
-            "type": "array",
-            "uniqueItems": true
+            "type": "array"
           }
         }
       },
-      "minItems": 1,
-      "uniqueItems": true
+      "minItems": 1
     },
     "date": {
       "description": "The dates for the resource.",
@@ -342,8 +338,7 @@
         },
         "required": ["url"]
       },
-      "minItems": 1,
-      "uniqueItems": true
+      "minItems": 1
     },
     "fundingReferences": {
       "description": "The funding references for the resource.",
@@ -488,8 +483,7 @@
         },
         "required": ["id", "type"]
       },
-      "minItems": 1,
-      "uniqueItems": true
+      "minItems": 1
     },
     "references": {
       "type": "array",
@@ -512,8 +506,7 @@
           "unstructured": { "type": "string" }
         },
         "required": ["key"]
-      },
-      "uniqueItems": true
+      }
     },
     "subjects": {
       "type": "array",
@@ -527,8 +520,7 @@
           }
         },
         "required": ["subject"]
-      },
-      "uniqueItems": true
+      }
     },
     "titles": {
       "description": "The titles of the resource.",
@@ -551,8 +543,7 @@
           }
         },
         "required": ["title"]
-      },
-      "uniqueItems": true
+      }
     },
     "url": {
       "description": "The URL of the resource.",

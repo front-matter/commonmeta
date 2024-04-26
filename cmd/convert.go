@@ -75,7 +75,9 @@ commonmeta 10.5555/12345678`,
 				return
 			}
 		} else if str != "" {
-			if from == "crossref" {
+			if from == "commonmeta" {
+				data, err = commonmeta.Load(str)
+			} else if from == "crossref" {
 				data, err = crossref.Load(str)
 			} else if from == "datacite" {
 				data, err = datacite.Load(str)
@@ -99,6 +101,6 @@ commonmeta 10.5555/12345678`,
 func init() {
 	rootCmd.AddCommand(convertCmd)
 
-	convertCmd.PersistentFlags().StringP("from", "f", "", "the format to convert from")
+	convertCmd.PersistentFlags().StringP("from", "f", "commonmeta", "the format to convert from")
 	convertCmd.PersistentFlags().StringP("to", "t", "commonmeta", "the format to convert to")
 }

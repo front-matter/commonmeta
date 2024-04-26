@@ -4,7 +4,10 @@ package commonmeta
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
+	"os"
+	"path"
 
 	"github.com/front-matter/commonmeta/schemautils"
 
@@ -230,6 +233,28 @@ type Title struct {
 	Title    string `json:"title,omitempty"`
 	Type     string `json:"type,omitempty"`
 	Language string `json:"language,omitempty"`
+}
+
+// Load loads the metadata for a single work from a JSON file
+func Load(filename string) (Data, error) {
+	var data Data
+
+	extension := path.Ext(filename)
+	if extension != ".json" {
+		return data, errors.New("invalid file extension")
+	}
+	file, err := os.Open(filename)
+	if err != nil {
+		return data, errors.New("error reading file")
+	}
+	defer file.Close()
+
+	decoder := json.NewDecoder(file)
+	err = decoder.Decode(&data)
+	if err != nil {
+		return data, err
+	}
+	return data, nil
 }
 
 // Read reads commonmeta metadata.
