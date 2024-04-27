@@ -94,7 +94,7 @@ type Contributor struct {
 	FamilyName      string           `json:"familyName,omitempty"`
 	NameType        string           `json:"nameType"`
 	NameIdentifiers []NameIdentifier `json:"nameIdentifiers,omitempty"`
-	Affiliation     []Affiliation    `json:"affiliation,omitempty"`
+	Affiliation     []string         `json:"affiliation,omitempty"`
 	ContributorType string           `json:"contributorType,omitempty"`
 }
 
@@ -310,13 +310,16 @@ func LoadList(filename string) ([]commonmeta.Data, error) {
 func Get(id string) (Datacite, error) {
 	// the envelope for the JSON response from the DataCite API
 	type Response struct {
-		Data Datacite `json:"data"`
+		Data struct {
+			ID         string   `json:"id"`
+			Attributes Datacite `json:"attributes"`
+		} `json:"data"`
 	}
 
 	var response Response
 	doi, ok := doiutils.ValidateDOI(id)
 	if !ok {
-		return response.Data, errors.New("invalid DOI")
+		return response.Data.Attributes, errors.New("invalid DOI")
 	}
 	url := "https://api.datacite.org/dois/" + doi
 	client := http.Client{
@@ -324,21 +327,22 @@ func Get(id string) (Datacite, error) {
 	}
 	resp, err := client.Get(url)
 	if err != nil {
-		return response.Data, err
+		return response.Data.Attributes, err
 	}
 	if resp.StatusCode >= 400 {
-		return response.Data, errors.New(resp.Status)
+		return response.Data.Attributes, errors.New(resp.Status)
 	}
 	defer resp.Body.Close()
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return response.Data, err
+		return response.Data.Attributes, err
 	}
+	fmt.Println(string(body))
 	err = json.Unmarshal(body, &response)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
-	return response.Data, err
+	return response.Data.Attributes, err
 }
 
 // Read reads DataCite JSON response and return work struct in Commonmeta format
@@ -657,7 +661,7 @@ func GetContributor(v Contributor) commonmeta.Contributor {
 	var affiliations []commonmeta.Affiliation
 	for _, a := range v.Affiliation {
 		affiliations = append(affiliations, commonmeta.Affiliation{
-			Name: a.Name,
+			Name: a,
 		})
 	}
 	var roles []string
@@ -832,11 +836,9 @@ func Convert(data commonmeta.Data) (Datacite, error) {
 					}
 					nameIdentifiers = append(nameIdentifiers, nameIdentifier)
 				}
-				var affiliations []Affiliation
+				var affiliations []string
 				for _, a := range v.Affiliations {
-					affiliation := Affiliation{
-						Name: a.Name,
-					}
+					affiliation := a.Name
 					affiliations = append(affiliations, affiliation)
 				}
 				contributor := Contributor{
