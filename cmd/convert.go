@@ -97,6 +97,8 @@ commonmeta 10.5555/12345678`,
 			output, jsErr = commonmeta.Write(data)
 		} else if to == "csl" {
 			output, jsErr = csl.Write(data)
+		} else if to == "datacite" {
+			output, jsErr = datacite.Write(data)
 		}
 
 		if err != nil {
@@ -115,6 +117,6 @@ commonmeta 10.5555/12345678`,
 func init() {
 	rootCmd.AddCommand(convertCmd)
 
-	convertCmd.PersistentFlags().StringP("from", "f", "commonmeta", "the format to convert from")
+	convertCmd.PersistentFlags().StringP("from", "f", "", "the format to convert from")
 	convertCmd.PersistentFlags().StringP("to", "t", "commonmeta", "the format to convert to")
 }

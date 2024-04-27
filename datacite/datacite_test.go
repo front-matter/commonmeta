@@ -28,14 +28,14 @@ func TestGet(t *testing.T) {
 	// PID as DOI Url
 	publication := datacite.Content{
 		ID: "https://doi.org/10.5281/zenodo.5244404",
-		Attributes: datacite.Attributes{
+		Attributes: datacite.Datacite{
 			URL: "https://zenodo.org/record/5244404",
 		},
 	}
 	// PID as DOI string
 	presentation := datacite.Content{
 		ID: "10.5281/zenodo.8173303",
-		Attributes: datacite.Attributes{
+		Attributes: datacite.Datacite{
 			URL: "https://zenodo.org/record/8173303",
 		},
 	}
@@ -47,9 +47,9 @@ func TestGet(t *testing.T) {
 
 	for _, tc := range testCases {
 		got, err := datacite.Get(tc.id)
-		if tc.want != got.Attributes.URL {
+		if tc.want != got.URL {
 			t.Errorf("Get DataCite(%v): want %v, got %v, error %v",
-				tc.id, tc.want, got.Attributes.URL, err)
+				tc.id, tc.want, got.URL, err)
 		}
 	}
 }

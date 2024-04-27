@@ -83,6 +83,8 @@ var listCmd = &cobra.Command{
 			output, jsErr = commonmeta.WriteList(data)
 		} else if to == "csl" {
 			output, jsErr = csl.WriteList(data)
+		} else if to == "datacite" {
+			output, jsErr = datacite.WriteList(data)
 		}
 
 		if err != nil {

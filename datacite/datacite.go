@@ -15,104 +15,101 @@ import (
 	"strings"
 	"time"
 
+	"github.com/front-matter/commonmeta/bibtex"
 	"github.com/front-matter/commonmeta/commonmeta"
+	"github.com/front-matter/commonmeta/csl"
 	"github.com/front-matter/commonmeta/doiutils"
+	"github.com/front-matter/commonmeta/ris"
+	"github.com/front-matter/commonmeta/schemaorg"
+	"github.com/front-matter/commonmeta/schemautils"
+	"github.com/xeipuuv/gojsonschema"
 
 	"github.com/front-matter/commonmeta/utils"
 )
 
-// Content represents the DataCite metadata.
+// Content represents the DataCite JSONAPI response.
 type Content struct {
-	ID         string     `json:"id"`
-	Type       string     `json:"type"`
-	Attributes Attributes `json:"attributes"`
+	ID         string   `json:"id"`
+	Type       string   `json:"type"`
+	Attributes Datacite `json:"attributes"`
 }
 
-// Attributes represents the attributes of the DataCite JSONAPI response.
-type Attributes struct {
-	DOI                  string `json:"doi"`
-	Prefix               string `json:"prefix"`
-	Suffix               string `json:"suffix"`
-	AlternateIdentifiers []struct {
-		AlternateIdentifier     string `json:"alternateIdentifier"`
-		AlternateIdentifierType string `json:"alternateIdentifierType"`
-	} `json:"alternateIdentifiers"`
-	Creators  []Contributor `json:"creators"`
-	Publisher string        `json:"publisher"`
-	Container struct {
-		Type           string `json:"type"`
-		Identifier     string `json:"identifier"`
-		IdentifierType string `json:"identifierType"`
-		Title          string `json:"title"`
-		Volume         string `json:"volume"`
-		Issue          string `json:"issue"`
-		FirstPage      string `json:"firstPage"`
-		LastPage       string `json:"lastPage"`
-	} `json:"container"`
-	PublicationYear int `json:"publicationYear"`
-	Titles          []struct {
-		Title     string `json:"title"`
-		TitleType string `json:"titleType"`
-		Lang      string `json:"lang"`
-	} `json:"titles"`
-	URL      string `json:"url"`
-	Subjects []struct {
-		Subject string `json:"subject"`
-	} `json:"subjects"`
-	Contributors []Contributor `json:"contributors"`
-	Dates        []struct {
-		Date            string `json:"date"`
-		DateType        string `json:"dateType"`
-		DateInformation string `json:"dateInformation"`
-	} `json:"dates"`
-	Language string `json:"language"`
-	Types    struct {
-		ResourceTypeGeneral string `json:"resourceTypeGeneral"`
-		ResourceType        string `json:"resourceType"`
-	} `json:"types"`
-	RelatedIdentifiers []struct {
-		RelatedIdentifier     string `json:"relatedIdentifier"`
-		RelatedIdentifierType string `json:"relatedIdentifierType"`
-		RelationType          string `json:"relationType"`
-	} `json:"relatedIdentifiers"`
-	Sizes      []string `json:"sizes"`
-	Formats    []string `json:"formats"`
-	Version    string   `json:"version"`
-	RightsList []struct {
-		Rights                 string `json:"rights"`
-		RightsURI              string `json:"rightsUri"`
-		SchemeURI              string `json:"schemeUri"`
-		RightsIdentifier       string `json:"rightsIdentifier"`
-		RightsIdentifierScheme string `json:"rightsIdentifierScheme"`
-	}
-	Descriptions []struct {
-		Description     string `json:"description"`
-		DescriptionType string `json:"descriptionType"`
-		Lang            string `json:"lang"`
-	} `json:"descriptions"`
-	GeoLocations      []GeoLocation `json:"geoLocations"`
-	FundingReferences []struct {
-		FunderName           string `json:"funderName"`
-		FunderIdentifier     string `json:"funderIdentifier"`
-		FunderIdentifierType string `json:"funderIdentifierType"`
-		AwardNumber          string `json:"awardNumber"`
-		AwardURI             string `json:"awardUri"`
-	} `json:"fundingReferences"`
+// Datacite represents the DataCite metadata.
+type Datacite struct {
+	ID                   string                `json:"id"`
+	DOI                  string                `json:"doi"`
+	AlternateIdentifiers []AlternateIdentifier `json:"alternateIdentifiers,omitempty"`
+	Creators             []Contributor         `json:"creators"`
+	Publisher            string                `json:"publisher"`
+	Container            Container             `json:"container,omitempty"`
+	PublicationYear      int                   `json:"publicationYear"`
+	Titles               []Title               `json:"titles"`
+	URL                  string                `json:"url"`
+	Subjects             []Subject             `json:"subjects,omitempty"`
+	Contributors         []Contributor         `json:"contributors,omitempty"`
+	Dates                []struct {
+		Date            string `json:"date,omitempty"`
+		DateType        string `json:"dateType,omitempty"`
+		DateInformation string `json:"dateInformation,omitempty"`
+	} `json:"dates,omitempty"`
+	Language           string              `json:"language,omitempty"`
+	Types              Types               `json:"types"`
+	RelatedIdentifiers []RelatedIdentifier `json:"relatedIdentifiers,omitempty"`
+	Sizes              []string            `json:"sizes,omitempty"`
+	Formats            []string            `json:"formats,omitempty"`
+	Version            string              `json:"version,omitempty"`
+	RightsList         []Rights            `json:"rightsList,omitempty"`
+	Descriptions       []Description       `json:"descriptions,omitempty"`
+	GeoLocations       []GeoLocation       `json:"geoLocations,omitempty"`
+	FundingReferences  []FundingReference  `json:"fundingReferences,omitempty"`
+	SchemaVersion      string              `json:"schemaVersion"`
+}
+
+type Affiliation struct {
+	Name string `json:"name"`
+}
+
+// AlternateIdentifier represents an alternate identifier in the DataCite metadata.
+type AlternateIdentifier struct {
+	AlternateIdentifier     string `json:"alternateIdentifier,omitempty"`
+	AlternateIdentifierType string `json:"alternateIdentifierType,omitempty"`
+}
+
+// Container represents the container of the DataCite JSONAPI response.
+type Container struct {
+	Type           string `json:"type,omitempty"`
+	Identifier     string `json:"identifier,omitempty"`
+	IdentifierType string `json:"identifierType,omitempty"`
+	Title          string `json:"title,omitempty"`
+	Volume         string `json:"volume,omitempty"`
+	Issue          string `json:"issue,omitempty"`
+	FirstPage      string `json:"firstPage,omitempty"`
+	LastPage       string `json:"lastPage,omitempty"`
 }
 
 // Contributor represents the contributor of the DataCite JSONAPI response.
 type Contributor struct {
-	Name            string `json:"name"`
-	GivenName       string `json:"givenName"`
-	FamilyName      string `json:"familyName"`
-	NameType        string `json:"nameType"`
-	NameIdentifiers []struct {
-		SchemeURI            string `json:"schemeUri"`
-		NameIdentifier       string `json:"nameIdentifier"`
-		NameIdentifierScheme string `json:"nameIdentifierScheme"`
-	} `json:"nameIdentifiers"`
-	Affiliation     []string `json:"affiliation"`
-	ContributorType string   `json:"contributorType"`
+	Name            string           `json:"name,omitempty"`
+	GivenName       string           `json:"givenName,omitempty"`
+	FamilyName      string           `json:"familyName,omitempty"`
+	NameType        string           `json:"nameType"`
+	NameIdentifiers []NameIdentifier `json:"nameIdentifiers,omitempty"`
+	Affiliation     []Affiliation    `json:"affiliation,omitempty"`
+	ContributorType string           `json:"contributorType,omitempty"`
+}
+
+type Description struct {
+	Description     string `json:"description,omitempty"`
+	DescriptionType string `json:"descriptionType,omitempty"`
+	Lang            string `json:"lang,omitempty"`
+}
+
+type FundingReference struct {
+	FunderName           string `json:"funderName,omitempty"`
+	FunderIdentifier     string `json:"funderIdentifier,omitempty"`
+	FunderIdentifierType string `json:"funderIdentifierType,omitempty"`
+	AwardNumber          string `json:"awardNumber,omitempty"`
+	AwardURI             string `json:"awardUri,omitempty"`
 }
 
 type GeoLocation struct {
@@ -133,9 +130,48 @@ type GeoLocationPoint struct {
 	PointLatitude  float64 `json:"pointLatitude,string,omitempty"`
 }
 
-// DCToCMTranslations maps DataCite resource types to Commonmeta types
+type NameIdentifier struct {
+	NameIdentifier       string `json:"nameIdentifier,omitempty"`
+	NameIdentifierScheme string `json:"nameIdentifierScheme,omitempty"`
+	SchemeURI            string `json:"schemeUri,omitempty"`
+}
+
+type RelatedIdentifier struct {
+	RelatedIdentifier     string `json:"relatedIdentifier,omitempty"`
+	RelatedIdentifierType string `json:"relatedIdentifierType,omitempty"`
+	RelationType          string `json:"relationType,omitempty"`
+}
+
+type Rights struct {
+	Rights                 string `json:"rights,omitempty"`
+	RightsURI              string `json:"rightsUri,omitempty"`
+	SchemeURI              string `json:"schemeUri,omitempty"`
+	RightsIdentifier       string `json:"rightsIdentifier,omitempty"`
+	RightsIdentifierScheme string `json:"rightsIdentifierScheme,omitempty"`
+}
+
+type Subject struct {
+	Subject string `json:"subject,omitempty"`
+}
+
+type Title struct {
+	Title     string `json:"title"`
+	TitleType string `json:"titleType,omitempty"`
+	Lang      string `json:"lang,omitempty"`
+}
+
+type Types struct {
+	ResourceTypeGeneral string `json:"resourceTypeGeneral"`
+	ResourceType        string `json:"resourceType,omitempty"`
+	Ris                 string `json:"ris,omitempty"`
+	Bibtex              string `json:"bibtex,omitempty"`
+	Citeproc            string `json:"citeproc,omitempty"`
+	SchemaOrg           string `json:"schemaOrg,omitempty"`
+}
+
+// DCToCMMappings maps DataCite resource types to Commonmeta types
 // source: https://github.com/datacite/schema/blob/master/source/meta/kernel-4/include/datacite-resourceType-v4.xsd
-var DCToCMTranslations = map[string]string{
+var DCToCMMappings = map[string]string{
 	"Audiovisual":           "Audiovisual",
 	"BlogPosting":           "Article",
 	"Book":                  "Book",
@@ -171,6 +207,38 @@ var DCToCMTranslations = map[string]string{
 	"Other":                 "Other",
 }
 
+var CMToDCMappings = map[string]string{
+	"Article":               "Preprint",
+	"Audiovisual":           "Audiovisual",
+	"Book":                  "Book",
+	"BookChapter":           "BookChapter",
+	"Collection":            "Collection",
+	"Dataset":               "Dataset",
+	"Document":              "Text",
+	"Entry":                 "Text",
+	"Event":                 "Event",
+	"Figure":                "Image",
+	"Image":                 "Image",
+	"Instrument":            "Instrument",
+	"JournalArticle":        "JournalArticle",
+	"LegalDocument":         "Text",
+	"Manuscript":            "Text",
+	"Map":                   "Image",
+	"Patent":                "Text",
+	"Performance":           "Audiovisual",
+	"PersonalCommunication": "Text",
+	"Post":                  "Text",
+	"ProceedingsArticle":    "ConferencePaper",
+	"Proceedings":           "ConferenceProceeding",
+	"Report":                "Report",
+	"Review":                "PeerReview",
+	"Software":              "Software",
+	"Sound":                 "Sound",
+	"Standard":              "Standard",
+	"StudyRegistration":     "StudyRegistration",
+	"WebPage":               "Text",
+}
+
 // Fetch fetches DataCite metadata for a given DOI and returns Commonmeta metadata.
 func Fetch(str string) (commonmeta.Data, error) {
 	var data commonmeta.Data
@@ -186,12 +254,12 @@ func Fetch(str string) (commonmeta.Data, error) {
 	if err != nil {
 		return data, err
 	}
+	log.Println(data)
 	return data, nil
 }
 
 // FetchList gets the metadata for a list of works from the DataCite API and returns Commonmeta metadata.
 func FetchList(number int, sample bool) ([]commonmeta.Data, error) {
-
 	var data []commonmeta.Data
 	content, err := GetList(number, sample)
 	if err != nil {
@@ -239,14 +307,14 @@ func LoadList(filename string) ([]commonmeta.Data, error) {
 }
 
 // Get gets DataCite metadata for a given DOI
-func Get(pid string) (Content, error) {
+func Get(id string) (Datacite, error) {
 	// the envelope for the JSON response from the DataCite API
 	type Response struct {
-		Data Content `json:"data"`
+		Data Datacite `json:"data"`
 	}
 
 	var response Response
-	doi, ok := doiutils.ValidateDOI(pid)
+	doi, ok := doiutils.ValidateDOI(id)
 	if !ok {
 		return response.Data, errors.New("invalid DOI")
 	}
@@ -274,35 +342,36 @@ func Get(pid string) (Content, error) {
 }
 
 // Read reads DataCite JSON response and return work struct in Commonmeta format
-func Read(content Content) (commonmeta.Data, error) {
+func Read(datacite Datacite) (commonmeta.Data, error) {
 	var data = commonmeta.Data{}
 	var err error
+	fmt.Println(datacite)
 
-	data.ID = doiutils.NormalizeDOI(content.Attributes.DOI)
-	data.Type = DCToCMTranslations[content.Attributes.Types.ResourceTypeGeneral]
+	data.ID = doiutils.NormalizeDOI(datacite.DOI)
+	data.Type = DCToCMMappings[datacite.Types.ResourceTypeGeneral]
 
 	// ArchiveLocations not yet supported
 
 	// Support the additional types added in schema 4.4
-	AdditionalType := DCToCMTranslations[content.Attributes.Types.ResourceType]
+	AdditionalType := DCToCMMappings[datacite.Types.ResourceType]
 	if AdditionalType != "" {
 		data.Type = AdditionalType
-	} else if content.Attributes.Types.ResourceType != "" && !strings.EqualFold(content.Attributes.Types.ResourceType, data.Type) {
-		data.AdditionalType = content.Attributes.Types.ResourceType
+	} else if datacite.Types.ResourceType != "" && !strings.EqualFold(datacite.Types.ResourceType, data.Type) {
+		data.AdditionalType = datacite.Types.ResourceType
 	}
 
 	data.Container = commonmeta.Container{
-		Identifier:     content.Attributes.Container.Identifier,
-		IdentifierType: content.Attributes.Container.IdentifierType,
-		Type:           content.Attributes.Container.Type,
-		Title:          content.Attributes.Container.Title,
-		Volume:         content.Attributes.Container.Volume,
-		Issue:          content.Attributes.Container.Issue,
-		FirstPage:      content.Attributes.Container.FirstPage,
-		LastPage:       content.Attributes.Container.LastPage,
+		Identifier:     datacite.Container.Identifier,
+		IdentifierType: datacite.Container.IdentifierType,
+		Type:           datacite.Container.Type,
+		Title:          datacite.Container.Title,
+		Volume:         datacite.Container.Volume,
+		Issue:          datacite.Container.Issue,
+		FirstPage:      datacite.Container.FirstPage,
+		LastPage:       datacite.Container.LastPage,
 	}
 
-	for _, v := range content.Attributes.Creators {
+	for _, v := range datacite.Creators {
 		if v.Name != "" || v.GivenName != "" || v.FamilyName != "" {
 			contributor := GetContributor(v)
 			containsID := slices.ContainsFunc(data.Contributors, func(e commonmeta.Contributor) bool {
@@ -318,7 +387,7 @@ func Read(content Content) (commonmeta.Data, error) {
 	}
 
 	// merge creators and contributors
-	for _, v := range content.Attributes.Contributors {
+	for _, v := range datacite.Contributors {
 		if v.Name != "" || v.GivenName != "" || v.FamilyName != "" {
 			contributor := GetContributor(v)
 			containsID := slices.ContainsFunc(data.Contributors, func(e commonmeta.Contributor) bool {
@@ -333,7 +402,7 @@ func Read(content Content) (commonmeta.Data, error) {
 		}
 	}
 
-	for _, v := range content.Attributes.Dates {
+	for _, v := range datacite.Dates {
 		if v.DateType == "Accepted" {
 			data.Date.Accepted = v.Date
 		}
@@ -368,10 +437,10 @@ func Read(content Content) (commonmeta.Data, error) {
 		}
 	}
 	if data.Date.Published == "" {
-		data.Date.Published = strconv.Itoa(content.Attributes.PublicationYear)
+		data.Date.Published = strconv.Itoa(datacite.PublicationYear)
 	}
 
-	for _, v := range content.Attributes.Descriptions {
+	for _, v := range datacite.Descriptions {
 		var t string
 		if slices.Contains([]string{"Abstract", "Summary", "Methods", "TechnicalInfo", "Other"}, v.DescriptionType) {
 			t = v.DescriptionType
@@ -389,7 +458,7 @@ func Read(content Content) (commonmeta.Data, error) {
 	// Files not yet supported. Sizes and formats are part of the file object,
 	// but can't be mapped directly
 
-	for _, v := range content.Attributes.FundingReferences {
+	for _, v := range datacite.FundingReferences {
 		data.FundingReferences = append(data.FundingReferences, commonmeta.FundingReference{
 			FunderIdentifier:     v.FunderIdentifier,
 			FunderIdentifierType: v.FunderIdentifierType,
@@ -398,7 +467,7 @@ func Read(content Content) (commonmeta.Data, error) {
 			AwardURI:             v.AwardURI,
 		})
 	}
-	for _, v := range content.Attributes.GeoLocations {
+	for _, v := range datacite.GeoLocations {
 		geoLocation := commonmeta.GeoLocation{
 			GeoLocationPlace: v.GeoLocationPlace,
 			GeoLocationPoint: commonmeta.GeoLocationPoint{
@@ -415,7 +484,7 @@ func Read(content Content) (commonmeta.Data, error) {
 		data.GeoLocations = append(data.GeoLocations, geoLocation)
 	}
 
-	if len(content.Attributes.AlternateIdentifiers) > 0 {
+	if len(datacite.AlternateIdentifiers) > 0 {
 		supportedIdentifiers := []string{
 			"ARK",
 			"arXiv",
@@ -431,7 +500,7 @@ func Read(content Content) (commonmeta.Data, error) {
 			"URN",
 			"Other",
 		}
-		for _, v := range content.Attributes.AlternateIdentifiers {
+		for _, v := range datacite.AlternateIdentifiers {
 			identifierType := "Other"
 			if slices.Contains(supportedIdentifiers, v.AlternateIdentifierType) {
 				identifierType = v.AlternateIdentifierType
@@ -452,13 +521,13 @@ func Read(content Content) (commonmeta.Data, error) {
 		data.Identifiers = utils.DedupeSlice(data.Identifiers)
 	}
 
-	if content.Attributes.Publisher != "" {
+	if datacite.Publisher != "" {
 		data.Publisher = commonmeta.Publisher{
-			Name: content.Attributes.Publisher,
+			Name: datacite.Publisher,
 		}
 	}
 
-	for _, v := range content.Attributes.Subjects {
+	for _, v := range datacite.Subjects {
 		subject := commonmeta.Subject{
 			Subject: v.Subject,
 		}
@@ -467,10 +536,10 @@ func Read(content Content) (commonmeta.Data, error) {
 		}
 	}
 
-	data.Language = content.Attributes.Language
+	data.Language = datacite.Language
 
-	if len(content.Attributes.RightsList) > 0 {
-		url, _ := utils.NormalizeCCUrl(content.Attributes.RightsList[0].RightsURI)
+	if len(datacite.RightsList) > 0 {
+		url, _ := utils.NormalizeCCUrl(datacite.RightsList[0].RightsURI)
 		id := utils.URLToSPDX(url)
 		data.License = commonmeta.License{
 			ID:  id,
@@ -480,12 +549,12 @@ func Read(content Content) (commonmeta.Data, error) {
 
 	data.Provider = "DataCite"
 
-	if len(content.Attributes.RelatedIdentifiers) > 0 {
+	if len(datacite.RelatedIdentifiers) > 0 {
 		supportedRelations := []string{
 			"Cites",
 			"References",
 		}
-		for i, v := range content.Attributes.RelatedIdentifiers {
+		for i, v := range datacite.RelatedIdentifiers {
 			id := utils.NormalizeID(v.RelatedIdentifier)
 			if id != "" && slices.Contains(supportedRelations, v.RelationType) {
 				data.References = append(data.References, commonmeta.Reference{
@@ -496,7 +565,7 @@ func Read(content Content) (commonmeta.Data, error) {
 		}
 	}
 
-	if len(content.Attributes.RelatedIdentifiers) > 0 {
+	if len(datacite.RelatedIdentifiers) > 0 {
 		supportedRelations := []string{
 			"IsNewVersionOf",
 			"IsPreviousVersionOf",
@@ -514,7 +583,7 @@ func Read(content Content) (commonmeta.Data, error) {
 			"HasPreprint",
 			"IsSupplementTo",
 		}
-		for _, v := range content.Attributes.RelatedIdentifiers {
+		for _, v := range datacite.RelatedIdentifiers {
 			id := utils.NormalizeID(v.RelatedIdentifier)
 			if id != "" && slices.Contains(supportedRelations, v.RelationType) {
 				relation := commonmeta.Relation{
@@ -528,7 +597,7 @@ func Read(content Content) (commonmeta.Data, error) {
 		}
 	}
 
-	for _, v := range content.Attributes.Titles {
+	for _, v := range datacite.Titles {
 		var t string
 		if slices.Contains([]string{"MainTitle", "Subtitle", "TranslatedTitle"}, v.TitleType) {
 			t = v.TitleType
@@ -540,12 +609,12 @@ func Read(content Content) (commonmeta.Data, error) {
 		})
 	}
 
-	data.URL, err = utils.NormalizeURL(content.Attributes.URL, true, false)
+	data.URL, err = utils.NormalizeURL(datacite.URL, true, false)
 	if err != nil {
 		log.Println(err)
 	}
 
-	data.Version = content.Attributes.Version
+	data.Version = datacite.Version
 
 	return data, nil
 }
@@ -589,7 +658,7 @@ func GetContributor(v Contributor) commonmeta.Contributor {
 	var affiliations []commonmeta.Affiliation
 	for _, a := range v.Affiliation {
 		affiliations = append(affiliations, commonmeta.Affiliation{
-			Name: a,
+			Name: a.Name,
 		})
 	}
 	var roles []string
@@ -610,10 +679,10 @@ func GetContributor(v Contributor) commonmeta.Contributor {
 }
 
 // GetList gets the metadata for a list of works from the DataCite API
-func GetList(number int, sample bool) ([]Content, error) {
+func GetList(number int, sample bool) ([]Datacite, error) {
 	// the envelope for the JSON response from the DataCite API
 	type Response struct {
-		Data []Content `json:"data"`
+		Data []Datacite `json:"data"`
 	}
 	if number > 100 {
 		number = 100
@@ -647,7 +716,7 @@ func GetList(number int, sample bool) ([]Content, error) {
 }
 
 // ReadList reads a list of DataCite JSON responses and returns a list of works in Commonmeta format
-func ReadList(content []Content) ([]commonmeta.Data, error) {
+func ReadList(content []Datacite) ([]commonmeta.Data, error) {
 	var data []commonmeta.Data
 	for _, v := range content {
 		d, err := Read(v)
@@ -669,8 +738,8 @@ func QueryURL(number int, sample bool) string {
 }
 
 // readJSON reads JSON from a file and unmarshals it
-func readJSON(filename string) (Content, error) {
-	var content Content
+func readJSON(filename string) (Datacite, error) {
+	var content Datacite
 
 	extension := path.Ext(filename)
 	if extension != ".json" {
@@ -683,7 +752,7 @@ func readJSON(filename string) (Content, error) {
 	defer file.Close()
 
 	decoder := json.NewDecoder(file)
-	err = decoder.Decode(&content.Attributes)
+	err = decoder.Decode(&content)
 	if err != nil {
 		return content, err
 	}
@@ -691,8 +760,8 @@ func readJSON(filename string) (Content, error) {
 }
 
 // readJSONLines reads JSON lines from a file and unmarshals them
-func readJSONLines(filename string) ([]Content, error) {
-	var response []Content
+func readJSONLines(filename string) ([]Datacite, error) {
+	var response []Datacite
 
 	extension := path.Ext(filename)
 	if extension != ".jsonl" && extension != ".jsonlines" {
@@ -706,14 +775,261 @@ func readJSONLines(filename string) ([]Content, error) {
 
 	decoder := json.NewDecoder(file)
 	for {
-		var attributes Attributes
-		if err := decoder.Decode(&attributes); err == io.EOF {
+		var datacite Datacite
+		if err := decoder.Decode(&datacite); err == io.EOF {
 			break
 		} else if err != nil {
 			log.Fatal(err)
 		}
-		response = append(response, Content{Attributes: attributes})
+		response = append(response, datacite)
 	}
 
 	return response, nil
+}
+
+// Convert converts Commonmeta metadata to DataCite metadata
+func Convert(data commonmeta.Data) (Datacite, error) {
+	var datacite Datacite
+
+	// required properties
+	datacite.ID = data.ID
+	datacite.DOI, _ = doiutils.ValidateDOI(data.ID)
+	datacite.Types.ResourceTypeGeneral = CMToDCMappings[data.Type]
+	datacite.Types.SchemaOrg = schemaorg.CMToSOMappings[data.Type]
+	datacite.Types.Citeproc = csl.CMToCSLMappings[data.Type]
+	datacite.Types.Bibtex = bibtex.CMToBibMappings[data.Type]
+	datacite.Types.Ris = ris.CMToRISMappings[data.Type]
+	if data.AdditionalType != "" {
+		datacite.Types.ResourceType = data.AdditionalType
+	}
+	if datacite.Types.ResourceTypeGeneral == "" {
+		datacite.Types.ResourceTypeGeneral = "Other"
+	}
+
+	if len(data.Date.Published) >= 4 {
+		datacite.PublicationYear, _ = strconv.Atoi(data.Date.Published[:4])
+	}
+
+	if len(data.Titles) > 0 {
+		for _, v := range data.Titles {
+			title := Title{
+				Title:     v.Title,
+				TitleType: v.Type,
+				Lang:      v.Language,
+			}
+			datacite.Titles = append(datacite.Titles, title)
+		}
+	}
+
+	if len(data.Contributors) > 0 {
+		for _, v := range data.Contributors {
+			if slices.Contains(commonmeta.ContributorRoles, "Author") {
+				var nameIdentifiers []NameIdentifier
+				if v.ID != "" {
+					nameIdentifier := NameIdentifier{
+						NameIdentifier:       v.ID,
+						NameIdentifierScheme: "ORCID",
+						SchemeURI:            "https://orcid.org",
+					}
+					nameIdentifiers = append(nameIdentifiers, nameIdentifier)
+				}
+				var affiliations []Affiliation
+				for _, a := range v.Affiliations {
+					affiliation := Affiliation{
+						Name: a.Name,
+					}
+					affiliations = append(affiliations, affiliation)
+				}
+				contributor := Contributor{
+					Name:            v.Name,
+					GivenName:       v.GivenName,
+					FamilyName:      v.FamilyName,
+					NameType:        v.Type + "al",
+					NameIdentifiers: nameIdentifiers,
+					Affiliation:     affiliations,
+				}
+				datacite.Creators = append(datacite.Creators, contributor)
+			}
+		}
+	}
+
+	datacite.Publisher = data.Publisher.Name
+	datacite.URL = data.URL
+	datacite.SchemaVersion = "http://datacite.org/schema/kernel-4"
+
+	// optional properties
+
+	datacite.Container = Container{
+		Type:           data.Container.Type,
+		Identifier:     data.Container.Identifier,
+		IdentifierType: data.Container.IdentifierType,
+		Title:          data.Container.Title,
+		Volume:         data.Container.Volume,
+		Issue:          data.Container.Issue,
+		FirstPage:      data.Container.FirstPage,
+		LastPage:       data.Container.LastPage,
+	}
+
+	if len(data.Identifiers) > 0 {
+		for _, v := range data.Identifiers {
+			if v.Identifier != data.ID {
+				AlternateIdentifier := AlternateIdentifier{
+					AlternateIdentifier:     v.Identifier,
+					AlternateIdentifierType: v.IdentifierType,
+				}
+				datacite.AlternateIdentifiers = append(datacite.AlternateIdentifiers, AlternateIdentifier)
+			}
+		}
+	}
+
+	if len(data.Descriptions) > 0 {
+		for _, v := range data.Descriptions {
+			description := Description{
+				Description:     v.Description,
+				DescriptionType: v.Type,
+				Lang:            v.Language,
+			}
+			datacite.Descriptions = append(datacite.Descriptions, description)
+		}
+	}
+
+	if len(data.FundingReferences) > 0 {
+		for _, v := range data.FundingReferences {
+			fundingReference := FundingReference{
+				FunderName:           v.FunderName,
+				FunderIdentifier:     v.FunderIdentifier,
+				FunderIdentifierType: v.FunderIdentifierType,
+				AwardNumber:          v.AwardNumber,
+				AwardURI:             v.AwardURI,
+			}
+			datacite.FundingReferences = append(datacite.FundingReferences, fundingReference)
+		}
+	}
+	if len(data.GeoLocations) > 0 {
+		for _, v := range data.GeoLocations {
+			geoLocation := GeoLocation{
+				GeoLocationPlace: v.GeoLocationPlace,
+				GeoLocationPoint: GeoLocationPoint{
+					PointLongitude: v.GeoLocationPoint.PointLongitude,
+					PointLatitude:  v.GeoLocationPoint.PointLatitude,
+				},
+				GeoLocationBox: GeoLocationBox{
+					WestBoundLongitude: v.GeoLocationBox.WestBoundLongitude,
+					EastBoundLongitude: v.GeoLocationBox.EastBoundLongitude,
+					SouthBoundLatitude: v.GeoLocationBox.SouthBoundLatitude,
+					NorthBoundLatitude: v.GeoLocationBox.NorthBoundLatitude,
+				},
+			}
+			datacite.GeoLocations = append(datacite.GeoLocations, geoLocation)
+		}
+	}
+	datacite.Language = data.Language
+	if len(data.Subjects) > 0 {
+		for _, v := range data.Subjects {
+			subject := Subject{Subject: v.Subject}
+			datacite.Subjects = append(datacite.Subjects, subject)
+		}
+	}
+	if data.License.URL != "" {
+		rights := Rights{
+			RightsURI:              data.License.URL,
+			RightsIdentifier:       data.License.ID,
+			RightsIdentifierScheme: "SPDX",
+			SchemeURI:              "https://spdx.org/licenses/",
+		}
+		datacite.RightsList = append(datacite.RightsList, rights)
+	}
+	if len(data.Relations) > 0 {
+		for _, v := range data.Relations {
+			id := doiutils.NormalizeDOI(v.ID)
+			relatedIdentifierType := "DOI"
+			if id == "" {
+				relatedIdentifierType = "URL"
+			}
+			RelatedIdentifier := RelatedIdentifier{
+				RelatedIdentifier:     id,
+				RelatedIdentifierType: relatedIdentifierType,
+				RelationType:          v.Type,
+			}
+			datacite.RelatedIdentifiers = append(datacite.RelatedIdentifiers, RelatedIdentifier)
+		}
+	}
+
+	if len(data.References) > 0 {
+		for _, v := range data.References {
+			id := doiutils.NormalizeDOI(v.ID)
+			relatedIdentifierType := "DOI"
+			if id == "" {
+				relatedIdentifierType = "URL"
+			}
+			RelatedIdentifier := RelatedIdentifier{
+				RelatedIdentifier:     id,
+				RelatedIdentifierType: relatedIdentifierType,
+				RelationType:          "References",
+			}
+			datacite.RelatedIdentifiers = append(datacite.RelatedIdentifiers, RelatedIdentifier)
+		}
+	}
+
+	if len(data.Relations) > 0 {
+		for _, v := range data.Relations {
+			RelatedIdentifier := RelatedIdentifier{
+				RelatedIdentifier:     v.ID,
+				RelatedIdentifierType: "DOI",
+				RelationType:          v.Type,
+			}
+			datacite.RelatedIdentifiers = append(datacite.RelatedIdentifiers, RelatedIdentifier)
+		}
+	}
+
+	datacite.Version = data.Version
+
+	// "creators": creators,
+	// "titles": metadata.titles,
+	// "contributors": contributors,
+	// "dates": dates,
+
+	// "relatedIdentifiers": related_identifiers,
+
+	return datacite, nil
+}
+
+// Write writes commonmeta metadata.
+func Write(data commonmeta.Data) ([]byte, []gojsonschema.ResultError) {
+	datacite, err := Convert(data)
+	if err != nil {
+		fmt.Println(err)
+	}
+	output, err := json.Marshal(datacite)
+	if err != nil {
+		fmt.Println(err)
+	}
+	validation := schemautils.JSONSchemaErrors(output, "datacite-v4.5")
+	if !validation.Valid() {
+		return nil, validation.Errors()
+	}
+
+	return output, nil
+}
+
+// WriteList writes a list of commonmeta metadata.
+func WriteList(list []commonmeta.Data) ([]byte, []gojsonschema.ResultError) {
+	var dataciteList []Datacite
+	for _, data := range list {
+		datacite, err := Convert(data)
+		if err != nil {
+			fmt.Println(err)
+		}
+		dataciteList = append(dataciteList, datacite)
+	}
+	output, err := json.Marshal(dataciteList)
+	if err != nil {
+		fmt.Println(err)
+	}
+	validation := schemautils.JSONSchemaErrors(output, "datacite-v4.5")
+	if !validation.Valid() {
+		return nil, validation.Errors()
+	}
+
+	return output, nil
 }
