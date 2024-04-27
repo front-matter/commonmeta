@@ -345,7 +345,6 @@ func Get(id string) (Datacite, error) {
 func Read(datacite Datacite) (commonmeta.Data, error) {
 	var data = commonmeta.Data{}
 	var err error
-	fmt.Println(datacite)
 
 	data.ID = doiutils.NormalizeDOI(datacite.DOI)
 	data.Type = DCToCMMappings[datacite.Types.ResourceTypeGeneral]

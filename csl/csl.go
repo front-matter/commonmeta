@@ -88,6 +88,7 @@ func Read(content content) (commonmeta.Data, error) {
 func Convert(data commonmeta.Data) (CSL, error) {
 	var csl CSL
 
+	csl.ID = data.ID
 	csl.Type = CMToCSLMappings[data.Type]
 	if data.Type == "Software" && data.Version != "" {
 		csl.Type = "book"
