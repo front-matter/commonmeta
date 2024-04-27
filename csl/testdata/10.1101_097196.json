@@ -1,0 +1,24 @@
+{
+  "type": "article",
+  "id": "https://doi.org/10.1101/097196",
+  "DOI": "10.1101/097196",
+  "URL": "http://biorxiv.org/lookup/doi/10.1101/097196",
+  "keyword": "Scientific Communication and Education",
+  "author": [
+    { "family": "Fenner", "given": "Martin" },
+    { "family": "Crosas", "given": "Mercè" },
+    { "family": "Grethe", "given": "Jeffrey" },
+    { "family": "Kennedy", "given": "David" },
+    { "family": "Hermjakob", "given": "Henning" },
+    { "family": "Rocca-Serra", "given": "Philippe" },
+    { "family": "Durand", "given": "Gustavo" },
+    { "family": "Berjon", "given": "Robin" },
+    { "family": "Karcher", "given": "Sebastian" },
+    { "family": "Martone", "given": "Maryann" },
+    { "family": "Clark", "given": "Timothy" }
+  ],
+  "issued": { "date-parts": [[2016, 12, 28]] },
+  "abstract": "AbstractThis article presents a practical roadmap for scholarly data repositories to implement data citation in accordance with the Joint Declaration of Data Citation Principles, a synopsis and harmonization of the recommendations of major science policy bodies. The roadmap was developed by the Repositories Expert Group, as part of the Data Citation Implementation Pilot (DCIP) project, an initiative of FORCE11.org and the NIH BioCADDIE (https://biocaddie.org) program. The roadmap makes 11 specific recommendations, grouped into three phases of implementation: a) required steps needed to support the Joint Declaration of Data Citation Principles, b) recommended steps that facilitate article/data publication workflows, and c) optional steps that further improve data citation support provided by data repositories.",
+  "publisher": "Cold Spring Harbor Laboratory",
+  "title": "A Data Citation Roadmap for Scholarly Data Repositories"
+}

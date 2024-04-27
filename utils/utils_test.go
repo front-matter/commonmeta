@@ -70,7 +70,7 @@ func TestISSNAsURL(t *testing.T) {
 	}
 }
 
-func ExampleISSNAsUrl() {
+func ExampleISSNAsURL() {
 	s := utils.ISSNAsURL("2146-8427")
 	fmt.Println(s)
 	// Output:

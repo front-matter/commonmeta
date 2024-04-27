@@ -40,8 +40,8 @@ func TestJSONSchemaErrors(t *testing.T) {
 
 	testCases := []testCase{
 		{meta: m, want: 0},
-		{meta: n, want: 1},
-		{meta: o, want: 1},
+		{meta: n, want: 0},
+		{meta: o, want: 0},
 	}
 	for _, tc := range testCases {
 		documentJSON, err := json.Marshal(tc.meta)
@@ -69,7 +69,7 @@ func TestJSONSchemaErrorsTestdata(t *testing.T) {
 	}
 
 	testCases := []testCase{
-		{meta: "journal_article.commonmeta.json", schema: "commonmeta_v0.13", want: 2},
+		{meta: "journal_article.commonmeta.json", schema: "commonmeta_v0.14", want: 0},
 		{meta: "citeproc.json", schema: "csl-data", want: 0},
 		{meta: "datacite.json", schema: "datacite-v4.5", want: 3},
 		{meta: "datacite-instrument.json", schema: "datacite-v4.5", want: 27},

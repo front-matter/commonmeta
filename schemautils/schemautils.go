@@ -17,7 +17,7 @@ import (
 //go:embed schemas/*.json
 var JSONSchemas embed.FS
 
-const schemaVersion = "commonmeta_v0.13"
+const schemaVersion = "commonmeta_v0.14"
 
 // JSONSchemaErrors validates a JSON document against a JSON Schema file.
 func JSONSchemaErrors(document []byte, schema ...string) *gojsonschema.Result {

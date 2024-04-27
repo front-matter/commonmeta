@@ -3,6 +3,7 @@ package dateutils
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -44,20 +45,22 @@ const Iso8601DateFormat = "2006-01-02"
 // 	]
 // }
 
-// Get date parts
-// func GetDateParts(iso8601Time string) map[string][]int {
-// 	if iso8601Time == nil {
-// 		return map[string][]int{"date-parts": []int{}}
-// 	}
-// 	if len(iso8601Time) < 10 {
-// 		iso8601Time = strings.Repeat(iso8601Time, 10, "0")
-// 	}
-// 	year, _ := strconv.Atoi(iso8601Time[0:4])
-// 	month, _ := strconv.Atoi(iso8601Time[5:7])
-// 	day, _ := strconv.Atoi(iso8601Time[8:10])
-// 	dateParts := []int{year, month, day}
-// 	return map[string][]int{"date-parts": dateParts}
-// }
+// GetDateParts return date parts from an ISO 8601 date string
+func GetDateParts(iso8601Time string) map[string][][]int {
+	if iso8601Time == "" {
+		return map[string][][]int{"date-parts": {}}
+	}
+
+	// optionally add missing zeros to the date string
+	if len(iso8601Time) < 10 {
+		iso8601Time = iso8601Time + strings.Repeat("0", 10-len(iso8601Time))
+	}
+	year, _ := strconv.Atoi(iso8601Time[0:4])
+	month, _ := strconv.Atoi(iso8601Time[5:7])
+	day, _ := strconv.Atoi(iso8601Time[8:10])
+	dateParts := [][]int{{year, month, day}}
+	return map[string][][]int{"date-parts": dateParts}
+}
 
 // GetDateFromUnixTimestamp returns a date string from a Unix timestamp
 func GetDateFromUnixTimestamp(timestamp int64) string {

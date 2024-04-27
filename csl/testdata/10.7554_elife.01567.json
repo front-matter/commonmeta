@@ -1,0 +1,21 @@
+{
+  "type": "article-journal",
+  "id": "https://doi.org/10.7554/elife.01567",
+  "DOI": "10.7554/elife.01567",
+  "URL": "https://elifesciences.org/articles/01567",
+  "language": "en",
+  "author": [
+    { "family": "Sankar", "given": "Martial" },
+    { "family": "Nieminen", "given": "Kaisa" },
+    { "family": "Ragni", "given": "Laura" },
+    { "family": "Xenarios", "given": "Ioannis" },
+    { "family": "Hardtke", "given": "Christian S" }
+  ],
+  "issued": { "date-parts": [[2014, 2, 11]] },
+  "abstract": "Among various advantages, their small size makes model organisms preferred subjects of investigation. Yet, even in model systems detailed analysis of numerous developmental processes at cellular level is severely hampered by their scale. For instance, secondary growth of Arabidopsis hypocotyls creates a radial pattern of highly specialized tissues that comprises several thousand cells starting from a few dozen. This dynamic process is difficult to follow because of its scale and because it can only be investigated invasively, precluding comprehensive understanding of the cell proliferation, differentiation, and patterning events involved. To overcome such limitation, we established an automated quantitative histology approach. We acquired hypocotyl cross-sections from tiled high-resolution images and extracted their information content using custom high-throughput image processing and segmentation. Coupled with automated cell type recognition through machine learning, we could establish a cellular resolution atlas that reveals vascular morphodynamics during secondary growth, for example equidistant phloem pole formation.",
+  "container-title": "eLife",
+  "volume": "3",
+  "publisher": "eLife Sciences Publications, Ltd",
+  "title": "Automated quantitative histology reveals vascular morphodynamics during Arabidopsis hypocotyl secondary growth",
+  "license": "CC-BY-3.0"
+}

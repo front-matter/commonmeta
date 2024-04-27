@@ -1,75 +1,120 @@
 {
   "id": "https://doi.org/10.6071/z7wc73",
   "type": "Dataset",
+  "container": {},
   "contributors": [
     {
       "id": "https://orcid.org/0000-0002-0811-8535",
       "type": "Person",
-      "contributorRoles": ["Author"],
       "givenName": "Roger",
       "familyName": "Bales",
-      "affiliations": [{ "name": "University of California, Merced" }]
+      "affiliations": [
+        {
+          "name": "University of California, Merced"
+        }
+      ],
+      "contributorRoles": [
+        "Author"
+      ]
     },
     {
       "type": "Person",
-      "contributorRoles": ["Author"],
       "givenName": "Matt",
       "familyName": "Meadows",
-      "affiliations": [{ "name": "University of California, Merced" }]
+      "affiliations": [
+        {
+          "name": "University of California, Merced"
+        }
+      ],
+      "contributorRoles": [
+        "Author"
+      ]
     },
     {
       "id": "https://orcid.org/0000-0002-8862-1404",
       "type": "Person",
-      "contributorRoles": ["Author"],
       "givenName": "Erin",
       "familyName": "Stacy",
-      "affiliations": [{ "name": "University of California, Merced" }]
+      "affiliations": [
+        {
+          "name": "University of California, Merced"
+        }
+      ],
+      "contributorRoles": [
+        "Author"
+      ]
     },
     {
       "id": "https://orcid.org/0000-0002-9627-2427",
       "type": "Person",
-      "contributorRoles": ["Author"],
       "givenName": "Martha",
       "familyName": "Conklin",
-      "affiliations": [{ "name": "University of California, Merced" }]
+      "affiliations": [
+        {
+          "name": "University of California, Merced"
+        }
+      ],
+      "contributorRoles": [
+        "Author"
+      ]
     },
     {
       "id": "https://orcid.org/0000-0001-5344-0673",
       "type": "Person",
-      "contributorRoles": ["Author"],
       "givenName": "Xiande",
       "familyName": "Meng",
-      "affiliations": [{ "name": "University of California, Merced" }]
+      "affiliations": [
+        {
+          "name": "University of California, Merced"
+        }
+      ],
+      "contributorRoles": [
+        "Author"
+      ]
     },
     {
       "type": "Person",
-      "contributorRoles": ["Author"],
       "givenName": "SSCZO",
       "familyName": "Southern Sierra Critical Zone Observatory",
-      "affiliations": [{ "name": "National Science Foundation" }]
+      "affiliations": [
+        {
+          "name": "National Science Foundation"
+        }
+      ],
+      "contributorRoles": [
+        "Author"
+      ]
     },
     {
       "type": "Person",
-      "contributorRoles": ["ProjectLeader"],
       "givenName": "Roger",
-      "familyName": "Bales"
+      "familyName": "Bales",
+      "contributorRoles": [
+        "ProjectLeader"
+      ]
     },
     {
       "type": "Person",
-      "contributorRoles": ["DataCollector"],
       "givenName": "Matt",
-      "familyName": "Meadows"
+      "familyName": "Meadows",
+      "contributorRoles": [
+        "DataCollector"
+      ]
     },
     {
       "type": "Person",
-      "contributorRoles": ["DataManager"],
       "givenName": "Xiande",
-      "familyName": "Meng"
+      "familyName": "Meng",
+      "contributorRoles": [
+        "DataManager"
+      ]
     },
     {
       "type": "Organization",
-      "contributorRoles": ["ResearchGroup"],
-      "name": "Southern Sierra Critical Zone Observatory"
+      "name": "Southern Sierra Critical Zone Observatory",
+      "contributorRoles": [
+        "ResearchGroup"
+      ]
     }
   ],
   "date": {
@@ -92,45 +137,47 @@
   ],
   "fundingReferences": [
     {
-      "schemeUri": "https://ror.org",
-      "funderName": "National Science Foundation",
-      "awardNumber": "1331939",
       "funderIdentifier": "https://ror.org/021nxhr62",
-      "funderIdentifierType": "ROR"
+      "funderIdentifierType": "ROR",
+      "funderName": "National Science Foundation",
+      "awardNumber": "1331939"
     },
     {
-      "schemeUri": "https://ror.org",
-      "funderName": "National Science Foundation",
-      "awardNumber": "0725097",
       "funderIdentifier": "https://ror.org/021nxhr62",
-      "funderIdentifierType": "ROR"
+      "funderIdentifierType": "ROR",
+      "funderName": "National Science Foundation",
+      "awardNumber": "0725097"
     }
   ],
   "geoLocations": [
     {
+      "geoLocationPlace": "Providence Creek (Lower, Upper and P301)",
       "geoLocationPoint": {
-        "pointLatitude": 37.047756,
-        "pointLongitude": -119.221094
+        "pointLongitude": -119.221094,
+        "pointLatitude": 37.047756
       },
       "geoLocationBox": {
         "eastBoundLongitude": -119.182,
-        "northBoundLatitude": 37.075,
+        "westBoundLongitude": -119.211,
         "southBoundLatitude": 37.046,
-        "westBoundLongitude": -119.211
-      },
-      "geoLocationPlace": "Providence Creek (Lower, Upper and P301)"
+        "northBoundLatitude": 37.075
+      }
     },
     {
+      "geoLocationPoint": {},
       "geoLocationBox": {
         "eastBoundLongitude": -119.182,
-        "northBoundLatitude": 37.075,
+        "westBoundLongitude": -119.211,
         "southBoundLatitude": 37.046,
-        "westBoundLongitude": -119.211
+        "northBoundLatitude": 37.075
       }
     }
   ],
   "identifiers": [
-    { "identifier": "https://doi.org/10.6071/z7wc73", "identifierType": "DOI" }
+    {
+      "identifier": "https://doi.org/10.6071/z7wc73",
+      "identifierType": "DOI"
+    }
   ],
   "language": "en",
   "license": {
@@ -138,15 +185,31 @@
     "url": "https://creativecommons.org/licenses/by/4.0/legalcode"
   },
   "provider": "DataCite",
-  "publisher": { "name": "Dryad" },
+  "publisher": {
+    "name": "Dryad"
+  },
   "subjects": [
-    { "subject": "air temperature" },
-    { "subject": "Earth sciences" },
-    { "subject": "Nevada, Sierra (mountain range)" },
-    { "subject": "snow depth" },
-    { "subject": "soil temperature" },
-    { "subject": "water balance" },
-    { "subject": "FOS: Environmental engineering" }
+    {
+      "subject": "air temperature"
+    },
+    {
+      "subject": "Earth sciences"
+    },
+    {
+      "subject": "Nevada, Sierra (mountain range)"
+    },
+    {
+      "subject": "snow depth"
+    },
+    {
+      "subject": "soil temperature"
+    },
+    {
+      "subject": "water balance"
+    },
+    {
+      "subject": "FOS: Environmental engineering"
+    }
   ],
   "titles": [
     {

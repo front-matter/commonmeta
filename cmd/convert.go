@@ -4,15 +4,18 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"os"
 	"strings"
 
 	"github.com/front-matter/commonmeta/commonmeta"
+	"github.com/front-matter/commonmeta/csl"
 	"github.com/front-matter/commonmeta/datacite"
 	"github.com/front-matter/commonmeta/doiutils"
 	"github.com/front-matter/commonmeta/utils"
+	"github.com/xeipuuv/gojsonschema"
 
 	"github.com/front-matter/commonmeta/crossref"
 
@@ -87,14 +90,25 @@ commonmeta 10.5555/12345678`,
 			}
 		}
 
+		var output []byte
+		var jsErr []gojsonschema.ResultError
+		to, _ := cmd.Flags().GetString("to")
+		if to == "commonmeta" {
+			output, jsErr = commonmeta.Write(data)
+		} else if to == "csl" {
+			output, jsErr = csl.Write(data)
+		}
+
 		if err != nil {
 			fmt.Println(err)
 		}
-		output, err := json.MarshalIndent(data, "", "  ")
-		if err != nil {
-			fmt.Println(err)
+		var out bytes.Buffer
+		json.Indent(&out, output, "", "  ")
+		fmt.Println(out.String())
+
+		if jsErr != nil {
+			fmt.Println(jsErr)
 		}
-		fmt.Println(string(output))
 	},
 }
 

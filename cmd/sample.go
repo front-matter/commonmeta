@@ -9,6 +9,8 @@ import (
 	"fmt"
 
 	"github.com/front-matter/commonmeta/commonmeta"
+	"github.com/front-matter/commonmeta/csl"
+	"github.com/xeipuuv/gojsonschema"
 
 	"github.com/front-matter/commonmeta/crossref"
 
@@ -54,7 +56,19 @@ var sampleCmd = &cobra.Command{
 		if err != nil {
 			fmt.Println(err)
 		}
-		output, jsErr := commonmeta.WriteList(data)
+
+		var output []byte
+		var jsErr []gojsonschema.ResultError
+		to, _ := cmd.Flags().GetString("to")
+		if to == "commonmeta" {
+			output, jsErr = commonmeta.WriteList(data)
+		} else if to == "csl" {
+			output, jsErr = csl.WriteList(data)
+		}
+
+		if err != nil {
+			fmt.Println(err)
+		}
 		var out bytes.Buffer
 		json.Indent(&out, output, "", "  ")
 		fmt.Println(out.String())

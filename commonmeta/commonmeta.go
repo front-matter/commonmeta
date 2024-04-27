@@ -2,7 +2,6 @@
 package commonmeta
 
 import (
-	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -271,9 +270,6 @@ func Write(data Data) ([]byte, []gojsonschema.ResultError) {
 	}
 	validation := schemautils.JSONSchemaErrors(output)
 	if !validation.Valid() {
-		var out bytes.Buffer
-		json.Indent(&out, output, "", "  ")
-		fmt.Println(out.String())
 		return nil, validation.Errors()
 	}
 	return output, nil
@@ -281,23 +277,24 @@ func Write(data Data) ([]byte, []gojsonschema.ResultError) {
 
 // WriteList writes commonmeta metadata in slice format.
 func WriteList(list []Data) ([]byte, []gojsonschema.ResultError) {
-	for _, data := range list {
-		o, err := json.Marshal(data)
-		if err != nil {
-			fmt.Println(err)
-		}
-		validation := schemautils.JSONSchemaErrors(o)
-		if !validation.Valid() {
-			var out bytes.Buffer
-			json.Indent(&out, o, "", "  ")
-			fmt.Println(out.String())
-			return nil, validation.Errors()
-		}
-	}
-
 	output, err := json.Marshal(list)
 	if err != nil {
 		fmt.Println(err)
 	}
+	validation := schemautils.JSONSchemaErrors(output)
+	if !validation.Valid() {
+		return nil, validation.Errors()
+	}
 	return output, nil
+}
+
+// Pages returns the first and last page of a work as a string.
+func (c *Container) Pages() string {
+	if c.FirstPage == "" {
+		return c.LastPage
+	}
+	if c.LastPage == "" {
+		return c.FirstPage
+	}
+	return c.FirstPage + "-" + c.LastPage
 }

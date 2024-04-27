@@ -5,30 +5,8 @@ import (
 	"testing"
 
 	"github.com/front-matter/commonmeta/dateutils"
+	"github.com/google/go-cmp/cmp"
 )
-
-// func TestGetDateParts(t *testing.T) {
-// 	t.Parallel()
-// 	type testCase struct {
-// 		date string
-// 		want map[string][]int
-// 	}
-// 	testCases := []testCase{
-// 		{date: "2021-01-22", want: {"date_parts": [[2021, 1, 22]]}},
-// 		{date: "2021-01", want: {"date_parts": [[2021, 1]]}},
-// 		{date: "2021", want: {"date_parts": [[2021]]}},
-// 		{date: nil, want: {"date_parts": nil}},
-// 	}
-// 	for _, tc := range testCases {
-// 		got := date_utils.GetDateParts(tc.date)
-// 		for i := 0; i < 3; i++ {
-// 			if tc.want[i] != got[i] {
-// 				t.Errorf("Get date parts(%s) from date: want %v, got %v",
-// 					tc.date, tc.want, got)
-// 			}
-// 		}
-// 	}
-// }
 
 func TestGetDateFromUnixTimestamp(t *testing.T) {
 	t.Parallel()
@@ -47,6 +25,33 @@ func TestGetDateFromUnixTimestamp(t *testing.T) {
 				tc.timestamp, tc.want, got)
 		}
 	}
+}
+
+func TestGetDateParts(t *testing.T) {
+	t.Parallel()
+	type testCase struct {
+		date string
+		want map[string][][]int
+	}
+	testCases := []testCase{
+		{date: "2021-01-22", want: map[string][][]int{"date-parts": {{2021, 1, 22}}}},
+		{date: "2021-01", want: map[string][][]int{"date-parts": {{2021, 1, 0}}}},
+		{date: "2021", want: map[string][][]int{"date-parts": {{2021, 0, 0}}}},
+		{date: "", want: map[string][][]int{"date-parts": {}}},
+	}
+	for _, tc := range testCases {
+		got := dateutils.GetDateParts(tc.date)
+		if diff := cmp.Diff(tc.want, got); diff != "" {
+			t.Errorf("GetDateParts mismatch (-want +got):\n%s", diff)
+		}
+	}
+}
+
+func ExampleGetDateParts() {
+	m := dateutils.GetDateParts("2023-12-06")
+	fmt.Println(m)
+	// Output:
+	// map[date-parts:[[2023 12 6]]]
 }
 
 func ExampleGetDateFromUnixTimestamp() {
