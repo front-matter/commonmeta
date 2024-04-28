@@ -27,13 +27,6 @@ import (
 	"github.com/front-matter/commonmeta/utils"
 )
 
-// Content represents the DataCite JSONAPI response.
-type Content struct {
-	ID         string   `json:"id"`
-	Type       string   `json:"type"`
-	Attributes Datacite `json:"attributes"`
-}
-
 // Datacite represents the DataCite metadata.
 type Datacite struct {
 	ID                   string                `json:"id"`
@@ -59,6 +52,14 @@ type Datacite struct {
 	GeoLocations         []GeoLocation         `json:"geoLocations,omitempty"`
 	FundingReferences    []FundingReference    `json:"fundingReferences,omitempty"`
 	SchemaVersion        string                `json:"schemaVersion"`
+}
+
+// Content represents the DataCite metadata returned from DataCite. The type is more
+// flexible than the Datacite type, allowing for different formats of some metadata.
+// PublicationYear can be int or string. Affiliation can be string or struct.
+type Content struct {
+	Datacite
+	PublicationYear json.RawMessage `json:"publicationYear"`
 }
 
 type Affiliation struct {
@@ -309,12 +310,12 @@ func LoadList(filename string) ([]commonmeta.Data, error) {
 }
 
 // Get gets DataCite metadata for a given DOI
-func Get(id string) (Datacite, error) {
+func Get(id string) (Content, error) {
 	// the envelope for the JSON response from the DataCite API
 	type Response struct {
 		Data struct {
-			ID         string   `json:"id"`
-			Attributes Datacite `json:"attributes"`
+			ID         string  `json:"id"`
+			Attributes Content `json:"attributes"`
 		} `json:"data"`
 	}
 
@@ -339,7 +340,6 @@ func Get(id string) (Datacite, error) {
 	if err != nil {
 		return response.Data.Attributes, err
 	}
-	fmt.Println(string(body))
 	err = json.Unmarshal(body, &response)
 	if err != nil {
 		fmt.Println("error:", err)
@@ -348,35 +348,35 @@ func Get(id string) (Datacite, error) {
 }
 
 // Read reads DataCite JSON response and return work struct in Commonmeta format
-func Read(datacite Datacite) (commonmeta.Data, error) {
+func Read(content Content) (commonmeta.Data, error) {
 	var data = commonmeta.Data{}
 	var err error
 
-	data.ID = doiutils.NormalizeDOI(datacite.DOI)
-	data.Type = DCToCMMappings[datacite.Types.ResourceTypeGeneral]
+	data.ID = doiutils.NormalizeDOI(content.DOI)
+	data.Type = DCToCMMappings[content.Types.ResourceTypeGeneral]
 
 	// ArchiveLocations not yet supported
 
 	// Support the additional types added in schema 4.4
-	AdditionalType := DCToCMMappings[datacite.Types.ResourceType]
+	AdditionalType := DCToCMMappings[content.Types.ResourceType]
 	if AdditionalType != "" {
 		data.Type = AdditionalType
-	} else if datacite.Types.ResourceType != "" && !strings.EqualFold(datacite.Types.ResourceType, data.Type) {
-		data.AdditionalType = datacite.Types.ResourceType
+	} else if content.Types.ResourceType != "" && !strings.EqualFold(content.Types.ResourceType, data.Type) {
+		data.AdditionalType = content.Types.ResourceType
 	}
 
 	data.Container = commonmeta.Container{
-		Identifier:     datacite.Container.Identifier,
-		IdentifierType: datacite.Container.IdentifierType,
-		Type:           datacite.Container.Type,
-		Title:          datacite.Container.Title,
-		Volume:         datacite.Container.Volume,
-		Issue:          datacite.Container.Issue,
-		FirstPage:      datacite.Container.FirstPage,
-		LastPage:       datacite.Container.LastPage,
+		Identifier:     content.Container.Identifier,
+		IdentifierType: content.Container.IdentifierType,
+		Type:           content.Container.Type,
+		Title:          content.Container.Title,
+		Volume:         content.Container.Volume,
+		Issue:          content.Container.Issue,
+		FirstPage:      content.Container.FirstPage,
+		LastPage:       content.Container.LastPage,
 	}
 
-	for _, v := range datacite.Creators {
+	for _, v := range content.Creators {
 		if v.Name != "" || v.GivenName != "" || v.FamilyName != "" {
 			contributor := GetContributor(v)
 			containsID := slices.ContainsFunc(data.Contributors, func(e commonmeta.Contributor) bool {
@@ -392,7 +392,7 @@ func Read(datacite Datacite) (commonmeta.Data, error) {
 	}
 
 	// merge creators and contributors
-	for _, v := range datacite.Contributors {
+	for _, v := range content.Contributors {
 		if v.Name != "" || v.GivenName != "" || v.FamilyName != "" {
 			contributor := GetContributor(v)
 			containsID := slices.ContainsFunc(data.Contributors, func(e commonmeta.Contributor) bool {
@@ -407,7 +407,7 @@ func Read(datacite Datacite) (commonmeta.Data, error) {
 		}
 	}
 
-	for _, v := range datacite.Dates {
+	for _, v := range content.Dates {
 		if v.DateType == "Accepted" {
 			data.Date.Accepted = v.Date
 		}
@@ -442,10 +442,10 @@ func Read(datacite Datacite) (commonmeta.Data, error) {
 		}
 	}
 	if data.Date.Published == "" {
-		data.Date.Published = strconv.Itoa(datacite.PublicationYear)
+		data.Date.Published = string(content.PublicationYear)
 	}
 
-	for _, v := range datacite.Descriptions {
+	for _, v := range content.Descriptions {
 		var t string
 		if slices.Contains([]string{"Abstract", "Summary", "Methods", "TechnicalInfo", "Other"}, v.DescriptionType) {
 			t = v.DescriptionType
@@ -463,7 +463,7 @@ func Read(datacite Datacite) (commonmeta.Data, error) {
 	// Files not yet supported. Sizes and formats are part of the file object,
 	// but can't be mapped directly
 
-	for _, v := range datacite.FundingReferences {
+	for _, v := range content.FundingReferences {
 		data.FundingReferences = append(data.FundingReferences, commonmeta.FundingReference{
 			FunderIdentifier:     v.FunderIdentifier,
 			FunderIdentifierType: v.FunderIdentifierType,
@@ -472,7 +472,7 @@ func Read(datacite Datacite) (commonmeta.Data, error) {
 			AwardURI:             v.AwardURI,
 		})
 	}
-	for _, v := range datacite.GeoLocations {
+	for _, v := range content.GeoLocations {
 		geoLocation := commonmeta.GeoLocation{
 			GeoLocationPlace: v.GeoLocationPlace,
 			GeoLocationPoint: commonmeta.GeoLocationPoint{
@@ -489,7 +489,7 @@ func Read(datacite Datacite) (commonmeta.Data, error) {
 		data.GeoLocations = append(data.GeoLocations, geoLocation)
 	}
 
-	if len(datacite.AlternateIdentifiers) > 0 {
+	if len(content.AlternateIdentifiers) > 0 {
 		supportedIdentifiers := []string{
 			"ARK",
 			"arXiv",
@@ -505,7 +505,7 @@ func Read(datacite Datacite) (commonmeta.Data, error) {
 			"URN",
 			"Other",
 		}
-		for _, v := range datacite.AlternateIdentifiers {
+		for _, v := range content.AlternateIdentifiers {
 			identifierType := "Other"
 			if slices.Contains(supportedIdentifiers, v.AlternateIdentifierType) {
 				identifierType = v.AlternateIdentifierType
@@ -526,13 +526,13 @@ func Read(datacite Datacite) (commonmeta.Data, error) {
 		data.Identifiers = utils.DedupeSlice(data.Identifiers)
 	}
 
-	if datacite.Publisher != "" {
+	if content.Publisher != "" {
 		data.Publisher = commonmeta.Publisher{
-			Name: datacite.Publisher,
+			Name: content.Publisher,
 		}
 	}
 
-	for _, v := range datacite.Subjects {
+	for _, v := range content.Subjects {
 		subject := commonmeta.Subject{
 			Subject: v.Subject,
 		}
@@ -541,10 +541,10 @@ func Read(datacite Datacite) (commonmeta.Data, error) {
 		}
 	}
 
-	data.Language = datacite.Language
+	data.Language = content.Language
 
-	if len(datacite.RightsList) > 0 {
-		url, _ := utils.NormalizeCCUrl(datacite.RightsList[0].RightsURI)
+	if len(content.RightsList) > 0 {
+		url, _ := utils.NormalizeCCUrl(content.RightsList[0].RightsURI)
 		id := utils.URLToSPDX(url)
 		data.License = commonmeta.License{
 			ID:  id,
@@ -554,12 +554,12 @@ func Read(datacite Datacite) (commonmeta.Data, error) {
 
 	data.Provider = "DataCite"
 
-	if len(datacite.RelatedIdentifiers) > 0 {
+	if len(content.RelatedIdentifiers) > 0 {
 		supportedRelations := []string{
 			"Cites",
 			"References",
 		}
-		for i, v := range datacite.RelatedIdentifiers {
+		for i, v := range content.RelatedIdentifiers {
 			id := utils.NormalizeID(v.RelatedIdentifier)
 			if id != "" && slices.Contains(supportedRelations, v.RelationType) {
 				data.References = append(data.References, commonmeta.Reference{
@@ -570,7 +570,7 @@ func Read(datacite Datacite) (commonmeta.Data, error) {
 		}
 	}
 
-	if len(datacite.RelatedIdentifiers) > 0 {
+	if len(content.RelatedIdentifiers) > 0 {
 		supportedRelations := []string{
 			"IsNewVersionOf",
 			"IsPreviousVersionOf",
@@ -588,7 +588,7 @@ func Read(datacite Datacite) (commonmeta.Data, error) {
 			"HasPreprint",
 			"IsSupplementTo",
 		}
-		for _, v := range datacite.RelatedIdentifiers {
+		for _, v := range content.RelatedIdentifiers {
 			id := utils.NormalizeID(v.RelatedIdentifier)
 			if id != "" && slices.Contains(supportedRelations, v.RelationType) {
 				relation := commonmeta.Relation{
@@ -602,7 +602,7 @@ func Read(datacite Datacite) (commonmeta.Data, error) {
 		}
 	}
 
-	for _, v := range datacite.Titles {
+	for _, v := range content.Titles {
 		var t string
 		if slices.Contains([]string{"MainTitle", "Subtitle", "TranslatedTitle"}, v.TitleType) {
 			t = v.TitleType
@@ -614,12 +614,12 @@ func Read(datacite Datacite) (commonmeta.Data, error) {
 		})
 	}
 
-	data.URL, err = utils.NormalizeURL(datacite.URL, true, false)
+	data.URL, err = utils.NormalizeURL(content.URL, true, false)
 	if err != nil {
 		log.Println(err)
 	}
 
-	data.Version = datacite.Version
+	data.Version = content.Version
 
 	return data, nil
 }
@@ -684,10 +684,10 @@ func GetContributor(v Contributor) commonmeta.Contributor {
 }
 
 // GetList gets the metadata for a list of works from the DataCite API
-func GetList(number int, sample bool) ([]Datacite, error) {
+func GetList(number int, sample bool) ([]Content, error) {
 	// the envelope for the JSON response from the DataCite API
 	type Response struct {
-		Data []Datacite `json:"data"`
+		Data []Content `json:"data"`
 	}
 	if number > 100 {
 		number = 100
@@ -721,7 +721,7 @@ func GetList(number int, sample bool) ([]Datacite, error) {
 }
 
 // ReadList reads a list of DataCite JSON responses and returns a list of works in Commonmeta format
-func ReadList(content []Datacite) ([]commonmeta.Data, error) {
+func ReadList(content []Content) ([]commonmeta.Data, error) {
 	var data []commonmeta.Data
 	for _, v := range content {
 		d, err := Read(v)
@@ -743,8 +743,8 @@ func QueryURL(number int, sample bool) string {
 }
 
 // readJSON reads JSON from a file and unmarshals it
-func readJSON(filename string) (Datacite, error) {
-	var content Datacite
+func readJSON(filename string) (Content, error) {
+	var content Content
 
 	extension := path.Ext(filename)
 	if extension != ".json" {
@@ -765,8 +765,8 @@ func readJSON(filename string) (Datacite, error) {
 }
 
 // readJSONLines reads JSON lines from a file and unmarshals them
-func readJSONLines(filename string) ([]Datacite, error) {
-	var response []Datacite
+func readJSONLines(filename string) ([]Content, error) {
+	var response []Content
 
 	extension := path.Ext(filename)
 	if extension != ".jsonl" && extension != ".jsonlines" {
@@ -780,7 +780,7 @@ func readJSONLines(filename string) ([]Datacite, error) {
 
 	decoder := json.NewDecoder(file)
 	for {
-		var datacite Datacite
+		var datacite Content
 		if err := decoder.Decode(&datacite); err == io.EOF {
 			break
 		} else if err != nil {
