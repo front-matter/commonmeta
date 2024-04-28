@@ -47,22 +47,18 @@ type Datacite struct {
 	URL                  string                `json:"url"`
 	Subjects             []Subject             `json:"subjects,omitempty"`
 	Contributors         []Contributor         `json:"contributors,omitempty"`
-	Dates                []struct {
-		Date            string `json:"date,omitempty"`
-		DateType        string `json:"dateType,omitempty"`
-		DateInformation string `json:"dateInformation,omitempty"`
-	} `json:"dates,omitempty"`
-	Language           string              `json:"language,omitempty"`
-	Types              Types               `json:"types"`
-	RelatedIdentifiers []RelatedIdentifier `json:"relatedIdentifiers,omitempty"`
-	Sizes              []string            `json:"sizes,omitempty"`
-	Formats            []string            `json:"formats,omitempty"`
-	Version            string              `json:"version,omitempty"`
-	RightsList         []Rights            `json:"rightsList,omitempty"`
-	Descriptions       []Description       `json:"descriptions,omitempty"`
-	GeoLocations       []GeoLocation       `json:"geoLocations,omitempty"`
-	FundingReferences  []FundingReference  `json:"fundingReferences,omitempty"`
-	SchemaVersion      string              `json:"schemaVersion"`
+	Dates                []Date                `json:"dates,omitempty"`
+	Language             string                `json:"language,omitempty"`
+	Types                Types                 `json:"types"`
+	RelatedIdentifiers   []RelatedIdentifier   `json:"relatedIdentifiers,omitempty"`
+	Sizes                []string              `json:"sizes,omitempty"`
+	Formats              []string              `json:"formats,omitempty"`
+	Version              string                `json:"version,omitempty"`
+	RightsList           []Rights              `json:"rightsList,omitempty"`
+	Descriptions         []Description         `json:"descriptions,omitempty"`
+	GeoLocations         []GeoLocation         `json:"geoLocations,omitempty"`
+	FundingReferences    []FundingReference    `json:"fundingReferences,omitempty"`
+	SchemaVersion        string                `json:"schemaVersion"`
 }
 
 type Affiliation struct {
@@ -96,6 +92,12 @@ type Contributor struct {
 	NameIdentifiers []NameIdentifier `json:"nameIdentifiers,omitempty"`
 	Affiliation     []string         `json:"affiliation,omitempty"`
 	ContributorType string           `json:"contributorType,omitempty"`
+}
+
+type Date struct {
+	Date            string `json:"date,omitempty"`
+	DateType        string `json:"dateType,omitempty"`
+	DateInformation string `json:"dateInformation,omitempty"`
 }
 
 type Description struct {
@@ -826,21 +828,21 @@ func Convert(data commonmeta.Data) (Datacite, error) {
 
 	if len(data.Contributors) > 0 {
 		for _, v := range data.Contributors {
-			if slices.Contains(commonmeta.ContributorRoles, "Author") {
-				var nameIdentifiers []NameIdentifier
-				if v.ID != "" {
-					nameIdentifier := NameIdentifier{
-						NameIdentifier:       v.ID,
-						NameIdentifierScheme: "ORCID",
-						SchemeURI:            "https://orcid.org",
-					}
-					nameIdentifiers = append(nameIdentifiers, nameIdentifier)
+			var nameIdentifiers []NameIdentifier
+			if v.ID != "" {
+				nameIdentifier := NameIdentifier{
+					NameIdentifier:       v.ID,
+					NameIdentifierScheme: "ORCID",
+					SchemeURI:            "https://orcid.org",
 				}
-				var affiliations []string
-				for _, a := range v.Affiliations {
-					affiliation := a.Name
-					affiliations = append(affiliations, affiliation)
-				}
+				nameIdentifiers = append(nameIdentifiers, nameIdentifier)
+			}
+			var affiliations []string
+			for _, a := range v.Affiliations {
+				affiliation := a.Name
+				affiliations = append(affiliations, affiliation)
+			}
+			if slices.Contains(v.ContributorRoles, "Author") {
 				contributor := Contributor{
 					Name:            v.Name,
 					GivenName:       v.GivenName,
@@ -850,6 +852,18 @@ func Convert(data commonmeta.Data) (Datacite, error) {
 					Affiliation:     affiliations,
 				}
 				datacite.Creators = append(datacite.Creators, contributor)
+			} else {
+				contributorType := v.ContributorRoles[0]
+				contributor := Contributor{
+					Name:            v.Name,
+					GivenName:       v.GivenName,
+					FamilyName:      v.FamilyName,
+					NameType:        v.Type + "al",
+					NameIdentifiers: nameIdentifiers,
+					Affiliation:     affiliations,
+					ContributorType: contributorType,
+				}
+				datacite.Contributors = append(datacite.Contributors, contributor)
 			}
 		}
 	}
@@ -881,6 +895,63 @@ func Convert(data commonmeta.Data) (Datacite, error) {
 				datacite.AlternateIdentifiers = append(datacite.AlternateIdentifiers, AlternateIdentifier)
 			}
 		}
+	}
+
+	if data.Date.Created != "" {
+		datacite.Dates = append(datacite.Dates, Date{
+			Date:     data.Date.Created,
+			DateType: "Created",
+		})
+	} else if data.Date.Submitted != "" {
+		datacite.Dates = append(datacite.Dates, Date{
+			Date:     data.Date.Submitted,
+			DateType: "Submitted",
+		})
+	} else if data.Date.Accepted != "" {
+		datacite.Dates = append(datacite.Dates, Date{
+			Date:     data.Date.Accepted,
+			DateType: "Accepted",
+		})
+	} else if data.Date.Published != "" {
+		datacite.Dates = append(datacite.Dates, Date{
+			Date:     data.Date.Published,
+			DateType: "Issued",
+		})
+	} else if data.Date.Updated != "" {
+		datacite.Dates = append(datacite.Dates, Date{
+			Date:     data.Date.Updated,
+			DateType: "Updated",
+		})
+	} else if data.Date.Accessed != "" {
+		datacite.Dates = append(datacite.Dates, Date{
+			Date:     data.Date.Accessed,
+			DateType: "Accessed",
+		})
+	} else if data.Date.Available != "" {
+		datacite.Dates = append(datacite.Dates, Date{
+			Date:     data.Date.Available,
+			DateType: "Available",
+		})
+	} else if data.Date.Collected != "" {
+		datacite.Dates = append(datacite.Dates, Date{
+			Date:     data.Date.Collected,
+			DateType: "Collected",
+		})
+	} else if data.Date.Valid != "" {
+		datacite.Dates = append(datacite.Dates, Date{
+			Date:     data.Date.Valid,
+			DateType: "Valid",
+		})
+	} else if data.Date.Withdrawn != "" {
+		datacite.Dates = append(datacite.Dates, Date{
+			Date:     data.Date.Withdrawn,
+			DateType: "Withdrawn",
+		})
+	} else if data.Date.Other != "" {
+		datacite.Dates = append(datacite.Dates, Date{
+			Date:     data.Date.Other,
+			DateType: "Other",
+		})
 	}
 
 	if len(data.Descriptions) > 0 {
@@ -984,13 +1055,6 @@ func Convert(data commonmeta.Data) (Datacite, error) {
 	}
 
 	datacite.Version = data.Version
-
-	// "creators": creators,
-	// "titles": metadata.titles,
-	// "contributors": contributors,
-	// "dates": dates,
-
-	// "relatedIdentifiers": related_identifiers,
 
 	return datacite, nil
 }
