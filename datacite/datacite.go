@@ -33,7 +33,7 @@ type Datacite struct {
 	DOI                  string                `json:"doi"`
 	AlternateIdentifiers []AlternateIdentifier `json:"alternateIdentifiers,omitempty"`
 	Creators             []Contributor         `json:"creators"`
-	Publisher            string                `json:"publisher"`
+	Publisher            Publisher             `json:"publisher"`
 	Container            Container             `json:"container,omitempty"`
 	PublicationYear      int                   `json:"publicationYear"`
 	Titles               []Title               `json:"titles"`
@@ -56,14 +56,26 @@ type Datacite struct {
 
 // Content represents the DataCite metadata returned from DataCite. The type is more
 // flexible than the Datacite type, allowing for different formats of some metadata.
-// PublicationYear can be int or string. Affiliation can be string or struct.
+// Affiliation can be string or struct, PublicationYear can be int or string. Publisher can be string or struct.
 type Content struct {
-	Datacite
-	PublicationYear json.RawMessage `json:"publicationYear"`
+	*Datacite
+	Creators        []ContentContributor `json:"creators"`
+	Contributors    []ContentContributor `json:"contributors"`
+	PublicationYear json.RawMessage      `json:"publicationYear"`
+	Publisher       json.RawMessage      `json:"publisher"`
+}
+
+// ContentContributor represents a creator or contributor in the DataCite JSONAPI response.
+type ContentContributor struct {
+	*Contributor
+	Affiliation json.RawMessage `json:"affiliation,omitempty"`
 }
 
 type Affiliation struct {
-	Name string `json:"name"`
+	AffiliationIdentifier       string `json:"affiliationIdentifier,omitempty"`
+	AffiliationIdentifierScheme string `json:"affiliationIdentifierScheme,omitempty"`
+	SchemeURI                   string `json:"schemeUri,omitempty"`
+	Name                        string `json:"name"`
 }
 
 // AlternateIdentifier represents an alternate identifier in the DataCite metadata.
@@ -90,8 +102,8 @@ type Contributor struct {
 	GivenName       string           `json:"givenName,omitempty"`
 	FamilyName      string           `json:"familyName,omitempty"`
 	NameType        string           `json:"nameType"`
-	NameIdentifiers []NameIdentifier `json:"nameIdentifiers,omitempty"`
 	Affiliation     []string         `json:"affiliation,omitempty"`
+	NameIdentifiers []NameIdentifier `json:"nameIdentifiers,omitempty"`
 	ContributorType string           `json:"contributorType,omitempty"`
 }
 
@@ -161,6 +173,14 @@ type Title struct {
 	Title     string `json:"title"`
 	TitleType string `json:"titleType,omitempty"`
 	Lang      string `json:"lang,omitempty"`
+}
+
+type Publisher struct {
+	Name                      string `json:"name"`
+	PublisherIdentifier       string `json:"publisherIdentifier,omitempty"`
+	PublisherIdentifierScheme string `json:"publisherIdentifierScheme,omitempty"`
+	SchemeURI                 string `json:"schemeUri,omitempty"`
+	Lang                      string `json:"lang,omitempty"`
 }
 
 type Types struct {
@@ -257,7 +277,6 @@ func Fetch(str string) (commonmeta.Data, error) {
 	if err != nil {
 		return data, err
 	}
-	log.Println(data)
 	return data, nil
 }
 
@@ -282,7 +301,7 @@ func FetchList(number int, sample bool) ([]commonmeta.Data, error) {
 func Load(filename string) (commonmeta.Data, error) {
 	var data commonmeta.Data
 
-	content, err := readJSON(filename)
+	content, err := ReadJSON(filename)
 	if err != nil {
 		return data, err
 	}
@@ -297,7 +316,7 @@ func Load(filename string) (commonmeta.Data, error) {
 func LoadList(filename string) ([]commonmeta.Data, error) {
 	var data []commonmeta.Data
 
-	response, err := readJSONLines(filename)
+	response, err := ReadJSONLines(filename)
 	if err != nil {
 		return data, err
 	}
@@ -382,10 +401,7 @@ func Read(content Content) (commonmeta.Data, error) {
 			containsID := slices.ContainsFunc(data.Contributors, func(e commonmeta.Contributor) bool {
 				return e.ID != "" && e.ID == contributor.ID
 			})
-			containsName := slices.ContainsFunc(data.Contributors, func(e commonmeta.Contributor) bool {
-				return e.Name != "" && e.Name == contributor.Name || e.GivenName != "" && e.GivenName == contributor.GivenName && e.FamilyName != "" && e.FamilyName == contributor.FamilyName
-			})
-			if !containsID && !containsName {
+			if !containsID {
 				data.Contributors = append(data.Contributors, contributor)
 			}
 		}
@@ -526,9 +542,25 @@ func Read(content Content) (commonmeta.Data, error) {
 		data.Identifiers = utils.DedupeSlice(data.Identifiers)
 	}
 
-	if content.Publisher != "" {
+	// parse Publisher as either string (up to schema 4.4) or struct (schema 4.5)
+	var publisher Publisher
+	var publisherName string
+	err = json.Unmarshal(content.Publisher, &publisher)
+	if err != nil {
+		err = json.Unmarshal(content.Publisher, &publisherName)
+	}
+	if err != nil {
+		log.Println(err)
+	}
+	if publisher.Name != "" {
+		id := utils.NormalizeROR(publisher.PublisherIdentifier)
 		data.Publisher = commonmeta.Publisher{
-			Name: content.Publisher,
+			ID:   id,
+			Name: publisher.Name,
+		}
+	} else if publisherName != "" {
+		data.Publisher = commonmeta.Publisher{
+			Name: publisherName,
 		}
 	}
 
@@ -625,7 +657,7 @@ func Read(content Content) (commonmeta.Data, error) {
 }
 
 // GetContributor converts DataCite contributor metadata into the Commonmeta format
-func GetContributor(v Contributor) commonmeta.Contributor {
+func GetContributor(v ContentContributor) commonmeta.Contributor {
 	var t string
 	if len(v.NameType) > 2 {
 		t = v.NameType[:len(v.NameType)-2]
@@ -660,12 +692,35 @@ func GetContributor(v Contributor) commonmeta.Contributor {
 			name = ""
 		}
 	}
+
+	//parse Affiliation as either slice of string or slice of struct
+	var affiliationStructs []Affiliation
+	var affiliationNames []string
 	var affiliations []commonmeta.Affiliation
-	for _, a := range v.Affiliation {
-		affiliations = append(affiliations, commonmeta.Affiliation{
-			Name: a,
-		})
+	var err error
+	err = json.Unmarshal(v.Affiliation, &affiliationNames)
+	if err != nil {
+		err = json.Unmarshal(v.Affiliation, &affiliationStructs)
 	}
+	if err != nil {
+		log.Println(err)
+	}
+	if len(affiliationStructs) > 0 {
+		for _, v := range affiliationStructs {
+			id := utils.NormalizeROR(v.AffiliationIdentifier)
+			af := commonmeta.Affiliation{
+				ID:   id,
+				Name: v.Name,
+			}
+			affiliations = append(affiliations, af)
+		}
+	} else if len(affiliationNames) > 0 {
+		af := commonmeta.Affiliation{
+			Name: affiliationNames[0],
+		}
+		affiliations = append(affiliations, af)
+	}
+
 	var roles []string
 	if slices.Contains(commonmeta.ContributorRoles, v.ContributorType) {
 		roles = append(roles, v.ContributorType)
@@ -678,8 +733,8 @@ func GetContributor(v Contributor) commonmeta.Contributor {
 		Name:             name,
 		GivenName:        GivenName,
 		FamilyName:       FamilyName,
-		ContributorRoles: roles,
 		Affiliations:     affiliations,
+		ContributorRoles: roles,
 	}
 }
 
@@ -742,8 +797,8 @@ func QueryURL(number int, sample bool) string {
 	return url
 }
 
-// readJSON reads JSON from a file and unmarshals it
-func readJSON(filename string) (Content, error) {
+// ReadJSON reads JSON from a file and unmarshals it
+func ReadJSON(filename string) (Content, error) {
 	var content Content
 
 	extension := path.Ext(filename)
@@ -764,8 +819,8 @@ func readJSON(filename string) (Content, error) {
 	return content, nil
 }
 
-// readJSONLines reads JSON lines from a file and unmarshals them
-func readJSONLines(filename string) ([]Content, error) {
+// ReadJSONLines reads JSON lines from a file and unmarshals them
+func ReadJSONLines(filename string) ([]Content, error) {
 	var response []Content
 
 	extension := path.Ext(filename)
@@ -868,7 +923,9 @@ func Convert(data commonmeta.Data) (Datacite, error) {
 		}
 	}
 
-	datacite.Publisher = data.Publisher.Name
+	datacite.Publisher = Publisher{
+		Name: data.Publisher.Name,
+	}
 	datacite.URL = data.URL
 	datacite.SchemaVersion = "http://datacite.org/schema/kernel-4"
 
