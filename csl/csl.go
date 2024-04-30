@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"slices"
+	"strings"
 
 	"github.com/front-matter/commonmeta/commonmeta"
 	"github.com/front-matter/commonmeta/dateutils"
@@ -100,11 +101,13 @@ func Convert(data commonmeta.Data) (CSL, error) {
 	csl.DOI = doi
 	csl.Issue = data.Container.Issue
 	if len(data.Subjects) > 0 {
+		var keywords []string
 		for _, subject := range data.Subjects {
 			if subject.Subject != "" {
-				csl.Keyword += subject.Subject
+				keywords = append(keywords, subject.Subject)
 			}
 		}
+		csl.Keyword = strings.Join(keywords[:], ", ")
 	}
 	csl.Language = data.Language
 	csl.Page = data.Container.Pages()
@@ -152,7 +155,7 @@ func Convert(data commonmeta.Data) (CSL, error) {
 	return csl, nil
 }
 
-// Write writes commonmeta metadata.
+// Write writes CSL metadata.
 func Write(data commonmeta.Data) ([]byte, []gojsonschema.ResultError) {
 	csl, err := Convert(data)
 	if err != nil {
@@ -170,7 +173,7 @@ func Write(data commonmeta.Data) ([]byte, []gojsonschema.ResultError) {
 	return output, nil
 }
 
-// WriteList writes a list of commonmeta metadata.
+// WriteList writes a list of CSL metadata.
 func WriteList(list []commonmeta.Data) ([]byte, []gojsonschema.ResultError) {
 	var cslList []CSL
 	for _, data := range list {

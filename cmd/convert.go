@@ -14,6 +14,7 @@ import (
 	"github.com/front-matter/commonmeta/csl"
 	"github.com/front-matter/commonmeta/datacite"
 	"github.com/front-matter/commonmeta/doiutils"
+	"github.com/front-matter/commonmeta/schemaorg"
 	"github.com/front-matter/commonmeta/utils"
 	"github.com/xeipuuv/gojsonschema"
 
@@ -99,6 +100,8 @@ commonmeta 10.5555/12345678`,
 			output, jsErr = csl.Write(data)
 		} else if to == "datacite" {
 			output, jsErr = datacite.Write(data)
+		} else if to == "schemaorg" {
+			output, jsErr = schemaorg.Write(data)
 		}
 
 		if err != nil {

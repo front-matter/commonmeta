@@ -17,6 +17,8 @@ import (
 
 	"github.com/front-matter/commonmeta/datacite"
 
+	"github.com/front-matter/commonmeta/schemaorg"
+
 	"github.com/spf13/cobra"
 )
 
@@ -85,6 +87,8 @@ var listCmd = &cobra.Command{
 			output, jsErr = csl.WriteList(data)
 		} else if to == "datacite" {
 			output, jsErr = datacite.WriteList(data)
+		} else if to == "schemaorg" {
+			output, jsErr = schemaorg.WriteList(data)
 		}
 
 		if err != nil {

@@ -10,6 +10,7 @@ import (
 
 	"github.com/front-matter/commonmeta/commonmeta"
 	"github.com/front-matter/commonmeta/csl"
+	"github.com/front-matter/commonmeta/schemaorg"
 	"github.com/xeipuuv/gojsonschema"
 
 	"github.com/front-matter/commonmeta/crossref"
@@ -66,6 +67,8 @@ var sampleCmd = &cobra.Command{
 			output, jsErr = csl.WriteList(data)
 		} else if to == "datacite" {
 			output, jsErr = datacite.WriteList(data)
+		} else if to == "schemaorg" {
+			output, jsErr = schemaorg.WriteList(data)
 		}
 
 		if err != nil {

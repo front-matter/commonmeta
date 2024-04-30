@@ -1,4 +1,4 @@
-package csl_test
+package schemaorg_test
 
 import (
 	"encoding/json"
@@ -9,14 +9,15 @@ import (
 
 	"github.com/front-matter/commonmeta/commonmeta"
 	"github.com/front-matter/commonmeta/crossref"
-	"github.com/front-matter/commonmeta/csl"
 	"github.com/front-matter/commonmeta/datacite"
 	"github.com/front-matter/commonmeta/doiutils"
+	"github.com/front-matter/commonmeta/schemaorg"
 	"github.com/google/go-cmp/cmp"
 )
 
 func TestWrite(t *testing.T) {
 	t.Parallel()
+
 	type testCase struct {
 		name string
 		id   string
@@ -28,6 +29,7 @@ func TestWrite(t *testing.T) {
 		{name: "preprint", id: "https://doi.org/10.1101/097196", from: "crossref"},
 		{name: "dataset", id: "https://doi.org/10.5061/dryad.8515", from: "datacite"},
 	}
+
 	for _, tc := range testCases {
 		var data commonmeta.Data
 		var err error
@@ -39,9 +41,10 @@ func TestWrite(t *testing.T) {
 		if err != nil {
 			t.Errorf("Crossref Fetch (%v): error %v", tc.id, err)
 		}
-		got, jsErr := csl.Write(data)
+
+		got, jsErr := schemaorg.Write(data)
 		if jsErr != nil {
-			t.Errorf("CSL Write (%v): error %v", tc.id, jsErr)
+			t.Errorf("Schemaorg Write (%v): error %v", tc.id, jsErr)
 		}
 		// read json file from testdata folder and convert to CSL struct
 		doi, ok := doiutils.ValidateDOI(tc.id)
@@ -55,7 +58,7 @@ func TestWrite(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		want := csl.CSL{}
+		want := schemaorg.SchemaOrg{}
 		err = json.Unmarshal(bytes, &want)
 		if err != nil {
 			t.Fatal(err)
