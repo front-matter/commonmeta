@@ -19,6 +19,7 @@ type SchemaOrg struct {
 	Type                  string        `json:"@type"`
 	AdditionalType        string        `json:"additionalType,omitempty"`
 	Author                []Author      `json:"author,omitempty"`
+	Citation              []Citation    `json:"citation,omitempty"`
 	CodeRepository        string        `json:"codeRepository,omitempty"`
 	DateCreated           string        `json:"dateCreated,omitempty"`
 	DatePublished         string        `json:"datePublished,omitempty"`
@@ -58,6 +59,13 @@ type Author struct {
 	FamilyName   string         `json:"familyName"`
 	Name         string         `json:"name,omitempty"`
 	Affiliations []Organization `json:"affiliations,omitempty"`
+}
+
+// Citation represents a citation or reference to another creative work, such as another publication, web page, scholarly article, etc.
+type Citation struct {
+	ID   string `json:"@id,omitempty"`
+	Type string `json:"@type,omitempty"`
+	Name string `json:"name,omitempty"`
 }
 
 // Coderepository
@@ -211,6 +219,20 @@ func Convert(data commonmeta.Data) (SchemaOrg, error) {
 		}
 	}
 
+	if len(data.References) > 0 {
+		for _, reference := range data.References {
+			t := "CreativeWork"
+			if reference.Type == "JournalArticle" {
+				t = "ScholarlyArticle"
+			}
+			schemaorg.Citation = append(schemaorg.Citation, Citation{
+				ID:   reference.ID,
+				Type: t,
+				Name: reference.Title,
+			})
+		}
+	}
+
 	if data.Type == "Dataset" {
 		schemaorg.IncludedInDataCatalog = DataCatalog{
 			ID:   data.Container.Identifier,
@@ -261,9 +283,11 @@ func Convert(data commonmeta.Data) (SchemaOrg, error) {
 		schemaorg.Encoding = mediaObjects
 	}
 
-	schemaorg.Identifier = []string{}
-	for _, identifier := range data.Identifiers {
-		schemaorg.Identifier = append(schemaorg.Identifier, identifier.Identifier)
+	if len(data.Identifiers) > 0 {
+		schemaorg.Identifier = []string{}
+		for _, identifier := range data.Identifiers {
+			schemaorg.Identifier = append(schemaorg.Identifier, identifier.Identifier)
+		}
 	}
 	schemaorg.InLanguage = data.Language
 	if len(data.Subjects) > 0 {
