@@ -221,15 +221,17 @@ func Convert(data commonmeta.Data) (SchemaOrg, error) {
 
 	if len(data.References) > 0 {
 		for _, reference := range data.References {
-			t := "CreativeWork"
-			if reference.Type == "JournalArticle" {
-				t = "ScholarlyArticle"
+			if reference.ID != "" {
+				t := "CreativeWork"
+				if reference.Type == "JournalArticle" {
+					t = "ScholarlyArticle"
+				}
+				schemaorg.Citation = append(schemaorg.Citation, Citation{
+					ID:   reference.ID,
+					Type: t,
+					Name: reference.Title,
+				})
 			}
-			schemaorg.Citation = append(schemaorg.Citation, Citation{
-				ID:   reference.ID,
-				Type: t,
-				Name: reference.Title,
-			})
 		}
 	}
 
