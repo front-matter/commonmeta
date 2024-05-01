@@ -4,6 +4,8 @@ package schemaorg
 import (
 	"encoding/json"
 	"fmt"
+	"slices"
+	"strconv"
 	"strings"
 
 	"github.com/front-matter/commonmeta/commonmeta"
@@ -12,24 +14,103 @@ import (
 
 // SchemaOrg represents the Schema.org metadata.
 type SchemaOrg struct {
-	Context        string    `json:"@context"`
-	ID             string    `json:"@id"`
-	Type           string    `json:"@type"`
-	AdditionalType string    `json:"additionalType,omitempty"`
-	DateCreated    string    `json:"dateCreated,omitempty"`
-	DatePublished  string    `json:"datePublished,omitempty"`
-	DateModified   string    `json:"dateModified,omitempty"`
-	Description    string    `json:"description,omitempty"`
-	Identifier     []string  `json:"identifier,omitempty"`
-	InLanguage     string    `json:"inLanguage,omitempty"`
-	Keywords       string    `json:"keywords,omitempty"`
-	License        string    `json:"license,omitempty"`
-	PageStart      string    `json:"pageStart,omitempty"`
-	PageEnd        string    `json:"pageEnd,omitempty"`
-	Provider       Provider  `json:"provider,omitempty"`
-	Publisher      Publisher `json:"publisher,omitempty"`
-	URL            string    `json:"url,omitempty"`
-	Version        string    `json:"version,omitempty"`
+	Context               string        `json:"@context"`
+	ID                    string        `json:"@id"`
+	Type                  string        `json:"@type"`
+	AdditionalType        string        `json:"additionalType,omitempty"`
+	Author                []Author      `json:"author,omitempty"`
+	CodeRepository        string        `json:"codeRepository,omitempty"`
+	DateCreated           string        `json:"dateCreated,omitempty"`
+	DatePublished         string        `json:"datePublished,omitempty"`
+	DateModified          string        `json:"dateModified,omitempty"`
+	Description           string        `json:"description,omitempty"`
+	Distribution          []MediaObject `json:"distribution,omitempty"`
+	Editor                []Editor      `json:"editor,omitempty"`
+	Encoding              []MediaObject `json:"encoding,omitempty"`
+	Identifier            []string      `json:"identifier,omitempty"`
+	IncludedInDataCatalog DataCatalog   `json:"includedInDataCatalog,omitempty"`
+	InLanguage            string        `json:"inLanguage,omitempty"`
+	Keywords              string        `json:"keywords,omitempty"`
+	License               string        `json:"license,omitempty"`
+	Name                  string        `json:"name,omitempty"`
+	PageStart             string        `json:"pageStart,omitempty"`
+	PageEnd               string        `json:"pageEnd,omitempty"`
+	Periodical            Periodical    `json:"periodical,omitempyt"`
+	Provider              Provider      `json:"provider,omitempty"`
+	Publisher             Publisher     `json:"publisher,omitempty"`
+	URL                   string        `json:"url,omitempty"`
+	Version               string        `json:"version,omitempty"`
+}
+
+// Content represents the SchemaOrg metadata returned from SchemaOrg sources. The type is more
+// flexible than the SchemaOrg type, allowing for different formats of some metadata.
+// Identifier can be string or []string.
+type Content struct {
+	*SchemaOrg
+	Identifier json.RawMessage `json:"identifier"`
+}
+
+// Author represents the author of this CreativeWork.
+type Author struct {
+	ID           string         `json:"@id,omitempty"`
+	Type         string         `json:"@type,omitempty"`
+	GivenName    string         `json:"givenName,omitempty"`
+	FamilyName   string         `json:"familyName"`
+	Name         string         `json:"name,omitempty"`
+	Affiliations []Organization `json:"affiliations,omitempty"`
+}
+
+// Coderepository
+type CodeRepository struct {
+}
+
+// Datacatalog represents a collection of datasets.
+type DataCatalog struct {
+	ID   string `json:"@id,omitempty"`
+	Type string `json:"@type,omitempty"`
+	Name string `json:"name,omitempty"`
+}
+
+// Editor represents
+type Editor struct {
+	ID           string         `json:"@id,omitempty"`
+	Type         string         `json:"@type,omitempty"`
+	GivenName    string         `json:"givenName,omitempty"`
+	FamilyName   string         `json:"familyName"`
+	Name         string         `json:"name,omitempty"`
+	Affiliations []Organization `json:"affiliations,omitempty"`
+}
+
+// MediaObject represents a media object, such as an image, video, audio, or text object
+// embedded in a web page or a downloadable dataset i.e. DataDownload.
+type MediaObject struct {
+	Type           string `json:"@type"`
+	ContentURL     string `json:"contentUrl"`
+	EncodingFormat string `json:"encodingFormat,omitempty"`
+	Name           string `json:"name,omitempty"`
+	SHA256         string `json:"sha256,omitempty"`
+	Size           string `json:"size,omitempty"`
+}
+
+// Organization represents an organization such as a school, NGO, corporation, club, etc.
+type Organization struct {
+	ID   string `json:"@id,omitempty"`
+	Name string `json:"name"`
+}
+
+// Periodical represents a publication in any medium issued in successive parts bearing numerical or chronological designations and intended to continue indefinitely, such as a magazine, scholarly journal, or newspaper.
+type Periodical struct {
+	ID   string `json:"@id,omitempty"`
+	Type string `json:"@type"`
+	Name string `json:"name,omitempty"`
+	ISSN string `json:"issn,omitempty"`
+}
+
+// Person represents a person (alive, dead, undead, or fictional).
+type Person struct {
+	ID         string `json:"@id,omitempty"`
+	GivenName  string `json:"givenName,omitempty"`
+	FamilyName string `json:"familyName"`
 }
 
 // Provider represents the provider of the metadata.
@@ -66,7 +147,7 @@ var CMToSOMappings = map[string]string{
 }
 
 // Read reads Schema.org metadata and converts it to commonmeta.
-func Read(content SchemaOrg) (commonmeta.Data, error) {
+func Read(content Content) (commonmeta.Data, error) {
 	var data commonmeta.Data
 	data.ID = content.ID
 	return data, nil
@@ -80,12 +161,107 @@ func Convert(data commonmeta.Data) (SchemaOrg, error) {
 	schemaorg.Type = CMToSOMappings[data.Type]
 
 	schemaorg.AdditionalType = data.AdditionalType
+	if len(data.Contributors) > 0 {
+		for _, c := range data.Contributors {
+			if slices.Contains(c.ContributorRoles, "Author") {
+				if c.Type == "Person" {
+					var affiliations []Organization
+					for _, affiliation := range c.Affiliations {
+						affiliations = append(affiliations, Organization{
+							ID:   affiliation.ID,
+							Name: affiliation.Name,
+						})
+					}
+					schemaorg.Author = append(schemaorg.Author, Author{
+						ID:           c.ID,
+						Type:         "Person",
+						GivenName:    c.GivenName,
+						FamilyName:   c.FamilyName,
+						Affiliations: affiliations,
+					})
+				} else if c.Type == "Organization" {
+					schemaorg.Author = append(schemaorg.Author, Author{
+						ID:   c.ID,
+						Type: "Organization",
+						Name: c.Name,
+					})
+				}
+			} else if slices.Contains(c.ContributorRoles, "Editor") {
+				if c.Type == "Person" {
+					var affiliations []Organization
+					for _, affiliation := range c.Affiliations {
+						affiliations = append(affiliations, Organization{
+							ID:   affiliation.ID,
+							Name: affiliation.Name,
+						})
+					}
+					schemaorg.Editor = append(schemaorg.Editor, Editor{
+						ID:           c.ID,
+						GivenName:    c.GivenName,
+						FamilyName:   c.FamilyName,
+						Affiliations: affiliations,
+					})
+				} else if c.Type == "Organization" {
+					schemaorg.Editor = append(schemaorg.Editor, Editor{
+						ID:   c.ID,
+						Name: c.Name,
+					})
+				}
+			}
+		}
+	}
+
+	if data.Type == "Dataset" {
+		schemaorg.IncludedInDataCatalog = DataCatalog{
+			ID:   data.Container.Identifier,
+			Type: "DataCatalog",
+			Name: data.Container.Title,
+		}
+	} else {
+		var ISSN string
+		var ID string
+		if data.Container.IdentifierType == "ISSN" {
+			ISSN = data.Container.Identifier
+			ID = ""
+		}
+		schemaorg.Periodical = Periodical{
+			ID:   ID,
+			Type: "Periodical",
+			Name: data.Container.Title,
+			ISSN: ISSN,
+		}
+	}
+
 	schemaorg.DateCreated = data.Date.Created
 	schemaorg.DatePublished = data.Date.Published
 	schemaorg.DateModified = data.Date.Updated
 	if len(data.Descriptions) > 0 {
 		schemaorg.Description = data.Descriptions[0].Description
 	}
+	var mediaObjects []MediaObject
+	if len(data.Files) > 0 {
+		for _, file := range data.Files {
+			var size string
+			if file.Size > 0 {
+				size = strconv.Itoa(file.Size)
+			}
+			mediaObjects = append(mediaObjects, MediaObject{
+				Type:           "MediaObject",
+				ContentURL:     file.URL,
+				EncodingFormat: file.MimeType,
+				Name:           file.Key,
+				SHA256:         file.Checksum,
+				Size:           size,
+			})
+		}
+	}
+	if data.Type == "Dataset" {
+		schemaorg.Distribution = mediaObjects
+	} else {
+		schemaorg.Encoding = mediaObjects
+	}
+
+	schemaorg.Identifier = []string{}
 	for _, identifier := range data.Identifiers {
 		schemaorg.Identifier = append(schemaorg.Identifier, identifier.Identifier)
 	}
@@ -100,6 +276,9 @@ func Convert(data commonmeta.Data) (SchemaOrg, error) {
 		schemaorg.Keywords = strings.Join(keywords[:], ", ")
 	}
 	schemaorg.License = data.License.URL
+	if len(data.Titles) > 0 {
+		schemaorg.Name = data.Titles[0].Title
+	}
 	schemaorg.PageStart = data.Container.FirstPage
 	schemaorg.PageEnd = data.Container.LastPage
 	schemaorg.Provider = Provider{
@@ -115,21 +294,6 @@ func Convert(data commonmeta.Data) (SchemaOrg, error) {
 
 	return schemaorg, nil
 }
-
-// 				"identifier": metadata.id,
-// 				"@type": schema_org,
-//
-
-// 				"additionalType": additional_type,
-// 				"name": parse_attributes(metadata.titles, content="title", first=True),
-// 				"author": to_schema_org_creators(authors),
-// 				"editor": to_schema_org_creators(editors),
-
-// 				"periodical": periodical if periodical else None,
-// 				"includedInDataCatalog": data_catalog if data_catalog else None,
-// 				"distribution": media_objects if metadata.type == "Dataset" else None,
-// 				"encoding": media_objects if metadata.type != "Dataset" else None,
-// 				"codeRepository": code_repository,
 
 // Write writes schemaorg metadata.
 func Write(data commonmeta.Data) ([]byte, []gojsonschema.ResultError) {
