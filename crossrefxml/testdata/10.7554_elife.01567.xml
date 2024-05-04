@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doi_batch xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.crossref.org/schema/5.3.1" xmlns:jats="http://www.ncbi.nlm.nih.gov/JATS1" xmlns:fr="http://www.crossref.org/fundref.xsd" xmlns:mml="http://www.w3.org/1998/Math/MathML" xsi:schemaLocation="http://www.crossref.org/schema/5.3.1 https://www.crossref.org/schemas/crossref5.3.1.xsd" version="5.3.1">
+  <head>
+    <doi_batch_id>d1f7cb64-5919-46e9-b3b6-9c27d12c50a2</doi_batch_id>
+    <timestamp>20240503083302</timestamp>
+    <depositor>
+      <depositor_name/>
+      <email_address/>
+    </depositor>
+    <registrant/>
+  </head>
+  <body>
+    <journal>
+      <journal_metadata language="en">
+        <full_title>eLife</full_title>
+      </journal_metadata>
+      <journal_article publication_type="full_text">
+        <titles>
+          <title>Automated quantitative histology reveals vascular morphodynamics during Arabidopsis hypocotyl secondary growth</title>
+        </titles>
+        <contributors>
+          <person_name contributor_role="author" sequence="first">
+            <given_name>Martial</given_name>
+            <surname>Sankar</surname>
+            <affiliations>
+              <institution>
+                <institution_name>Department of Plant Molecular Biology, University of Lausanne, Lausanne, Switzerland</institution_name>
+              </institution>
+            </affiliations>
+          </person_name>
+          <person_name contributor_role="author" sequence="additional">
+            <given_name>Kaisa</given_name>
+            <surname>Nieminen</surname>
+            <affiliations>
+              <institution>
+                <institution_name>Department of Plant Molecular Biology, University of Lausanne, Lausanne, Switzerland</institution_name>
+              </institution>
+            </affiliations>
+          </person_name>
+          <person_name contributor_role="author" sequence="additional">
+            <given_name>Laura</given_name>
+            <surname>Ragni</surname>
+            <affiliations>
+              <institution>
+                <institution_name>Department of Plant Molecular Biology, University of Lausanne, Lausanne, Switzerland</institution_name>
+              </institution>
+            </affiliations>
+          </person_name>
+          <person_name contributor_role="author" sequence="additional">
+            <given_name>Ioannis</given_name>
+            <surname>Xenarios</surname>
+            <affiliations>
+              <institution>
+                <institution_name>Vital-IT, Swiss Institute of Bioinformatics, Lausanne, Switzerland</institution_name>
+              </institution>
+            </affiliations>
+          </person_name>
+          <person_name contributor_role="author" sequence="additional">
+            <given_name>Christian S</given_name>
+            <surname>Hardtke</surname>
+            <affiliations>
+              <institution>
+                <institution_name>Department of Plant Molecular Biology, University of Lausanne, Lausanne, Switzerland</institution_name>
+              </institution>
+            </affiliations>
+          </person_name>
+        </contributors>
+        <publication_date media_type="online">
+          <month>2</month>
+          <day>11</day>
+          <year>2014</year>
+        </publication_date>
+        <abstract xmlns="http://www.ncbi.nlm.nih.gov/JATS1">
+          <p>Among various advantages, their small size makes model organisms preferred subjects of investigation. Yet, even in model systems detailed analysis of numerous developmental processes at cellular level is severely hampered by their scale. For instance, secondary growth of Arabidopsis hypocotyls creates a radial pattern of highly specialized tissues that comprises several thousand cells starting from a few dozen. This dynamic process is difficult to follow because of its scale and because it can only be investigated invasively, precluding comprehensive understanding of the cell proliferation, differentiation, and patterning events involved. To overcome such limitation, we established an automated quantitative histology approach. We acquired hypocotyl cross-sections from tiled high-resolution images and extracted their information content using custom high-throughput image processing and segmentation. Coupled with automated cell type recognition through machine learning, we could establish a cellular resolution atlas that reveals vascular morphodynamics during secondary growth, for example equidistant phloem pole formation.</p>
+        </abstract>
+        <issn>2050-084X</issn>
+        <item_number item_number_type="doi">https://doi.org/10.7554/elife.01567</item_number>
+        <program xmlns="http://www.crossref.org/fundref.xsd" name="fundref">
+          <assertion name="fundgroup">
+            <assertion name="funder_name">SystemsX</assertion>
+          </assertion>
+          <assertion name="fundgroup">
+            <assertion name="funder_name">EMBO longterm post-doctoral fellowships</assertion>
+          </assertion>
+          <assertion name="fundgroup">
+            <assertion name="funder_name">Marie Heim-Voegtlin</assertion>
+          </assertion>
+          <assertion name="fundgroup">
+            <assertion name="funder_name">University of Lausanne<assertion name="funder_identifier">https://doi.org/10.13039/501100006390</assertion></assertion>
+          </assertion>
+          <assertion name="fundgroup">
+            <assertion name="funder_name">EMBO<assertion name="funder_identifier">https://doi.org/10.13039/501100003043</assertion></assertion>
+          </assertion>
+          <assertion name="fundgroup">
+            <assertion name="funder_name">Swiss National Science Foundation<assertion name="funder_identifier">https://doi.org/10.13039/501100001711</assertion></assertion>
+          </assertion>
+        </program>
+        <program xmlns="http://www.crossref.org/AccessIndicators.xsd" name="AccessIndicators">
+          <license_ref applies_to="vor">https://creativecommons.org/licenses/by/3.0/legalcode</license_ref>
+          <license_ref applies_to="tdm">https://creativecommons.org/licenses/by/3.0/legalcode</license_ref>
+        </program>
+        <program xmlns="http://www.crossref.org/relations.xsd" name="relations">
+          <related_item>
+            <inter_work_relation relationship-type="hasReview" identifier-type="doi">10.7554/elife.01567.017</inter_work_relation>
+          </related_item>
+          <related_item>
+            <inter_work_relation relationship-type="hasReview" identifier-type="doi">10.7554/elife.01567.016</inter_work_relation>
+          </related_item>
+          <related_item>
+            <inter_work_relation relationship-type="isPartOf" identifier-type="issn">2050-084X</inter_work_relation>
+          </related_item>
+        </program>
+        <archive_locations>
+          <archive name="CLOCKSS"/>
+        </archive_locations>
+        <doi_data>
+          <doi>10.7554/elife.01567</doi>
+          <resource>https://elifesciences.org/articles/01567</resource>
+          <collection property="text-mining">
+            <item>
+              <resource mime_type="text/html">https://elifesciences.org/articles/01567</resource>
+            </item>
+            <item>
+              <resource mime_type="application/pdf">https://cdn.elifesciences.org/articles/01567/elife-01567-v1.pdf</resource>
+            </item>
+            <item>
+              <resource mime_type="application/xml">https://cdn.elifesciences.org/articles/01567/elife-01567-v1.xml</resource>
+            </item>
+          </collection>
+        </doi_data>
+        <citation_list>
+          <citation key="bib1">
+            <volume>426</volume>
+            <cYear>2003</cYear>
+            <article_title>APL regulates vascular tissue identity in Arabidopsis</article_title>
+          </citation>
+          <citation key="bib2">
+            <volume>182</volume>
+            <cYear>2009</cYear>
+            <article_title>In the beginning was the worm</article_title>
+          </citation>
+          <citation key="bib3">
+            <volume>114</volume>
+            <cYear>2002</cYear>
+            <article_title>Secondary xylem development in Arabidopsis: a model for wood formation</article_title>
+          </citation>
+          <citation key="bib4">
+            <volume>13</volume>
+            <cYear>2001</cYear>
+            <article_title>Training nu-support vector classifiers: theory and algorithms</article_title>
+          </citation>
+          <citation key="bib5">
+            <volume>20</volume>
+            <cYear>1995</cYear>
+            <article_title>Support-vector Networks</article_title>
+          </citation>
+          <citation key="bib6">
+            <volume>119</volume>
+            <cYear>1993</cYear>
+            <article_title>Cellular organisation of the Arabidopsis thaliana root</article_title>
+          </citation>
+          <citation key="bib7">
+            <volume>20</volume>
+            <cYear>2009</cYear>
+            <article_title>Stem cell function during plant vascular development</article_title>
+          </citation>
+          <citation key="bib8">
+            <volume>140</volume>
+            <cYear>2013</cYear>
+            <article_title>WOX4 and WOX14 act downstream of the PXY receptor kinase to regulate plant vascular proliferation independently of any role in vascular organisation</article_title>
+          </citation>
+          <citation key="bib9">
+            <volume>8</volume>
+            <cYear>2012</cYear>
+            <article_title>Plant vascular cell division is maintained by an interaction between PXY and ethylene signalling</article_title>
+          </citation>
+          <citation key="bib10">
+            <volume>6</volume>
+            <cYear>2010</cYear>
+            <article_title>Clustering phenotype populations by genome-wide RNAi and multiparametric imaging</article_title>
+          </citation>
+          <citation key="bib11">
+            <volume>110</volume>
+            <cYear>2012</cYear>
+            <article_title>BaSAR-A tool in R for frequency detection</article_title>
+          </citation>
+          <citation key="bib12">
+            <volume>9</volume>
+            <cYear>2006</cYear>
+            <article_title>Developmental mechanisms regulating secondary growth in woody plants</article_title>
+          </citation>
+          <citation key="bib13">
+            <volume>22</volume>
+            <cYear>2010</cYear>
+            <article_title>TDIF peptide signaling regulates vascular stem cell proliferation via the WOX4 homeobox gene in Arabidopsis</article_title>
+          </citation>
+          <citation key="bib14">
+            <volume>105</volume>
+            <cYear>2008</cYear>
+            <article_title>Non-cell-autonomous control of vascular stem cell fate by a CLE peptide/receptor system</article_title>
+          </citation>
+          <citation key="bib15">
+            <volume>56</volume>
+            <cYear>1989</cYear>
+            <article_title>Arabidopsis, a useful weed</article_title>
+          </citation>
+          <citation key="bib16">
+            <volume>295</volume>
+            <cYear>2002</cYear>
+            <article_title>Plants compared to animals: the broadest comparative study of development</article_title>
+          </citation>
+          <citation key="bib17">
+            <volume>135</volume>
+            <cYear>2004</cYear>
+            <article_title>A weed for wood? Arabidopsis as a genetic model for xylem development</article_title>
+          </citation>
+          <citation key="bib18">
+            <volume>24</volume>
+            <cYear>2006</cYear>
+            <article_title>What is a support vector machine?</article_title>
+          </citation>
+          <citation key="bib19">
+            <volume>77</volume>
+            <cYear>1980</cYear>
+            <article_title>Classification of cultured mammalian cells by shape analysis and pattern recognition</article_title>
+          </citation>
+          <citation key="bib20">
+            <volume>26</volume>
+            <cYear>2010</cYear>
+            <article_title>EBImage&#8211;an R package for image processing with applications to cellular phenotypes</article_title>
+          </citation>
+          <citation key="bib21">
+            <volume>23</volume>
+            <cYear>2011</cYear>
+            <article_title>Mobile gibberellin directly stimulates Arabidopsis hypocotyl xylem expansion</article_title>
+          </citation>
+          <citation key="bib22">
+            <cYear>2014</cYear>
+            <article_title>Data from: Automated quantitative histology reveals vascular morphodynamics during Arabidopsis hypocotyl secondary growth</article_title>
+          </citation>
+          <citation key="bib23">
+            <volume>18</volume>
+            <cYear>2008</cYear>
+            <article_title>Flowering as a condition for xylem expansion in Arabidopsis hypocotyl and root</article_title>
+          </citation>
+          <citation key="bib24">
+            <volume>186</volume>
+            <cYear>2010</cYear>
+            <article_title>Evolution of development of vascular cambia and secondary growth</article_title>
+          </citation>
+          <citation key="bib25">
+            <volume>23</volume>
+            <cYear>2012</cYear>
+            <article_title>Cell morphology classification and clutter mitigation in phase-contrast microscopy images using machine learning</article_title>
+          </citation>
+          <citation key="bib26">
+            <volume>149</volume>
+            <cYear>2012</cYear>
+            <article_title>Mechanical stress acts via katanin to amplify differences in growth rate between adjacent cells in Arabidopsis</article_title>
+          </citation>
+          <citation key="bib27">
+            <volume>15</volume>
+            <cYear>2013</cYear>
+            <article_title>A screen for morphological complexity identifies regulators of switch-like transitions between discrete cell shapes</article_title>
+          </citation>
+        </citation_list>
+      </journal_article>
+    </journal>
+  </body>
+</doi_batch>
+

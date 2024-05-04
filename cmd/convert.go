@@ -11,6 +11,7 @@ import (
 	"strings"
 
 	"github.com/front-matter/commonmeta/commonmeta"
+	"github.com/front-matter/commonmeta/crossrefxml"
 	"github.com/front-matter/commonmeta/csl"
 	"github.com/front-matter/commonmeta/datacite"
 	"github.com/front-matter/commonmeta/doiutils"
@@ -72,6 +73,8 @@ commonmeta 10.5555/12345678`,
 		if id != "" {
 			if from == "crossref" {
 				data, err = crossref.Fetch(id)
+			} else if from == "crossrefxml" {
+				data, err = crossrefxml.Fetch(id)
 			} else if from == "datacite" {
 				data, err = datacite.Fetch(id)
 			} else {
@@ -83,6 +86,8 @@ commonmeta 10.5555/12345678`,
 				data, err = commonmeta.Load(str)
 			} else if from == "crossref" {
 				data, err = crossref.Load(str)
+			} else if from == "crossrefxml" {
+				data, err = crossrefxml.Load(str)
 			} else if from == "datacite" {
 				data, err = datacite.Load(str)
 			} else {

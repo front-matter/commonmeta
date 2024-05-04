@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doi_batch xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.crossref.org/schema/5.3.1" xmlns:jats="http://www.ncbi.nlm.nih.gov/JATS1" xmlns:fr="http://www.crossref.org/fundref.xsd" xmlns:mml="http://www.w3.org/1998/Math/MathML" xsi:schemaLocation="http://www.crossref.org/schema/5.3.1 https://www.crossref.org/schemas/crossref5.3.1.xsd" version="5.3.1">
+  <head>
+    <doi_batch_id>aa317502-ac22-4ee9-be72-4191f0651831</doi_batch_id>
+    <timestamp>20240503083129</timestamp>
+    <depositor>
+      <depositor_name/>
+      <email_address/>
+    </depositor>
+    <registrant/>
+  </head>
+  <body>
+    <posted_content type="other">
+      <group_title>Scientific Communication and Education</group_title>
+      <contributors>
+        <person_name contributor_role="author" sequence="first">
+          <given_name>Martin</given_name>
+          <surname>Fenner</surname>
+          <ORCID>https://orcid.org/0000-0003-1419-2405</ORCID>
+        </person_name>
+        <person_name contributor_role="author" sequence="additional">
+          <given_name>Merc&#232;</given_name>
+          <surname>Crosas</surname>
+          <ORCID>https://orcid.org/0000-0003-1304-1939</ORCID>
+        </person_name>
+        <person_name contributor_role="author" sequence="additional">
+          <given_name>Jeffrey</given_name>
+          <surname>Grethe</surname>
+          <ORCID>https://orcid.org/0000-0001-5212-7052</ORCID>
+        </person_name>
+        <person_name contributor_role="author" sequence="additional">
+          <given_name>David</given_name>
+          <surname>Kennedy</surname>
+          <ORCID>https://orcid.org/0000-0002-9377-0797</ORCID>
+        </person_name>
+        <person_name contributor_role="author" sequence="additional">
+          <given_name>Henning</given_name>
+          <surname>Hermjakob</surname>
+          <ORCID>https://orcid.org/0000-0001-8479-0262</ORCID>
+        </person_name>
+        <person_name contributor_role="author" sequence="additional">
+          <given_name>Philippe</given_name>
+          <surname>Rocca-Serra</surname>
+          <ORCID>https://orcid.org/0000-0001-9853-5668</ORCID>
+        </person_name>
+        <person_name contributor_role="author" sequence="additional">
+          <given_name>Gustavo</given_name>
+          <surname>Durand</surname>
+          <ORCID>https://orcid.org/0000-0002-2188-2570</ORCID>
+        </person_name>
+        <person_name contributor_role="author" sequence="additional">
+          <given_name>Robin</given_name>
+          <surname>Berjon</surname>
+          <ORCID>https://orcid.org/0000-0002-1731-5346</ORCID>
+        </person_name>
+        <person_name contributor_role="author" sequence="additional">
+          <given_name>Sebastian</given_name>
+          <surname>Karcher</surname>
+          <ORCID>https://orcid.org/0000-0001-8249-7388</ORCID>
+        </person_name>
+        <person_name contributor_role="author" sequence="additional">
+          <given_name>Maryann</given_name>
+          <surname>Martone</surname>
+          <ORCID>https://orcid.org/0000-0002-8406-3871</ORCID>
+        </person_name>
+        <person_name contributor_role="author" sequence="additional">
+          <given_name>Timothy</given_name>
+          <surname>Clark</surname>
+          <ORCID>https://orcid.org/0000-0003-4060-7360</ORCID>
+        </person_name>
+      </contributors>
+      <titles>
+        <title>A Data Citation Roadmap for Scholarly Data Repositories</title>
+      </titles>
+      <posted_date media_type="online">
+        <month>12</month>
+        <day>28</day>
+        <year>2016</year>
+      </posted_date>
+      <institution>
+        <institution_name>Cold Spring Harbor Laboratory</institution_name>
+      </institution>
+      <item_number item_number_type="doi">https://doi.org/10.1101/097196</item_number>
+      <abstract xmlns="http://www.ncbi.nlm.nih.gov/JATS1">
+        <p>AbstractThis article presents a practical roadmap for scholarly data repositories to implement data citation in accordance with the Joint Declaration of Data Citation Principles, a synopsis and harmonization of the recommendations of major science policy bodies. The roadmap was developed by the Repositories Expert Group, as part of the Data Citation Implementation Pilot (DCIP) project, an initiative of FORCE11.org and the NIH BioCADDIE (https://biocaddie.org) program. The roadmap makes 11 specific recommendations, grouped into three phases of implementation: a) required steps needed to support the Joint Declaration of Data Citation Principles, b) recommended steps that facilitate article/data publication workflows, and c) optional steps that further improve data citation support provided by data repositories.</p>
+      </abstract>
+      <program xmlns="http://www.crossref.org/relations.xsd" name="relations">
+        <related_item>
+          <intra_work_relation relationship-type="isPreprintOf" identifier-type="doi">10.1038/s41597-019-0031-8</intra_work_relation>
+        </related_item>
+      </program>
+      <doi_data>
+        <doi>10.1101/097196</doi>
+        <resource>http://biorxiv.org/lookup/doi/10.1101/097196</resource>
+        <collection property="text-mining">
+          <item>
+            <resource mime_type="text/html">http://biorxiv.org/lookup/doi/10.1101/097196</resource>
+          </item>
+        </collection>
+      </doi_data>
+      <citation_list>
+        <citation key="2019071613381284000_097196v2.1">
+          <volume>41</volume>
+          <cYear>2015</cYear>
+          <article_title>An introduction to the joint principles for data citation</article_title>
+        </citation>
+        <citation key="2019071613381284000_097196v2.2"/>
+        <citation key="2019071613381284000_097196v2.3"/>
+        <citation key="2019071613381284000_097196v2.4"/>
+        <citation key="2019071613381284000_097196v2.5"/>
+        <citation key="2019071613381284000_097196v2.6"/>
+        <citation key="2019071613381284000_097196v2.7"/>
+        <citation key="2019071613381284000_097196v2.8"/>
+        <citation key="2019071613381284000_097196v2.9"/>
+        <citation key="2019071613381284000_097196v2.10"/>
+        <citation key="2019071613381284000_097196v2.11"/>
+        <citation key="2019071613381284000_097196v2.12"/>
+        <citation key="2019071613381284000_097196v2.13"/>
+        <citation key="2019071613381284000_097196v2.14"/>
+        <citation key="2019071613381284000_097196v2.15"/>
+        <citation key="2019071613381284000_097196v2.16"/>
+        <citation key="2019071613381284000_097196v2.17"/>
+        <citation key="2019071613381284000_097196v2.18"/>
+        <citation key="2019071613381284000_097196v2.19"/>
+        <citation key="2019071613381284000_097196v2.20"/>
+        <citation key="2019071613381284000_097196v2.21">
+          <volume>2</volume>
+          <cYear>2016</cYear>
+          <article_title>Software citation principles</article_title>
+        </citation>
+        <citation key="2019071613381284000_097196v2.22">
+          <volume>1</volume>
+          <cYear>2015</cYear>
+          <article_title>Achieving human and machine accessibility of cited data in scholarly publications</article_title>
+        </citation>
+        <citation key="2019071613381284000_097196v2.23"/>
+        <citation key="2019071613381284000_097196v2.24"/>
+        <citation key="2019071613381284000_097196v2.25"/>
+        <citation key="2019071613381284000_097196v2.26"/>
+      </citation_list>
+    </posted_content>
+  </body>
+</doi_batch>
+

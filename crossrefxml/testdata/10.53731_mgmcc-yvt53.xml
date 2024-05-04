@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doi_batch xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.crossref.org/schema/5.3.1" xmlns:jats="http://www.ncbi.nlm.nih.gov/JATS1" xmlns:fr="http://www.crossref.org/fundref.xsd" xmlns:mml="http://www.w3.org/1998/Math/MathML" xsi:schemaLocation="http://www.crossref.org/schema/5.3.1 https://www.crossref.org/schemas/crossref5.3.1.xsd" version="5.3.1">
+  <head>
+    <doi_batch_id>a2de750f-37c5-4695-8747-df18f28b142f</doi_batch_id>
+    <timestamp>20240503084346</timestamp>
+    <depositor>
+      <depositor_name/>
+      <email_address/>
+    </depositor>
+    <registrant/>
+  </head>
+  <body>
+    <posted_content type="other">
+      <group_title>Computer and information sciences</group_title>
+      <contributors>
+        <person_name contributor_role="author" sequence="first">
+          <given_name>Martin</given_name>
+          <surname>Fenner</surname>
+          <affiliations>
+            <institution>
+              <institution_name>Front Matter</institution_name>
+            </institution>
+          </affiliations>
+          <ORCID>https://orcid.org/0000-0003-1419-2405</ORCID>
+        </person_name>
+      </contributors>
+      <titles>
+        <title>Rogue Scholar references learn new tricks</title>
+      </titles>
+      <posted_date media_type="online">
+        <month>4</month>
+        <day>10</day>
+        <year>2024</year>
+      </posted_date>
+      <institution>
+        <institution_name>Front Matter</institution_name>
+      </institution>
+      <item_number item_number_type="doi">https://doi.org/10.53731/mgmcc-yvt53</item_number>
+      <abstract xmlns="http://www.ncbi.nlm.nih.gov/JATS1">
+        <p>This week the references included in currently 1,123 Rogue Scholar blog posts have become much more powerful, as they now include the full set of scholarly metadata. These metadata are displayed in the Rogue Scholar web pages and can be fetched via an open API. One of my favorite personal blog posts &#8211; about the 10th anniversary of PLOS ONE, reference lists, and the X-Files TV series written in 2016 &#8211; nicely demonstrates this new functionality.</p>
+      </abstract>
+      <program xmlns="http://www.crossref.org/AccessIndicators.xsd" name="AccessIndicators">
+        <license_ref applies_to="vor">https://creativecommons.org/licenses/by/4.0/legalcode</license_ref>
+        <license_ref applies_to="tdm">https://creativecommons.org/licenses/by/4.0/legalcode</license_ref>
+      </program>
+      <program xmlns="http://www.crossref.org/relations.xsd" name="relations">
+        <related_item>
+          <inter_work_relation relationship-type="isPartOf" identifier-type="issn">2749-9952</inter_work_relation>
+        </related_item>
+      </program>
+      <doi_data>
+        <doi>10.53731/mgmcc-yvt53</doi>
+        <resource>https://blog.front-matter.io/posts/rogue-scholar-references-learn-new-tricks</resource>
+        <collection property="text-mining">
+          <item>
+            <resource mime_type="text/html">https://blog.front-matter.io/posts/rogue-scholar-references-learn-new-tricks</resource>
+          </item>
+          <item>
+            <resource mime_type="text/html">https://blog.front-matter.io/posts/rogue-scholar-references-learn-new-tricks</resource>
+          </item>
+          <item>
+            <resource mime_type="text/plain">https://api.rogue-scholar.org/posts/10.53731/mgmcc-yvt53.md</resource>
+          </item>
+          <item>
+            <resource mime_type="application/pdf">https://api.rogue-scholar.org/posts/10.53731/mgmcc-yvt53.pdf</resource>
+          </item>
+          <item>
+            <resource mime_type="application/epub+zip">https://api.rogue-scholar.org/posts/10.53731/mgmcc-yvt53.epub</resource>
+          </item>
+          <item>
+            <resource mime_type="application/xml">https://api.rogue-scholar.org/posts/10.53731/mgmcc-yvt53.xml</resource>
+          </item>
+        </collection>
+      </doi_data>
+      <citation_list>
+        <citation key="ref1">
+          <cYear>2016</cYear>
+          <article_title>Mysteries in Reference Lists</article_title>
+        </citation>
+        <citation key="ref2">
+          <cYear>2024</cYear>
+          <article_title>New version of commonmeta-py library for scholarly metadata</article_title>
+        </citation>
+        <citation key="ref3">
+          <cYear>2023</cYear>
+          <article_title>Planetary Defense, Healthy Food, Slime, Software Citation, Parthenon Marbles</article_title>
+        </citation>
+        <citation key="ref4">
+          <cYear>2024</cYear>
+          <article_title>commonmeta-py now supports metadata lists</article_title>
+        </citation>
+      </citation_list>
+    </posted_content>
+  </body>
+</doi_batch>
+

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doi_batch xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.crossref.org/schema/5.3.1" xmlns:jats="http://www.ncbi.nlm.nih.gov/JATS1" xmlns:fr="http://www.crossref.org/fundref.xsd" xmlns:mml="http://www.w3.org/1998/Math/MathML" xsi:schemaLocation="http://www.crossref.org/schema/5.3.1 https://www.crossref.org/schemas/crossref5.3.1.xsd" version="5.3.1">
+  <head>
+    <doi_batch_id>4f863344-ecd4-45a5-95e5-7fb99a3770dc</doi_batch_id>
+    <timestamp>20240503083421</timestamp>
+    <depositor>
+      <depositor_name/>
+      <email_address/>
+    </depositor>
+    <registrant/>
+  </head>
+  <body>
+    <posted_content type="other">
+      <group_title>Social sciences</group_title>
+      <contributors>
+        <organization contributor_role="author" sequence="first">Liberate Science</organization>
+      </contributors>
+      <titles>
+        <title>KU Leuven supports ResearchEquals</title>
+      </titles>
+      <posted_date media_type="online">
+        <month>5</month>
+        <day>9</day>
+        <year>2023</year>
+      </posted_date>
+      <institution>
+        <institution_name>Front Matter</institution_name>
+      </institution>
+      <item_number item_number_type="doi">https://doi.org/10.59350/2shz7-ehx26</item_number>
+      <abstract xmlns="http://www.ncbi.nlm.nih.gov/JATS1">
+        <p>KU Leuven is now an inaugural supporting member of ResearchEquals, sustaining and governing the development of modular publishing.As part of their commitment to Open Science, KU Leuven supports sustainable implementations of Open Access and Open Science through the KU Leuven Fund for Fair OA. The fund is usually only</p>
+      </abstract>
+      <program xmlns="http://www.crossref.org/AccessIndicators.xsd" name="AccessIndicators">
+        <license_ref applies_to="vor">https://creativecommons.org/licenses/by/4.0/legalcode</license_ref>
+        <license_ref applies_to="tdm">https://creativecommons.org/licenses/by/4.0/legalcode</license_ref>
+      </program>
+      <doi_data>
+        <doi>10.59350/2shz7-ehx26</doi>
+        <resource>https://libscie.org/ku-leuven-supports-researchequals</resource>
+        <collection property="text-mining">
+          <item>
+            <resource mime_type="text/html">https://libscie.org/ku-leuven-supports-researchequals</resource>
+          </item>
+          <item>
+            <resource mime_type="text/html">https://libscie.org/ku-leuven-supports-researchequals</resource>
+          </item>
+        </collection>
+      </doi_data>
+    </posted_content>
+  </body>
+</doi_batch>
+
