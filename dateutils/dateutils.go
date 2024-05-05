@@ -45,6 +45,24 @@ const Iso8601DateFormat = "2006-01-02"
 // 	]
 // }
 
+// ParseDate parses date strings in various formats and returns a date string in ISO 8601 format
+func ParseDate(date string) string {
+	t, _ := time.Parse(Iso8601DateFormat, date)
+	if t.Year() == 0001 {
+		t, _ = time.Parse("02 January 2006", date)
+	}
+	if t.Year() == 0001 {
+		t, _ = time.Parse("2006-02", date)
+	}
+	if t.Year() == 0001 {
+		t, _ = time.Parse("2006", date)
+	}
+	if t.Year() == 0001 {
+		return ""
+	}
+	return t.Format(Iso8601DateFormat)
+}
+
 // GetDateParts return date parts from an ISO 8601 date string
 func GetDateParts(iso8601Time string) map[string][][]int {
 	if iso8601Time == "" {

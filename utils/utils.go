@@ -305,6 +305,11 @@ func Sanitize(html string) string {
 	return str
 }
 
+// TitleCase capitalizes the first letter of a string without changing the rest
+func TitleCase(str string) string {
+	return strings.ToUpper(string(str[0])) + str[1:]
+}
+
 // UnescapeUTF8 unescapes UTF-8 characters
 func UnescapeUTF8(inStr string) (outStr string, err error) {
 	jsonStr := `"` + strings.ReplaceAll(inStr, `"`, `\"`) + `"`
