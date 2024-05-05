@@ -107,3 +107,15 @@ func GetDateFromParts(parts ...int) string {
 	}
 	return strings.Join(arr, "-")
 }
+
+// GetDateFromCrossrefParts returns a date string from Crossref XML date parts
+func GetDateFromCrossrefParts(strParts ...string) string {
+	parts := make([]int, 0)
+	for _, s := range strParts {
+		if s != "" {
+			v, _ := strconv.Atoi(s)
+			parts = append(parts, v)
+		}
+	}
+	return GetDateFromParts(parts...)
+}
