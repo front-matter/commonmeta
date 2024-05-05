@@ -61,6 +61,17 @@ var ContributorRoles = []string{
 	"Other",
 }
 
+// ContainerTypes maps types to associated container types
+var ContainerTypes = map[string]string{
+	"BookChapter":        "Book",
+	"Dataset":            "Database",
+	"JournalArticle":     "Journal",
+	"JournalIssue":       "Journal",
+	"Book":               "BookSeries",
+	"ProceedingsArticle": "Proceedings",
+	"Article":            "Periodical",
+}
+
 // Data represents the commonmeta metadata, defined in the commonmeta JSON Schema.
 type Data struct {
 	// required fields
