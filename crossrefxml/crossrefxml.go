@@ -584,6 +584,8 @@ var CRToCMMappings = map[string]string{
 	"book_content":        "BookChapter",
 	"component":           "Component",
 	"dissertation":        "Dissertation",
+	"peer_review":         "PeerReview",
+	"posted_content":      "Article",
 	"report-paper_title":  "Report",
 	"report-paper_series": "ReportSeries",
 	//"report-paper_content": "ReportComponent",
