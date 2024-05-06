@@ -72,6 +72,24 @@ var ContainerTypes = map[string]string{
 	"Article":            "Periodical",
 }
 
+// IdentifierTypes list of identifier types defined in the commonmeta schema.
+var IdentifierTypes = []string{
+	"ARK",
+	"arXiv",
+	"Bibcode",
+	"DOI",
+	"Handle",
+	"ISBN",
+	"ISSN",
+	"PMID",
+	"PMCID",
+	"PURL",
+	"URL",
+	"URN",
+	"UUID",
+	"Other",
+}
+
 // Data represents the commonmeta metadata, defined in the commonmeta JSON Schema.
 type Data struct {
 	// required fields

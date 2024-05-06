@@ -506,24 +506,9 @@ func Read(content Content) (commonmeta.Data, error) {
 	}
 
 	if len(content.AlternateIdentifiers) > 0 {
-		supportedIdentifiers := []string{
-			"ARK",
-			"arXiv",
-			"Bibcode",
-			"DOI",
-			"Handle",
-			"ISBN",
-			"ISSN",
-			"PMID",
-			"PMCID",
-			"PURL",
-			"URL",
-			"URN",
-			"Other",
-		}
 		for _, v := range content.AlternateIdentifiers {
 			identifierType := "Other"
-			if slices.Contains(supportedIdentifiers, v.AlternateIdentifierType) {
+			if slices.Contains(commonmeta.IdentifierTypes, v.AlternateIdentifierType) {
 				identifierType = v.AlternateIdentifierType
 			}
 			if v.AlternateIdentifier != "" {

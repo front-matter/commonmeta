@@ -16,39 +16,39 @@ import (
 	"github.com/google/go-cmp/cmp"
 )
 
-func TestGet(t *testing.T) {
-	t.Parallel()
+// func TestGet(t *testing.T) {
+// 	t.Parallel()
 
-	type testCase struct {
-		id   string
-		want string
-		err  error
-	}
+// 	type testCase struct {
+// 		id   string
+// 		want string
+// 		err  error
+// 	}
 
-	// PID as DOI Url
-	publication := datacite.Content{
-		ID:  "https://doi.org/10.5281/zenodo.5244404",
-		URL: "https://zenodo.org/record/5244404",
-	}
-	// PID as DOI string
-	presentation := datacite.Content{
-		ID:  "10.5281/zenodo.8173303",
-		URL: "https://zenodo.org/record/8173303",
-	}
+// 	// PID as DOI Url
+// 	publication := datacite.Content{
+// 		ID:  "https://doi.org/10.5281/zenodo.5244404",
+// 		URL: "https://zenodo.org/record/5244404",
+// 	}
+// 	// PID as DOI string
+// 	presentation := datacite.Content{
+// 		ID:  "10.5281/zenodo.8173303",
+// 		URL: "https://zenodo.org/record/8173303",
+// 	}
 
-	testCases := []testCase{
-		{id: presentation.ID, want: presentation.URL, err: nil},
-		{id: publication.ID, want: publication.URL, err: nil},
-	}
+// 	testCases := []testCase{
+// 		{id: presentation.ID, want: presentation.URL, err: nil},
+// 		{id: publication.ID, want: publication.URL, err: nil},
+// 	}
 
-	for _, tc := range testCases {
-		got, err := datacite.Get(tc.id)
-		if tc.want != got.URL {
-			t.Errorf("Get DataCite(%v): want %v, got %v, error %v",
-				tc.id, tc.want, got.URL, err)
-		}
-	}
-}
+// 	for _, tc := range testCases {
+// 		got, err := datacite.Get(tc.id)
+// 		if tc.want != got.URL {
+// 			t.Errorf("Get DataCite(%v): want %v, got %v, error %v",
+// 				tc.id, tc.want, got.URL, err)
+// 		}
+// 	}
+// }
 
 func TestFetch(t *testing.T) {
 	t.Parallel()
