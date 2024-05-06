@@ -668,7 +668,6 @@ func Get(pid string) (Content, error) {
 	if err != nil {
 		fmt.Println("error:", err)
 	}
-	log.Println(crossrefResult.QueryResult.Body.Query.DOIRecord.Crossref)
 	return crossrefResult.QueryResult.Body, err
 }
 
