@@ -23,24 +23,22 @@ import (
 // Crossrefxml represents the Crossref XML metadata.
 type Crossrefxml struct {
 	XMLName xml.Name `xml:"body"`
-	Query   struct {
-		Status    string    `xml:"status,attr"`
-		DOI       DOI       `xml:"doi"`
-		CRMItem   []CRMItem `xml:"crm-item"`
-		DOIRecord DOIRecord `xml:"doi_record"`
-	} `xml:"query"`
+	Query   Query    `xml:"query"`
 }
 
 // Content represents the Crossref XML metadata returned from Crossref. The type is more
 // flexible than the Crossrefxml type, allowing for different formats of some metadata.
 type Content struct {
 	Crossrefxml
-	CrossrefMetadata struct {
-		Status    string    `xml:"status,attr"`
-		DOI       DOI       `xml:"doi"`
-		CRMItem   []CRMItem `xml:"crm-item"`
-		DOIRecord DOIRecord `xml:"doi_record"`
-	} `xml:"crossref_metadata"`
+	Query            Query `xml:"query"`
+	CrossrefMetadata Query `xml:"crossref_metadata"`
+}
+
+type Query struct {
+	Status    string    `xml:"status,attr"`
+	DOI       DOI       `xml:"doi"`
+	CRMItem   []CRMItem `xml:"crm-item"`
+	DOIRecord DOIRecord `xml:"doi_record"`
 }
 
 type CRMItem struct {
@@ -704,22 +702,10 @@ func Read(content Content) (commonmeta.Data, error) {
 	var subjects []string
 	var titles Titles
 
-	var doiRecord DOIRecord
-	var doi DOI
-	var crmItem []CRMItem
-	if content.Query.Status == "resolved" {
-		doiRecord = content.Query.DOIRecord
-		doi = content.Query.DOI
-		crmItem = content.Query.CRMItem
-	} else {
-		doiRecord = content.CrossrefMetadata.DOIRecord
-		doi = content.CrossrefMetadata.DOI
-		crmItem = content.CrossrefMetadata.CRMItem
-	}
-	meta := doiRecord.Crossref
+	meta := content.Query.DOIRecord.Crossref
 
-	data.ID = doiutils.NormalizeDOI(doi.Text)
-	data.Type = CRToCMMappings[doi.Type]
+	data.ID = doiutils.NormalizeDOI(content.Query.DOI.Text)
+	data.Type = CRToCMMappings[content.Query.DOI.Type]
 	if data.Type == "" {
 		data.Type = "Other"
 	}
@@ -1037,7 +1023,7 @@ func Read(content Content) (commonmeta.Data, error) {
 	data.Provider = "Crossref"
 
 	var publisherID, publisherName string
-	for _, v := range crmItem {
+	for _, v := range content.Query.CRMItem {
 		if v.Name == "member-id" {
 			memberID := v.Text
 			publisherID = "https://api.crossref.org/members/" + memberID
@@ -1222,7 +1208,16 @@ func LoadList(filename string) ([]commonmeta.Data, error) {
 		return data, err
 	}
 	for _, v := range response.ListRecords.Record {
-		content = append(content, v.Metadata.CrossrefResult.QueryResult.Body)
+		// rewrite XML structure to match the Crossref API response
+		c := Content{
+			Query: Query{
+				Status:    "resolved",
+				DOI:       v.Metadata.CrossrefResult.QueryResult.Body.CrossrefMetadata.DOI,
+				DOIRecord: v.Metadata.CrossrefResult.QueryResult.Body.CrossrefMetadata.DOIRecord,
+				CRMItem:   v.Metadata.CrossrefResult.QueryResult.Body.CrossrefMetadata.CRMItem,
+			},
+		}
+		content = append(content, c)
 	}
 
 	data, err = ReadList(content)
