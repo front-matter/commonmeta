@@ -14,6 +14,7 @@ import (
 	"github.com/xeipuuv/gojsonschema"
 
 	"github.com/front-matter/commonmeta/crossref"
+	"github.com/front-matter/commonmeta/crossrefxml"
 
 	"github.com/front-matter/commonmeta/datacite"
 
@@ -67,6 +68,8 @@ var listCmd = &cobra.Command{
 
 		if str != "" && from == "crossref" {
 			data, err = crossref.LoadList(str)
+		} else if str != "" && from == "crossrefxml" {
+			data, err = crossrefxml.LoadList(str)
 		} else if str != "" && from == "datacite" {
 			data, err = datacite.LoadList(str)
 		} else if from == "crossref" {

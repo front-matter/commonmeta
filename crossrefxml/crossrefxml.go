@@ -24,11 +24,8 @@ import (
 type Crossrefxml struct {
 	XMLName xml.Name `xml:"body"`
 	Query   struct {
-		Status string `xml:"status,attr"`
-		DOI    struct {
-			Text string `xml:",chardata"`
-			Type string `xml:"type,attr"`
-		} `xml:"doi"`
+		Status    string    `xml:"status,attr"`
+		DOI       DOI       `xml:"doi"`
 		CRMItem   []CRMItem `xml:"crm-item"`
 		DOIRecord DOIRecord `xml:"doi_record"`
 	} `xml:"query"`
@@ -37,7 +34,13 @@ type Crossrefxml struct {
 // Content represents the Crossref XML metadata returned from Crossref. The type is more
 // flexible than the Crossrefxml type, allowing for different formats of some metadata.
 type Content struct {
-	*Crossrefxml
+	Crossrefxml
+	CrossrefMetadata struct {
+		Status    string    `xml:"status,attr"`
+		DOI       DOI       `xml:"doi"`
+		CRMItem   []CRMItem `xml:"crm-item"`
+		DOIRecord DOIRecord `xml:"doi_record"`
+	} `xml:"crossref_metadata"`
 }
 
 type CRMItem struct {
@@ -46,6 +49,11 @@ type CRMItem struct {
 	Name    string   `xml:"name,attr"`
 	Type    string   `xml:"type,attr"`
 	Claim   string   `xml:"claim,attr"`
+}
+
+type DOI struct {
+	Type string `xml:"type,attr"`
+	Text string `xml:",chardata"`
 }
 
 type DOIRecord struct {
@@ -673,7 +681,7 @@ func Get(pid string) (Content, error) {
 	return crossrefResult.QueryResult.Body, err
 }
 
-// Read Crossref JSON response and return work struct in Commonmeta format
+// Read Crossref XML response and return work struct in Commonmeta format
 func Read(content Content) (commonmeta.Data, error) {
 	var data = commonmeta.Data{}
 
@@ -696,10 +704,22 @@ func Read(content Content) (commonmeta.Data, error) {
 	var subjects []string
 	var titles Titles
 
-	meta := content.Query.DOIRecord.Crossref
+	var doiRecord DOIRecord
+	var doi DOI
+	var crmItem []CRMItem
+	if content.Query.Status == "resolved" {
+		doiRecord = content.Query.DOIRecord
+		doi = content.Query.DOI
+		crmItem = content.Query.CRMItem
+	} else {
+		doiRecord = content.CrossrefMetadata.DOIRecord
+		doi = content.CrossrefMetadata.DOI
+		crmItem = content.CrossrefMetadata.CRMItem
+	}
+	meta := doiRecord.Crossref
 
-	data.ID = doiutils.NormalizeDOI(content.Query.DOI.Text)
-	data.Type = CRToCMMappings[content.Query.DOI.Type]
+	data.ID = doiutils.NormalizeDOI(doi.Text)
+	data.Type = CRToCMMappings[doi.Type]
 	if data.Type == "" {
 		data.Type = "Other"
 	}
@@ -1017,7 +1037,7 @@ func Read(content Content) (commonmeta.Data, error) {
 	data.Provider = "Crossref"
 
 	var publisherID, publisherName string
-	for _, v := range content.Query.CRMItem {
+	for _, v := range crmItem {
 		if v.Name == "member-id" {
 			memberID := v.Text
 			publisherID = "https://api.crossref.org/members/" + memberID
@@ -1116,6 +1136,19 @@ func Read(content Content) (commonmeta.Data, error) {
 	return data, nil
 }
 
+// ReadList reads a list of Crossref XML responses and returns a list of works in Commonmeta format
+func ReadList(content []Content) ([]commonmeta.Data, error) {
+	var data []commonmeta.Data
+	for _, v := range content {
+		d, err := Read(v)
+		if err != nil {
+			log.Println(err)
+		}
+		data = append(data, d)
+	}
+	return data, nil
+}
+
 // Load loads the metadata for a single work from a XML file
 func Load(filename string) (commonmeta.Data, error) {
 	var data commonmeta.Data
@@ -1137,6 +1170,62 @@ func Load(filename string) (commonmeta.Data, error) {
 		return data, err
 	}
 	data, err = Read(content)
+	if err != nil {
+		return data, err
+	}
+	return data, nil
+}
+
+// LoadList loads the metadata for a list of works from an XML file and converts it to the Commonmeta format
+func LoadList(filename string) ([]commonmeta.Data, error) {
+	type Response struct {
+		ListRecords struct {
+			Record []struct {
+				Metadata struct {
+					CrossrefResult struct {
+						XMLName        xml.Name `xml:"crossref_result"`
+						Xmlns          string   `xml:"xmlns,attr"`
+						Version        string   `xml:"version,attr"`
+						Xsi            string   `xml:"xsi,attr"`
+						SchemaLocation string   `xml:"schemaLocation,attr"`
+						QueryResult    struct {
+							Head struct {
+								DoiBatchID string `xml:"doi_batch_id"`
+							} `xml:"head"`
+							Body Content `xml:"body"`
+						} `xml:"query_result"`
+					}
+				} `xml:"metadata"`
+			} `xml:"record"`
+		} `xml:"ListRecords"`
+	}
+
+	var data []commonmeta.Data
+	var content []Content
+	var err error
+
+	extension := path.Ext(filename)
+	if extension != ".xml" {
+		return data, errors.New("unsupported file format")
+	}
+
+	var response Response
+	file, err := os.Open(filename)
+	if err != nil {
+		return nil, errors.New("error reading file")
+	}
+	defer file.Close()
+
+	decoder := xml.NewDecoder(file)
+	err = decoder.Decode(&response)
+	if err != nil {
+		return data, err
+	}
+	for _, v := range response.ListRecords.Record {
+		content = append(content, v.Metadata.CrossrefResult.QueryResult.Body)
+	}
+
+	data, err = ReadList(content)
 	if err != nil {
 		return data, err
 	}
