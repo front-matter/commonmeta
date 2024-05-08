@@ -802,7 +802,7 @@ func Read(content Content) (commonmeta.Data, error) {
 			Day:   meta.Dissertation.ApprovalDate.Day,
 		})
 		titles = meta.Dissertation.Titles
-	case "EditedBook":
+	case "Entry":
 	case "Grant":
 	case "Journal":
 		containerTitle = meta.Journal.JournalMetadata.FullTitle
@@ -831,7 +831,6 @@ func Read(content Content) (commonmeta.Data, error) {
 		issn = meta.Journal.JournalMetadata.ISSN
 		language = meta.Journal.JournalMetadata.Language
 	case "JournalVolume":
-	case "Monograph":
 	case "Other":
 	case "PeerReview":
 		contributors = meta.PeerReview.Contributors
@@ -857,7 +856,6 @@ func Read(content Content) (commonmeta.Data, error) {
 		titles = meta.Conference.ConferencePaper.Titles
 	case "ProceedingsSeries":
 	case "ReferenceBook":
-	case "ReferenceEntry":
 	case "Report":
 	case "ReportComponent":
 	case "ReportSeries":
