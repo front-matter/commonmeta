@@ -274,10 +274,10 @@ func Fetch(str string) (commonmeta.Data, error) {
 	return data, nil
 }
 
-// FetchList gets the metadata for a list of works from the DataCite API and returns Commonmeta metadata.
-func FetchList(number int, sample bool) ([]commonmeta.Data, error) {
+// FetchAll gets the metadata for a list of works from the DataCite API and returns Commonmeta metadata.
+func FetchAll(number int, sample bool) ([]commonmeta.Data, error) {
 	var data []commonmeta.Data
-	content, err := GetList(number, sample)
+	content, err := GetAll(number, sample)
 	if err != nil {
 		return data, err
 	}
@@ -306,8 +306,8 @@ func Load(filename string) (commonmeta.Data, error) {
 	return data, nil
 }
 
-// LoadList loads a list of DataCite metadata from a JSON string and returns Commonmeta metadata.
-func LoadList(filename string) ([]commonmeta.Data, error) {
+// LoadAll loads a list of DataCite metadata from a JSON string and returns Commonmeta metadata.
+func LoadAll(filename string) ([]commonmeta.Data, error) {
 	var data []commonmeta.Data
 
 	response, err := ReadJSONLines(filename)
@@ -717,8 +717,8 @@ func GetContributor(v ContentContributor) commonmeta.Contributor {
 	}
 }
 
-// GetList gets the metadata for a list of works from the DataCite API
-func GetList(number int, sample bool) ([]Content, error) {
+// GetAll gets the metadata for a list of works from the DataCite API
+func GetAll(number int, sample bool) ([]Content, error) {
 	// the envelope for the JSON response from the DataCite API
 	type Response struct {
 		Data []Content `json:"data"`

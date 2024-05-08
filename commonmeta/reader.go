@@ -2,11 +2,24 @@
 package commonmeta
 
 import (
+	"bufio"
 	"encoding/json"
 	"errors"
+	"io"
 	"os"
 	"path"
 )
+
+type Reader struct {
+	r *bufio.Reader
+}
+
+// NewReader returns a new Reader that reads from r.
+func NewReader(r io.Reader) *Reader {
+	return &Reader{
+		r: bufio.NewReader(r),
+	}
+}
 
 // ContributorRoles list of contributor roles defined in commonmeta schema.
 //

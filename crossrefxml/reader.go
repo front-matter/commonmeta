@@ -1180,8 +1180,8 @@ func Load(filename string) (commonmeta.Data, error) {
 	return data, nil
 }
 
-// LoadList loads the metadata for a list of works from an XML file and converts it to the Commonmeta format
-func LoadList(filename string) ([]commonmeta.Data, error) {
+// LoadAll loads the metadata for a list of works from an XML file and converts it to the Commonmeta format
+func LoadAll(filename string) ([]commonmeta.Data, error) {
 	type Response struct {
 		ListRecords struct {
 			Record []struct {

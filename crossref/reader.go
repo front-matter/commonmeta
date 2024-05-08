@@ -2,6 +2,7 @@
 package crossref
 
 import (
+	"bufio"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -23,6 +24,17 @@ import (
 	"github.com/front-matter/commonmeta/doiutils"
 	"github.com/front-matter/commonmeta/utils"
 )
+
+type Reader struct {
+	r *bufio.Reader
+}
+
+// NewReader returns a new Reader that reads from r.
+func NewReader(r io.Reader) *Reader {
+	return &Reader{
+		r: bufio.NewReader(r),
+	}
+}
 
 // Content is the struct for the message in tge JSON response from the Crossref API
 type Content struct {
@@ -255,11 +267,11 @@ func Fetch(str string) (commonmeta.Data, error) {
 	return data, nil
 }
 
-// FetchList gets the metadata for a list of works from the Crossref API and converts it to the Commonmeta format
-func FetchList(number int, member string, _type string, sample bool, hasORCID bool, hasROR bool, hasReferences bool, hasRelation bool, hasAbstract bool, hasAward bool, hasLicense bool, hasArchive bool) ([]commonmeta.Data, error) {
+// FetchAll gets the metadata for a list of works from the Crossref API and converts it to the Commonmeta format
+func FetchAll(number int, member string, _type string, sample bool, hasORCID bool, hasROR bool, hasReferences bool, hasRelation bool, hasAbstract bool, hasAward bool, hasLicense bool, hasArchive bool) ([]commonmeta.Data, error) {
 
 	var data []commonmeta.Data
-	content, err := GetList(number, member, _type, sample, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
+	content, err := GetAll(number, member, _type, sample, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
 	if err != nil {
 		return data, err
 	}
@@ -317,8 +329,8 @@ func Get(pid string) (Content, error) {
 	return response.Message, err
 }
 
-// GetList gets the metadata for a list of works from the Crossref API
-func GetList(number int, member string, _type string, sample bool, hasORCID bool, hasROR bool, hasReferences bool, hasRelation bool, hasAbstract bool, hasAward bool, hasLicense bool, hasArchive bool) ([]Content, error) {
+// GetAll gets the metadata for a list of works from the Crossref API
+func GetAll(number int, member string, _type string, sample bool, hasORCID bool, hasROR bool, hasReferences bool, hasRelation bool, hasAbstract bool, hasAward bool, hasLicense bool, hasArchive bool) ([]Content, error) {
 	// the envelope for the JSON response from the Crossref API
 	type Response struct {
 		Status         string `json:"status"`
@@ -392,8 +404,8 @@ func Load(filename string) (commonmeta.Data, error) {
 	return data, nil
 }
 
-// LoadList loads the metadata for a list of works from a JSON file and converts it to the Commonmeta format
-func LoadList(filename string) ([]commonmeta.Data, error) {
+// LoadAll loads the metadata for a list of works from a JSON file and converts it to the Commonmeta format
+func LoadAll(filename string) ([]commonmeta.Data, error) {
 	var data []commonmeta.Data
 	var content []Content
 	var err error

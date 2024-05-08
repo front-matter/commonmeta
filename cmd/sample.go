@@ -50,9 +50,9 @@ var sampleCmd = &cobra.Command{
 		var err error
 		sample := true
 		if from == "crossref" {
-			data, err = crossref.FetchList(number, member, type_, sample, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
+			data, err = crossref.FetchAll(number, member, type_, sample, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
 		} else if from == "datacite" {
-			data, err = datacite.FetchList(number, sample)
+			data, err = datacite.FetchAll(number, sample)
 		}
 		if err != nil {
 			fmt.Println(err)

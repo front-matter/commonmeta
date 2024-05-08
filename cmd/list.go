@@ -67,15 +67,15 @@ var listCmd = &cobra.Command{
 		}
 
 		if str != "" && from == "crossref" {
-			data, err = crossref.LoadList(str)
+			data, err = crossref.LoadAll(str)
 		} else if str != "" && from == "crossrefxml" {
-			data, err = crossrefxml.LoadList(str)
+			data, err = crossrefxml.LoadAll(str)
 		} else if str != "" && from == "datacite" {
-			data, err = datacite.LoadList(str)
+			data, err = datacite.LoadAll(str)
 		} else if from == "crossref" {
-			data, err = crossref.FetchList(number, member, type_, sample, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
+			data, err = crossref.FetchAll(number, member, type_, sample, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
 		} else if from == "datacite" {
-			data, err = datacite.FetchList(number, sample)
+			data, err = datacite.FetchAll(number, sample)
 		}
 		if err != nil {
 			fmt.Println(err)

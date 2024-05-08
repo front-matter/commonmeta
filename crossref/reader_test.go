@@ -127,7 +127,7 @@ func ExampleQueryURL() {
 	// https://api.crossref.org/works?filter=member%3A340%2Ctype%3Ajournal-article&order=desc&rows=10&sort=published
 }
 
-func TestGetList(t *testing.T) {
+func TestGetAll(t *testing.T) {
 	t.Parallel()
 
 	type testCase struct {
@@ -143,12 +143,12 @@ func TestGetList(t *testing.T) {
 		{number: 2, member: "", _type: "", sample: true},
 	}
 	for _, tc := range testCases {
-		got, err := crossref.GetList(tc.number, tc.member, tc._type, true, false, false, false, false, false, false, false, false)
+		got, err := crossref.GetAll(tc.number, tc.member, tc._type, true, false, false, false, false, false, false, false, false)
 		if err != nil {
-			t.Errorf("GetList (%v): error %v", tc.number, err)
+			t.Errorf("GetAll (%v): error %v", tc.number, err)
 		}
 		if diff := cmp.Diff(tc.number, len(got)); diff != "" {
-			t.Errorf("GetList mismatch (-want +got):\n%s", diff)
+			t.Errorf("GetAll mismatch (-want +got):\n%s", diff)
 		}
 	}
 }
