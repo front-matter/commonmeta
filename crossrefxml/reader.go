@@ -126,10 +126,11 @@ type Assertion struct {
 }
 
 type Book struct {
-	XMLName      xml.Name     `xml:"book"`
-	BookType     string       `xml:"book_type,attr"`
-	BookMetadata BookMetadata `xml:"book_metadata"`
-	ContentItem  ContentItem  `xml:"content_item"`
+	XMLName         xml.Name        `xml:"book"`
+	BookType        string          `xml:"book_type,attr"`
+	BookMetadata    BookMetadata    `xml:"book_metadata"`
+	BookSetMetadata BookSetMetadata `xml:"book_set_metadata"`
+	ContentItem     ContentItem     `xml:"content_item"`
 }
 
 type BookMetadata struct {
@@ -143,6 +144,17 @@ type BookMetadata struct {
 	ISBN            []ISBN            `xml:"isbn"`
 	Publisher       Publisher         `xml:"publisher"`
 	DOIData         DOIData           `xml:"doi_data"`
+}
+
+type BookSetMetadata struct {
+	XMLName         xml.Name          `xml:"book_set_metadata"`
+	Language        string            `xml:"language,attr"`
+	SetMetadata     SetMetadata       `xml:"set_metadata"`
+	Volume          string            `xml:"volume"`
+	EditionNumber   string            `xml:"edition_number"`
+	PublicationDate []PublicationDate `xml:"publication_date"`
+	ISBN            []ISBN            `xml:"isbn"`
+	Publisher       Publisher         `xml:"publisher"`
 }
 
 type Citation struct {
@@ -556,6 +568,14 @@ type ReviewDate struct {
 type SAComponent struct {
 	XMLName       xml.Name      `xml:"sa_component"`
 	ComponentList ComponentList `xml:"component_list"`
+}
+
+type SetMetadata struct {
+	XMLName      xml.Name     `xml:"set_metadata"`
+	Titles       Titles       `xml:"titles"`
+	ISBN         []ISBN       `xml:"isbn"`
+	Contributors Contributors `xml:"contributors"`
+	DOIData      DOIData      `xml:"doi_data"`
 }
 
 type Standard struct {
@@ -1122,8 +1142,8 @@ func Read(content Content) (commonmeta.Data, error) {
 	return data, nil
 }
 
-// ReadList reads a list of Crossref XML responses and returns a list of works in Commonmeta format
-func ReadList(content []Content) ([]commonmeta.Data, error) {
+// ReadAll reads a list of Crossref XML responses and returns a list of works in Commonmeta format
+func ReadAll(content []Content) ([]commonmeta.Data, error) {
 	var data []commonmeta.Data
 	for _, v := range content {
 		d, err := Read(v)
@@ -1220,7 +1240,7 @@ func LoadList(filename string) ([]commonmeta.Data, error) {
 		content = append(content, c)
 	}
 
-	data, err = ReadList(content)
+	data, err = ReadAll(content)
 	if err != nil {
 		return data, err
 	}
@@ -1339,4 +1359,72 @@ func GetFundingReferences(fundref Program) ([]commonmeta.FundingReference, error
 	}
 	fundingReferences = utils.DedupeSlice(fundingReferences)
 	return fundingReferences, nil
+}
+
+// Type represents the Crossref type of a work
+func (c Content) Type() string {
+	switch c.Query.DOI.Type {
+	case "book_title":
+		if c.Query.DOIRecord.Crossref.Book.BookSetMetadata.SetMetadata.DOIData.DOI != "" {
+			return "BookSet"
+		}
+		return "Book"
+	case "book_content":
+		switch c.Query.DOIRecord.Crossref.Book.ContentItem.ComponentType {
+		case "other":
+			return "Other"
+		case "part":
+			return "BookPart"
+		case "reference_entry":
+			return "Entry"
+		case "section":
+			return "BookSection"
+		case "track":
+			return "BookTrack"
+		default:
+			return "BookChapter"
+		}
+	case "book_series":
+		return "BookSeries"
+	case "component":
+		return "Component"
+	case "conference":
+		return "Proceedings"
+	case "conference_paper":
+		return "ProceedingsArticle"
+	case "conference_series":
+		return "ProceedingsSeries"
+	case "conference_title":
+		return "Proceedings"
+	case "database_title":
+		return "Database"
+	case "dataset":
+		return "Dataset"
+	case "dissertation":
+		return "Dissertation"
+	case "grant":
+		return "Grant"
+	case "journal_article":
+		return "JournalArticle"
+	case "journal_issue":
+		return "JournalIssue"
+	case "journal_volume":
+		return "JournalVolume"
+	case "journal_title":
+		return "Journal"
+	case "peer_review":
+		return "PeerReview"
+	case "posted_content":
+		return "Article"
+	case "report-paper_content":
+		return "ReportComponent"
+	case "report-paper_series":
+		return "ReportSeries"
+	case "report-paper_title":
+		return "Report"
+	case "standard_title":
+		return "Standard"
+	default:
+		return "Other"
+	}
 }

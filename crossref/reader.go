@@ -264,7 +264,7 @@ func FetchList(number int, member string, _type string, sample bool, hasORCID bo
 		return data, err
 	}
 
-	data, err = ReadList(content)
+	data, err = ReadAll(content)
 	if err != nil {
 		return data, err
 	}
@@ -444,7 +444,7 @@ func LoadList(filename string) ([]commonmeta.Data, error) {
 		return data, errors.New("unsupported file format")
 	}
 
-	data, err = ReadList(content)
+	data, err = ReadAll(content)
 	if err != nil {
 		return data, err
 	}
@@ -741,8 +741,8 @@ func Read(content Content) (commonmeta.Data, error) {
 	return data, nil
 }
 
-// ReadList reads a list of Crossref JSON responses and returns a list of works in Commonmeta format
-func ReadList(content []Content) ([]commonmeta.Data, error) {
+// ReadAll reads a list of Crossref JSON responses and returns a list of works in Commonmeta format
+func ReadAll(content []Content) ([]commonmeta.Data, error) {
 	var data []commonmeta.Data
 	for _, v := range content {
 		d, err := Read(v)

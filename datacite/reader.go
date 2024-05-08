@@ -315,7 +315,7 @@ func LoadList(filename string) ([]commonmeta.Data, error) {
 		return data, err
 	}
 
-	data, err = ReadList(response)
+	data, err = ReadAll(response)
 	if err != nil {
 		return data, err
 	}
@@ -754,8 +754,8 @@ func GetList(number int, sample bool) ([]Content, error) {
 	return response.Data, nil
 }
 
-// ReadList reads a list of DataCite JSON responses and returns a list of works in Commonmeta format
-func ReadList(content []Content) ([]commonmeta.Data, error) {
+// ReadAll reads a list of DataCite JSON responses and returns a list of works in Commonmeta format
+func ReadAll(content []Content) ([]commonmeta.Data, error) {
 	var data []commonmeta.Data
 	for _, v := range content {
 		d, err := Read(v)
