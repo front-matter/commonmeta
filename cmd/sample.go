@@ -62,13 +62,13 @@ var sampleCmd = &cobra.Command{
 		var jsErr []gojsonschema.ResultError
 		to, _ := cmd.Flags().GetString("to")
 		if to == "commonmeta" {
-			output, jsErr = commonmeta.WriteList(data)
+			output, jsErr = commonmeta.WriteAll(data)
 		} else if to == "csl" {
-			output, jsErr = csl.WriteList(data)
+			output, jsErr = csl.WriteAll(data)
 		} else if to == "datacite" {
-			output, jsErr = datacite.WriteList(data)
+			output, jsErr = datacite.WriteAll(data)
 		} else if to == "schemaorg" {
-			output, jsErr = schemaorg.WriteList(data)
+			output, jsErr = schemaorg.WriteAll(data)
 		}
 
 		if err != nil {

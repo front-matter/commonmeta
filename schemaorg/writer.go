@@ -43,14 +43,6 @@ type SchemaOrg struct {
 	Version               string        `json:"version,omitempty"`
 }
 
-// Content represents the SchemaOrg metadata returned from SchemaOrg sources. The type is more
-// flexible than the SchemaOrg type, allowing for different formats of some metadata.
-// Identifier can be string or []string.
-type Content struct {
-	*SchemaOrg
-	Identifier json.RawMessage `json:"identifier"`
-}
-
 // Author represents the author of this CreativeWork.
 type Author struct {
 	ID           string         `json:"@id,omitempty"`
@@ -152,13 +144,6 @@ var CMToSOMappings = map[string]string{
 	"LegalDocument":  "Legislation",
 	"Software":       "SoftwareSourceCode",
 	"Presentation":   "PresentationDigitalDocument",
-}
-
-// Read reads Schema.org metadata and converts it to commonmeta.
-func Read(content Content) (commonmeta.Data, error) {
-	var data commonmeta.Data
-	data.ID = content.ID
-	return data, nil
 }
 
 // Convert converts commonmeta metadata to Schema.org metadata.
@@ -335,8 +320,8 @@ func Write(data commonmeta.Data) ([]byte, []gojsonschema.ResultError) {
 	return output, nil
 }
 
-// WriteList writes a list of schemaorg metadata.
-func WriteList(list []commonmeta.Data) ([]byte, []gojsonschema.ResultError) {
+// WriteAll writes a list of schemaorg metadata.
+func WriteAll(list []commonmeta.Data) ([]byte, []gojsonschema.ResultError) {
 	var schemaorgList []SchemaOrg
 	for _, data := range list {
 		csl, err := Convert(data)

@@ -1,4 +1,3 @@
-// Package csl provides a function to read CSL JSON and convert it to commonmeta.
 package csl
 
 import (
@@ -13,11 +12,6 @@ import (
 	"github.com/front-matter/commonmeta/schemautils"
 	"github.com/xeipuuv/gojsonschema"
 )
-
-type content struct {
-	ID    string `json:"id"`
-	Title string `json:"title"`
-}
 
 type CSL struct {
 	ID             string             `json:"id"`
@@ -75,14 +69,6 @@ var CMToCSLMappings = map[string]string{
 	"Standard":              "standard",
 	"Dissertation":          "thesis",
 	"WebPage":               "webpage",
-}
-
-// Read reads CSL JSON and converts it to commonmeta.
-func Read(content content) (commonmeta.Data, error) {
-	var data commonmeta.Data
-
-	data.ID = content.ID
-	return data, nil
 }
 
 // Convert converts commonmeta metadata to CSL JSON.
@@ -173,8 +159,8 @@ func Write(data commonmeta.Data) ([]byte, []gojsonschema.ResultError) {
 	return output, nil
 }
 
-// WriteList writes a list of CSL metadata.
-func WriteList(list []commonmeta.Data) ([]byte, []gojsonschema.ResultError) {
+// WriteAll writes a list of CSL metadata.
+func WriteAll(list []commonmeta.Data) ([]byte, []gojsonschema.ResultError) {
 	var cslList []CSL
 	for _, data := range list {
 		csl, err := Convert(data)

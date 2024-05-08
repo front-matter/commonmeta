@@ -4,13 +4,8 @@ package commonmeta
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"os"
 	"path"
-
-	"github.com/front-matter/commonmeta/schemautils"
-
-	"github.com/xeipuuv/gojsonschema"
 )
 
 // ContributorRoles list of contributor roles defined in commonmeta schema.
@@ -289,32 +284,6 @@ func Load(filename string) (Data, error) {
 func Read(content Data) (Data, error) {
 	data := content
 	return data, nil
-}
-
-// Write writes commonmeta metadata.
-func Write(data Data) ([]byte, []gojsonschema.ResultError) {
-	output, err := json.Marshal(data)
-	if err != nil {
-		fmt.Println(err)
-	}
-	validation := schemautils.JSONSchemaErrors(output)
-	if !validation.Valid() {
-		return nil, validation.Errors()
-	}
-	return output, nil
-}
-
-// WriteList writes commonmeta metadata in slice format.
-func WriteList(list []Data) ([]byte, []gojsonschema.ResultError) {
-	output, err := json.Marshal(list)
-	if err != nil {
-		fmt.Println(err)
-	}
-	validation := schemautils.JSONSchemaErrors(output)
-	if !validation.Valid() {
-		return nil, validation.Errors()
-	}
-	return output, nil
 }
 
 // Pages returns the first and last page of a work as a string.
