@@ -4,15 +4,31 @@ package utils
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"log"
+	"net/http"
 	"net/url"
 	"regexp"
 	"strings"
+	"time"
 
 	"github.com/front-matter/commonmeta/doiutils"
 
 	"github.com/microcosm-cc/bluemonday"
 )
+
+// ROR represents a Research Organization Registry (ROR) record
+type ROR struct {
+	ID          string   `json:"id"`
+	Name        string   `json:"name"`
+	Types       []string `json:"types"`
+	ExternalIds struct {
+		FundRef struct {
+			Preferred string   `json:"preferred"`
+			All       []string `json:"all"`
+		} `json:"FundRef"`
+	} `json:"external_ids"`
+}
 
 // NormalizeID checks for valid DOI or HTTP(S) URL and normalizes them
 func NormalizeID(pid string) string {
@@ -20,6 +36,12 @@ func NormalizeID(pid string) string {
 	doi := doiutils.NormalizeDOI(pid)
 	if doi != "" {
 		return doi
+	}
+
+	// check for valid UUID
+	uuid, ok := ValidateUUID(pid)
+	if ok {
+		return uuid
 	}
 
 	// check for valid URL
@@ -379,6 +401,32 @@ func ValidateROR(ror string) (string, bool) {
 	return matched[1], true
 }
 
+// GetROR
+func GetROR(ror string) (ROR, error) {
+	var content ROR
+	client := http.Client{
+		Timeout: time.Second * 10,
+	}
+	url := "https://api.ror.org/organizations/" + ror
+	resp, err := client.Get(url)
+	if err != nil {
+		return content, err
+	}
+	if resp.StatusCode != 200 {
+		return content, fmt.Errorf("status code error: %d %s", resp.StatusCode, resp.Status)
+	}
+	defer resp.Body.Close()
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return content, err
+	}
+	err = json.Unmarshal(body, &content)
+	if err != nil {
+		fmt.Println("error:", err)
+	}
+	return content, err
+}
+
 // ValidateURL validates a URL and checks if it is a DOI
 func ValidateURL(str string) string {
 	_, ok := doiutils.ValidateDOI(str)
@@ -393,4 +441,13 @@ func ValidateURL(str string) string {
 		return "URL"
 	}
 	return ""
+}
+
+// ValidateUUID validates a UUID
+func ValidateUUID(uuid string) (string, bool) {
+	r := regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$")
+	if !r.MatchString(uuid) {
+		return "", false
+	}
+	return r.FindString(uuid), true
 }

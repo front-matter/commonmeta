@@ -11,6 +11,9 @@ import (
 // Iso8601DateFormat is the ISO 8601 date format without time.
 const Iso8601DateFormat = "2006-01-02"
 
+// Iso8601DateTimeFormat is the ISO 8601 date format with time.
+const Iso8601DateTimeFormat = "2006-01-02T15:04:05Z"
+
 // func MonthNames() struct {
 // 	return {
 // 		"01": "jan",
@@ -83,6 +86,11 @@ func GetDateParts(iso8601Time string) map[string][][]int {
 // GetDateFromUnixTimestamp returns a date string from a Unix timestamp
 func GetDateFromUnixTimestamp(timestamp int64) string {
 	return time.Unix(timestamp, 0).Format(Iso8601DateFormat)
+}
+
+// GetDateTimeFromUnixTimestamp returns a datetime string from a Unix timestamp
+func GetDateTimeFromUnixTimestamp(timestamp int64) string {
+	return time.Unix(timestamp, 0).Format(Iso8601DateTimeFormat)
 }
 
 // GetDateFromDateParts returns a date string from date parts

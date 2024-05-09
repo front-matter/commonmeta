@@ -1,7 +1,9 @@
 // Package authorutils provides utility functions to work with authors
 package authorutils
 
-import "strings"
+import (
+	"strings"
+)
 
 // IsPersonalName checks if a name is for a Person
 func IsPersonalName(name string) bool {
@@ -60,6 +62,38 @@ func IsPersonalName(name string) bool {
 		}
 	}
 
-	//default to false
-	return false
+	//default to true
+	return true
+}
+
+func ParseName(name string) (string, string, string) {
+	var givenName, familyName string
+
+	if !IsPersonalName(name) {
+		return givenName, familyName, name
+	}
+
+	// check for suffixes, e.g. "John Smith, MD"
+	suffix := strings.Split(name, ", ")
+	if len(suffix) > 1 {
+		suffixes := []string{"MD", "PhD", "BS"}
+		for _, s := range suffixes {
+			if suffix[1] == s {
+				name = suffix[0]
+				break
+			}
+		}
+	}
+
+	// default to the last word as family name
+	words := strings.Split(name, " ")
+	if len(words) == 1 {
+		familyName = name
+		return givenName, familyName, ""
+	} else if len(words) > 1 {
+		familyName = words[len(words)-1]
+		givenName = strings.Join(words[:len(words)-1], " ")
+		name = ""
+	}
+	return givenName, familyName, name
 }

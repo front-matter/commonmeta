@@ -15,6 +15,7 @@ import (
 	"github.com/front-matter/commonmeta/csl"
 	"github.com/front-matter/commonmeta/datacite"
 	"github.com/front-matter/commonmeta/doiutils"
+	"github.com/front-matter/commonmeta/jsonfeed"
 	"github.com/front-matter/commonmeta/schemaorg"
 	"github.com/front-matter/commonmeta/utils"
 	"github.com/xeipuuv/gojsonschema"
@@ -77,6 +78,8 @@ commonmeta 10.5555/12345678`,
 				data, err = crossrefxml.Fetch(id)
 			} else if from == "datacite" {
 				data, err = datacite.Fetch(id)
+			} else if from == "jsonfeed" {
+				data, err = jsonfeed.Fetch(id)
 			} else {
 				fmt.Println("Please provide a valid input")
 				return

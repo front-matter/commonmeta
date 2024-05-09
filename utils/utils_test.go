@@ -17,6 +17,7 @@ func TestNormalizeID(t *testing.T) {
 		{input: "https://doi.org/10.7554/eLife.01567", want: "https://doi.org/10.7554/elife.01567"},
 		{input: "10.1101/097196", want: "https://doi.org/10.1101/097196"},
 		{input: "https://datadryad.org/stash/dataset/doi:10.5061/dryad.8515", want: "https://datadryad.org/stash/dataset/doi:10.5061/dryad.8515"},
+		{input: "2491b2d5-7daf-486b-b78b-e5aab48064c1", want: "2491b2d5-7daf-486b-b78b-e5aab48064c1"},
 		{input: "dryad.8515", want: ""},
 	}
 	for _, tc := range testCases {
@@ -137,6 +138,26 @@ func TestNormalizeROR(t *testing.T) {
 	}
 }
 
+func TestGetROR(t *testing.T) {
+	t.Parallel()
+	type testCase struct {
+		input   string
+		name    string
+		fundref string
+	}
+	testCases := []testCase{
+		{input: "https://ror.org/021nxhr62", name: "National Science Foundation", fundref: "100000001"},
+		{input: "https://ror.org/018mejw64", name: "Deutsche Forschungsgemeinschaft", fundref: "501100001659"},
+	}
+	for _, tc := range testCases {
+		got, _ := utils.GetROR(tc.input)
+		if tc.name != got.Name || tc.fundref != got.ExternalIds.FundRef.All[0] {
+			t.Errorf("Get ROR (%v): want %v %v, got %v %v",
+				tc.input, tc.name, tc.fundref, got.Name, got.ExternalIds.FundRef.All[0])
+		}
+	}
+}
+
 func TestValidateROR(t *testing.T) {
 	t.Parallel()
 	type testCase struct {
@@ -160,6 +181,13 @@ func ExampleValidateROR() {
 	fmt.Println(s)
 	// Output:
 	// 0342dzm54
+}
+
+func ExampleValidateUUID() {
+	s, _ := utils.ValidateUUID("2491b2d5-7daf-486b-b78b-e5aab48064c1")
+	fmt.Println(s)
+	// Output:
+	// 2491b2d5-7daf-486b-b78b-e5aab48064c1
 }
 
 func TestSanitize(t *testing.T) {

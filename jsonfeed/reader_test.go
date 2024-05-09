@@ -1,9 +1,15 @@
 package jsonfeed_test
 
 import (
+	"encoding/json"
+	"os"
+	"path/filepath"
 	"testing"
 
+	"github.com/front-matter/commonmeta/commonmeta"
 	"github.com/front-matter/commonmeta/jsonfeed"
+	"github.com/front-matter/commonmeta/utils"
+	"github.com/google/go-cmp/cmp"
 )
 
 func TestGet(t *testing.T) {
@@ -33,6 +39,45 @@ func TestGet(t *testing.T) {
 		if tc.want != got.Title {
 			t.Errorf("JSON Feed ID(%v): want %v, got %v, error %v",
 				tc.pid, tc.want, got, err)
+		}
+	}
+}
+
+func TestFetch(t *testing.T) {
+	t.Parallel()
+	type testCase struct {
+		name string
+		id   string
+	}
+
+	testCases := []testCase{
+		{name: "blog post with funding", id: "8a4de443-3347-4b82-b57d-e3c82b6485fc"},
+		{name: "project blog", id: "4d51f3c9-151d-4030-9893-ddbca37f54bb"},
+	}
+	for _, tc := range testCases {
+		got, err := jsonfeed.Fetch(tc.id)
+		if err != nil {
+			t.Errorf("JSON Feed Metadata(%v): error %v", tc.id, err)
+		}
+		// read json file from testdata folder and convert to Data struct
+		id, ok := utils.ValidateUUID(tc.id)
+		if !ok {
+			t.Fatal("invalid uuid")
+		}
+		filename := id + ".json"
+		filepath := filepath.Join("testdata", filename)
+		bytes, err := os.ReadFile(filepath)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		want := commonmeta.Data{}
+		err = json.Unmarshal(bytes, &want)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if diff := cmp.Diff(want, got); diff != "" {
+			t.Errorf("Fetch (%s) mismatch (-want +got):\n%s", tc.id, diff)
 		}
 	}
 }

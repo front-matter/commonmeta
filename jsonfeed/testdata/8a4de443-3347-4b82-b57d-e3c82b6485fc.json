@@ -1,0 +1,90 @@
+{
+  "id": "https://doi.org/10.53731/r79v4e1-97aq74v-ag578",
+  "type": "Article",
+  "container": {
+    "type": "Periodical",
+    "title": "Front Matter",
+    "identifier": "2749-9952",
+    "identifierType": "ISSN"
+  },
+  "contributors": [
+    {
+      "id": "https://orcid.org/0000-0003-1419-2405",
+      "type": "Person",
+      "contributorRoles": ["Author"],
+      "givenName": "Martin",
+      "familyName": "Fenner",
+      "affiliations": [
+        { "id": "https://ror.org/04wxnsj81", "name": "DataCite" }
+      ]
+    }
+  ],
+  "date": {
+    "published": "2015-09-18T02:00:00Z",
+    "updated": "2023-09-07T10:14:45Z"
+  },
+  "descriptions": [
+    {
+      "description": "One of the first tasks for DataCite in the European Commission-funded THOR project, which started in June, was to contribute to a comparison of the ORCID and DataCite metadata standards.",
+      "type": "Abstract"
+    }
+  ],
+  "files": [
+    {
+      "mimeType": "text/markdown",
+      "url": "https://api.rogue-scholar.org/posts/10.53731/r79v4e1-97aq74v-ag578.md"
+    },
+    {
+      "mimeType": "application/pdf",
+      "url": "https://api.rogue-scholar.org/posts/10.53731/r79v4e1-97aq74v-ag578.pdf"
+    },
+    {
+      "mimeType": "application/epub+zip",
+      "url": "https://api.rogue-scholar.org/posts/10.53731/r79v4e1-97aq74v-ag578.epub"
+    },
+    {
+      "mimeType": "application/xml",
+      "url": "https://api.rogue-scholar.org/posts/10.53731/r79v4e1-97aq74v-ag578.xml"
+    }
+  ],
+  "fundingReferences": [
+    {
+      "funderName": "European Commission",
+      "funderIdentifier": "https://doi.org/10.13039/501100000780",
+      "funderIdentifierType": "Crossref Funder ID",
+      "awardURI": "https://doi.org/10.3030/654039",
+      "awardNumber": "654039"
+    }
+  ],
+  "identifiers": [
+    {
+      "identifier": "8a4de443-3347-4b82-b57d-e3c82b6485fc",
+      "identifierType": "UUID"
+    }
+  ],
+  "language": "en",
+  "license": {
+    "id": "CC-BY-4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/legalcode"
+  },
+  "provider": "Crossref",
+  "publisher": { "name": "Front Matter" },
+  "references": [
+    {
+      "id": "https://doi.org/10.5281/zenodo.30799",
+      "title": "D2.1: Artefact, Contributor, And Organisation Relationship Data Schema",
+      "publicationYear": "2015",
+      "key": "ref1"
+    }
+  ],
+  "relations": [
+    { "id": "https://doi.org/10.5438/bc11-cqw1", "type": "IsIdenticalTo" },
+    {
+      "id": "https://portal.issn.org/resource/ISSN/2749-9952",
+      "type": "IsPartOf"
+    }
+  ],
+  "subjects": [{ "subject": "Computer and information sciences" }],
+  "titles": [{ "title": "Differences between ORCID and DataCite Metadata" }],
+  "url": "https://blog.front-matter.io/posts/differences-between-orcid-and-datacite-metadata"
+}

@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"regexp"
+	"slices"
 	"strings"
 )
 
@@ -103,4 +104,22 @@ func GetDOIRA(doi string) (string, bool) {
 		return "", false
 	}
 	return result[0].RA, true
+}
+
+// IsRogueScholarDOI checks if a DOI is from Rogue Scholar
+func IsRogueScholarDOI(doi string) bool {
+	var rogueScholarPrefixes = []string{
+		"10.34732",
+		"10.53731",
+		"10.54900",
+		"10.57689",
+		"10.59348",
+		"10.59349",
+		"10.59350",
+	}
+	prefix, ok := ValidatePrefix(doi)
+	if !ok {
+		return false
+	}
+	return slices.Contains(rogueScholarPrefixes, prefix)
 }

@@ -30,7 +30,7 @@ Commonmeta reads and/or writes these metadata formats:
 | [BibTex](http://en.wikipedia.org/wiki/BibTeX)                                                    | bibtex        | application/x-bibtex                   | later | later   |
 | [RIS](http://en.wikipedia.org/wiki/RIS_(file_format))                                            | ris           | application/x-research-info-systems    | later | later   |
 | [InvenioRDM](https://inveniordm.docs.cern.ch/reference/metadata/)                                | inveniordm    | application/vnd.inveniordm.v1+json     | later | later   |
-| [JSON Feed](https://www.jsonfeed.org/)                                                           | jsonfeed     | application/feed+json    | later | later     |
+| [JSON Feed](https://www.jsonfeed.org/)                                                           | jsonfeed     | application/feed+json    | yes | later     |
 
 _commonmeta_: the Commonmeta format is the native format for the library and used internally.
 _Planned_: we plan to implement this format for the v1.0 public release.  

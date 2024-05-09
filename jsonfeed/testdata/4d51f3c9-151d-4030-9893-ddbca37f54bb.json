@@ -1,0 +1,73 @@
+{
+  "id": "https://doi.org/10.59350/p000s-pth40",
+  "type": "Article",
+  "container": {
+    "type": "Periodical",
+    "title": "Project THOR",
+    "identifier": "https://rogue-scholar.org/blogs/thor",
+    "identifierType": "URL"
+  },
+  "contributors": [
+    {
+      "id": "https://orcid.org/0000-0001-9940-9233",
+      "type": "Person",
+      "contributorRoles": ["Author"],
+      "givenName": "Adèniké",
+      "familyName": "Deane-Pratt",
+      "affiliations": [{ "id": "https://ror.org/04fa4r544", "name": "ORCID" }]
+    }
+  ],
+  "date": {
+    "published": "2017-11-24T12:16:18Z",
+    "updated": "2017-11-24T12:16:18Z"
+  },
+  "descriptions": [
+    {
+      "description": "Project THOR is coming to a close. Our final event was held in Italy on 15 November at ‘La Sapienza’ – the University of Rome – just a stone’s throw from Michelangelo’s impressive sculpture of Moses in the church of San Pietro in Vincoli. The day combined a retrospective review of THOR’s achievements and impact with a forward-looking perspective on the wider persistent identifier (PID) landscape.",
+      "type": "Abstract"
+    }
+  ],
+  "files": [
+    {
+      "mimeType": "text/markdown",
+      "url": "https://api.rogue-scholar.org/posts/10.59350/p000s-pth40.md"
+    },
+    {
+      "mimeType": "application/pdf",
+      "url": "https://api.rogue-scholar.org/posts/10.59350/p000s-pth40.pdf"
+    },
+    {
+      "mimeType": "application/epub+zip",
+      "url": "https://api.rogue-scholar.org/posts/10.59350/p000s-pth40.epub"
+    },
+    {
+      "mimeType": "application/xml",
+      "url": "https://api.rogue-scholar.org/posts/10.59350/p000s-pth40.xml"
+    }
+  ],
+  "fundingReferences": [
+    {
+      "funderName": "European Union’s Horizon 2020 research and innovation programme",
+      "funderIdentifier": "https://doi.org/10.13039/501100007601",
+      "funderIdentifierType": "Crossref Funder ID",
+      "awardTitle": null,
+      "awardNumber": "654039"
+    }
+  ],
+  "identifiers": [
+    {
+      "identifier": "4d51f3c9-151d-4030-9893-ddbca37f54bb",
+      "identifierType": "UUID"
+    }
+  ],
+  "language": "en",
+  "license": {
+    "id": "CC-BY-4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/legalcode"
+  },
+  "provider": "Crossref",
+  "publisher": { "name": "Project THOR" },
+  "subjects": [{ "subject": "Computer and information sciences" }],
+  "titles": [{ "title": "THOR’s last hurrah" }],
+  "url": "https://project-thor.eu/2017/11/24/thors-last-hurrah"
+}
