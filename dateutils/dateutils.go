@@ -8,6 +8,12 @@ import (
 	"time"
 )
 
+type DateStruct struct {
+	Year  string
+	Month string
+	Day   string
+}
+
 // Iso8601DateFormat is the ISO 8601 date format without time.
 const Iso8601DateFormat = "2006-01-02"
 
@@ -81,6 +87,27 @@ func GetDateParts(iso8601Time string) map[string][][]int {
 	day, _ := strconv.Atoi(iso8601Time[8:10])
 	dateParts := [][]int{{year, month, day}}
 	return map[string][][]int{"date-parts": dateParts}
+}
+
+// GetDateStruct returns struct with date (year, month, day) from an ISO 8601 date string
+func GetDateStruct(iso8601Time string) DateStruct {
+	if iso8601Time == "" {
+		return DateStruct{}
+	}
+
+	// optionally add missing zeros to the date string
+	if len(iso8601Time) < 10 {
+		iso8601Time = iso8601Time + strings.Repeat("0", 10-len(iso8601Time))
+	}
+	year := iso8601Time[0:4]
+	month := iso8601Time[5:7]
+	day := iso8601Time[8:10]
+
+	return DateStruct{
+		Year:  year,
+		Month: month,
+		Day:   day,
+	}
 }
 
 // GetDateFromUnixTimestamp returns a date string from a Unix timestamp

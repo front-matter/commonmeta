@@ -110,14 +110,21 @@ commonmeta 10.5555/12345678`,
 			output, jsErr = datacite.Write(data)
 		} else if to == "schemaorg" {
 			output, jsErr = schemaorg.Write(data)
+		} else if to == "crossrefxml" {
+			output, jsErr = crossrefxml.Write(data)
 		}
 
 		if err != nil {
 			fmt.Println(err)
 		}
-		var out bytes.Buffer
-		json.Indent(&out, output, "", "  ")
-		fmt.Println(out.String())
+
+		if to == "crossrefxml" {
+			fmt.Printf("%s\n", output)
+		} else {
+			var out bytes.Buffer
+			json.Indent(&out, output, "", "  ")
+			fmt.Println(out.String())
+		}
 
 		if jsErr != nil {
 			fmt.Println(jsErr)

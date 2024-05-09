@@ -56,19 +56,23 @@ type DOI struct {
 
 type DOIRecord struct {
 	XMLName  xml.Name `xml:"doi_record"`
-	Crossref struct {
-		Xmlns          string        `xml:"xmlns,attr"`
-		SchemaLocation string        `xml:"schemaLocation,attr"`
-		Book           Book          `xml:"book,omitempty"`
-		Conference     Conference    `xml:"conference,omitempty"`
-		Database       Database      `xml:"database,omitempty"`
-		Dissertation   Dissertation  `xml:"dissertation,omitempty"`
-		Journal        Journal       `xml:"journal,omitempty"`
-		PeerReview     PeerReview    `xml:"peer_review,omitempty"`
-		PostedContent  PostedContent `xml:"posted_content,omitempty"`
-		SAComponent    SAComponent   `xml:"sa_component,omitempty"`
-		Standard       Standard      `xml:"standard,omitempty"`
-	} `xml:"crossref"`
+	Crossref Crossref `xml:"crossref"`
+}
+
+type Crossref struct {
+	XMLName        xml.Name       `xml:"crossref"`
+	Xmlns          string         `xml:"xmlns,attr"`
+	SchemaLocation string         `xml:"schemaLocation,attr"`
+	Version        string         `xml:"version,attr"`
+	Book           *Book          `xml:"book,omitempty"`
+	Conference     *Conference    `xml:"conference,omitempty"`
+	Database       *Database      `xml:"database,omitempty"`
+	Dissertation   *Dissertation  `xml:"dissertation,omitempty"`
+	Journal        *Journal       `xml:"journal,omitempty"`
+	PeerReview     *PeerReview    `xml:"peer_review,omitempty"`
+	PostedContent  *PostedContent `xml:"posted_content,omitempty"`
+	SAComponent    *SAComponent   `xml:"sa_component,omitempty"`
+	Standard       *Standard      `xml:"standard,omitempty"`
 }
 
 type Abstract struct {
@@ -136,9 +140,9 @@ type Book struct {
 type BookMetadata struct {
 	XMLName         xml.Name          `xml:"book_metadata"`
 	Language        string            `xml:"language,attr"`
-	Contributors    Contributors      `xml:"contributors"`
-	Titles          Titles            `xml:"titles"`
-	Abstract        []Abstract        `xml:"abstract"`
+	Contributors    *Contributors     `xml:"contributors"`
+	Titles          *Titles           `xml:"titles"`
+	Abstract        *[]Abstract       `xml:"abstract"`
 	EditionNumber   int               `xml:"edition_number"`
 	PublicationDate []PublicationDate `xml:"publication_date"`
 	ISBN            []ISBN            `xml:"isbn"`
@@ -188,7 +192,7 @@ type Component struct {
 	RegAgency      string   `xml:"reg-agency,attr"`
 	ParentRelation string   `xml:"parent_relation,attr"`
 	Text           string   `xml:",chardata"`
-	Titles         Titles   `xml:"titles"`
+	Titles         *Titles  `xml:"titles"`
 	Format         Format   `xml:"format"`
 	DOIData        DOIData  `xml:"doi_data"`
 }
@@ -201,7 +205,7 @@ type ComponentList struct {
 
 type Conference struct {
 	XMLName             xml.Name            `xml:"conference"`
-	Contributors        Contributors        `xml:"contributors"`
+	Contributors        *Contributors       `xml:"contributors"`
 	EventMetadata       EventMetadata       `xml:"event_metadata"`
 	ProceedingsMetadata ProceedingsMetadata `xml:"proceedings_metadata"`
 	ConferencePaper     ConferencePaper     `xml:"conference_paper"`
@@ -210,14 +214,14 @@ type Conference struct {
 type ConferencePaper struct {
 	XMLName         xml.Name          `xml:"conference_paper"`
 	PublicationType string            `xml:"publication_type,attr"`
-	Contributors    Contributors      `xml:"contributors"`
-	Titles          Titles            `xml:"titles"`
+	Contributors    *Contributors     `xml:"contributors"`
+	Titles          *Titles           `xml:"titles"`
 	PublicationDate []PublicationDate `xml:"publication_date"`
 	Pages           Pages             `xml:"pages"`
 	PublisherItem   PublisherItem     `xml:"publisher_item"`
 	Crossmark       Crossmark         `xml:"crossmark"`
 	DOIData         DOIData           `xml:"doi_data"`
-	CitationList    CitationList      `xml:"citation_list"`
+	CitationList    *CitationList     `xml:"citation_list,omitempty"`
 }
 
 type ContentItem struct {
@@ -225,15 +229,15 @@ type ContentItem struct {
 	ComponentType       string            `xml:"component_type,attr"`
 	LevelSequenceNumber string            `xml:"level_sequence_number,attr"`
 	PublicationType     string            `xml:"publication_type,attr"`
-	Contributors        Contributors      `xml:"contributors"`
-	Titles              Titles            `xml:"titles"`
+	Contributors        *Contributors     `xml:"contributors"`
+	Titles              *Titles           `xml:"titles"`
 	PublicationDate     []PublicationDate `xml:"publication_date"`
 	Pages               struct {
 		FirstPage string `xml:"first_page"`
 		LastPage  string `xml:"last_page"`
 	} `xml:"pages"`
-	DOIData      DOIData      `xml:"doi_data"`
-	CitationList CitationList `xml:"citation_list"`
+	DOIData      DOIData       `xml:"doi_data"`
+	CitationList *CitationList `xml:"citation_list,omitempty"`
 }
 
 type CreationDate struct {
@@ -284,8 +288,8 @@ type DatabaseMetadata struct {
 }
 
 type Dataset struct {
-	Contributors Contributors `xml:"contributors"`
-	Titles       Titles       `xml:"titles"`
+	Contributors *Contributors `xml:"contributors"`
+	Titles       *Titles       `xml:"titles"`
 	DatabaseDate struct {
 		CreationDate CreationDate `xml:"creation_date"`
 	} `xml:"database_date"`
@@ -293,24 +297,24 @@ type Dataset struct {
 }
 
 type Dissertation struct {
-	XMLName         xml.Name     `xml:"dissertation"`
-	Language        string       `xml:"language"`
-	PublicationType string       `xml:"publication_type"`
-	PersonName      []PersonName `xml:"person_name"`
-	Titles          Titles       `xml:"titles"`
-	ApprovalDate    ApprovalDate `xml:"approval_date"`
-	Institution     Institution  `xml:"institution"`
-	Degree          string       `xml:"degree"`
-	DOIData         DOIData      `xml:"doi_data"`
-	CitationList    CitationList `xml:"citation_list"`
+	XMLName         xml.Name      `xml:"dissertation"`
+	Language        string        `xml:"language"`
+	PublicationType string        `xml:"publication_type"`
+	PersonName      []PersonName  `xml:"person_name"`
+	Titles          *Titles       `xml:"titles"`
+	ApprovalDate    ApprovalDate  `xml:"approval_date"`
+	Institution     Institution   `xml:"institution"`
+	Degree          string        `xml:"degree"`
+	DOIData         DOIData       `xml:"doi_data"`
+	CitationList    *CitationList `xml:"citation_list,omitempty"`
 }
 
 type DOIData struct {
-	XMLName    xml.Name   `xml:"doi_data"`
-	DOI        string     `xml:"doi"`
-	Timestamp  string     `xml:"timestamp"`
-	Resource   string     `xml:"resource"`
-	Collection Collection `xml:"collection"`
+	XMLName    xml.Name    `xml:"doi_data"`
+	DOI        string      `xml:"doi"`
+	Timestamp  string      `xml:"timestamp,omitempty"`
+	Resource   string      `xml:"resource"`
+	Collection *Collection `xml:"collection,omitempty"`
 }
 
 type EventMetadata struct {
@@ -368,9 +372,9 @@ type ItemNumber struct {
 // Journal represents a journal in Crossref XML metadata.
 type Journal struct {
 	XMLName         xml.Name        `xml:"journal"`
-	JournalIssue    JournalIssue    `xml:"journal_issue"`
-	JournalMetadata JournalMetadata `xml:"journal_metadata"`
-	JournalArticle  JournalArticle  `xml:"journal_article"`
+	JournalIssue    JournalIssue    `xml:"journal_issue,omitempty"`
+	JournalMetadata JournalMetadata `xml:"journal_metadata,omitempty"`
+	JournalArticle  JournalArticle  `xml:"journal_article,omitempty"`
 }
 
 // JournalArticle represents a journal article in Crossref XML metadata.
@@ -379,20 +383,20 @@ type JournalArticle struct {
 	Text                      string            `xml:",chardata"`
 	PublicationType           string            `xml:"publication_type,attr"`
 	ReferenceDistributionOpts string            `xml:"reference_distribution_opts,attr"`
-	Titles                    Titles            `xml:"titles"`
-	Contributors              Contributors      `xml:"contributors"`
+	Titles                    *Titles           `xml:"titles,omitempty"`
+	Contributors              *Contributors     `xml:"contributors,omitempty"`
 	PublicationDate           []PublicationDate `xml:"publication_date"`
 	PublisherItem             struct {
 		ItemNumber ItemNumber `xml:"item_number"`
 	} `xml:"publisher_item"`
-	Abstract         []Abstract       `xml:"jats:abstract"`
+	Abstract         *[]Abstract      `xml:"jats:abstract"`
 	Pages            Pages            `xml:"pages"`
 	ISSN             []ISSN           `xml:"issn"`
 	Program          []Program        `xml:"program"`
 	Crossmark        Crossmark        `xml:"crossmark"`
 	ArchiveLocations ArchiveLocations `xml:"archive_locations"`
 	DOIData          DOIData          `xml:"doi_data"`
-	CitationList     CitationList     `xml:"citation_list"`
+	CitationList     *CitationList    `xml:"citation_list,omitempty"`
 }
 
 type JournalIssue struct {
@@ -406,10 +410,10 @@ type JournalIssue struct {
 // JournalMetadata represents journal metadata in Crossref XML metadata.
 type JournalMetadata struct {
 	XMLName   xml.Name `xml:"journal_metadata"`
-	Language  string   `xml:"language,attr"`
-	FullTitle string   `xml:"full_title"`
-	ISSN      []ISSN   `xml:"issn"`
-	DOIData   DOIData  `xml:"doi_data"`
+	Language  string   `xml:"language,attr,omitempty"`
+	FullTitle string   `xml:"full_title,omitempty"`
+	ISSN      []ISSN   `xml:"issn,omitempty"`
+	DOIData   DOIData  `xml:"doi_data,omitempty"`
 }
 
 type JournalVolume struct {
@@ -420,6 +424,11 @@ type JournalVolume struct {
 type LicenseRef struct {
 	Text      string `xml:",chardata"`
 	AppliesTo string `xml:"applies_to,attr"`
+}
+
+type OriginalLanguageTitle struct {
+	Text     string `xml:",chardata"`
+	Language string `xml:"language,attr"`
 }
 
 type P struct {
@@ -434,17 +443,17 @@ type Pages struct {
 }
 
 type PeerReview struct {
-	XMLName                    xml.Name     `xml:"peer_review"`
-	Stage                      string       `xml:"stage,attr"`
-	RevisionRound              string       `xml:"revision-round,attr"`
-	Recommendation             string       `xml:"recommendation,attr"`
-	Type                       string       `xml:"type,attr"`
-	Contributors               Contributors `xml:"contributors"`
-	Titles                     Titles       `xml:"titles"`
-	ReviewDate                 ReviewDate   `xml:"review_date"`
-	CompetingInterestStatement string       `xml:"competing_interest_statement"`
-	Program                    []Program    `xml:"program"`
-	DOIData                    DOIData      `xml:"doi_data"`
+	XMLName                    xml.Name      `xml:"peer_review"`
+	Stage                      string        `xml:"stage,attr"`
+	RevisionRound              string        `xml:"revision-round,attr"`
+	Recommendation             string        `xml:"recommendation,attr"`
+	Type                       string        `xml:"type,attr"`
+	Contributors               *Contributors `xml:"contributors"`
+	Titles                     *Titles       `xml:"titles"`
+	ReviewDate                 ReviewDate    `xml:"review_date"`
+	CompetingInterestStatement string        `xml:"competing_interest_statement"`
+	Program                    []Program     `xml:"program"`
+	DOIData                    DOIData       `xml:"doi_data"`
 }
 
 // PersonName represents a person in Crossref XML metadata.
@@ -462,22 +471,20 @@ type PersonName struct {
 
 // PostedContent represents posted content in Crossref XML metadata.
 type PostedContent struct {
-	XMLName        xml.Name       `xml:"posted_content"`
-	Type           string         `xml:"type,attr"`
-	Language       string         `xml:"language,attr"`
-	GroupTitle     string         `xml:"group_title"`
-	Contributors   Contributors   `xml:"contributors"`
-	Titles         Titles         `xml:"titles"`
-	PostedDate     PostedDate     `xml:"posted_date"`
-	AcceptanceDate AcceptanceDate `xml:"acceptance_date"`
-	Institution    Institution    `xml:"institution"`
-	Abstract       []Abstract     `xml:"abstract"`
-	ItemNumber     ItemNumber     `xml:"item_number"`
-	Program        []Program      `xml:"program"`
-	DOIData        DOIData        `xml:"doi_data"`
-	CitationList   struct {
-		Citation []Citation `xml:"citation"`
-	} `xml:"citation_list"`
+	XMLName        xml.Name        `xml:"posted_content"`
+	Type           string          `xml:"type,attr"`
+	Language       string          `xml:"language,attr"`
+	GroupTitle     string          `xml:"group_title,omitempty"`
+	Contributors   *Contributors   `xml:"contributors,omitempty"`
+	Titles         *Titles         `xml:"titles,omitempty"`
+	PostedDate     PostedDate      `xml:"posted_date"`
+	AcceptanceDate *AcceptanceDate `xml:"acceptance_date,omitempty"`
+	Institution    Institution     `xml:"institution"`
+	Abstract       *[]Abstract     `xml:"abstract"`
+	ItemNumber     ItemNumber      `xml:"item_number,omitempty"`
+	Program        []Program       `xml:"program"`
+	DOIData        DOIData         `xml:"doi_data"`
+	CitationList   *CitationList   `xml:"citation_list,omitempty"`
 }
 
 type PostedDate struct {
@@ -572,7 +579,7 @@ type SAComponent struct {
 
 type SetMetadata struct {
 	XMLName      xml.Name     `xml:"set_metadata"`
-	Titles       Titles       `xml:"titles"`
+	Titles       *Titles      `xml:"titles"`
 	ISBN         []ISBN       `xml:"isbn"`
 	Contributors Contributors `xml:"contributors"`
 	DOIData      DOIData      `xml:"doi_data"`
@@ -585,13 +592,10 @@ type Standard struct {
 
 // Titles represents the titles in Crossref XML metadata.
 type Titles struct {
-	XMLName               xml.Name `xml:"titles"`
-	Title                 string   `xml:"title"`
-	Subtitle              string   `xml:"subtitle"`
-	OriginalLanguageTitle struct {
-		Text     string `xml:",chardata"`
-		Language string `xml:"language,attr"`
-	} `xml:"original_language_title"`
+	XMLName               xml.Name               `xml:"titles"`
+	Title                 string                 `xml:"title,omitempty"`
+	Subtitle              string                 `xml:"subtitle,omitempty"`
+	OriginalLanguageTitle *OriginalLanguageTitle `xml:"original_language_title,omitempty"`
 }
 
 // CRToCMMappings maps Crossref Query types to Commonmeta types
@@ -705,10 +709,10 @@ func Read(content Content) (commonmeta.Data, error) {
 
 	var containerTitle, issue, language, volume string
 	var accessIndicators Program
-	var abstract []Abstract
+	var abstract *[]Abstract
 	var archiveLocations ArchiveLocations
-	var citationList CitationList
-	var contributors Contributors
+	var citationList *CitationList
+	var contributors *Contributors
 	var customMetadata CustomMetadata
 	var doiData DOIData
 	var fundref Program
@@ -720,7 +724,7 @@ func Read(content Content) (commonmeta.Data, error) {
 	var program []Program
 	var relations Program
 	var subjects []string
-	var titles Titles
+	var titles *Titles
 
 	meta := content.Query.DOIRecord.Crossref
 
@@ -791,7 +795,7 @@ func Read(content Content) (commonmeta.Data, error) {
 		})
 		doiData = meta.Database.Dataset.DOIData
 	case "Dissertation":
-		contributors = Contributors{
+		contributors = &Contributors{
 			PersonName: meta.Dissertation.PersonName,
 		}
 		doiData = meta.Dissertation.DOIData
@@ -949,8 +953,8 @@ func Read(content Content) (commonmeta.Data, error) {
 		data.Date.Published = dateutils.GetDateFromCrossrefParts(publicationDate[i].Year, publicationDate[i].Month, publicationDate[i].Day)
 	}
 
-	if len(abstract) > 0 {
-		for _, v := range abstract {
+	if len(*abstract) > 0 {
+		for _, v := range *abstract {
 			var str []string
 			for _, p := range v.P {
 				str = append(str, p.Text)
@@ -1245,7 +1249,7 @@ func LoadAll(filename string) ([]commonmeta.Data, error) {
 	return data, nil
 }
 
-func GetContributors(contrib Contributors) ([]commonmeta.Contributor, error) {
+func GetContributors(contrib *Contributors) ([]commonmeta.Contributor, error) {
 	var contributors []commonmeta.Contributor
 
 	if len(contrib.PersonName) > 0 {
