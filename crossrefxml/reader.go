@@ -127,11 +127,11 @@ type Assertion struct {
 	XMLName    xml.Name    `xml:"assertion"`
 	Text       string      `xml:",chardata"`
 	Name       string      `xml:"name,attr"`
-	Provider   string      `xml:"provider,attr"`
-	Label      string      `xml:"label,attr"`
-	GroupName  string      `xml:"group_name,attr"`
-	GroupLabel string      `xml:"group_label,attr"`
-	Order      string      `xml:"order,attr"`
+	Provider   string      `xml:"provider,attr,omitempty"`
+	Label      string      `xml:"label,attr,omitempty"`
+	GroupName  string      `xml:"group_name,attr,omitempty"`
+	GroupLabel string      `xml:"group_label,attr,omitempty"`
+	Order      string      `xml:"order,attr,omitempty"`
 	Assertion  []Assertion `xml:"assertion"`
 }
 
@@ -348,6 +348,19 @@ type InstitutionID struct {
 	Text    string   `xml:",chardata"`
 }
 
+type InterWorkRelation struct {
+	XMLName          xml.Name `xml:"inter_work_relation"`
+	RelationshipType string   `xml:"relationship-type,attr"`
+	IdentifierType   string   `xml:"identifier-type,attr"`
+	Text             string   `xml:",chardata"`
+}
+
+type IntraWorkRelation struct {
+	Text             string `xml:",chardata"`
+	RelationshipType string `xml:"relationship-type,attr"`
+	IdentifierType   string `xml:"identifier-type,attr"`
+}
+
 // ISBN represents a ISSN in Crossref XML metadata.
 type ISBN struct {
 	XMLName   xml.Name `xml:"isbn"`
@@ -515,10 +528,10 @@ type ProceedingsMetadata struct {
 type Program struct {
 	XMLName     xml.Name      `xml:"program"`
 	Text        string        `xml:",chardata"`
-	Fr          string        `xml:"fr,attr"`
-	Name        string        `xml:"name,attr"`
-	Ai          string        `xml:"ai,attr"`
-	Rel         string        `xml:"rel,attr"`
+	Fr          string        `xml:"fr,attr,omitempty"`
+	Name        string        `xml:"name,attr,omitempty"`
+	Ai          string        `xml:"ai,attr,omitempty"`
+	Rel         string        `xml:"rel,attr,omitempty"`
 	Assertion   []Assertion   `xml:"assertion"`
 	LicenseRef  []LicenseRef  `xml:"license_ref"`
 	RelatedItem []RelatedItem `xml:"related_item"`
@@ -549,19 +562,11 @@ type PublisherItem struct {
 }
 
 type RelatedItem struct {
-	XMLName           xml.Name `xml:"related_item"`
-	Text              string   `xml:",chardata"`
-	Description       string   `xml:"description"`
-	InterWorkRelation struct {
-		Text             string `xml:",chardata"`
-		IdentifierType   string `xml:"identifier-type,attr"`
-		RelationshipType string `xml:"relationship-type,attr"`
-	} `xml:"inter_work_relation"`
-	IntraWorkRelation struct {
-		Text             string `xml:",chardata"`
-		IdentifierType   string `xml:"identifier-type,attr"`
-		RelationshipType string `xml:"relationship-type,attr"`
-	} `xml:"intra_work_relation"`
+	XMLName           xml.Name           `xml:"related_item"`
+	Text              string             `xml:",chardata"`
+	Description       string             `xml:"description,omitempty"`
+	InterWorkRelation *InterWorkRelation `xml:"inter_work_relation,omitempty"`
+	IntraWorkRelation *IntraWorkRelation `xml:"intra_work_relation,omitempty"`
 }
 
 // Resource represents a resource in Crossref XML metadata.
@@ -629,6 +634,25 @@ var CRToCMMappings = map[string]string{
 	"standard_series": "StandardSeries",
 	// "standard_content": "StandardComponent",
 	// "prepublication":
+}
+
+var InterWorkRelationTypes = []string{
+	"IsPartOf",
+	"HasPart",
+	"IsReviewOf",
+	"HasReview",
+	"IsRelatedMaterial",
+	"HasRelatedMaterial",
+}
+
+var IntraWorkRelationTypes = []string{
+	"IsIdenticalTo",
+	"IsPreprintOf",
+	"HasPreprint",
+	"IsTranslationOf",
+	"HasTranslation",
+	"IsVersionOf",
+	"HasVersion",
 }
 
 // Fetch gets the metadata for a single work from the Crossref API and converts it to the Commonmeta format

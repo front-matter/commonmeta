@@ -3,6 +3,7 @@ package crossrefxml
 import (
 	"encoding/xml"
 	"fmt"
+	"slices"
 	"strings"
 
 	"github.com/front-matter/commonmeta/commonmeta"
@@ -141,12 +142,92 @@ func Convert(data commonmeta.Data) (*Crossref, error) {
 	}
 
 	program := []*Program{}
+	if len(data.FundingReferences) > 0 {
+		assertion := []Assertion{}
+		for _, fundingReference := range data.FundingReferences {
+			a := []Assertion{}
+			f := Assertion{}
+			fi := Assertion{}
+			if fundingReference.FunderIdentifier != "" {
+				fi = Assertion{
+					Name: "funder_identifier",
+					Text: fundingReference.FunderIdentifier,
+				}
+			}
+			f = Assertion{
+				Name:      "funder_name",
+				Text:      fundingReference.FunderName,
+				Assertion: []Assertion{fi},
+			}
+			a = append(a, f)
+			if fundingReference.AwardNumber != "" {
+				f = Assertion{
+					Name: "award_number",
+					Text: fundingReference.AwardNumber,
+				}
+				a = append(a, f)
+			}
+			fg := Assertion{
+				Name:      "fundgroup",
+				Assertion: a,
+			}
+			assertion = append(assertion, fg)
+		}
+		program = append(program, &Program{
+			Name:      "fundref",
+			Assertion: assertion,
+		})
+	}
+
+	if data.License.URL != "" {
+		licenseRef := []LicenseRef{}
+		licenseRef = append(licenseRef, LicenseRef{
+			AppliesTo: "vor",
+			Text:      data.License.URL,
+		})
+		licenseRef = append(licenseRef, LicenseRef{
+			AppliesTo: "tdm",
+			Text:      data.License.URL,
+		})
+		program = append(program, &Program{
+			Name:       "AccessIndicators",
+			LicenseRef: licenseRef,
+		})
+	}
 	if len(data.Relations) > 0 {
+		relatedItem := []RelatedItem{}
 		for _, relation := range data.Relations {
-			if relation.Type == "IsPartOf" {
-				program = append(program, &Program{})
+			id, identifierType := utils.ValidateID(relation.ID)
+			if identifierType == "URL" {
+				identifierType = "uri"
+			}
+			if slices.Contains(InterWorkRelationTypes, relation.Type) && id != "" {
+				interWorkRelation := &InterWorkRelation{
+					RelationshipType: relation.Type,
+					IdentifierType:   strings.ToLower(identifierType),
+					Text:             id,
+				}
+				r := RelatedItem{
+					InterWorkRelation: interWorkRelation,
+				}
+				relatedItem = append(relatedItem, r)
+			}
+			if slices.Contains(IntraWorkRelationTypes, relation.Type) && id != "" {
+				intraWorkRelation := &IntraWorkRelation{
+					RelationshipType: relation.Type,
+					IdentifierType:   strings.ToLower(identifierType),
+					Text:             id,
+				}
+				r := RelatedItem{
+					IntraWorkRelation: intraWorkRelation,
+				}
+				relatedItem = append(relatedItem, r)
 			}
 		}
+		program = append(program, &Program{
+			Name:        "relations",
+			RelatedItem: relatedItem,
+		})
 	}
 
 	citationList := CitationList{}
@@ -217,9 +298,6 @@ func Convert(data commonmeta.Data) (*Crossref, error) {
 	case "JournalArticle":
 		c.Journal = &Journal{}
 	}
-	// required properties
-
-	// optional properties
 
 	return c, nil
 }

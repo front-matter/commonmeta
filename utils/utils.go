@@ -317,6 +317,20 @@ func ISSNAsURL(issn string) string {
 	return fmt.Sprintf("https://portal.issn.org/resource/ISSN/%s", issn)
 }
 
+// ValidateISSN validates an ISSN
+func ValidateISSN(issn string) (string, bool) {
+	r, err := regexp.Compile(`^(?:https://portal\.issn\.org/resource/ISSN/)?(\d{4}\-\d{3}(\d|x|X))$`)
+	if err != nil {
+		log.Printf("Error compiling regex: %v", err)
+		return "", false
+	}
+	matched := r.FindStringSubmatch(issn)
+	if len(matched) == 0 {
+		return "", false
+	}
+	return matched[1], true
+}
+
 // Sanitize removes all HTML tags except for a whitelist of allowed tags. Used for
 // title and description fields.
 func Sanitize(html string) string {
@@ -425,6 +439,36 @@ func GetROR(ror string) (ROR, error) {
 		fmt.Println("error:", err)
 	}
 	return content, err
+}
+
+// ValidateID validates an identifier and returns the type
+// Can be DOI, UUID, ISSN, ORCID, ROR, URL
+func ValidateID(id string) (string, string) {
+	doi, ok := doiutils.ValidateDOI(id)
+	if ok {
+		return doi, "DOI"
+	}
+	uuid, ok := ValidateUUID(id)
+	if ok {
+		return uuid, "UUID"
+	}
+	orcid, ok := ValidateORCID(id)
+	if ok {
+		return orcid, "ORCID"
+	}
+	ror, ok := ValidateROR(id)
+	if ok {
+		return ror, "ROR"
+	}
+	issn, ok := ValidateISSN(id)
+	if ok {
+		return issn, "ISSN"
+	}
+	url := ValidateURL(id)
+	if url != "" {
+		return id, "URL"
+	}
+	return "", ""
 }
 
 // ValidateURL validates a URL and checks if it is a DOI

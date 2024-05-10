@@ -78,6 +78,13 @@ func ExampleISSNAsURL() {
 	// https://portal.issn.org/resource/ISSN/2146-8427
 }
 
+func ExampleValidateISSN() {
+	s, _ := utils.ValidateISSN("https://portal.issn.org/resource/ISSN/2146-8427")
+	fmt.Println(s)
+	// Output:
+	// 2146-8427
+}
+
 func TestNormalizeORCID(t *testing.T) {
 	t.Parallel()
 	type testCase struct {
@@ -227,6 +234,32 @@ func TestValidateURL(t *testing.T) {
 		if tc.want != got {
 			t.Errorf("Validate URL(%v): want %v, got %v",
 				tc.input, tc.want, got)
+		}
+	}
+}
+
+func TestValidateID(t *testing.T) {
+	t.Parallel()
+	type testCase struct {
+		input string
+		want  string
+	}
+	testCases := []testCase{
+		{input: "https://doi.org/10.7554/eLife.01567", want: "DOI"},
+		{input: "10.1101/097196", want: "DOI"},
+		{input: "2491b2d5-7daf-486b-b78b-e5aab48064c1", want: "UUID"},
+		{input: "https://ror.org/0342dzm54", want: "ROR"},
+		{input: "https://orcid.org/0000-0002-1825-0097", want: "ORCID"},
+		{input: "https://datadryad.org/stash/dataset/doi:10.5061/dryad.8515", want: "URL"},
+		{input: "https://portal.issn.org/resource/ISSN/1094-4087", want: "ISSN"},
+		{input: "2749-9952", want: "ISSN"},
+		{input: "dryad.8515", want: ""},
+	}
+	for _, tc := range testCases {
+		got, type_ := utils.ValidateID(tc.input)
+		if tc.want != type_ {
+			t.Errorf("Validate ID(%v): want %v, got %v (%v)",
+				tc.input, tc.want, got, type_)
 		}
 	}
 }
