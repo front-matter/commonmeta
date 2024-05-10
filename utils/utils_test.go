@@ -247,3 +247,10 @@ func ExampleUnescapeUTF8() {
 	// Output:
 	// capable of signi"cance.
 }
+
+func ExampleCamelCaseToWords() {
+	s := utils.CamelCaseToWords("earthAndRelatedEnvironmentalSciences")
+	fmt.Println(s)
+	// Output:
+	// Earth and related environmental sciences
+}

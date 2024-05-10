@@ -451,3 +451,12 @@ func ValidateUUID(uuid string) (string, bool) {
 	}
 	return r.FindString(uuid), true
 }
+
+func CamelCaseToWords(str string) string {
+	var matchFirstCap = regexp.MustCompile("(.)([A-Z][a-z]+)")
+	var matchAllCap = regexp.MustCompile("([a-z0-9])([A-Z])")
+
+	words := matchFirstCap.ReplaceAllString(str, "${1} ${2}")
+	words = matchAllCap.ReplaceAllString(words, "${1} ${2}")
+	return strings.ToUpper(words[:1]) + strings.ToLower(words[1:])
+}

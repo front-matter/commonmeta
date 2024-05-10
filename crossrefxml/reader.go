@@ -50,8 +50,9 @@ type CRMItem struct {
 }
 
 type DOI struct {
-	Type string `xml:"type,attr"`
-	Text string `xml:",chardata"`
+	Type     string `xml:"type,attr,omitempty"`
+	Provider string `xml:"provider,attr,omitempty"`
+	Text     string `xml:",chardata"`
 }
 
 type DOIRecord struct {
@@ -78,8 +79,8 @@ type Crossref struct {
 type Abstract struct {
 	XMLName      xml.Name `xml:"abstract"`
 	Xmlns        string   `xml:"xmlns,attr"`
-	Title        string   `xml:"title"`
-	AbstractType string   `xml:"abstract-type,attr"`
+	Title        string   `xml:"title,attr,omitempty"`
+	AbstractType string   `xml:"abstract-type,attr,omitempty"`
 	Text         string   `xml:",chardata"`
 	P            []P      `xml:"p"`
 }
@@ -96,6 +97,11 @@ type AcceptanceDate struct {
 type Affiliation struct {
 	XMLName xml.Name `xml:"affiliation"`
 	Text    string   `xml:",chardata"`
+}
+
+type Affiliations struct {
+	XMLName     xml.Name      `xml:"affiliations"`
+	Institution []Institution `xml:"institution"`
 }
 
 type ApprovalDate struct {
@@ -162,19 +168,16 @@ type BookSetMetadata struct {
 }
 
 type Citation struct {
-	XMLName      xml.Name `xml:"citation"`
-	Key          string   `xml:"key,attr"`
-	JournalTitle string   `xml:"journal_title"`
-	Author       string   `xml:"author"`
-	Volume       string   `xml:"volume"`
-	FirstPage    string   `xml:"first_page"`
-	CYear        string   `xml:"cYear"`
-	ArticleTitle string   `xml:"article_title"`
-	Doi          struct {
-		Text     string `xml:",chardata"`
-		Provider string `xml:"provider,attr"`
-	} `xml:"doi"`
-	UnstructedCitation string `xml:"unstructured_citation"`
+	XMLName            xml.Name `xml:"citation"`
+	Key                string   `xml:"key,attr"`
+	JournalTitle       string   `xml:"journal_title,omitempty"`
+	Author             string   `xml:"author,omitempty"`
+	Volume             string   `xml:"volume,omitempty"`
+	FirstPage          string   `xml:"first_page,omitempty"`
+	CYear              string   `xml:"cYear,omitempty"`
+	ArticleTitle       string   `xml:"article_title,omitempty"`
+	DOI                *DOI     `xml:"doi,omitempty"`
+	UnstructedCitation string   `xml:"unstructured_citation,omitempty"`
 }
 
 type CitationList struct {
@@ -265,15 +268,15 @@ type Crossmark struct {
 			Domain string `xml:"domain"`
 		} `xml:"crossmark_domain"`
 	} `xml:"crossmark_domains"`
-	CrossmarkDomainExclusive string         `xml:"crossmark_domain_exclusive"`
-	CustomMetadata           CustomMetadata `xml:"custom_metadata"`
+	CrossmarkDomainExclusive string          `xml:"crossmark_domain_exclusive"`
+	CustomMetadata           *CustomMetadata `xml:"custom_metadata"`
 }
 
 type CustomMetadata struct {
 	XMLName   xml.Name    `xml:"custom_metadata"`
 	Text      string      `xml:",chardata"`
 	Assertion []Assertion `xml:"assertion"`
-	Program   []Program   `xml:"program"`
+	Program   []*Program  `xml:"program"`
 }
 
 type Database struct {
@@ -333,13 +336,16 @@ type Format struct {
 }
 
 type Institution struct {
-	XMLName          xml.Name `xml:"institution"`
-	InstitutionName  string   `xml:"institution_name"`
-	InstitutionPlace string   `xml:"institution_place"`
-	InstitutionID    struct {
-		Text   string `xml:",chardata"`
-		IDType string `xml:"id_type,attr"`
-	} `xml:"institution_id"`
+	XMLName          xml.Name       `xml:"institution"`
+	InstitutionName  string         `xml:"institution_name"`
+	InstitutionPlace string         `xml:"institution_place,omitempty"`
+	InstitutionID    *InstitutionID `xml:"institution_id,omitempty"`
+}
+
+type InstitutionID struct {
+	XMLName xml.Name `xml:"institution_id"`
+	IDType  string   `xml:"id_type,attr,omitempty"`
+	Text    string   `xml:",chardata"`
 }
 
 // ISBN represents a ISSN in Crossref XML metadata.
@@ -358,7 +364,7 @@ type ISSN struct {
 
 type Item struct {
 	XMLName  xml.Name `xml:"item"`
-	Crawler  string   `xml:"crawler,attr"`
+	Crawler  string   `xml:"crawler,attr,omitempty"`
 	Resource Resource `xml:"resource"`
 }
 
@@ -392,7 +398,7 @@ type JournalArticle struct {
 	Abstract         *[]Abstract      `xml:"jats:abstract"`
 	Pages            Pages            `xml:"pages"`
 	ISSN             []ISSN           `xml:"issn"`
-	Program          []Program        `xml:"program"`
+	Program          []*Program       `xml:"program"`
 	Crossmark        Crossmark        `xml:"crossmark"`
 	ArchiveLocations ArchiveLocations `xml:"archive_locations"`
 	DOIData          DOIData          `xml:"doi_data"`
@@ -452,7 +458,7 @@ type PeerReview struct {
 	Titles                     *Titles       `xml:"titles"`
 	ReviewDate                 ReviewDate    `xml:"review_date"`
 	CompetingInterestStatement string        `xml:"competing_interest_statement"`
-	Program                    []Program     `xml:"program"`
+	Program                    []*Program    `xml:"program"`
 	DOIData                    DOIData       `xml:"doi_data"`
 }
 
@@ -464,9 +470,9 @@ type PersonName struct {
 	Text            string        `xml:",chardata"`
 	GivenName       string        `xml:"given_name"`
 	Surname         string        `xml:"surname"`
-	ORCID           string        `xml:"ORCID"`
-	Affiliations    []Institution `xml:"affiliations>institution"`
-	Affiliation     string        `xml:"affiliation"`
+	Affiliations    *Affiliations `xml:"affiliations,omitempty"`
+	Affiliation     string        `xml:"affiliation,omitempty"`
+	ORCID           string        `xml:"ORCID,omitempty"`
 }
 
 // PostedContent represents posted content in Crossref XML metadata.
@@ -479,10 +485,10 @@ type PostedContent struct {
 	Titles         *Titles         `xml:"titles,omitempty"`
 	PostedDate     PostedDate      `xml:"posted_date"`
 	AcceptanceDate *AcceptanceDate `xml:"acceptance_date,omitempty"`
-	Institution    Institution     `xml:"institution"`
-	Abstract       *[]Abstract     `xml:"abstract"`
+	Institution    *Institution    `xml:"institution,omitempty"`
 	ItemNumber     ItemNumber      `xml:"item_number,omitempty"`
-	Program        []Program       `xml:"program"`
+	Abstract       *[]Abstract     `xml:"abstract"`
+	Program        []*Program      `xml:"program"`
 	DOIData        DOIData         `xml:"doi_data"`
 	CitationList   *CitationList   `xml:"citation_list,omitempty"`
 }
@@ -713,7 +719,7 @@ func Read(content Content) (commonmeta.Data, error) {
 	var archiveLocations ArchiveLocations
 	var citationList *CitationList
 	var contributors *Contributors
-	var customMetadata CustomMetadata
+	var customMetadata *CustomMetadata
 	var doiData DOIData
 	var fundref Program
 	var isbn []ISBN
@@ -721,8 +727,8 @@ func Read(content Content) (commonmeta.Data, error) {
 	var itemNumber ItemNumber
 	var pages Pages
 	var publicationDate []PublicationDate
-	var program []Program
-	var relations Program
+	var program []*Program
+	var relations *Program
 	var subjects []string
 	var titles *Titles
 
@@ -870,15 +876,15 @@ func Read(content Content) (commonmeta.Data, error) {
 	program = append(program, customMetadata.Program...)
 
 	if len(program) > 0 {
-		i := slices.IndexFunc(program, func(c Program) bool { return c.Name == "AccessIndicators" })
+		i := slices.IndexFunc(program, func(c *Program) bool { return c.Name == "AccessIndicators" })
 		if i != -1 {
-			accessIndicators = program[i]
+			accessIndicators = *program[i]
 		}
-		j := slices.IndexFunc(program, func(c Program) bool { return c.Name == "fundref" })
+		j := slices.IndexFunc(program, func(c *Program) bool { return c.Name == "fundref" })
 		if j != -1 {
-			fundref = program[j]
+			fundref = *program[j]
 		}
-		k := slices.IndexFunc(program, func(c Program) bool { return c.Name == "" })
+		k := slices.IndexFunc(program, func(c *Program) bool { return c.Name == "" })
 		if k != -1 {
 			relations = program[k]
 		}
@@ -1066,7 +1072,7 @@ func Read(content Content) (commonmeta.Data, error) {
 		for _, v := range citationList.Citation {
 			reference := commonmeta.Reference{
 				Key:             v.Key,
-				ID:              doiutils.NormalizeDOI(v.Doi.Text),
+				ID:              doiutils.NormalizeDOI(v.DOI.Text),
 				Title:           v.ArticleTitle,
 				PublicationYear: v.CYear,
 				Unstructured:    v.UnstructedCitation,
@@ -1262,16 +1268,16 @@ func GetContributors(contrib *Contributors) ([]commonmeta.Contributor, error) {
 			}
 			Type := "Person"
 			var affiliations []commonmeta.Affiliation
-			if len(v.Affiliations) > 0 {
-				for _, a := range v.Affiliations {
+			if len(v.Affiliations.Institution) > 0 {
+				for _, i := range v.Affiliations.Institution {
 					var ID string
-					if a.InstitutionID.Text != "" {
-						ID = utils.NormalizeROR(a.InstitutionID.Text)
+					if i.InstitutionID.Text != "" {
+						ID = utils.NormalizeROR(i.InstitutionID.Text)
 					}
-					if a.InstitutionName != "" {
+					if i.InstitutionName != "" {
 						affiliations = append(affiliations, commonmeta.Affiliation{
 							ID:   ID,
-							Name: a.InstitutionName,
+							Name: i.InstitutionName,
 						})
 					}
 				}
