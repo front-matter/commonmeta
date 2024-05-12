@@ -15,7 +15,7 @@ Commonmeta reads and/or writes these metadata formats:
 | Format                                                                                           | Name          | Content Type                           | Read    | Write   |
 | ------------------------------------------------------------------------------------------------ | ------------- | -------------------------------------- | ------- | ------- |
 | [Commonmeta](https://docs.commonmeta.org)  | commonmeta    | application/vnd.commonmeta+json        | yes     | yes     |
-| [CrossRef XML](https://www.crossref.org/schema/documentation/unixref1.1/unixref1.1.html) | crossrefxml      | application/vnd.crossref.unixref+xml   | yes | later |
+| [CrossRef XML](https://www.crossref.org/schema/documentation/unixref1.1/unixref1.1.html) | crossrefxml      | application/vnd.crossref.unixref+xml   | yes | yes |
 | [Crossref](https://api.crossref.org)                                                             | crossref | application/vnd.crossref+json          | yes     | n/a     |
 | [DataCite](https://api.datacite.org/)                                                            | datacite | application/vnd.datacite.datacite+json | yes     | yes |
 | [Schema.org (in JSON-LD)](http://schema.org/)                                                    | schemaorg    | application/vnd.schemaorg.ld+json      | later     | yes   |

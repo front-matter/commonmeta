@@ -17,6 +17,28 @@ import (
 
 type StringMap map[string]string
 
+type Depositor struct {
+	DepositorName string `xml:"depositor_name"`
+	Email         string `xml:"email_address"`
+}
+
+type Head struct {
+	DOIBatchID string    `xml:"doi_batch_id"`
+	Timestamp  string    `xml:"timestamp"`
+	Depositor  Depositor `xml:"depositor"`
+	Registrant string    `xml:"registrant"`
+}
+
+type DOIBatch struct {
+	XMLName        xml.Name   `xml:"doi_batch"`
+	Xmlns          string     `xml:"xmlns,attr"`
+	Version        string     `xml:"version,attr"`
+	Xsi            string     `xml:"xsi,attr"`
+	SchemaLocation string     `xml:"schemaLocation,attr"`
+	Head           Head       `xml:"head"`
+	Body           []Crossref `xml:"body"`
+}
+
 type Account struct {
 	Depositor  string `xml:"depositor"`
 	Email      string `xml:"email"`
@@ -49,8 +71,8 @@ var CMToCRMappings = map[string]string{
 }
 
 // Convert converts Commonmeta metadata to Crossrefxml metadata
-func Convert(data commonmeta.Data) (*Crossref, error) {
-	c := &Crossref{}
+func Convert(data commonmeta.Data) (Crossref, error) {
+	c := Crossref{}
 	abstract := []Abstract{}
 	if len(data.Descriptions) > 0 {
 		for _, description := range data.Descriptions {
@@ -308,33 +330,13 @@ func Convert(data commonmeta.Data) (*Crossref, error) {
 
 // Write writes Crossrefxml metadata.
 func Write(data commonmeta.Data, account Account) ([]byte, []gojsonschema.ResultError) {
-	type Depositor struct {
-		DepositorName string `xml:"depositor_name"`
-		Email         string `xml:"email_address"`
-	}
-
-	type Head struct {
-		DOIBatchID string    `xml:"doi_batch_id"`
-		Timestamp  string    `xml:"timestamp"`
-		Depositor  Depositor `xml:"depositor"`
-		Registrant string    `xml:"registrant"`
-	}
-
-	type DOIBatch struct {
-		XMLName        xml.Name `xml:"doi_batch"`
-		Xmlns          string   `xml:"xmlns,attr"`
-		Version        string   `xml:"version,attr"`
-		Xsi            string   `xml:"xsi,attr"`
-		SchemaLocation string   `xml:"schemaLocation,attr"`
-		Head           Head     `xml:"head"`
-		Body           Crossref `xml:"body"`
-	}
-
 	crossref, err := Convert(data)
 	if err != nil {
 		fmt.Println(err)
 	}
 
+	body := []Crossref{}
+	body = append(body, crossref)
 	depositor := Depositor{
 		DepositorName: account.Depositor,
 		Email:         account.Email,
@@ -352,13 +354,51 @@ func Write(data commonmeta.Data, account Account) ([]byte, []gojsonschema.Result
 		Xsi:            "http://www.w3.org/2001/XMLSchema-instance",
 		SchemaLocation: "http://www.crossref.org/schema/5.3.1 ",
 		Head:           head,
-		Body:           *crossref,
+		Body:           body,
 	}
 
 	output, err := xml.MarshalIndent(doiBatch, "", "  ")
 	if err == nil {
 		fmt.Println(err)
 	}
+	output = []byte(xml.Header + string(output))
+	return output, nil
+}
+
+// WriteAll writes a list of commonmeta metadata.
+func WriteAll(list []commonmeta.Data, account Account) ([]byte, []gojsonschema.ResultError) {
+	var body []Crossref
+	for _, data := range list {
+		crossref, err := Convert(data)
+		if err != nil {
+			fmt.Println(err)
+		}
+		body = append(body, crossref)
+	}
+	depositor := Depositor{
+		DepositorName: account.Depositor,
+		Email:         account.Email,
+	}
+	uuid, _ := uuid.NewRandom()
+	head := Head{
+		DOIBatchID: uuid.String(),
+		Timestamp:  time.Now().Format(dateutils.CrossrefDateTimeFormat),
+		Depositor:  depositor,
+		Registrant: account.Registrant,
+	}
+	doiBatch := DOIBatch{
+		Xmlns:          "http://www.crossref.org/schema/5.3.1",
+		Version:        "5.3.1",
+		Xsi:            "http://www.w3.org/2001/XMLSchema-instance",
+		SchemaLocation: "http://www.crossref.org/schema/5.3.1 ",
+		Head:           head,
+		Body:           body,
+	}
+
+	output, _ := xml.MarshalIndent(doiBatch, "", "  ")
+	// if err == nil {
+	// 	// fmt.Println(err)
+	// }
 	output = []byte(xml.Header + string(output))
 	return output, nil
 }

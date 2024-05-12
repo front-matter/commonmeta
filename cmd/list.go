@@ -58,6 +58,10 @@ var listCmd = &cobra.Command{
 		hasArchive, _ := cmd.Flags().GetBool("has-archive")
 		sample := false
 
+		depositor, _ := cmd.Flags().GetString("depositor")
+		email, _ := cmd.Flags().GetString("email")
+		registrant, _ := cmd.Flags().GetString("registrant")
+
 		if input != "" {
 			_, err = os.Stat(input)
 			if err != nil {
@@ -93,6 +97,13 @@ var listCmd = &cobra.Command{
 			output, jsErr = csl.WriteAll(data)
 		} else if to == "datacite" {
 			output, jsErr = datacite.WriteAll(data)
+		} else if to == "crossrefxml" {
+			account := crossrefxml.Account{
+				Depositor:  depositor,
+				Email:      email,
+				Registrant: registrant,
+			}
+			output, jsErr = crossrefxml.WriteAll(data, account)
 		} else if to == "schemaorg" {
 			output, jsErr = schemaorg.WriteAll(data)
 		}
@@ -100,9 +111,14 @@ var listCmd = &cobra.Command{
 		if err != nil {
 			fmt.Println(err)
 		}
-		var out bytes.Buffer
-		json.Indent(&out, output, "", "  ")
-		fmt.Println(out.String())
+
+		if to == "crossrefxml" {
+			fmt.Printf("%s\n", output)
+		} else {
+			var out bytes.Buffer
+			json.Indent(&out, output, "", "  ")
+			fmt.Println(out.String())
+		}
 
 		if jsErr != nil {
 			fmt.Println(jsErr)
