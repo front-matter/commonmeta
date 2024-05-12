@@ -57,14 +57,14 @@ type DOI struct {
 
 type DOIRecord struct {
 	XMLName  xml.Name `xml:"doi_record"`
-	Crossref Crossref `xml:"crossref"`
+	Crossref Crossref `xml:"body"`
 }
 
 type Crossref struct {
-	XMLName        xml.Name       `xml:"crossref"`
-	Xmlns          string         `xml:"xmlns,attr"`
-	SchemaLocation string         `xml:"schemaLocation,attr"`
-	Version        string         `xml:"version,attr"`
+	XMLName        xml.Name       `xml:"body"`
+	Xmlns          string         `xml:"xmlns,attr,omitempty"`
+	SchemaLocation string         `xml:"schemaLocation,attr,omitempty"`
+	Version        string         `xml:"version,attr,omitempty"`
 	Book           *Book          `xml:"book,omitempty"`
 	Conference     *Conference    `xml:"conference,omitempty"`
 	Database       *Database      `xml:"database,omitempty"`

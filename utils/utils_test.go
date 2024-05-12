@@ -287,3 +287,17 @@ func ExampleCamelCaseToWords() {
 	// Output:
 	// Earth and related environmental sciences
 }
+
+func ExampleEncodeDOI() {
+	s := utils.EncodeDOI("10.73731")
+	fmt.Println(s)
+	// Output:
+	// https://doi.org/10.73731/rxadv-a6v29
+}
+
+func ExampleDecodeDOI() {
+	i := utils.DecodeDOI("https://doi.org/10.73731/rxadv-a6v29")
+	fmt.Println(i)
+	// Output:
+	// 10.73731
+}

@@ -40,6 +40,10 @@ commonmeta 10.5555/12345678`,
 		var err error
 		var data commonmeta.Data
 
+		depositor, _ := cmd.Flags().GetString("depositor")
+		email, _ := cmd.Flags().GetString("email")
+		registrant, _ := cmd.Flags().GetString("registrant")
+
 		if len(args) == 0 {
 			fmt.Println("Please provide an input")
 			return
@@ -111,7 +115,12 @@ commonmeta 10.5555/12345678`,
 		} else if to == "schemaorg" {
 			output, jsErr = schemaorg.Write(data)
 		} else if to == "crossrefxml" {
-			output, jsErr = crossrefxml.Write(data)
+			account := crossrefxml.Account{
+				Depositor:  depositor,
+				Email:      email,
+				Registrant: registrant,
+			}
+			output, jsErr = crossrefxml.Write(data, account)
 		}
 
 		if err != nil {

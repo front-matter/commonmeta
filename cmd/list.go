@@ -15,6 +15,7 @@ import (
 
 	"github.com/front-matter/commonmeta/crossref"
 	"github.com/front-matter/commonmeta/crossrefxml"
+	"github.com/front-matter/commonmeta/jsonfeed"
 
 	"github.com/front-matter/commonmeta/datacite"
 
@@ -72,6 +73,8 @@ var listCmd = &cobra.Command{
 			data, err = crossrefxml.LoadAll(str)
 		} else if str != "" && from == "datacite" {
 			data, err = datacite.LoadAll(str)
+		} else if str != "" && from == "jsonfeed" {
+			data, err = jsonfeed.LoadAll(str)
 		} else if from == "crossref" {
 			data, err = crossref.FetchAll(number, member, type_, sample, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
 		} else if from == "datacite" {

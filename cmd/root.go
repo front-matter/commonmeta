@@ -47,4 +47,11 @@ func init() {
 	rootCmd.PersistentFlags().BoolP("has-award", "", false, "has award")
 	rootCmd.PersistentFlags().BoolP("has-license", "", false, "has license")
 	rootCmd.PersistentFlags().BoolP("has-archive", "", false, "has archive")
+
+	// needed for DOI registration
+	rootCmd.PersistentFlags().StringP("prefix", "", "", "DOI prefix")
+
+	rootCmd.PersistentFlags().StringP("depositor", "", "", "Crossref account depositor")
+	rootCmd.PersistentFlags().StringP("email", "", "", "Crossref account email")
+	rootCmd.PersistentFlags().StringP("registrant", "", "", "Crossref account registrant")
 }

@@ -12,8 +12,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/front-matter/commonmeta/crockford"
 	"github.com/front-matter/commonmeta/doiutils"
-
 	"github.com/microcosm-cc/bluemonday"
 )
 
@@ -503,4 +503,23 @@ func CamelCaseToWords(str string) string {
 	words := matchFirstCap.ReplaceAllString(str, "${1} ${2}")
 	words = matchAllCap.ReplaceAllString(words, "${1} ${2}")
 	return strings.ToUpper(words[:1]) + strings.ToLower(words[1:])
+}
+
+func EncodeDOI(prefix string) string {
+	suffix := crockford.Generate(10, 5, true)
+	return fmt.Sprintf("https://doi.org/%s/%s", prefix, suffix)
+}
+
+func DecodeDOI(doi string) int64 {
+	d, ok := doiutils.ValidateDOI(doi)
+	if !ok {
+		return 0
+	}
+	suffix := strings.Split(d, "/")[1]
+	number, err := crockford.Decode(suffix, true)
+	if err != nil {
+		fmt.Println(err)
+		return 0
+	}
+	return number
 }

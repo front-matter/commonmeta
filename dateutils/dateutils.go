@@ -20,39 +20,8 @@ const Iso8601DateFormat = "2006-01-02"
 // Iso8601DateTimeFormat is the ISO 8601 date format with time.
 const Iso8601DateTimeFormat = "2006-01-02T15:04:05Z"
 
-// func MonthNames() struct {
-// 	return {
-// 		"01": "jan",
-// 		"02": "feb",
-// 		"03": "mar",
-// 		"04": "apr",
-// 		"05": "may",
-// 		"06": "jun",
-// 		"07": "jul",
-// 		"08": "aug",
-// 		"09": "sep",
-// 		"10": "oct",
-// 		"11": "nov",
-// 		"12": "dec",
-// 	}
-// }
-
-// func MonthShortNames() slice {
-// 	return [
-// 		"jan",
-// 		"feb",
-// 		"mar",
-// 		"apr",
-// 		"may",
-// 		"jun",
-// 		"jul",
-// 		"aug",
-// 		"sep",
-// 		"oct",
-// 		"nov",
-// 		"dec",
-// 	]
-// }
+// CrossrefDateTimeFormat is the Crossref date format with time, used in XML for content registration.
+const CrossrefDateTimeFormat = "20060102150405"
 
 // ParseDate parses date strings in various formats and returns a date string in ISO 8601 format
 func ParseDate(date string) string {
@@ -171,4 +140,20 @@ func GetDateFromCrossrefParts(strParts ...string) string {
 		}
 	}
 	return GetDateFromParts(parts...)
+}
+
+func StripMilliseconds(iso8601Time string) string {
+	if iso8601Time == "" {
+		return ""
+	}
+	if strings.Contains(iso8601Time, "T00:00:00") {
+		return strings.Split(iso8601Time, "T")[0]
+	}
+	if strings.Contains(iso8601Time, ".") {
+		return strings.Split(iso8601Time, ".")[0] + "Z"
+	}
+	if strings.Contains(iso8601Time, "+00:00") {
+		return strings.Split(iso8601Time, "+")[0] + "Z"
+	}
+	return iso8601Time
 }

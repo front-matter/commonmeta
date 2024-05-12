@@ -6,8 +6,11 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"net/url"
+	"os"
+	"path"
 	"slices"
 	"strings"
 	"time"
@@ -139,14 +142,84 @@ func Get(id string) (Content, error) {
 	return content, err
 }
 
+// Load loads the metadata for a single work from a JSON file
+func Load(filename string) (commonmeta.Data, error) {
+	var data commonmeta.Data
+	var content Content
+
+	extension := path.Ext(filename)
+	if extension != ".json" {
+		return data, errors.New("invalid file extension")
+	}
+	file, err := os.Open(filename)
+	if err != nil {
+		return data, errors.New("error reading file")
+	}
+	defer file.Close()
+
+	decoder := json.NewDecoder(file)
+	err = decoder.Decode(&content)
+	if err != nil {
+		return data, err
+	}
+	data, err = Read(content)
+	if err != nil {
+		return data, err
+	}
+	return data, nil
+}
+
+// LoadAll loads the metadata for a list of works from a JSON file and converts it to the Commonmeta format
+func LoadAll(filename string) ([]commonmeta.Data, error) {
+	var data []commonmeta.Data
+	var content []Content
+	var err error
+
+	extension := path.Ext(filename)
+	if extension == ".json" {
+		type Response struct {
+			Items []Content `json:"items"`
+		}
+		var response Response
+
+		extension := path.Ext(filename)
+		if extension != ".json" {
+			return data, errors.New("invalid file extension")
+		}
+		file, err := os.Open(filename)
+		if err != nil {
+			return data, errors.New("error reading file")
+		}
+		defer file.Close()
+
+		decoder := json.NewDecoder(file)
+		err = decoder.Decode(&response)
+		if err != nil {
+			return data, err
+		}
+		content = response.Items
+	} else {
+		return data, errors.New("unsupported file format")
+	}
+
+	data, err = ReadAll(content)
+	if err != nil {
+		return data, err
+	}
+	return data, nil
+}
+
 // Read reads JSON Feed metadata and converts it into Commonmeta metadata.
 func Read(content Content) (commonmeta.Data, error) {
 	var data commonmeta.Data
 
 	if content.DOI != "" {
 		data.ID = doiutils.NormalizeDOI(content.DOI)
+	} else if content.Blog.Prefix != "" {
+		// optionally generate a DOI if missing but a DOI prefix is provided
+		data.ID = utils.EncodeDOI(content.Blog.Prefix)
 	} else {
-		data.ID = content.ID
+		data.ID = content.URL
 	}
 	data.Type = "Article"
 
@@ -280,6 +353,19 @@ func Read(content Content) (commonmeta.Data, error) {
 		return data, err
 	}
 	data.URL = url
+	return data, nil
+}
+
+// ReadAll reads a list of JSON Feed responses and returns a list of works in Commonmeta format
+func ReadAll(content []Content) ([]commonmeta.Data, error) {
+	var data []commonmeta.Data
+	for _, v := range content {
+		d, err := Read(v)
+		if err != nil {
+			log.Println(err)
+		}
+		data = append(data, d)
+	}
 	return data, nil
 }
 
