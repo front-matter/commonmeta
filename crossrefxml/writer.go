@@ -102,36 +102,46 @@ func Convert(data commonmeta.Data) (Crossref, error) {
 			if i > 0 {
 				sequence = "additional"
 			}
-			institution := []Institution{}
-			for _, a := range contributor.Affiliations {
-				if a.Name != "" {
-					if a.ID != "" {
-						institutionID := &InstitutionID{
-							IDType: "ror",
-							Text:   a.ID,
+			if len(contributor.Affiliations) > 0 {
+				institution := []Institution{}
+				for _, a := range contributor.Affiliations {
+					if a.Name != "" {
+						if a.ID != "" {
+							institutionID := &InstitutionID{
+								IDType: "ror",
+								Text:   a.ID,
+							}
+							institution = append(institution, Institution{
+								InstitutionID:   institutionID,
+								InstitutionName: a.Name,
+							})
+						} else {
+							institution = append(institution, Institution{
+								InstitutionName: a.Name,
+							})
 						}
-						institution = append(institution, Institution{
-							InstitutionID:   institutionID,
-							InstitutionName: a.Name,
-						})
-					} else {
-						institution = append(institution, Institution{
-							InstitutionName: a.Name,
-						})
 					}
 				}
+				affiliations := &Affiliations{
+					Institution: institution,
+				}
+				personName = append(personName, PersonName{
+					ContributorRole: contributorRole,
+					Sequence:        sequence,
+					ORCID:           contributor.ID,
+					GivenName:       contributor.GivenName,
+					Surname:         contributor.FamilyName,
+					Affiliations:    affiliations,
+				})
+			} else {
+				personName = append(personName, PersonName{
+					ContributorRole: contributorRole,
+					Sequence:        sequence,
+					ORCID:           contributor.ID,
+					GivenName:       contributor.GivenName,
+					Surname:         contributor.FamilyName,
+				})
 			}
-			affiliations := &Affiliations{
-				Institution: institution,
-			}
-			personName = append(personName, PersonName{
-				ContributorRole: contributorRole,
-				Sequence:        sequence,
-				ORCID:           contributor.ID,
-				GivenName:       contributor.GivenName,
-				Surname:         contributor.FamilyName,
-				Affiliations:    affiliations,
-			})
 		}
 	}
 

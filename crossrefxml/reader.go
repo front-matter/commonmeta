@@ -98,7 +98,7 @@ type Affiliation struct {
 
 type Affiliations struct {
 	XMLName     xml.Name      `xml:"affiliations"`
-	Institution []Institution `xml:"institution"`
+	Institution []Institution `xml:"institution,omitempty"`
 }
 
 type ApprovalDate struct {
@@ -334,7 +334,7 @@ type Format struct {
 
 type Institution struct {
 	XMLName          xml.Name       `xml:"institution"`
-	InstitutionName  string         `xml:"institution_name"`
+	InstitutionName  string         `xml:"institution_name,omitempty"`
 	InstitutionPlace string         `xml:"institution_place,omitempty"`
 	InstitutionID    *InstitutionID `xml:"institution_id,omitempty"`
 }
