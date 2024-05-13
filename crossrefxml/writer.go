@@ -34,13 +34,13 @@ type Head struct {
 }
 
 type DOIBatch struct {
-	XMLName        xml.Name   `xml:"doi_batch"`
-	Xmlns          string     `xml:"xmlns,attr,omitempty"`
-	Version        string     `xml:"version,attr,omitempty"`
-	Xsi            string     `xml:"xsi,attr,omitempty"`
-	SchemaLocation string     `xml:"schemaLocation,attr,omitempty"`
-	Head           Head       `xml:"head"`
-	Body           []Crossref `xml:"body"`
+	XMLName        xml.Name `xml:"doi_batch"`
+	Xmlns          string   `xml:"xmlns,attr,omitempty"`
+	Version        string   `xml:"version,attr,omitempty"`
+	Xsi            string   `xml:"xsi,attr,omitempty"`
+	SchemaLocation string   `xml:"schemaLocation,attr,omitempty"`
+	Head           Head     `xml:"head"`
+	Body           Crossref `xml:"body"`
 }
 
 type Account struct {
@@ -327,7 +327,7 @@ func Convert(data commonmeta.Data) (Crossref, error) {
 				Day:       datePublished.Day,
 			}
 		}
-		c.PostedContent = &PostedContent{
+		c.PostedContent = append(c.PostedContent, &PostedContent{
 			Type:       "other",
 			Language:   data.Language,
 			GroupTitle: groupTitle,
@@ -341,9 +341,9 @@ func Convert(data commonmeta.Data) (Crossref, error) {
 			Program:      program,
 			DOIData:      doiData,
 			CitationList: &citationList,
-		}
+		})
 	case "JournalArticle":
-		c.Journal = &Journal{}
+		c.Journal = append(c.Journal, &Journal{})
 	}
 
 	return c, nil
@@ -356,8 +356,6 @@ func Write(data commonmeta.Data, account Account) ([]byte, []gojsonschema.Result
 		fmt.Println(err)
 	}
 
-	body := []Crossref{}
-	body = append(body, crossref)
 	depositor := Depositor{
 		DepositorName: account.Depositor,
 		Email:         account.Email,
@@ -373,7 +371,7 @@ func Write(data commonmeta.Data, account Account) ([]byte, []gojsonschema.Result
 		Xmlns:   "http://www.crossref.org/schema/5.3.1",
 		Version: "5.3.1",
 		Head:    head,
-		Body:    body,
+		Body:    crossref,
 	}
 
 	output, err := xml.MarshalIndent(doiBatch, "", "  ")
@@ -387,13 +385,23 @@ func Write(data commonmeta.Data, account Account) ([]byte, []gojsonschema.Result
 
 // WriteAll writes a list of commonmeta metadata.
 func WriteAll(list []commonmeta.Data, account Account) ([]byte, []gojsonschema.ResultError) {
-	var body []Crossref
+	var body Crossref
 	for _, data := range list {
 		crossref, err := Convert(data)
 		if err != nil {
 			fmt.Println(err)
 		}
-		body = append(body, crossref)
+		fmt.Print(crossref)
+		// workaround to handle the different content types
+		body.Book = append(body.Book, crossref.Book...)
+		body.Conference = append(body.Conference, crossref.Conference...)
+		body.Database = append(body.Database, crossref.Database...)
+		body.Dissertation = append(body.Dissertation, crossref.Dissertation...)
+		body.Journal = append(body.Journal, crossref.Journal...)
+		body.PeerReview = append(body.PeerReview, crossref.PeerReview...)
+		body.PostedContent = append(body.PostedContent, crossref.PostedContent...)
+		body.SAComponent = append(body.SAComponent, crossref.SAComponent...)
+		body.Standard = append(body.Standard, crossref.Standard...)
 	}
 	depositor := Depositor{
 		DepositorName: account.Depositor,

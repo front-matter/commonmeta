@@ -35,9 +35,9 @@ func TestGet(t *testing.T) {
 		}
 		var resource string
 		if got.Query.DOI.Type == "journal-article" {
-			resource = got.Query.DOIRecord.Crossref.Journal.JournalArticle.DOIData.Resource
+			resource = got.Query.DOIRecord.Crossref.Journal[0].JournalArticle.DOIData.Resource
 		} else if got.Query.DOI.Type == "posted-content" {
-			resource = got.Query.DOIRecord.Crossref.PostedContent.DOIData.Resource
+			resource = got.Query.DOIRecord.Crossref.PostedContent[0].DOIData.Resource
 		}
 		if tc.want != resource {
 			t.Errorf("Get (%v): want %v, got %v, error %v",

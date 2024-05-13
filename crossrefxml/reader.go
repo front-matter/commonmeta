@@ -61,19 +61,16 @@ type DOIRecord struct {
 }
 
 type Crossref struct {
-	XMLName        xml.Name       `xml:"body"`
-	Xmlns          string         `xml:"xmlns,attr,omitempty"`
-	SchemaLocation string         `xml:"schemaLocation,attr,omitempty"`
-	Version        string         `xml:"version,attr,omitempty"`
-	Book           *Book          `xml:"book,omitempty"`
-	Conference     *Conference    `xml:"conference,omitempty"`
-	Database       *Database      `xml:"database,omitempty"`
-	Dissertation   *Dissertation  `xml:"dissertation,omitempty"`
-	Journal        *Journal       `xml:"journal,omitempty"`
-	PeerReview     *PeerReview    `xml:"peer_review,omitempty"`
-	PostedContent  *PostedContent `xml:"posted_content,omitempty"`
-	SAComponent    *SAComponent   `xml:"sa_component,omitempty"`
-	Standard       *Standard      `xml:"standard,omitempty"`
+	XMLName       xml.Name         `xml:"body"`
+	Book          []*Book          `xml:"book,omitempty"`
+	Conference    []*Conference    `xml:"conference,omitempty"`
+	Database      []*Database      `xml:"database,omitempty"`
+	Dissertation  []*Dissertation  `xml:"dissertation,omitempty"`
+	Journal       []*Journal       `xml:"journal,omitempty"`
+	PeerReview    []*PeerReview    `xml:"peer_review,omitempty"`
+	PostedContent []*PostedContent `xml:"posted_content,omitempty"`
+	SAComponent   []*SAComponent   `xml:"sa_component,omitempty"`
+	Standard      []*Standard      `xml:"standard,omitempty"`
 }
 
 type Abstract struct {
@@ -768,127 +765,138 @@ func Read(content Content) (commonmeta.Data, error) {
 	// fetch metadata depending on Crossref type (using the commonmeta vocabulary)
 	switch data.Type {
 	case "Article": // posted-content
-		abstract = meta.PostedContent.Abstract
+		postedContent := meta.PostedContent[0]
+		abstract = postedContent.Abstract
 		// archiveLocations not supported
-		citationList = meta.PostedContent.CitationList
-		contributors = meta.PostedContent.Contributors
-		doiData = meta.PostedContent.DOIData
-		itemNumber = meta.PostedContent.ItemNumber
-		language = meta.PostedContent.Language
+		citationList = postedContent.CitationList
+		contributors = postedContent.Contributors
+		doiData = postedContent.DOIData
+		itemNumber = postedContent.ItemNumber
+		language = postedContent.Language
 		// pages not supported
-		program = meta.PostedContent.Program
+		program = postedContent.Program
 		// use posted date as publication date
 		publicationDate = append(publicationDate, PublicationDate{
-			Year:  meta.PostedContent.PostedDate.Year,
-			Month: meta.PostedContent.PostedDate.Month,
-			Day:   meta.PostedContent.PostedDate.Day,
+			Year:  postedContent.PostedDate.Year,
+			Month: postedContent.PostedDate.Month,
+			Day:   postedContent.PostedDate.Day,
 		})
 		// use group title for subjects
-		subjects = append(subjects, meta.PostedContent.GroupTitle)
-		titles = meta.PostedContent.Titles
+		subjects = append(subjects, postedContent.GroupTitle)
+		titles = postedContent.Titles
 	case "Book":
-		abstract = meta.Book.BookMetadata.Abstract
-		contributors = meta.Book.BookMetadata.Contributors
-		citationList = meta.Book.ContentItem.CitationList
-		doiData = meta.Book.BookMetadata.DOIData
-		isbn = meta.Book.BookMetadata.ISBN
-		language = meta.Book.BookMetadata.Language
-		publicationDate = meta.Book.BookMetadata.PublicationDate
-		pages = meta.Book.ContentItem.Pages
-		titles = meta.Book.BookMetadata.Titles
+		book := meta.Book[0]
+		abstract = book.BookMetadata.Abstract
+		contributors = book.BookMetadata.Contributors
+		citationList = book.ContentItem.CitationList
+		doiData = book.BookMetadata.DOIData
+		isbn = book.BookMetadata.ISBN
+		language = book.BookMetadata.Language
+		publicationDate = book.BookMetadata.PublicationDate
+		pages = book.ContentItem.Pages
+		titles = book.BookMetadata.Titles
 	case "BookChapter":
-		abstract = meta.Book.BookMetadata.Abstract
-		citationList = meta.Book.ContentItem.CitationList
-		contributors = meta.Book.ContentItem.Contributors
-		doiData = meta.Book.BookMetadata.DOIData
-		isbn = meta.Book.BookMetadata.ISBN
-		language = meta.Book.BookMetadata.Language
-		publicationDate = meta.Book.ContentItem.PublicationDate
-		pages = meta.Book.ContentItem.Pages
-		titles = meta.Book.ContentItem.Titles
+		book := meta.Book[0]
+		abstract = book.BookMetadata.Abstract
+		citationList = book.ContentItem.CitationList
+		contributors = book.ContentItem.Contributors
+		doiData = book.BookMetadata.DOIData
+		isbn = book.BookMetadata.ISBN
+		language = book.BookMetadata.Language
+		publicationDate = book.ContentItem.PublicationDate
+		pages = book.ContentItem.Pages
+		titles = book.ContentItem.Titles
 	case "BookPart":
 	case "BookSection":
 	case "BookSeries":
 	case "BookSet":
 	case "BookTrack":
 	case "Component":
-		doiData = meta.SAComponent.ComponentList.Component[0].DOIData
+		component := meta.SAComponent[0]
+		doiData = component.ComponentList.Component[0].DOIData
 	case "Database":
 	case "Dataset":
-		containerTitle = meta.Database.DatabaseMetadata.Titles.Title
-		contributors = meta.Database.Dataset.Contributors
-		titles = meta.Database.Dataset.Titles
+		database := meta.Database[0]
+		containerTitle = database.DatabaseMetadata.Titles.Title
+		contributors = database.Dataset.Contributors
+		titles = database.Dataset.Titles
 		// use creation date as publication date
 		publicationDate = append(publicationDate, PublicationDate{
-			Year:  meta.Database.Dataset.DatabaseDate.CreationDate.Year,
-			Month: meta.Database.Dataset.DatabaseDate.CreationDate.Month,
-			Day:   meta.Database.Dataset.DatabaseDate.CreationDate.Day,
+			Year:  database.Dataset.DatabaseDate.CreationDate.Year,
+			Month: database.Dataset.DatabaseDate.CreationDate.Month,
+			Day:   database.Dataset.DatabaseDate.CreationDate.Day,
 		})
-		doiData = meta.Database.Dataset.DOIData
+		doiData = database.Dataset.DOIData
 	case "Dissertation":
+		dissertation := meta.Dissertation[0]
 		contributors = &Contributors{
-			PersonName: meta.Dissertation.PersonName,
+			PersonName: dissertation.PersonName,
 		}
-		doiData = meta.Dissertation.DOIData
+		doiData = dissertation.DOIData
 		// use approval date as publication date
 		publicationDate = append(publicationDate, PublicationDate{
-			Year:  meta.Dissertation.ApprovalDate.Year,
-			Month: meta.Dissertation.ApprovalDate.Month,
-			Day:   meta.Dissertation.ApprovalDate.Day,
+			Year:  dissertation.ApprovalDate.Year,
+			Month: dissertation.ApprovalDate.Month,
+			Day:   dissertation.ApprovalDate.Day,
 		})
-		titles = meta.Dissertation.Titles
+		titles = dissertation.Titles
 	case "Entry":
 	case "Grant":
 	case "Journal":
-		containerTitle = meta.Journal.JournalMetadata.FullTitle
-		language = meta.Journal.JournalMetadata.Language
-		doiData = meta.Journal.JournalMetadata.DOIData
+		journal := meta.Journal[0]
+		containerTitle = journal.JournalMetadata.FullTitle
+		language = journal.JournalMetadata.Language
+		doiData = journal.JournalMetadata.DOIData
 	case "JournalArticle":
-		abstract = meta.Journal.JournalArticle.Abstract
-		archiveLocations = meta.Journal.JournalArticle.ArchiveLocations
-		citationList = meta.Journal.JournalArticle.CitationList
-		containerTitle = meta.Journal.JournalMetadata.FullTitle
-		contributors = meta.Journal.JournalArticle.Contributors
-		customMetadata = meta.Journal.JournalArticle.Crossmark.CustomMetadata
-		doiData = meta.Journal.JournalArticle.DOIData
-		issn = meta.Journal.JournalMetadata.ISSN
-		issue = meta.Journal.JournalIssue.Issue
-		itemNumber = meta.Journal.JournalArticle.PublisherItem.ItemNumber
-		language = meta.Journal.JournalMetadata.Language
-		pages = meta.Journal.JournalArticle.Pages
-		program = append(program, meta.Journal.JournalArticle.Program...)
-		publicationDate = meta.Journal.JournalArticle.PublicationDate
-		titles = meta.Journal.JournalArticle.Titles
-		volume = meta.Journal.JournalIssue.JournalVolume.Volume
+		journal := meta.Journal[0]
+		abstract = journal.JournalArticle.Abstract
+		archiveLocations = journal.JournalArticle.ArchiveLocations
+		citationList = journal.JournalArticle.CitationList
+		containerTitle = journal.JournalMetadata.FullTitle
+		contributors = journal.JournalArticle.Contributors
+		customMetadata = journal.JournalArticle.Crossmark.CustomMetadata
+		doiData = journal.JournalArticle.DOIData
+		issn = journal.JournalMetadata.ISSN
+		issue = journal.JournalIssue.Issue
+		itemNumber = journal.JournalArticle.PublisherItem.ItemNumber
+		language = journal.JournalMetadata.Language
+		pages = journal.JournalArticle.Pages
+		program = append(program, journal.JournalArticle.Program...)
+		publicationDate = journal.JournalArticle.PublicationDate
+		titles = journal.JournalArticle.Titles
+		volume = journal.JournalIssue.JournalVolume.Volume
 	case "JournalIssue":
-		containerTitle = meta.Journal.JournalMetadata.FullTitle
-		doiData = meta.Journal.JournalIssue.DOIData
-		issn = meta.Journal.JournalMetadata.ISSN
-		language = meta.Journal.JournalMetadata.Language
+		journal := meta.Journal[0]
+		containerTitle = journal.JournalMetadata.FullTitle
+		doiData = journal.JournalIssue.DOIData
+		issn = journal.JournalMetadata.ISSN
+		language = journal.JournalMetadata.Language
 	case "JournalVolume":
 	case "Other":
 	case "PeerReview":
-		contributors = meta.PeerReview.Contributors
-		titles = meta.PeerReview.Titles
-		program = meta.PeerReview.Program
+		peerReview := meta.PeerReview[0]
+		contributors = peerReview.Contributors
+		titles = peerReview.Titles
+		program = peerReview.Program
 		// use review date as publication date
 		publicationDate = append(publicationDate, PublicationDate{
-			Year:  meta.PeerReview.ReviewDate.Year,
-			Month: meta.PeerReview.ReviewDate.Month,
-			Day:   meta.PeerReview.ReviewDate.Day,
+			Year:  peerReview.ReviewDate.Year,
+			Month: peerReview.ReviewDate.Month,
+			Day:   peerReview.ReviewDate.Day,
 		})
-		doiData = meta.PeerReview.DOIData
+		doiData = peerReview.DOIData
 	case "Proceedings":
 	case "ProceedingsArticle":
-		citationList = meta.Conference.ConferencePaper.CitationList
-		containerTitle = meta.Conference.EventMetadata.ConferenceName
-		contributors = meta.Conference.ConferencePaper.Contributors
-		doiData = meta.Conference.ConferencePaper.DOIData
-		isbn = meta.Conference.ProceedingsMetadata.ISBN
-		program = meta.Conference.ConferencePaper.Crossmark.CustomMetadata.Program
-		pages = meta.Conference.ConferencePaper.Pages
-		publicationDate = meta.Conference.ConferencePaper.PublicationDate
-		titles = meta.Conference.ConferencePaper.Titles
+		conference := meta.Conference[0]
+		citationList = conference.ConferencePaper.CitationList
+		containerTitle = conference.EventMetadata.ConferenceName
+		contributors = conference.ConferencePaper.Contributors
+		doiData = conference.ConferencePaper.DOIData
+		isbn = conference.ProceedingsMetadata.ISBN
+		program = conference.ConferencePaper.Crossmark.CustomMetadata.Program
+		pages = conference.ConferencePaper.Pages
+		publicationDate = conference.ConferencePaper.PublicationDate
+		titles = conference.ConferencePaper.Titles
 	case "ProceedingsSeries":
 	case "ReferenceBook":
 	case "Report":
@@ -1398,12 +1406,12 @@ func GetFundingReferences(fundref Program) ([]commonmeta.FundingReference, error
 func (c Content) Type() string {
 	switch c.Query.DOI.Type {
 	case "book_title":
-		if c.Query.DOIRecord.Crossref.Book.BookSetMetadata.SetMetadata.DOIData.DOI != "" {
+		if c.Query.DOIRecord.Crossref.Book[0].BookSetMetadata.SetMetadata.DOIData.DOI != "" {
 			return "BookSet"
 		}
 		return "Book"
 	case "book_content":
-		switch c.Query.DOIRecord.Crossref.Book.ContentItem.ComponentType {
+		switch c.Query.DOIRecord.Crossref.Book[0].ContentItem.ComponentType {
 		case "other":
 			return "Other"
 		case "part":
