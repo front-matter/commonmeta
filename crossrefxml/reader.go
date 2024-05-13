@@ -341,7 +341,7 @@ type Institution struct {
 
 type InstitutionID struct {
 	XMLName xml.Name `xml:"institution_id"`
-	IDType  string   `xml:"id_type,attr,omitempty"`
+	Type    string   `xml:"type,attr,omitempty"`
 	Text    string   `xml:",chardata"`
 }
 

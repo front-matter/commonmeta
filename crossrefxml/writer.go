@@ -108,8 +108,8 @@ func Convert(data commonmeta.Data) (Crossref, error) {
 					if a.Name != "" {
 						if a.ID != "" {
 							institutionID := &InstitutionID{
-								IDType: "ror",
-								Text:   a.ID,
+								Type: "ror",
+								Text: a.ID,
 							}
 							institution = append(institution, Institution{
 								InstitutionID:   institutionID,
