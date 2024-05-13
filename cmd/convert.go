@@ -40,6 +40,8 @@ commonmeta 10.5555/12345678`,
 		var err error
 		var data commonmeta.Data
 
+		loginID, _ := cmd.Flags().GetString("login_id")
+		loginPassword, _ := cmd.Flags().GetString("login_passwd")
 		depositor, _ := cmd.Flags().GetString("depositor")
 		email, _ := cmd.Flags().GetString("email")
 		registrant, _ := cmd.Flags().GetString("registrant")
@@ -129,6 +131,18 @@ commonmeta 10.5555/12345678`,
 
 		if to == "crossrefxml" {
 			fmt.Printf("%s\n", output)
+
+			if loginID != "" && loginPassword != "" {
+				account := crossrefxml.Account{
+					LoginID:       loginID,
+					LoginPassword: loginPassword,
+				}
+				message, err := crossrefxml.Upload(output, account)
+				if err != nil {
+					fmt.Println(err)
+				}
+				fmt.Printf("%s\n", message)
+			}
 		} else {
 			var out bytes.Buffer
 			json.Indent(&out, output, "", "  ")

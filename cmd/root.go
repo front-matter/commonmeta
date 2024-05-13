@@ -51,6 +51,8 @@ func init() {
 	// needed for DOI registration
 	rootCmd.PersistentFlags().StringP("prefix", "", "", "DOI prefix")
 
+	rootCmd.PersistentFlags().StringP("login_id", "", "", "Crossref account login")
+	rootCmd.PersistentFlags().StringP("login_passwd", "", "", "Crossref account password")
 	rootCmd.PersistentFlags().StringP("depositor", "", "", "Crossref account depositor")
 	rootCmd.PersistentFlags().StringP("email", "", "", "Crossref account email")
 	rootCmd.PersistentFlags().StringP("registrant", "", "", "Crossref account registrant")
