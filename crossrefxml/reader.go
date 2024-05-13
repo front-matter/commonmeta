@@ -701,17 +701,17 @@ func Get(pid string) (Content, error) {
 	if !ok {
 		return crossrefResult.QueryResult.Body, errors.New("invalid DOI")
 	}
+	client := &http.Client{
+		Timeout: 10 * time.Second,
+	}
 	url := "https://api.crossref.org/works/" + doi + "/transform/application/vnd.crossref.unixsd+xml"
-	req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
 	v := "0.1"
 	u := "info@front-matter.io"
 	userAgent := fmt.Sprintf("commonmeta/%s (https://commonmeta.org/; mailto: %s)", v, u)
 	req.Header.Set("User-Agent", userAgent)
 	if err != nil {
 		log.Fatalln(err)
-	}
-	client := http.Client{
-		Timeout: 10 * time.Second,
 	}
 	resp, err := client.Do(req)
 	if err != nil {

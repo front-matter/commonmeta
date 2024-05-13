@@ -338,7 +338,7 @@ func Get(id string) (Content, error) {
 		return response.Data.Attributes, errors.New("invalid DOI")
 	}
 	url := "https://api.datacite.org/dois/" + doi
-	client := http.Client{
+	client := &http.Client{
 		Timeout: time.Second * 10,
 	}
 	resp, err := client.Get(url)
@@ -727,13 +727,13 @@ func GetAll(number int, sample bool) ([]Content, error) {
 		number = 100
 	}
 	var response Response
+	client := &http.Client{
+		Timeout: 30 * time.Second,
+	}
 	url := QueryURL(number, sample)
-	req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		log.Fatalln(err)
-	}
-	client := http.Client{
-		Timeout: 30 * time.Second,
 	}
 	resp, err := client.Do(req)
 	if err != nil {

@@ -418,7 +418,7 @@ func ValidateROR(ror string) (string, bool) {
 // GetROR
 func GetROR(ror string) (ROR, error) {
 	var content ROR
-	client := http.Client{
+	client := &http.Client{
 		Timeout: time.Second * 10,
 	}
 	url := "https://api.ror.org/organizations/" + ror

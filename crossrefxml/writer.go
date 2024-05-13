@@ -1,8 +1,12 @@
 package crossrefxml
 
 import (
+	"bytes"
 	"encoding/xml"
 	"fmt"
+	"log"
+	"net/http"
+	"net/url"
 	"slices"
 	"strings"
 	"time"
@@ -40,9 +44,11 @@ type DOIBatch struct {
 }
 
 type Account struct {
-	Depositor  string `xml:"depositor"`
-	Email      string `xml:"email"`
-	Registrant string `xml:"registrant"`
+	LoginID       string `xml:"login_id"`
+	LoginPassword string `xml:"login_passwd"`
+	Depositor     string `xml:"depositor"`
+	Email         string `xml:"email"`
+	Registrant    string `xml:"registrant"`
 }
 
 // CMToCRMappings maps Commonmeta types to Crossref types
@@ -401,4 +407,20 @@ func WriteAll(list []commonmeta.Data, account Account) ([]byte, []gojsonschema.R
 	// }
 	output = []byte(xml.Header + string(output))
 	return output, nil
+}
+
+func Upload(data commonmeta.Data, account Account) (string, error) {
+	output, jsErr := Write(data, account)
+	if jsErr != nil {
+		fmt.Println(jsErr)
+	}
+	bytes.NewReader(output)
+	resp, err := http.PostForm("https://doi.crossref.org/servlet/deposit",
+		url.Values{"operation": {"doMDUpload"}, "login_id": {account.LoginID}, "login_passwd": {account.LoginPassword}})
+	if err != nil {
+		log.Fatalln(err)
+	}
+	defer resp.Body.Close()
+	message := "Your batch submission was successfully received."
+	return message, nil
 }

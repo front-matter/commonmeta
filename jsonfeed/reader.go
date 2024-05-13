@@ -119,7 +119,7 @@ func Fetch(str string) (commonmeta.Data, error) {
 // Get retrieves JSON Feed metadata.
 func Get(id string) (Content, error) {
 	var content Content
-	client := http.Client{
+	client := &http.Client{
 		Timeout: time.Second * 10,
 	}
 	url := "https://api.rogue-scholar.org/posts/" + id

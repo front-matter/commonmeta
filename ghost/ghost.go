@@ -78,14 +78,14 @@ func UpdateGhostPost(id string, apiKey string, apiURL string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	client := http.Client{
+	client := &http.Client{
 		Timeout: time.Second * 10,
 	}
 	u, _ := url.Parse(urlString)
 	path := strings.Split(u.Path, "/")
 	slug := path[len(path)-1]
 	ghostURL := apiURL + "/ghost/api/admin/posts/slug/" + slug
-	req, err := http.NewRequest("GET", ghostURL, nil)
+	req, err := http.NewRequest(http.MethodGet, ghostURL, nil)
 	if err != nil {
 		log.Fatalln(err)
 	}

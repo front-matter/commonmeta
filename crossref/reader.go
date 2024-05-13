@@ -298,17 +298,17 @@ func Get(pid string) (Content, error) {
 	if !ok {
 		return response.Message, errors.New("invalid DOI")
 	}
+	client := &http.Client{
+		Timeout: 10 * time.Second,
+	}
 	url := "https://api.crossref.org/works/" + doi
-	req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
 	v := "0.1"
 	u := "info@front-matter.io"
 	userAgent := fmt.Sprintf("commonmeta/%s (https://commonmeta.org/; mailto: %s)", v, u)
 	req.Header.Set("User-Agent", userAgent)
 	if err != nil {
 		log.Fatalln(err)
-	}
-	client := http.Client{
-		Timeout: 10 * time.Second,
 	}
 	resp, err := client.Do(req)
 	if err != nil {
@@ -345,8 +345,11 @@ func GetAll(number int, member string, _type string, sample bool, hasORCID bool,
 	if number > 100 {
 		number = 100
 	}
+	client := &http.Client{
+		Timeout: 20 * time.Second,
+	}
 	url := QueryURL(number, member, _type, sample, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
-	req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
 	v := "0.1"
 	u := "info@front-matter.io"
 	userAgent := fmt.Sprintf("commonmeta/%s (https://commonmeta.org; mailto: %s)", v, u)
@@ -354,9 +357,6 @@ func GetAll(number int, member string, _type string, sample bool, hasORCID bool,
 	req.Header.Set("Cache-Control", "private")
 	if err != nil {
 		log.Fatalln(err)
-	}
-	client := http.Client{
-		Timeout: 20 * time.Second,
 	}
 	resp, err := client.Do(req)
 	if err != nil {
