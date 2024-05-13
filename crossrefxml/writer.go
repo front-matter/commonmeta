@@ -387,11 +387,10 @@ func Write(data commonmeta.Data, account Account) ([]byte, []gojsonschema.Result
 func WriteAll(list []commonmeta.Data, account Account) ([]byte, []gojsonschema.ResultError) {
 	var body Crossref
 	for _, data := range list {
-		crossref, err := Convert(data)
-		if err != nil {
-			fmt.Println(err)
-		}
-		fmt.Print(crossref)
+		crossref, _ := Convert(data)
+		// if err != nil {
+		// 	fmt.Println(err)
+		// }
 		// workaround to handle the different content types
 		body.Book = append(body.Book, crossref.Book...)
 		body.Conference = append(body.Conference, crossref.Conference...)
