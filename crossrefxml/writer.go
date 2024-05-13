@@ -407,12 +407,10 @@ func WriteAll(list []commonmeta.Data, account Account) ([]byte, []gojsonschema.R
 		Registrant: account.Registrant,
 	}
 	doiBatch := DOIBatch{
-		Xmlns:          "http://www.crossref.org/schema/5.3.1",
-		Version:        "5.3.1",
-		Xsi:            "http://www.w3.org/2001/XMLSchema-instance",
-		SchemaLocation: "http://www.crossref.org/schema/5.3.1 ",
-		Head:           head,
-		Body:           body,
+		Xmlns:   "http://www.crossref.org/schema/5.3.1",
+		Version: "5.3.1",
+		Head:    head,
+		Body:    body,
 	}
 
 	output, _ := xml.MarshalIndent(doiBatch, "", "  ")
