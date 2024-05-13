@@ -452,7 +452,7 @@ type OriginalLanguageTitle struct {
 
 type P struct {
 	XMLName xml.Name `xml:"p"`
-	Xmlns   string   `xml:"xmlns,attr"`
+	Xmlns   string   `xml:"xmlns,attr,omitempty"`
 	Text    string   `xml:",chardata"`
 }
 
@@ -527,11 +527,12 @@ type ProceedingsMetadata struct {
 
 type Program struct {
 	XMLName     xml.Name      `xml:"program"`
-	Text        string        `xml:",chardata"`
+	Xmlns       string        `xml:"xmlns,attr"`
 	Fr          string        `xml:"fr,attr,omitempty"`
 	Name        string        `xml:"name,attr,omitempty"`
 	Ai          string        `xml:"ai,attr,omitempty"`
 	Rel         string        `xml:"rel,attr,omitempty"`
+	Text        string        `xml:",chardata"`
 	Assertion   []Assertion   `xml:"assertion"`
 	LicenseRef  []LicenseRef  `xml:"license_ref"`
 	RelatedItem []RelatedItem `xml:"related_item"`

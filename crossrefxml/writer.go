@@ -4,9 +4,9 @@ import (
 	"bytes"
 	"encoding/xml"
 	"fmt"
-	"log"
+	"io"
+	"mime/multipart"
 	"net/http"
-	"net/url"
 	"slices"
 	"strings"
 	"time"
@@ -35,10 +35,10 @@ type Head struct {
 
 type DOIBatch struct {
 	XMLName        xml.Name   `xml:"doi_batch"`
-	Xmlns          string     `xml:"xmlns,attr"`
-	Version        string     `xml:"version,attr"`
-	Xsi            string     `xml:"xsi,attr"`
-	SchemaLocation string     `xml:"schemaLocation,attr"`
+	Xmlns          string     `xml:"xmlns,attr,omitempty"`
+	Version        string     `xml:"version,attr,omitempty"`
+	Xsi            string     `xml:"xsi,attr,omitempty"`
+	SchemaLocation string     `xml:"schemaLocation,attr,omitempty"`
 	Head           Head       `xml:"head"`
 	Body           []Crossref `xml:"body"`
 }
@@ -83,9 +83,13 @@ func Convert(data commonmeta.Data) (Crossref, error) {
 	if len(data.Descriptions) > 0 {
 		for _, description := range data.Descriptions {
 			if description.Type == "Abstract" {
+				p := []P{}
+				p = append(p, P{
+					Text: description.Description,
+				})
 				abstract = append(abstract, Abstract{
 					Xmlns: "http://www.ncbi.nlm.nih.gov/JATS1",
-					Text:  description.Description,
+					P:     p,
 				})
 			}
 		}
@@ -101,17 +105,20 @@ func Convert(data commonmeta.Data) (Crossref, error) {
 			institution := []Institution{}
 			for _, a := range contributor.Affiliations {
 				if a.Name != "" {
-					institutionID := InstitutionID{}
 					if a.ID != "" {
-						institutionID = InstitutionID{
+						institutionID := &InstitutionID{
 							IDType: "ror",
 							Text:   a.ID,
 						}
+						institution = append(institution, Institution{
+							InstitutionID:   institutionID,
+							InstitutionName: a.Name,
+						})
+					} else {
+						institution = append(institution, Institution{
+							InstitutionName: a.Name,
+						})
 					}
-					institution = append(institution, Institution{
-						InstitutionID:   &institutionID,
-						InstitutionName: a.Name,
-					})
 				}
 			}
 			affiliations := &Affiliations{
@@ -138,6 +145,10 @@ func Convert(data commonmeta.Data) (Crossref, error) {
 	})
 	if len(data.Files) > 0 {
 		for _, file := range data.Files {
+			if file.MimeType == "text/markdown" {
+				// Crossref schema currently doesn't support text/markdown
+				file.MimeType = "text/plain"
+			}
 			items = append(items, Item{
 				Resource: Resource{
 					Text:     file.URL,
@@ -207,6 +218,7 @@ func Convert(data commonmeta.Data) (Crossref, error) {
 		}
 		program = append(program, &Program{
 			Name:      "fundref",
+			Xmlns:     "http://www.crossref.org/fundref.xsd",
 			Assertion: assertion,
 		})
 	}
@@ -223,6 +235,7 @@ func Convert(data commonmeta.Data) (Crossref, error) {
 		})
 		program = append(program, &Program{
 			Name:       "AccessIndicators",
+			Xmlns:      "http://www.crossref.org/AccessIndicators.xsd",
 			LicenseRef: licenseRef,
 		})
 	}
@@ -234,8 +247,9 @@ func Convert(data commonmeta.Data) (Crossref, error) {
 				identifierType = "uri"
 			}
 			if slices.Contains(InterWorkRelationTypes, relation.Type) && id != "" {
+				// Crossref relation types are camel case rather than pascal case
 				interWorkRelation := &InterWorkRelation{
-					RelationshipType: relation.Type,
+					RelationshipType: utils.CamelCaseString(relation.Type),
 					IdentifierType:   strings.ToLower(identifierType),
 					Text:             id,
 				}
@@ -258,6 +272,7 @@ func Convert(data commonmeta.Data) (Crossref, error) {
 		}
 		program = append(program, &Program{
 			Name:        "relations",
+			Xmlns:       "http://www.crossref.org/relations.xsd",
 			RelatedItem: relatedItem,
 		})
 	}
@@ -355,17 +370,16 @@ func Write(data commonmeta.Data, account Account) ([]byte, []gojsonschema.Result
 		Registrant: account.Registrant,
 	}
 	doiBatch := DOIBatch{
-		Xmlns:          "http://www.crossref.org/schema/5.3.1",
-		Version:        "5.3.1",
-		Xsi:            "http://www.w3.org/2001/XMLSchema-instance",
-		SchemaLocation: "http://www.crossref.org/schema/5.3.1 ",
-		Head:           head,
-		Body:           body,
+		Xmlns:   "http://www.crossref.org/schema/5.3.1",
+		Version: "5.3.1",
+		Head:    head,
+		Body:    body,
 	}
 
 	output, err := xml.MarshalIndent(doiBatch, "", "  ")
 	if err == nil {
-		fmt.Println(err)
+		// TODO: handle error
+		// fmt.Println(err)
 	}
 	output = []byte(xml.Header + string(output))
 	return output, nil
@@ -409,18 +423,40 @@ func WriteAll(list []commonmeta.Data, account Account) ([]byte, []gojsonschema.R
 	return output, nil
 }
 
-func Upload(data commonmeta.Data, account Account) (string, error) {
-	output, jsErr := Write(data, account)
-	if jsErr != nil {
-		fmt.Println(jsErr)
+func Upload(content []byte, account Account) (string, error) {
+	client := &http.Client{
+		Timeout: 10 * time.Second,
 	}
-	bytes.NewReader(output)
-	resp, err := http.PostForm("https://doi.crossref.org/servlet/deposit",
-		url.Values{"operation": {"doMDUpload"}, "login_id": {account.LoginID}, "login_passwd": {account.LoginPassword}})
+	postUrl := "https://doi.crossref.org/servlet/deposit"
+
+	var b bytes.Buffer
+	w := multipart.NewWriter(&b)
+	part, _ := w.CreateFormFile("fname", "output.xml")
+	_, err := part.Write(content)
 	if err != nil {
-		log.Fatalln(err)
+		return "", err
+	}
+	w.WriteField("operation", "doMDUpload")
+	w.WriteField("login_id", account.LoginID)
+	w.WriteField("login_passwd", account.LoginPassword)
+	defer w.Close()
+
+	req, err := http.NewRequest(http.MethodPost, postUrl, &b)
+	req.Header.Add("Content-Type", w.FormDataContentType())
+	if err != nil {
+		return "", err
+	}
+	resp, err := client.Do(req)
+	if err != nil {
+		fmt.Println("Error uploading batch", err)
+		return "", err
 	}
 	defer resp.Body.Close()
-	message := "Your batch submission was successfully received."
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return "", err
+	}
+	fmt.Println(string(body))
+	message := "Your batch submission was successfully received. " + resp.Status
 	return message, nil
 }

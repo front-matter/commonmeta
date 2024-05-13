@@ -505,6 +505,11 @@ func CamelCaseToWords(str string) string {
 	return strings.ToUpper(words[:1]) + strings.ToLower(words[1:])
 }
 
+// CamelCaseString converts a pascal case string to camel case
+func CamelCaseString(str string) string {
+	return strings.ToLower(str[:1]) + str[1:]
+}
+
 func EncodeDOI(prefix string) string {
 	suffix := crockford.Generate(10, 5, true)
 	return fmt.Sprintf("https://doi.org/%s/%s", prefix, suffix)
