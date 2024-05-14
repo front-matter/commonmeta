@@ -89,8 +89,7 @@ type Relation struct {
 // Reference represents a reference in the JSON Feed item.
 type Reference struct {
 	Key             string `json:"key"`
-	DOI             string `json:"doi"`
-	URL             string `json:"url"`
+	ID              string `json:"id"`
 	PublicationYear string `json:"publicationYear"`
 	Title           string `json:"title"`
 }
@@ -324,17 +323,19 @@ func Read(content Content) (commonmeta.Data, error) {
 	}
 
 	for _, v := range content.Reference {
-		reference := commonmeta.Reference{
-			Key:             v.Key,
-			ID:              doiutils.NormalizeDOI(v.DOI),
-			Title:           v.Title,
-			PublicationYear: v.PublicationYear,
-		}
-		containsKey := slices.ContainsFunc(data.References, func(e commonmeta.Reference) bool {
-			return e.Key != "" && e.Key == reference.Key
-		})
-		if !containsKey {
-			data.References = append(data.References, reference)
+		if v.ID != "" {
+			reference := commonmeta.Reference{
+				Key:             v.Key,
+				ID:              v.ID,
+				Title:           v.Title,
+				PublicationYear: v.PublicationYear,
+			}
+			containsKey := slices.ContainsFunc(data.References, func(e commonmeta.Reference) bool {
+				return e.Key != "" && e.Key == reference.Key
+			})
+			if !containsKey {
+				data.References = append(data.References, reference)
+			}
 		}
 	}
 
