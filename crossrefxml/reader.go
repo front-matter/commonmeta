@@ -178,7 +178,8 @@ type Citation struct {
 }
 
 type CitationList struct {
-	Citation []Citation `xml:"citation"`
+	XMLName  xml.Name   `xml:"citation_list"`
+	Citation []Citation `xml:"citation,omitempty"`
 }
 
 type Collection struct {
