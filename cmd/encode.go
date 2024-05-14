@@ -24,11 +24,11 @@ var encodeCmd = &cobra.Command{
 		input := args[0]
 		prefix, ok := doiutils.ValidatePrefix(input)
 		if !ok {
-			fmt.Println("Invalid prefix")
+			cmd.PrintErr("Invalid prefix")
 			return
 		}
 		doi := utils.EncodeDOI(prefix)
-		fmt.Println(doi)
+		cmd.Println(doi)
 	},
 }
 

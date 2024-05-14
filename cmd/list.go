@@ -65,7 +65,7 @@ var listCmd = &cobra.Command{
 		if input != "" {
 			_, err = os.Stat(input)
 			if err != nil {
-				fmt.Printf("File not found: %s", input)
+				cmd.PrintErrf("File not found: %s", input)
 				return
 			}
 			str = input
@@ -85,7 +85,7 @@ var listCmd = &cobra.Command{
 			data, err = datacite.FetchAll(number, sample)
 		}
 		if err != nil {
-			fmt.Println(err)
+			cmd.PrintErr(err)
 		}
 
 		var output []byte
@@ -109,7 +109,7 @@ var listCmd = &cobra.Command{
 		}
 
 		if err != nil {
-			fmt.Println(err)
+			cmd.PrintErr(err)
 		}
 
 		if to == "crossrefxml" {
@@ -117,11 +117,11 @@ var listCmd = &cobra.Command{
 		} else {
 			var out bytes.Buffer
 			json.Indent(&out, output, "", "  ")
-			fmt.Println(out.String())
+			cmd.Println(out.String())
 		}
 
 		if jsErr != nil {
-			fmt.Println(jsErr)
+			cmd.PrintErr(jsErr)
 		}
 	},
 }

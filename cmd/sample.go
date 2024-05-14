@@ -72,14 +72,14 @@ var sampleCmd = &cobra.Command{
 		}
 
 		if err != nil {
-			fmt.Println(err)
+			cmd.PrintErr(err)
 		}
 		var out bytes.Buffer
 		json.Indent(&out, output, "", "  ")
-		fmt.Println(out.String())
+		cmd.Println(out.String())
 
 		if jsErr != nil {
-			fmt.Println(jsErr)
+			cmd.PrintErr(jsErr)
 		}
 	},
 }

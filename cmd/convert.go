@@ -66,12 +66,12 @@ commonmeta 10.5555/12345678`,
 			var ok bool
 			doi, ok := doiutils.ValidateDOI(input)
 			if !ok {
-				fmt.Println("Please provide a valid DOI from Crossref or Datacite")
+				cmd.PrintErr("Please provide a valid DOI from Crossref or Datacite")
 				return
 			}
 			from, ok = doiutils.GetDOIRA(doi)
 			if !ok {
-				fmt.Println("Please provide a valid DOI from Crossref or Datacite")
+				cmd.PrintErr("Please provide a valid DOI from Crossref or Datacite")
 				return
 			}
 			from = strings.ToLower(from)
@@ -100,7 +100,7 @@ commonmeta 10.5555/12345678`,
 			} else if from == "datacite" {
 				data, err = datacite.Load(str)
 			} else {
-				fmt.Println("Please provide a valid input")
+				cmd.PrintErr("Please provide a valid input")
 				return
 			}
 		}
@@ -126,19 +126,19 @@ commonmeta 10.5555/12345678`,
 		}
 
 		if err != nil {
-			fmt.Println(err)
+			cmd.PrintErr(err)
 		}
 
 		if to == "crossrefxml" {
-			fmt.Printf("%s\n", output)
+			cmd.Printf("%s\n", output)
 		} else {
 			var out bytes.Buffer
 			json.Indent(&out, output, "", "  ")
-			fmt.Println(out.String())
+			cmd.Println(out.String())
 		}
 
 		if jsErr != nil {
-			fmt.Println(jsErr)
+			cmd.PrintErr(jsErr)
 		}
 	},
 }

@@ -4,8 +4,6 @@ Copyright © 2024 Front Matter <info@front-matter.io>
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/front-matter/commonmeta/ghost"
 	"github.com/spf13/cobra"
 )
@@ -22,7 +20,7 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 0 {
-			fmt.Println("Please provide an input")
+			cmd.PrintErr("Please provide an input")
 			return
 		}
 		id := args[0]
@@ -30,9 +28,9 @@ to quickly create a Cobra application.`,
 		apiURL, _ := cmd.Flags().GetString("api-url")
 		output, err := ghost.UpdateGhostPost(id, apiKey, apiURL)
 		if err != nil {
-			fmt.Println(err)
+			cmd.PrintErr(err)
 		}
-		fmt.Println(output)
+		rootCmd.Println(output)
 	},
 }
 
