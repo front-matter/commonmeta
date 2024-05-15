@@ -173,6 +173,14 @@ func Convert(data commonmeta.Data) (Body, error) {
 		}
 	}
 
+	var issn []ISSN
+	if data.Container.IdentifierType == "issn" {
+		issn = append(issn, ISSN{
+			MediaType: "electronic",
+			Text:      data.Container.Identifier,
+		})
+	}
+
 	doiData := DOIData{
 		DOI:      doi,
 		Resource: data.URL,
@@ -380,10 +388,6 @@ func Convert(data commonmeta.Data) (Body, error) {
 			CitationList: citationList,
 		})
 	case "JournalArticle":
-		// var issn string
-		// if len(data.Container.Identifier) > 0 {
-		// 	issn = data.Container.Identifier[0].Identifier
-		// }
 		c.Journal = append(c.Journal, Journal{
 			JournalArticle: JournalArticle{
 				PublicationType: "full_text",
@@ -397,7 +401,7 @@ func Convert(data commonmeta.Data) (Body, error) {
 				// },
 				DOIData: doiData,
 				// Pages:
-				// Program:         program,
+				Program: program,
 				// PublicationDate: data.Date.Published,
 				// PublisherItem: PublisherItem{
 				// 	ItemNumber: itemNumber,
@@ -405,9 +409,9 @@ func Convert(data commonmeta.Data) (Body, error) {
 				Titles: titles,
 			},
 			JournalMetadata: JournalMetadata{
+				Language:  data.Language,
 				FullTitle: data.Container.Title,
-				//ISSN:      []string{issn},
-				Language: data.Language,
+				ISSN:      issn,
 			},
 			JournalIssue: JournalIssue{
 				JournalVolume: JournalVolume{
@@ -415,9 +419,6 @@ func Convert(data commonmeta.Data) (Body, error) {
 				},
 				Issue: data.Container.Issue,
 			},
-			// JournalVolume: JournalVolume{
-			// 	Volume: data.Container.Volume,
-			// },
 		})
 	case "PeerReview":
 		c.PeerReview = append(c.PeerReview, PeerReview{})

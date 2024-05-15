@@ -125,7 +125,7 @@ type Archive struct {
 type ArchiveLocations struct {
 	XMLName xml.Name  `xml:"archive_locations"`
 	Text    string    `xml:",chardata"`
-	Archive []Archive `xml:"archive"`
+	Archive []Archive `xml:"archive,omitempty"`
 }
 
 type Assertion struct {
