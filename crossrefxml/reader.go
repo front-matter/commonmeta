@@ -68,9 +68,8 @@ type Content struct {
 	Standard      *Standard      `xml:"standard,omitempty"`
 }
 
-type Crossref struct {
-	XMLName       xml.Name        `xml:"crossref"`
-	Xmlns         string          `xml:"xmlns,attr,omitempty"`
+type Body struct {
+	XMLName       xml.Name        `xml:"body"`
 	Book          []Book          `xml:"book,omitempty"`
 	Conference    []Conference    `xml:"conference,omitempty"`
 	Database      []Database      `xml:"database,omitempty"`
@@ -499,11 +498,11 @@ type PersonName struct {
 type PostedContent struct {
 	XMLName        xml.Name        `xml:"posted_content"`
 	Type           string          `xml:"type,attr"`
-	Language       string          `xml:"language,attr"`
+	Language       string          `xml:"language,attr,omitempty"`
 	GroupTitle     string          `xml:"group_title,omitempty"`
 	Contributors   Contributors    `xml:"contributors,omitempty"`
 	Titles         Titles          `xml:"titles,omitempty"`
-	PostedDate     PostedDate      `xml:"posted_date"`
+	PostedDate     PostedDate      `xml:"posted_date,omitempty"`
 	AcceptanceDate *AcceptanceDate `xml:"acceptance_date,omitempty"`
 	Institution    *Institution    `xml:"institution,omitempty"`
 	ItemNumber     ItemNumber      `xml:"item_number,omitempty"`

@@ -40,7 +40,7 @@ type DOIBatch struct {
 	Xsi            string   `xml:"xsi,attr,omitempty"`
 	SchemaLocation string   `xml:"schemaLocation,attr,omitempty"`
 	Head           Head     `xml:"head"`
-	Body           Crossref `xml:"body"`
+	Body           Body     `xml:"body"`
 }
 
 type Account struct {
@@ -77,8 +77,18 @@ var CMToCRMappings = map[string]string{
 }
 
 // Convert converts Commonmeta metadata to Crossrefxml metadata
-func Convert(data commonmeta.Data) (Crossref, error) {
-	c := Crossref{}
+func Convert(data commonmeta.Data) (Body, error) {
+	c := Body{
+		Book:          []Book{},
+		Conference:    []Conference{},
+		Database:      []Database{},
+		Dissertation:  []Dissertation{},
+		Journal:       []Journal{},
+		PeerReview:    []PeerReview{},
+		PostedContent: []PostedContent{},
+		SAComponent:   []SAComponent{},
+		Standard:      []Standard{},
+	}
 
 	abstract := []Abstract{}
 	if len(data.Descriptions) > 0 {
@@ -338,7 +348,7 @@ func Convert(data commonmeta.Data) (Crossref, error) {
 				Day:       datePublished.Day,
 			}
 		}
-		c.PostedContent = append(c.PostedContent, PostedContent{
+		p := PostedContent{
 			Type:       "other",
 			Language:   data.Language,
 			GroupTitle: groupTitle,
@@ -352,7 +362,8 @@ func Convert(data commonmeta.Data) (Crossref, error) {
 			Program:      program,
 			DOIData:      doiData,
 			CitationList: citationList,
-		})
+		}
+		c.PostedContent = append(c.PostedContent, p)
 	case "JournalArticle":
 		c.Journal = append(c.Journal, Journal{})
 	}
@@ -362,7 +373,7 @@ func Convert(data commonmeta.Data) (Crossref, error) {
 
 // Write writes Crossrefxml metadata.
 func Write(data commonmeta.Data, account Account) ([]byte, []gojsonschema.ResultError) {
-	crossref, err := Convert(data)
+	body, err := Convert(data)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -382,20 +393,21 @@ func Write(data commonmeta.Data, account Account) ([]byte, []gojsonschema.Result
 		Xmlns:   "http://www.crossref.org/schema/5.3.1",
 		Version: "5.3.1",
 		Head:    head,
-		Body:    crossref,
+		Body:    body,
 	}
 
-	output, err := xml.MarshalIndent(doiBatch, "", "  ")
-	if err == nil {
-		fmt.Println(err)
-	}
+	output, _ := xml.MarshalIndent(doiBatch, "", "  ")
+	// TODO: handle error
+	// if err == nil {
+	// 	fmt.Println(err)
+	// }
 	output = []byte(xml.Header + string(output))
 	return output, nil
 }
 
 // WriteAll writes a list of commonmeta metadata.
 func WriteAll(list []commonmeta.Data, account Account) ([]byte, []gojsonschema.ResultError) {
-	var body Crossref
+	var body Body
 	for _, data := range list {
 		crossref, err := Convert(data)
 		if err != nil {
