@@ -78,17 +78,7 @@ var CMToCRMappings = map[string]string{
 
 // Convert converts Commonmeta metadata to Crossrefxml metadata
 func Convert(data commonmeta.Data) (Body, error) {
-	c := Body{
-		Book:          []Book{},
-		Conference:    []Conference{},
-		Database:      []Database{},
-		Dissertation:  []Dissertation{},
-		Journal:       []Journal{},
-		PeerReview:    []PeerReview{},
-		PostedContent: []PostedContent{},
-		SAComponent:   []SAComponent{},
-		Standard:      []Standard{},
-	}
+	c := Body{}
 
 	abstract := []Abstract{}
 	if len(data.Descriptions) > 0 {
