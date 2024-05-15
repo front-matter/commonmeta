@@ -79,6 +79,7 @@ var CMToCRMappings = map[string]string{
 // Convert converts Commonmeta metadata to Crossrefxml metadata
 func Convert(data commonmeta.Data) (Crossref, error) {
 	c := Crossref{}
+
 	abstract := []Abstract{}
 	if len(data.Descriptions) > 0 {
 		for _, description := range data.Descriptions {
@@ -122,7 +123,7 @@ func Convert(data commonmeta.Data) (Crossref, error) {
 						}
 					}
 				}
-				affiliations := &Affiliations{
+				affiliations := Affiliations{
 					Institution: institution,
 				}
 				personName = append(personName, PersonName{
@@ -337,11 +338,11 @@ func Convert(data commonmeta.Data) (Crossref, error) {
 				Day:       datePublished.Day,
 			}
 		}
-		c.PostedContent = append(c.PostedContent, &PostedContent{
+		c.PostedContent = append(c.PostedContent, PostedContent{
 			Type:       "other",
 			Language:   data.Language,
 			GroupTitle: groupTitle,
-			Contributors: &Contributors{
+			Contributors: Contributors{
 				PersonName: personName},
 			Titles:       titles,
 			PostedDate:   postedDate,
@@ -353,7 +354,7 @@ func Convert(data commonmeta.Data) (Crossref, error) {
 			CitationList: citationList,
 		})
 	case "JournalArticle":
-		c.Journal = append(c.Journal, &Journal{})
+		c.Journal = append(c.Journal, Journal{})
 	}
 
 	return c, nil
@@ -386,8 +387,7 @@ func Write(data commonmeta.Data, account Account) ([]byte, []gojsonschema.Result
 
 	output, err := xml.MarshalIndent(doiBatch, "", "  ")
 	if err == nil {
-		// TODO: handle error
-		// fmt.Println(err)
+		fmt.Println(err)
 	}
 	output = []byte(xml.Header + string(output))
 	return output, nil
@@ -397,10 +397,10 @@ func Write(data commonmeta.Data, account Account) ([]byte, []gojsonschema.Result
 func WriteAll(list []commonmeta.Data, account Account) ([]byte, []gojsonschema.ResultError) {
 	var body Crossref
 	for _, data := range list {
-		crossref, _ := Convert(data)
-		// if err != nil {
-		// 	fmt.Println(err)
-		// }
+		crossref, err := Convert(data)
+		if err != nil {
+			fmt.Println(err)
+		}
 		// workaround to handle the different content types
 		body.Book = append(body.Book, crossref.Book...)
 		body.Conference = append(body.Conference, crossref.Conference...)
@@ -430,10 +430,10 @@ func WriteAll(list []commonmeta.Data, account Account) ([]byte, []gojsonschema.R
 		Body:    body,
 	}
 
-	output, _ := xml.MarshalIndent(doiBatch, "", "  ")
-	// if err == nil {
-	// 	// fmt.Println(err)
-	// }
+	output, err := xml.MarshalIndent(doiBatch, "", "  ")
+	if err == nil {
+		fmt.Println(err)
+	}
 	output = []byte(xml.Header + string(output))
 	return output, nil
 }

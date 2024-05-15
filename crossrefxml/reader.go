@@ -69,17 +69,17 @@ type Content struct {
 }
 
 type Crossref struct {
-	XMLName       xml.Name         `xml:"crossref"`
-	Xmlns         string           `xml:"xmlns,attr,omitempty"`
-	Book          []*Book          `xml:"book,omitempty"`
-	Conference    []*Conference    `xml:"conference,omitempty"`
-	Database      []*Database      `xml:"database,omitempty"`
-	Dissertation  []*Dissertation  `xml:"dissertation,omitempty"`
-	Journal       []*Journal       `xml:"journal,omitempty"`
-	PeerReview    []*PeerReview    `xml:"peer_review,omitempty"`
-	PostedContent []*PostedContent `xml:"posted_content,omitempty"`
-	SAComponent   []*SAComponent   `xml:"sa_component,omitempty"`
-	Standard      []*Standard      `xml:"standard,omitempty"`
+	XMLName       xml.Name        `xml:"crossref"`
+	Xmlns         string          `xml:"xmlns,attr,omitempty"`
+	Book          []Book          `xml:"book,omitempty"`
+	Conference    []Conference    `xml:"conference,omitempty"`
+	Database      []Database      `xml:"database,omitempty"`
+	Dissertation  []Dissertation  `xml:"dissertation,omitempty"`
+	Journal       []Journal       `xml:"journal,omitempty"`
+	PeerReview    []PeerReview    `xml:"peer_review,omitempty"`
+	PostedContent []PostedContent `xml:"posted_content,omitempty"`
+	SAComponent   []SAComponent   `xml:"sa_component,omitempty"`
+	Standard      []Standard      `xml:"standard,omitempty"`
 }
 
 type Abstract struct {
@@ -152,7 +152,7 @@ type Book struct {
 type BookMetadata struct {
 	XMLName         xml.Name          `xml:"book_metadata"`
 	Language        string            `xml:"language,attr"`
-	Contributors    *Contributors     `xml:"contributors"`
+	Contributors    Contributors      `xml:"contributors"`
 	Titles          Titles            `xml:"titles"`
 	Abstract        []Abstract        `xml:"abstract"`
 	EditionNumber   int               `xml:"edition_number"`
@@ -215,7 +215,7 @@ type ComponentList struct {
 
 type Conference struct {
 	XMLName             xml.Name            `xml:"conference"`
-	Contributors        *Contributors       `xml:"contributors"`
+	Contributors        Contributors        `xml:"contributors"`
 	EventMetadata       EventMetadata       `xml:"event_metadata"`
 	ProceedingsMetadata ProceedingsMetadata `xml:"proceedings_metadata"`
 	ConferencePaper     ConferencePaper     `xml:"conference_paper"`
@@ -224,7 +224,7 @@ type Conference struct {
 type ConferencePaper struct {
 	XMLName         xml.Name          `xml:"conference_paper"`
 	PublicationType string            `xml:"publication_type,attr"`
-	Contributors    *Contributors     `xml:"contributors"`
+	Contributors    Contributors      `xml:"contributors"`
 	Titles          Titles            `xml:"titles"`
 	PublicationDate []PublicationDate `xml:"publication_date"`
 	Pages           Pages             `xml:"pages"`
@@ -239,7 +239,7 @@ type ContentItem struct {
 	ComponentType       string            `xml:"component_type,attr"`
 	LevelSequenceNumber string            `xml:"level_sequence_number,attr"`
 	PublicationType     string            `xml:"publication_type,attr"`
-	Contributors        *Contributors     `xml:"contributors"`
+	Contributors        Contributors      `xml:"contributors"`
 	Titles              Titles            `xml:"titles"`
 	PublicationDate     []PublicationDate `xml:"publication_date"`
 	Pages               struct {
@@ -298,8 +298,8 @@ type DatabaseMetadata struct {
 }
 
 type Dataset struct {
-	Contributors *Contributors `xml:"contributors"`
-	Titles       Titles        `xml:"titles"`
+	Contributors Contributors `xml:"contributors"`
+	Titles       Titles       `xml:"titles"`
 	DatabaseDate struct {
 		CreationDate CreationDate `xml:"creation_date"`
 	} `xml:"database_date"`
@@ -410,7 +410,7 @@ type JournalArticle struct {
 	PublicationType           string            `xml:"publication_type,attr"`
 	ReferenceDistributionOpts string            `xml:"reference_distribution_opts,attr"`
 	Titles                    Titles            `xml:"titles,omitempty"`
-	Contributors              *Contributors     `xml:"contributors,omitempty"`
+	Contributors              Contributors      `xml:"contributors,omitempty"`
 	PublicationDate           []PublicationDate `xml:"publication_date"`
 	PublisherItem             struct {
 		ItemNumber ItemNumber `xml:"item_number"`
@@ -469,30 +469,30 @@ type Pages struct {
 }
 
 type PeerReview struct {
-	XMLName                    xml.Name      `xml:"peer_review"`
-	Stage                      string        `xml:"stage,attr"`
-	RevisionRound              string        `xml:"revision-round,attr"`
-	Recommendation             string        `xml:"recommendation,attr"`
-	Type                       string        `xml:"type,attr"`
-	Contributors               *Contributors `xml:"contributors"`
-	Titles                     Titles        `xml:"titles"`
-	ReviewDate                 ReviewDate    `xml:"review_date"`
-	CompetingInterestStatement string        `xml:"competing_interest_statement"`
-	Program                    []Program     `xml:"program"`
-	DOIData                    DOIData       `xml:"doi_data"`
+	XMLName                    xml.Name     `xml:"peer_review"`
+	Stage                      string       `xml:"stage,attr"`
+	RevisionRound              string       `xml:"revision-round,attr"`
+	Recommendation             string       `xml:"recommendation,attr"`
+	Type                       string       `xml:"type,attr"`
+	Contributors               Contributors `xml:"contributors"`
+	Titles                     Titles       `xml:"titles"`
+	ReviewDate                 ReviewDate   `xml:"review_date"`
+	CompetingInterestStatement string       `xml:"competing_interest_statement"`
+	Program                    []Program    `xml:"program"`
+	DOIData                    DOIData      `xml:"doi_data"`
 }
 
 // PersonName represents a person in Crossref XML metadata.
 type PersonName struct {
-	XMLName         xml.Name      `xml:"person_name"`
-	ContributorRole string        `xml:"contributor_role,attr"`
-	Sequence        string        `xml:"sequence,attr"`
-	Text            string        `xml:",chardata"`
-	GivenName       string        `xml:"given_name"`
-	Surname         string        `xml:"surname"`
-	Affiliations    *Affiliations `xml:"affiliations,omitempty"`
-	Affiliation     string        `xml:"affiliation,omitempty"`
-	ORCID           string        `xml:"ORCID,omitempty"`
+	XMLName         xml.Name     `xml:"person_name"`
+	ContributorRole string       `xml:"contributor_role,attr"`
+	Sequence        string       `xml:"sequence,attr"`
+	Text            string       `xml:",chardata"`
+	GivenName       string       `xml:"given_name"`
+	Surname         string       `xml:"surname"`
+	Affiliations    Affiliations `xml:"affiliations,omitempty"`
+	Affiliation     string       `xml:"affiliation,omitempty"`
+	ORCID           string       `xml:"ORCID,omitempty"`
 }
 
 // PostedContent represents posted content in Crossref XML metadata.
@@ -501,7 +501,7 @@ type PostedContent struct {
 	Type           string          `xml:"type,attr"`
 	Language       string          `xml:"language,attr"`
 	GroupTitle     string          `xml:"group_title,omitempty"`
-	Contributors   *Contributors   `xml:"contributors,omitempty"`
+	Contributors   Contributors    `xml:"contributors,omitempty"`
 	Titles         Titles          `xml:"titles,omitempty"`
 	PostedDate     PostedDate      `xml:"posted_date"`
 	AcceptanceDate *AcceptanceDate `xml:"acceptance_date,omitempty"`
@@ -674,7 +674,6 @@ func Fetch(str string) (commonmeta.Data, error) {
 	if err != nil {
 		return data, err
 	}
-	fmt.Println(content)
 	data, err = Read(content)
 	if err != nil {
 		return data, err
@@ -755,7 +754,7 @@ func Read(query Query) (commonmeta.Data, error) {
 	var abstract []Abstract
 	var archiveLocations ArchiveLocations
 	var citationList CitationList
-	var contributors *Contributors
+	var contributors Contributors
 	var customMetadata CustomMetadata
 	var doiData DOIData
 	var fundref Program
@@ -844,7 +843,7 @@ func Read(query Query) (commonmeta.Data, error) {
 		doiData = database.Dataset.DOIData
 	case "Dissertation":
 		dissertation := meta.Dissertation
-		contributors = &Contributors{
+		contributors = Contributors{
 			PersonName: dissertation.PersonName,
 		}
 		doiData = dissertation.DOIData
@@ -863,7 +862,6 @@ func Read(query Query) (commonmeta.Data, error) {
 		language = journal.JournalMetadata.Language
 		doiData = journal.JournalMetadata.DOIData
 	case "JournalArticle":
-		fmt.Println(meta)
 		journal := meta.Journal
 		abstract = journal.JournalArticle.Abstract
 		archiveLocations = journal.JournalArticle.ArchiveLocations
@@ -1307,7 +1305,7 @@ func LoadAll(filename string) ([]commonmeta.Data, error) {
 	return data, nil
 }
 
-func GetContributors(contrib *Contributors) ([]commonmeta.Contributor, error) {
+func GetContributors(contrib Contributors) ([]commonmeta.Contributor, error) {
 	var contributors []commonmeta.Contributor
 
 	if len(contrib.PersonName) > 0 {
