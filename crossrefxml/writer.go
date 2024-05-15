@@ -442,10 +442,11 @@ func WriteAll(list []commonmeta.Data, account Account) ([]byte, []gojsonschema.R
 		Body:    body,
 	}
 
-	output, err := xml.MarshalIndent(doiBatch, "", "  ")
-	if err == nil {
-		fmt.Println(err)
-	}
+	output, _ := xml.MarshalIndent(doiBatch, "", "  ")
+	// TODO: handle error
+	// if err == nil {
+	// 	fmt.Println(err)
+	// }
 	output = []byte(xml.Header + string(output))
 	return output, nil
 }
