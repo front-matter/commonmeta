@@ -160,12 +160,16 @@ func Convert(data commonmeta.Data) (Body, error) {
 				// Crossref schema currently doesn't support text/markdown
 				file.MimeType = "text/plain"
 			}
-			items = append(items, Item{
+			item := Item{
 				Resource: Resource{
 					Text:     file.URL,
 					MimeType: file.MimeType,
 				},
-			})
+			}
+			// as text/html item may already have been added
+			if !slices.Contains(items, item) {
+				items = append(items, item)
+			}
 		}
 	}
 
@@ -338,7 +342,7 @@ func Convert(data commonmeta.Data) (Body, error) {
 				Day:       datePublished.Day,
 			}
 		}
-		p := PostedContent{
+		c.PostedContent = append(c.PostedContent, PostedContent{
 			Type:       "other",
 			Language:   data.Language,
 			GroupTitle: groupTitle,
@@ -352,8 +356,7 @@ func Convert(data commonmeta.Data) (Body, error) {
 			Program:      program,
 			DOIData:      doiData,
 			CitationList: citationList,
-		}
-		c.PostedContent = append(c.PostedContent, p)
+		})
 	case "JournalArticle":
 		c.Journal = append(c.Journal, Journal{})
 	}
