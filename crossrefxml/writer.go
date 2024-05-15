@@ -132,7 +132,7 @@ func Convert(data commonmeta.Data) (Body, error) {
 					ORCID:           contributor.ID,
 					GivenName:       contributor.GivenName,
 					Surname:         contributor.FamilyName,
-					Affiliations:    affiliations,
+					Affiliations:    &affiliations,
 				})
 			} else {
 				personName = append(personName, PersonName{

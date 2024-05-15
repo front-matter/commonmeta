@@ -540,7 +540,7 @@ func Read(content Content) (commonmeta.Data, error) {
 			} else {
 				Type = "Person"
 			}
-			var affiliations []commonmeta.Affiliation
+			var affiliations []*commonmeta.Affiliation
 			if len(v.Affiliation) > 0 {
 				for _, a := range v.Affiliation {
 					var ID string
@@ -548,7 +548,7 @@ func Read(content Content) (commonmeta.Data, error) {
 						ID = utils.NormalizeROR(a.ID[0].ID)
 					}
 					if a.Name != "" {
-						affiliations = append(affiliations, commonmeta.Affiliation{
+						affiliations = append(affiliations, &commonmeta.Affiliation{
 							ID:   ID,
 							Name: a.Name,
 						})

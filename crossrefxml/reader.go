@@ -483,15 +483,15 @@ type PeerReview struct {
 
 // PersonName represents a person in Crossref XML metadata.
 type PersonName struct {
-	XMLName         xml.Name     `xml:"person_name"`
-	ContributorRole string       `xml:"contributor_role,attr"`
-	Sequence        string       `xml:"sequence,attr"`
-	Text            string       `xml:",chardata"`
-	GivenName       string       `xml:"given_name"`
-	Surname         string       `xml:"surname"`
-	Affiliations    Affiliations `xml:"affiliations,omitempty"`
-	Affiliation     string       `xml:"affiliation,omitempty"`
-	ORCID           string       `xml:"ORCID,omitempty"`
+	XMLName         xml.Name      `xml:"person_name"`
+	ContributorRole string        `xml:"contributor_role,attr"`
+	Sequence        string        `xml:"sequence,attr"`
+	Text            string        `xml:",chardata"`
+	GivenName       string        `xml:"given_name"`
+	Surname         string        `xml:"surname"`
+	Affiliations    *Affiliations `xml:"affiliations,omitempty"`
+	Affiliation     string        `xml:"affiliation,omitempty"`
+	ORCID           string        `xml:"ORCID,omitempty"`
 }
 
 // PostedContent represents posted content in Crossref XML metadata.
@@ -1309,6 +1309,7 @@ func GetContributors(contrib Contributors) ([]commonmeta.Contributor, error) {
 
 	if len(contrib.PersonName) > 0 {
 		for _, v := range contrib.PersonName {
+			fmt.Print(v.Affiliations)
 			var ID string
 			if v.GivenName != "" || v.Surname != "" {
 				if v.ORCID != "" {
@@ -1316,42 +1317,48 @@ func GetContributors(contrib Contributors) ([]commonmeta.Contributor, error) {
 				}
 			}
 			Type := "Person"
-			var affiliations []commonmeta.Affiliation
-			if len(v.Affiliations.Institution) > 0 {
-				for _, i := range v.Affiliations.Institution {
-					if i.InstitutionName != "" {
-						if i.InstitutionID != nil && i.InstitutionID.Text != "" {
-							ID = utils.NormalizeROR(i.InstitutionID.Text)
-							affiliations = append(affiliations, commonmeta.Affiliation{
-								ID:   ID,
-								Name: i.InstitutionName,
-							})
-						} else {
-							affiliations = append(affiliations, commonmeta.Affiliation{
-								Name: i.InstitutionName,
-							})
+			if len(v.Affiliations.Institution) > 0 || v.Affiliation != "" {
+				var affiliations []*commonmeta.Affiliation
+				if len(v.Affiliations.Institution) > 0 {
+					for _, i := range v.Affiliations.Institution {
+						if i.InstitutionName != "" {
+							if i.InstitutionID != nil && i.InstitutionID.Text != "" {
+								ID = utils.NormalizeROR(i.InstitutionID.Text)
+								affiliations = append(affiliations, &commonmeta.Affiliation{
+									ID:   ID,
+									Name: i.InstitutionName,
+								})
+							} else {
+								affiliations = append(affiliations, &commonmeta.Affiliation{
+									Name: i.InstitutionName,
+								})
+							}
 						}
 					}
+				} else if v.Affiliation != "" {
+					affiliations = append(affiliations, &commonmeta.Affiliation{
+						Name: v.Affiliation,
+					})
 				}
-			} else if v.Affiliation != "" {
-				affiliations = append(affiliations, commonmeta.Affiliation{
-					Name: v.Affiliation,
-				})
-			}
-
-			contributor := commonmeta.Contributor{
-				ID:               ID,
-				Type:             Type,
-				GivenName:        v.GivenName,
-				FamilyName:       v.Surname,
-				Name:             "",
-				ContributorRoles: []string{"Author"},
-				Affiliations:     affiliations,
-			}
-			containsName := slices.ContainsFunc(contributors, func(e commonmeta.Contributor) bool {
-				return e.GivenName == contributor.GivenName && e.FamilyName != "" && e.FamilyName == contributor.FamilyName
-			})
-			if !containsName {
+				contributor := commonmeta.Contributor{
+					ID:               ID,
+					Type:             Type,
+					GivenName:        v.GivenName,
+					FamilyName:       v.Surname,
+					Name:             "",
+					ContributorRoles: []string{"Author"},
+					Affiliations:     affiliations,
+				}
+				contributors = append(contributors, contributor)
+			} else {
+				contributor := commonmeta.Contributor{
+					ID:               ID,
+					Type:             Type,
+					GivenName:        v.GivenName,
+					FamilyName:       v.Surname,
+					Name:             "",
+					ContributorRoles: []string{"Author"},
+				}
 				contributors = append(contributors, contributor)
 			}
 		}

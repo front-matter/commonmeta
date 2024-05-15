@@ -147,13 +147,13 @@ type Container struct {
 
 // Contributor represents a contributor of a publication, defined in the commonmeta JSON Schema.
 type Contributor struct {
-	ID               string        `json:"id,omitempty"`
-	Type             string        `json:"type,omitempty"`
-	Name             string        `json:"name,omitempty"`
-	GivenName        string        `json:"givenName,omitempty"`
-	FamilyName       string        `json:"familyName,omitempty"`
-	Affiliations     []Affiliation `json:"affiliations,omitempty"`
-	ContributorRoles []string      `json:"contributorRoles,omitempty"`
+	ID               string         `json:"id,omitempty"`
+	Type             string         `json:"type,omitempty"`
+	Name             string         `json:"name,omitempty"`
+	GivenName        string         `json:"givenName,omitempty"`
+	FamilyName       string         `json:"familyName,omitempty"`
+	Affiliations     []*Affiliation `json:"affiliations,omitempty"`
+	ContributorRoles []string       `json:"contributorRoles,omitempty"`
 }
 
 // Date represents the date of a publication, defined in the commonmeta JSON Schema.

@@ -384,11 +384,11 @@ func GetContributors(contrib Authors) ([]commonmeta.Contributor, error) {
 				Type = "Organization"
 			}
 
-			var affiliations []commonmeta.Affiliation
+			var affiliations []*commonmeta.Affiliation
 			if len(v.Affiliation) > 0 {
 				for _, a := range v.Affiliation {
 					if a.Name != "" {
-						affiliations = append(affiliations, commonmeta.Affiliation{
+						affiliations = append(affiliations, &commonmeta.Affiliation{
 							ID:   a.ID,
 							Name: a.Name,
 						})

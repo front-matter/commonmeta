@@ -675,7 +675,7 @@ func GetContributor(v ContentContributor) commonmeta.Contributor {
 	//parse Affiliation as either slice of string or slice of struct
 	var affiliationStructs []Affiliation
 	var affiliationNames []string
-	var affiliations []commonmeta.Affiliation
+	var affiliations []*commonmeta.Affiliation
 	var err error
 	err = json.Unmarshal(v.Affiliation, &affiliationNames)
 	if err != nil {
@@ -691,13 +691,13 @@ func GetContributor(v ContentContributor) commonmeta.Contributor {
 				ID:   id,
 				Name: v.Name,
 			}
-			affiliations = append(affiliations, af)
+			affiliations = append(affiliations, &af)
 		}
 	} else if len(affiliationNames) > 0 {
 		af := commonmeta.Affiliation{
 			Name: affiliationNames[0],
 		}
-		affiliations = append(affiliations, af)
+		affiliations = append(affiliations, &af)
 	}
 
 	var roles []string
