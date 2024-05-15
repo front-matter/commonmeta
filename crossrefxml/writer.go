@@ -107,7 +107,7 @@ func Convert(data commonmeta.Data) (Crossref, error) {
 				for _, a := range contributor.Affiliations {
 					if a.Name != "" {
 						if a.ID != "" {
-							institutionID := &InstitutionID{
+							institutionID := InstitutionID{
 								Type: "ror",
 								Text: a.ID,
 							}

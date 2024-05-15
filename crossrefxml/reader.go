@@ -343,10 +343,10 @@ type Format struct {
 }
 
 type Institution struct {
-	XMLName          xml.Name       `xml:"institution"`
-	InstitutionName  string         `xml:"institution_name,omitempty"`
-	InstitutionPlace string         `xml:"institution_place,omitempty"`
-	InstitutionID    *InstitutionID `xml:"institution_id,omitempty"`
+	XMLName          xml.Name      `xml:"institution"`
+	InstitutionName  string        `xml:"institution_name,omitempty"`
+	InstitutionPlace string        `xml:"institution_place,omitempty"`
+	InstitutionID    InstitutionID `xml:"institution_id,omitempty"`
 }
 
 type InstitutionID struct {
@@ -674,6 +674,7 @@ func Fetch(str string) (commonmeta.Data, error) {
 	if err != nil {
 		return data, err
 	}
+	fmt.Println(content)
 	data, err = Read(content)
 	if err != nil {
 		return data, err
@@ -741,6 +742,7 @@ func Get(pid string) (Query, error) {
 	if err != nil {
 		fmt.Println("error:", err)
 	}
+	query = crossrefResult.QueryResult.Body.Query
 	return query, err
 }
 
@@ -990,7 +992,7 @@ func Read(query Query) (commonmeta.Data, error) {
 		LastPage:       pages.LastPage,
 	}
 
-	if contributors != nil && len(contributors.PersonName) > 0 {
+	if len(contributors.PersonName) > 0 {
 		contrib, err := GetContributors(contributors)
 		if err != nil {
 			return data, err
