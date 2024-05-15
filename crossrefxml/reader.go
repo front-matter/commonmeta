@@ -26,14 +26,6 @@ type Crossrefxml struct {
 	Query   Query    `xml:"query"`
 }
 
-// Content represents the Crossref XML metadata returned from Crossref. The type is more
-// flexible than the Crossrefxml type, allowing for different formats of some metadata.
-type Content struct {
-	Crossrefxml
-	Query            Query `xml:"query"`
-	CrossrefMetadata Query `xml:"crossref_metadata"`
-}
-
 type Query struct {
 	Status    string    `xml:"status,attr"`
 	DOI       DOI       `xml:"doi"`
@@ -57,11 +49,28 @@ type DOI struct {
 
 type DOIRecord struct {
 	XMLName  xml.Name `xml:"doi_record"`
-	Crossref Crossref `xml:"body"`
+	Crossref Content  `xml:"crossref"`
+}
+
+// Content represents the Crossref XML metadata returned from Crossref. The type uses a struct
+// instead of the slice for the Crossref metadata.
+type Content struct {
+	XMLName       xml.Name       `xml:"crossref"`
+	Xmlns         string         `xml:"xmlns,attr,omitempty"`
+	Book          *Book          `xml:"book,omitempty"`
+	Conference    *Conference    `xml:"conference,omitempty"`
+	Database      *Database      `xml:"database,omitempty"`
+	Dissertation  *Dissertation  `xml:"dissertation,omitempty"`
+	Journal       *Journal       `xml:"journal,omitempty"`
+	PeerReview    *PeerReview    `xml:"peer_review,omitempty"`
+	PostedContent *PostedContent `xml:"posted_content,omitempty"`
+	SAComponent   *SAComponent   `xml:"sa_component,omitempty"`
+	Standard      *Standard      `xml:"standard,omitempty"`
 }
 
 type Crossref struct {
-	XMLName       xml.Name         `xml:"body"`
+	XMLName       xml.Name         `xml:"crossref"`
+	Xmlns         string           `xml:"xmlns,attr,omitempty"`
 	Book          []*Book          `xml:"book,omitempty"`
 	Conference    []*Conference    `xml:"conference,omitempty"`
 	Database      []*Database      `xml:"database,omitempty"`
@@ -144,8 +153,8 @@ type BookMetadata struct {
 	XMLName         xml.Name          `xml:"book_metadata"`
 	Language        string            `xml:"language,attr"`
 	Contributors    *Contributors     `xml:"contributors"`
-	Titles          *Titles           `xml:"titles"`
-	Abstract        *[]Abstract       `xml:"abstract"`
+	Titles          Titles            `xml:"titles"`
+	Abstract        []Abstract        `xml:"abstract"`
 	EditionNumber   int               `xml:"edition_number"`
 	PublicationDate []PublicationDate `xml:"publication_date"`
 	ISBN            []ISBN            `xml:"isbn"`
@@ -193,7 +202,7 @@ type Component struct {
 	RegAgency      string   `xml:"reg-agency,attr"`
 	ParentRelation string   `xml:"parent_relation,attr"`
 	Text           string   `xml:",chardata"`
-	Titles         *Titles  `xml:"titles"`
+	Titles         Titles   `xml:"titles"`
 	Format         Format   `xml:"format"`
 	DOIData        DOIData  `xml:"doi_data"`
 }
@@ -216,13 +225,13 @@ type ConferencePaper struct {
 	XMLName         xml.Name          `xml:"conference_paper"`
 	PublicationType string            `xml:"publication_type,attr"`
 	Contributors    *Contributors     `xml:"contributors"`
-	Titles          *Titles           `xml:"titles"`
+	Titles          Titles            `xml:"titles"`
 	PublicationDate []PublicationDate `xml:"publication_date"`
 	Pages           Pages             `xml:"pages"`
 	PublisherItem   PublisherItem     `xml:"publisher_item"`
 	Crossmark       Crossmark         `xml:"crossmark"`
 	DOIData         DOIData           `xml:"doi_data"`
-	CitationList    *CitationList     `xml:"citation_list,omitempty"`
+	CitationList    CitationList      `xml:"citation_list,omitempty"`
 }
 
 type ContentItem struct {
@@ -231,14 +240,14 @@ type ContentItem struct {
 	LevelSequenceNumber string            `xml:"level_sequence_number,attr"`
 	PublicationType     string            `xml:"publication_type,attr"`
 	Contributors        *Contributors     `xml:"contributors"`
-	Titles              *Titles           `xml:"titles"`
+	Titles              Titles            `xml:"titles"`
 	PublicationDate     []PublicationDate `xml:"publication_date"`
 	Pages               struct {
 		FirstPage string `xml:"first_page"`
 		LastPage  string `xml:"last_page"`
 	} `xml:"pages"`
-	DOIData      DOIData       `xml:"doi_data"`
-	CitationList *CitationList `xml:"citation_list,omitempty"`
+	DOIData      DOIData      `xml:"doi_data"`
+	CitationList CitationList `xml:"citation_list,omitempty"`
 }
 
 type CreationDate struct {
@@ -266,15 +275,15 @@ type Crossmark struct {
 			Domain string `xml:"domain"`
 		} `xml:"crossmark_domain"`
 	} `xml:"crossmark_domains"`
-	CrossmarkDomainExclusive string          `xml:"crossmark_domain_exclusive"`
-	CustomMetadata           *CustomMetadata `xml:"custom_metadata"`
+	CrossmarkDomainExclusive string         `xml:"crossmark_domain_exclusive"`
+	CustomMetadata           CustomMetadata `xml:"custom_metadata"`
 }
 
 type CustomMetadata struct {
 	XMLName   xml.Name    `xml:"custom_metadata"`
 	Text      string      `xml:",chardata"`
 	Assertion []Assertion `xml:"assertion"`
-	Program   []*Program  `xml:"program"`
+	Program   []Program   `xml:"program"`
 }
 
 type Database struct {
@@ -290,7 +299,7 @@ type DatabaseMetadata struct {
 
 type Dataset struct {
 	Contributors *Contributors `xml:"contributors"`
-	Titles       *Titles       `xml:"titles"`
+	Titles       Titles        `xml:"titles"`
 	DatabaseDate struct {
 		CreationDate CreationDate `xml:"creation_date"`
 	} `xml:"database_date"`
@@ -298,24 +307,24 @@ type Dataset struct {
 }
 
 type Dissertation struct {
-	XMLName         xml.Name      `xml:"dissertation"`
-	Language        string        `xml:"language"`
-	PublicationType string        `xml:"publication_type"`
-	PersonName      []PersonName  `xml:"person_name"`
-	Titles          *Titles       `xml:"titles"`
-	ApprovalDate    ApprovalDate  `xml:"approval_date"`
-	Institution     Institution   `xml:"institution"`
-	Degree          string        `xml:"degree"`
-	DOIData         DOIData       `xml:"doi_data"`
-	CitationList    *CitationList `xml:"citation_list,omitempty"`
+	XMLName         xml.Name     `xml:"dissertation"`
+	Language        string       `xml:"language"`
+	PublicationType string       `xml:"publication_type"`
+	PersonName      []PersonName `xml:"person_name"`
+	Titles          Titles       `xml:"titles"`
+	ApprovalDate    ApprovalDate `xml:"approval_date"`
+	Institution     Institution  `xml:"institution"`
+	Degree          string       `xml:"degree"`
+	DOIData         DOIData      `xml:"doi_data"`
+	CitationList    CitationList `xml:"citation_list,omitempty"`
 }
 
 type DOIData struct {
-	XMLName    xml.Name    `xml:"doi_data"`
-	DOI        string      `xml:"doi"`
-	Timestamp  string      `xml:"timestamp,omitempty"`
-	Resource   string      `xml:"resource"`
-	Collection *Collection `xml:"collection,omitempty"`
+	XMLName    xml.Name   `xml:"doi_data"`
+	DOI        string     `xml:"doi"`
+	Timestamp  string     `xml:"timestamp,omitempty"`
+	Resource   string     `xml:"resource"`
+	Collection Collection `xml:"collection,omitempty"`
 }
 
 type EventMetadata struct {
@@ -400,20 +409,20 @@ type JournalArticle struct {
 	Text                      string            `xml:",chardata"`
 	PublicationType           string            `xml:"publication_type,attr"`
 	ReferenceDistributionOpts string            `xml:"reference_distribution_opts,attr"`
-	Titles                    *Titles           `xml:"titles,omitempty"`
+	Titles                    Titles            `xml:"titles,omitempty"`
 	Contributors              *Contributors     `xml:"contributors,omitempty"`
 	PublicationDate           []PublicationDate `xml:"publication_date"`
 	PublisherItem             struct {
 		ItemNumber ItemNumber `xml:"item_number"`
 	} `xml:"publisher_item"`
-	Abstract         *[]Abstract      `xml:"jats:abstract"`
+	Abstract         []Abstract       `xml:"jats:abstract"`
 	Pages            Pages            `xml:"pages"`
 	ISSN             []ISSN           `xml:"issn"`
-	Program          []*Program       `xml:"program"`
+	Program          []Program        `xml:"program"`
 	Crossmark        Crossmark        `xml:"crossmark"`
 	ArchiveLocations ArchiveLocations `xml:"archive_locations"`
 	DOIData          DOIData          `xml:"doi_data"`
-	CitationList     *CitationList    `xml:"citation_list,omitempty"`
+	CitationList     CitationList     `xml:"citation_list,omitempty"`
 }
 
 type JournalIssue struct {
@@ -466,10 +475,10 @@ type PeerReview struct {
 	Recommendation             string        `xml:"recommendation,attr"`
 	Type                       string        `xml:"type,attr"`
 	Contributors               *Contributors `xml:"contributors"`
-	Titles                     *Titles       `xml:"titles"`
+	Titles                     Titles        `xml:"titles"`
 	ReviewDate                 ReviewDate    `xml:"review_date"`
 	CompetingInterestStatement string        `xml:"competing_interest_statement"`
-	Program                    []*Program    `xml:"program"`
+	Program                    []Program     `xml:"program"`
 	DOIData                    DOIData       `xml:"doi_data"`
 }
 
@@ -493,15 +502,15 @@ type PostedContent struct {
 	Language       string          `xml:"language,attr"`
 	GroupTitle     string          `xml:"group_title,omitempty"`
 	Contributors   *Contributors   `xml:"contributors,omitempty"`
-	Titles         *Titles         `xml:"titles,omitempty"`
+	Titles         Titles          `xml:"titles,omitempty"`
 	PostedDate     PostedDate      `xml:"posted_date"`
 	AcceptanceDate *AcceptanceDate `xml:"acceptance_date,omitempty"`
 	Institution    *Institution    `xml:"institution,omitempty"`
 	ItemNumber     ItemNumber      `xml:"item_number,omitempty"`
-	Abstract       *[]Abstract     `xml:"abstract"`
-	Program        []*Program      `xml:"program"`
+	Abstract       []Abstract      `xml:"abstract"`
+	Program        []Program       `xml:"program"`
 	DOIData        DOIData         `xml:"doi_data"`
-	CitationList   *CitationList   `xml:"citation_list,omitempty"`
+	CitationList   CitationList    `xml:"citation_list,omitempty"`
 }
 
 type PostedDate struct {
@@ -589,7 +598,7 @@ type SAComponent struct {
 
 type SetMetadata struct {
 	XMLName      xml.Name     `xml:"set_metadata"`
-	Titles       *Titles      `xml:"titles"`
+	Titles       Titles       `xml:"titles"`
 	ISBN         []ISBN       `xml:"isbn"`
 	Contributors Contributors `xml:"contributors"`
 	DOIData      DOIData      `xml:"doi_data"`
@@ -673,7 +682,8 @@ func Fetch(str string) (commonmeta.Data, error) {
 }
 
 // Get gets the metadata for a single work from the Crossref API in Crossref XML format.
-func Get(pid string) (Content, error) {
+func Get(pid string) (Query, error) {
+	var query Query
 
 	// the envelope for the XML response from the Crossref API
 	type CrossrefResult struct {
@@ -686,7 +696,9 @@ func Get(pid string) (Content, error) {
 			Head struct {
 				DoiBatchID string `xml:"doi_batch_id"`
 			} `xml:"head"`
-			Body Content `xml:"body"`
+			Body struct {
+				Query Query `xml:"query"`
+			} `xml:"body"`
 		} `xml:"query_result"`
 	}
 
@@ -698,7 +710,7 @@ func Get(pid string) (Content, error) {
 	}
 	doi, ok := doiutils.ValidateDOI(pid)
 	if !ok {
-		return crossrefResult.QueryResult.Body, errors.New("invalid DOI")
+		return query, errors.New("invalid DOI")
 	}
 	client := &http.Client{
 		Timeout: 10 * time.Second,
@@ -714,35 +726,35 @@ func Get(pid string) (Content, error) {
 	}
 	resp, err := client.Do(req)
 	if err != nil {
-		return crossrefResult.QueryResult.Body, err
+		return query, err
 	}
 	if resp.StatusCode >= 400 {
-		return crossrefResult.QueryResult.Body, errors.New(resp.Status)
+		return query, errors.New(resp.Status)
 	}
 	defer resp.Body.Close()
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		fmt.Println("error:", err)
-		return crossrefResult.QueryResult.Body, err
+		return query, err
 	}
 	err = xml.Unmarshal(body, &crossrefResult)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
-	return crossrefResult.QueryResult.Body, err
+	return query, err
 }
 
 // Read Crossref XML response and return work struct in Commonmeta format
-func Read(content Content) (commonmeta.Data, error) {
+func Read(query Query) (commonmeta.Data, error) {
 	var data = commonmeta.Data{}
 
 	var containerTitle, issue, language, volume string
 	var accessIndicators Program
-	var abstract *[]Abstract
+	var abstract []Abstract
 	var archiveLocations ArchiveLocations
-	var citationList *CitationList
+	var citationList CitationList
 	var contributors *Contributors
-	var customMetadata *CustomMetadata
+	var customMetadata CustomMetadata
 	var doiData DOIData
 	var fundref Program
 	var isbn []ISBN
@@ -750,15 +762,15 @@ func Read(content Content) (commonmeta.Data, error) {
 	var itemNumber ItemNumber
 	var pages Pages
 	var publicationDate []PublicationDate
-	var program []*Program
-	var relations *Program
+	var program []Program
+	var relations Program
 	var subjects []string
-	var titles *Titles
+	var titles Titles
 
-	meta := content.Query.DOIRecord.Crossref
+	meta := query.DOIRecord.Crossref
 
-	data.ID = doiutils.NormalizeDOI(content.Query.DOI.Text)
-	data.Type = CRToCMMappings[content.Query.DOI.Type]
+	data.ID = doiutils.NormalizeDOI(query.DOI.Text)
+	data.Type = CRToCMMappings[query.DOI.Type]
 	if data.Type == "" {
 		data.Type = "Other"
 	}
@@ -766,8 +778,8 @@ func Read(content Content) (commonmeta.Data, error) {
 	// fetch metadata depending on Crossref type (using the commonmeta vocabulary)
 	switch data.Type {
 	case "Article": // posted-content
-		postedContent := meta.PostedContent[0]
-		abstract = postedContent.Abstract
+		postedContent := meta.PostedContent
+		abstract = append(abstract, postedContent.Abstract...)
 		// archiveLocations not supported
 		citationList = postedContent.CitationList
 		contributors = postedContent.Contributors
@@ -775,7 +787,7 @@ func Read(content Content) (commonmeta.Data, error) {
 		itemNumber = postedContent.ItemNumber
 		language = postedContent.Language
 		// pages not supported
-		program = postedContent.Program
+		program = append(program, postedContent.Program...)
 		// use posted date as publication date
 		publicationDate = append(publicationDate, PublicationDate{
 			Year:  postedContent.PostedDate.Year,
@@ -786,7 +798,7 @@ func Read(content Content) (commonmeta.Data, error) {
 		subjects = append(subjects, postedContent.GroupTitle)
 		titles = postedContent.Titles
 	case "Book":
-		book := meta.Book[0]
+		book := meta.Book
 		abstract = book.BookMetadata.Abstract
 		contributors = book.BookMetadata.Contributors
 		citationList = book.ContentItem.CitationList
@@ -797,7 +809,7 @@ func Read(content Content) (commonmeta.Data, error) {
 		pages = book.ContentItem.Pages
 		titles = book.BookMetadata.Titles
 	case "BookChapter":
-		book := meta.Book[0]
+		book := meta.Book
 		abstract = book.BookMetadata.Abstract
 		citationList = book.ContentItem.CitationList
 		contributors = book.ContentItem.Contributors
@@ -813,11 +825,11 @@ func Read(content Content) (commonmeta.Data, error) {
 	case "BookSet":
 	case "BookTrack":
 	case "Component":
-		component := meta.SAComponent[0]
+		component := meta.SAComponent
 		doiData = component.ComponentList.Component[0].DOIData
 	case "Database":
 	case "Dataset":
-		database := meta.Database[0]
+		database := meta.Database
 		containerTitle = database.DatabaseMetadata.Titles.Title
 		contributors = database.Dataset.Contributors
 		titles = database.Dataset.Titles
@@ -829,7 +841,7 @@ func Read(content Content) (commonmeta.Data, error) {
 		})
 		doiData = database.Dataset.DOIData
 	case "Dissertation":
-		dissertation := meta.Dissertation[0]
+		dissertation := meta.Dissertation
 		contributors = &Contributors{
 			PersonName: dissertation.PersonName,
 		}
@@ -844,12 +856,13 @@ func Read(content Content) (commonmeta.Data, error) {
 	case "Entry":
 	case "Grant":
 	case "Journal":
-		journal := meta.Journal[0]
+		journal := meta.Journal
 		containerTitle = journal.JournalMetadata.FullTitle
 		language = journal.JournalMetadata.Language
 		doiData = journal.JournalMetadata.DOIData
 	case "JournalArticle":
-		journal := meta.Journal[0]
+		fmt.Println(meta)
+		journal := meta.Journal
 		abstract = journal.JournalArticle.Abstract
 		archiveLocations = journal.JournalArticle.ArchiveLocations
 		citationList = journal.JournalArticle.CitationList
@@ -867,7 +880,7 @@ func Read(content Content) (commonmeta.Data, error) {
 		titles = journal.JournalArticle.Titles
 		volume = journal.JournalIssue.JournalVolume.Volume
 	case "JournalIssue":
-		journal := meta.Journal[0]
+		journal := meta.Journal
 		containerTitle = journal.JournalMetadata.FullTitle
 		doiData = journal.JournalIssue.DOIData
 		issn = journal.JournalMetadata.ISSN
@@ -875,10 +888,10 @@ func Read(content Content) (commonmeta.Data, error) {
 	case "JournalVolume":
 	case "Other":
 	case "PeerReview":
-		peerReview := meta.PeerReview[0]
+		peerReview := meta.PeerReview
 		contributors = peerReview.Contributors
 		titles = peerReview.Titles
-		program = peerReview.Program
+		program = append(program, peerReview.Program...)
 		// use review date as publication date
 		publicationDate = append(publicationDate, PublicationDate{
 			Year:  peerReview.ReviewDate.Year,
@@ -888,13 +901,13 @@ func Read(content Content) (commonmeta.Data, error) {
 		doiData = peerReview.DOIData
 	case "Proceedings":
 	case "ProceedingsArticle":
-		conference := meta.Conference[0]
+		conference := meta.Conference
 		citationList = conference.ConferencePaper.CitationList
 		containerTitle = conference.EventMetadata.ConferenceName
 		contributors = conference.ConferencePaper.Contributors
 		doiData = conference.ConferencePaper.DOIData
 		isbn = conference.ProceedingsMetadata.ISBN
-		program = conference.ConferencePaper.Crossmark.CustomMetadata.Program
+		program = append(program, conference.ConferencePaper.Crossmark.CustomMetadata.Program...)
 		pages = conference.ConferencePaper.Pages
 		publicationDate = conference.ConferencePaper.PublicationDate
 		titles = conference.ConferencePaper.Titles
@@ -910,15 +923,15 @@ func Read(content Content) (commonmeta.Data, error) {
 	program = append(program, customMetadata.Program...)
 
 	if len(program) > 0 {
-		i := slices.IndexFunc(program, func(c *Program) bool { return c.Name == "AccessIndicators" })
+		i := slices.IndexFunc(program, func(c Program) bool { return c.Name == "AccessIndicators" })
 		if i != -1 {
-			accessIndicators = *program[i]
+			accessIndicators = program[i]
 		}
-		j := slices.IndexFunc(program, func(c *Program) bool { return c.Name == "fundref" })
+		j := slices.IndexFunc(program, func(c Program) bool { return c.Name == "fundref" })
 		if j != -1 {
-			fundref = *program[j]
+			fundref = program[j]
 		}
-		k := slices.IndexFunc(program, func(c *Program) bool { return c.Name == "" })
+		k := slices.IndexFunc(program, func(c Program) bool { return c.Name == "" })
 		if k != -1 {
 			relations = program[k]
 		}
@@ -977,7 +990,7 @@ func Read(content Content) (commonmeta.Data, error) {
 		LastPage:       pages.LastPage,
 	}
 
-	if len(contributors.PersonName) > 0 {
+	if contributors != nil && len(contributors.PersonName) > 0 {
 		contrib, err := GetContributors(contributors)
 		if err != nil {
 			return data, err
@@ -993,8 +1006,8 @@ func Read(content Content) (commonmeta.Data, error) {
 		data.Date.Published = dateutils.GetDateFromCrossrefParts(publicationDate[i].Year, publicationDate[i].Month, publicationDate[i].Day)
 	}
 
-	if len(*abstract) > 0 {
-		for _, v := range *abstract {
+	if len(abstract) > 0 {
+		for _, v := range abstract {
 			var str []string
 			for _, p := range v.P {
 				str = append(str, p.Text)
@@ -1085,7 +1098,7 @@ func Read(content Content) (commonmeta.Data, error) {
 	data.Provider = "Crossref"
 
 	var publisherID, publisherName string
-	for _, v := range content.Query.CRMItem {
+	for _, v := range query.CRMItem {
 		if v.Name == "member-id" {
 			memberID := v.Text
 			publisherID = "https://api.crossref.org/members/" + memberID
@@ -1171,13 +1184,13 @@ func Read(content Content) (commonmeta.Data, error) {
 			Type:  "Subtitle",
 		})
 	}
-	if titles.OriginalLanguageTitle.Text != "" {
-		data.Titles = append(data.Titles, commonmeta.Title{
-			Title:    titles.OriginalLanguageTitle.Text,
-			Type:     "TranslatedTitle",
-			Language: titles.OriginalLanguageTitle.Language,
-		})
-	}
+	// if titles.OriginalLanguageTitle.Text != "" {
+	// 	data.Titles = append(data.Titles, commonmeta.Title{
+	// 		Title:    titles.OriginalLanguageTitle.Text,
+	// 		Type:     "TranslatedTitle",
+	// 		Language: titles.OriginalLanguageTitle.Language,
+	// 	})
+	// }
 
 	data.URL = doiData.Resource
 
@@ -1185,9 +1198,9 @@ func Read(content Content) (commonmeta.Data, error) {
 }
 
 // ReadAll reads a list of Crossref XML responses and returns a list of works in Commonmeta format
-func ReadAll(content []Content) ([]commonmeta.Data, error) {
+func ReadAll(query []Query) ([]commonmeta.Data, error) {
 	var data []commonmeta.Data
-	for _, v := range content {
+	for _, v := range query {
 		d, err := Read(v)
 		if err != nil {
 			log.Println(err)
@@ -1200,7 +1213,7 @@ func ReadAll(content []Content) ([]commonmeta.Data, error) {
 // Load loads the metadata for a single work from a XML file
 func Load(filename string) (commonmeta.Data, error) {
 	var data commonmeta.Data
-	var content Content
+	var query Query
 
 	extension := path.Ext(filename)
 	if extension != ".xml" {
@@ -1213,11 +1226,11 @@ func Load(filename string) (commonmeta.Data, error) {
 	defer file.Close()
 
 	decoder := xml.NewDecoder(file)
-	err = decoder.Decode(&content)
+	err = decoder.Decode(&query)
 	if err != nil {
 		return data, err
 	}
-	data, err = Read(content)
+	data, err = Read(query)
 	if err != nil {
 		return data, err
 	}
@@ -1226,6 +1239,11 @@ func Load(filename string) (commonmeta.Data, error) {
 
 // LoadAll loads the metadata for a list of works from an XML file and converts it to the Commonmeta format
 func LoadAll(filename string) ([]commonmeta.Data, error) {
+	type Body struct {
+		XMLName          xml.Name `xml:"body"`
+		CrossrefMetadata Query    `xml:"crossref_metadata"`
+	}
+
 	type Response struct {
 		ListRecords struct {
 			Record []struct {
@@ -1240,7 +1258,7 @@ func LoadAll(filename string) ([]commonmeta.Data, error) {
 							Head struct {
 								DoiBatchID string `xml:"doi_batch_id"`
 							} `xml:"head"`
-							Body Content `xml:"body"`
+							Body Body `xml:"body"`
 						} `xml:"query_result"`
 					}
 				} `xml:"metadata"`
@@ -1249,7 +1267,7 @@ func LoadAll(filename string) ([]commonmeta.Data, error) {
 	}
 
 	var data []commonmeta.Data
-	var content []Content
+	var query []Query
 	var err error
 
 	extension := path.Ext(filename)
@@ -1271,18 +1289,16 @@ func LoadAll(filename string) ([]commonmeta.Data, error) {
 	}
 	for _, v := range response.ListRecords.Record {
 		// rewrite XML structure to match the Crossref API response
-		c := Content{
-			Query: Query{
-				Status:    "resolved",
-				DOI:       v.Metadata.CrossrefResult.QueryResult.Body.CrossrefMetadata.DOI,
-				DOIRecord: v.Metadata.CrossrefResult.QueryResult.Body.CrossrefMetadata.DOIRecord,
-				CRMItem:   v.Metadata.CrossrefResult.QueryResult.Body.CrossrefMetadata.CRMItem,
-			},
+		q := Query{
+			Status:    "resolved",
+			DOI:       v.Metadata.CrossrefResult.QueryResult.Body.CrossrefMetadata.DOI,
+			DOIRecord: v.Metadata.CrossrefResult.QueryResult.Body.CrossrefMetadata.DOIRecord,
+			CRMItem:   v.Metadata.CrossrefResult.QueryResult.Body.CrossrefMetadata.CRMItem,
 		}
-		content = append(content, c)
+		query = append(query, q)
 	}
 
-	data, err = ReadAll(content)
+	data, err = ReadAll(query)
 	if err != nil {
 		return data, err
 	}
@@ -1404,15 +1420,15 @@ func GetFundingReferences(fundref Program) ([]commonmeta.FundingReference, error
 }
 
 // Type represents the Crossref type of a work
-func (c Content) Type() string {
-	switch c.Query.DOI.Type {
+func (q Query) Type() string {
+	switch q.DOI.Type {
 	case "book_title":
-		if c.Query.DOIRecord.Crossref.Book[0].BookSetMetadata.SetMetadata.DOIData.DOI != "" {
+		if q.DOIRecord.Crossref.Book.BookSetMetadata.SetMetadata.DOIData.DOI != "" {
 			return "BookSet"
 		}
 		return "Book"
 	case "book_content":
-		switch c.Query.DOIRecord.Crossref.Book[0].ContentItem.ComponentType {
+		switch q.DOIRecord.Crossref.Book.ContentItem.ComponentType {
 		case "other":
 			return "Other"
 		case "part":

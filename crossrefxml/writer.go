@@ -171,7 +171,7 @@ func Convert(data commonmeta.Data) (Crossref, error) {
 	doiData := DOIData{
 		DOI:      doi,
 		Resource: data.URL,
-		Collection: &Collection{
+		Collection: Collection{
 			Property: "text-mining",
 			Item:     items,
 		},
@@ -194,7 +194,7 @@ func Convert(data commonmeta.Data) (Crossref, error) {
 		InstitutionName: data.Publisher.Name,
 	}
 
-	program := []*Program{}
+	program := []Program{}
 	if len(data.FundingReferences) > 0 {
 		assertion := []Assertion{}
 		for _, fundingReference := range data.FundingReferences {
@@ -226,7 +226,7 @@ func Convert(data commonmeta.Data) (Crossref, error) {
 			}
 			assertion = append(assertion, fg)
 		}
-		program = append(program, &Program{
+		program = append(program, Program{
 			Name:      "fundref",
 			Xmlns:     "http://www.crossref.org/fundref.xsd",
 			Assertion: assertion,
@@ -243,7 +243,7 @@ func Convert(data commonmeta.Data) (Crossref, error) {
 			AppliesTo: "tdm",
 			Text:      data.License.URL,
 		})
-		program = append(program, &Program{
+		program = append(program, Program{
 			Name:       "AccessIndicators",
 			Xmlns:      "http://www.crossref.org/AccessIndicators.xsd",
 			LicenseRef: licenseRef,
@@ -280,7 +280,7 @@ func Convert(data commonmeta.Data) (Crossref, error) {
 				relatedItem = append(relatedItem, r)
 			}
 		}
-		program = append(program, &Program{
+		program = append(program, Program{
 			Name:        "relations",
 			Xmlns:       "http://www.crossref.org/relations.xsd",
 			RelatedItem: relatedItem,
@@ -343,14 +343,14 @@ func Convert(data commonmeta.Data) (Crossref, error) {
 			GroupTitle: groupTitle,
 			Contributors: &Contributors{
 				PersonName: personName},
-			Titles:       &titles,
+			Titles:       titles,
 			PostedDate:   postedDate,
 			Institution:  institution,
 			ItemNumber:   itemNumber,
-			Abstract:     &abstract,
+			Abstract:     abstract,
 			Program:      program,
 			DOIData:      doiData,
-			CitationList: &citationList,
+			CitationList: citationList,
 		})
 	case "JournalArticle":
 		c.Journal = append(c.Journal, &Journal{})
