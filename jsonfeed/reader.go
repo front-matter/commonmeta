@@ -278,7 +278,7 @@ func Read(content Content) (commonmeta.Data, error) {
 		})
 
 		data.Identifiers = append(data.Identifiers, commonmeta.Identifier{
-			Identifier:     content.DOI,
+			Identifier:     data.ID,
 			IdentifierType: "DOI",
 		})
 

@@ -71,7 +71,9 @@ var listCmd = &cobra.Command{
 			str = input
 		}
 
-		if str != "" && from == "crossref" {
+		if str != "" && from == "commonmeta" {
+			data, err = commonmeta.LoadAll(str)
+		} else if str != "" && from == "crossref" {
 			data, err = crossref.LoadAll(str)
 		} else if str != "" && from == "crossrefxml" {
 			data, err = crossrefxml.LoadAll(str)
@@ -108,16 +110,12 @@ var listCmd = &cobra.Command{
 			output, jsErr = schemaorg.WriteAll(data)
 		}
 
-		if err != nil {
-			cmd.PrintErr(err)
-		}
-
 		if to == "crossrefxml" {
 			fmt.Printf("%s\n", output)
 		} else {
 			var out bytes.Buffer
 			json.Indent(&out, output, "", "  ")
-			cmd.Println(out.String())
+			fmt.Println(out.String())
 		}
 
 		if jsErr != nil {

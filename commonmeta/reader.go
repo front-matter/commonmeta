@@ -293,8 +293,36 @@ func Load(filename string) (Data, error) {
 	return data, nil
 }
 
+// LoadAll loads a list of commonmeta metadata from a JSON string and returns Commonmeta metadata.
+func LoadAll(filename string) ([]Data, error) {
+	var data []Data
+
+	extension := path.Ext(filename)
+	if extension != ".json" {
+		return data, errors.New("invalid file extension")
+	}
+	file, err := os.Open(filename)
+	if err != nil {
+		return data, errors.New("error reading file")
+	}
+	defer file.Close()
+
+	decoder := json.NewDecoder(file)
+	err = decoder.Decode(&data)
+	if err != nil {
+		return data, err
+	}
+	return data, nil
+}
+
 // Read reads commonmeta metadata.
 func Read(content Data) (Data, error) {
+	data := content
+	return data, nil
+}
+
+// ReadAll reads commonmeta metadata in slice format.
+func ReadAll(content []Data) ([]Data, error) {
 	data := content
 	return data, nil
 }
