@@ -397,8 +397,8 @@ type ItemNumber struct {
 // Journal represents a journal in Crossref XML metadata.
 type Journal struct {
 	XMLName         xml.Name        `xml:"journal"`
-	JournalIssue    JournalIssue    `xml:"journal_issue,omitempty"`
 	JournalMetadata JournalMetadata `xml:"journal_metadata,omitempty"`
+	JournalIssue    JournalIssue    `xml:"journal_issue,omitempty"`
 	JournalArticle  JournalArticle  `xml:"journal_article,omitempty"`
 }
 
@@ -406,30 +406,28 @@ type Journal struct {
 type JournalArticle struct {
 	XMLName                   xml.Name          `xml:"journal_article"`
 	Text                      string            `xml:",chardata"`
-	PublicationType           string            `xml:"publication_type,attr"`
-	ReferenceDistributionOpts string            `xml:"reference_distribution_opts,attr"`
+	PublicationType           string            `xml:"publication_type,attr,omitempty"`
+	ReferenceDistributionOpts string            `xml:"reference_distribution_opts,attr,omitempty"`
 	Titles                    Titles            `xml:"titles,omitempty"`
 	Contributors              Contributors      `xml:"contributors,omitempty"`
 	PublicationDate           []PublicationDate `xml:"publication_date"`
-	PublisherItem             struct {
-		ItemNumber ItemNumber `xml:"item_number"`
-	} `xml:"publisher_item"`
-	Abstract         []Abstract       `xml:"jats:abstract"`
-	Pages            Pages            `xml:"pages"`
-	ISSN             []ISSN           `xml:"issn"`
-	Program          []Program        `xml:"program"`
-	Crossmark        Crossmark        `xml:"crossmark"`
-	ArchiveLocations ArchiveLocations `xml:"archive_locations"`
-	DOIData          DOIData          `xml:"doi_data"`
-	CitationList     CitationList     `xml:"citation_list,omitempty"`
+	PublisherItem             *PublisherItem    `xml:"publisher_item,omitempty"`
+	Abstract                  []Abstract        `xml:"jats:abstract"`
+	Pages                     *Pages            `xml:"pages,omitempty"`
+	ISSN                      []ISSN            `xml:"issn"`
+	Program                   []Program         `xml:"program"`
+	Crossmark                 *Crossmark        `xml:"crossmark,omitempty"`
+	ArchiveLocations          *ArchiveLocations `xml:"archive_locations"`
+	DOIData                   DOIData           `xml:"doi_data"`
+	CitationList              CitationList      `xml:"citation_list,omitempty"`
 }
 
 type JournalIssue struct {
 	XMLName         xml.Name          `xml:"journal_issue"`
 	PublicationDate []PublicationDate `xml:"publication_date"`
-	JournalVolume   JournalVolume     `xml:"journal_volume"`
-	Issue           string            `xml:"issue"`
-	DOIData         DOIData           `xml:"doi_data"`
+	JournalVolume   JournalVolume     `xml:"journal_volume,omitempty"`
+	Issue           string            `xml:"issue,omitempty"`
+	DOIData         *DOIData          `xml:"doi_data,omitempty"`
 }
 
 // JournalMetadata represents journal metadata in Crossref XML metadata.
@@ -438,7 +436,7 @@ type JournalMetadata struct {
 	Language  string   `xml:"language,attr,omitempty"`
 	FullTitle string   `xml:"full_title,omitempty"`
 	ISSN      []ISSN   `xml:"issn,omitempty"`
-	DOIData   DOIData  `xml:"doi_data,omitempty"`
+	DOIData   *DOIData `xml:"doi_data,omitempty"`
 }
 
 type JournalVolume struct {
@@ -561,7 +559,7 @@ type Publisher struct {
 type PublisherItem struct {
 	XMLName    xml.Name   `xml:"publisher_item"`
 	Text       string     `xml:",chardata"`
-	ItemNumber ItemNumber `xml:"item_number"`
+	ItemNumber ItemNumber `xml:"item_number,omitempty"`
 	Identifier struct {
 		Text   string `xml:",chardata"`
 		IDType string `xml:"id_type,attr"`
@@ -859,11 +857,11 @@ func Read(query Query) (commonmeta.Data, error) {
 		journal := meta.Journal
 		containerTitle = journal.JournalMetadata.FullTitle
 		language = journal.JournalMetadata.Language
-		doiData = journal.JournalMetadata.DOIData
+		// doiData = journal.JournalMetadata.DOIData
 	case "JournalArticle":
 		journal := meta.Journal
 		abstract = journal.JournalArticle.Abstract
-		archiveLocations = journal.JournalArticle.ArchiveLocations
+		archiveLocations = *journal.JournalArticle.ArchiveLocations
 		citationList = journal.JournalArticle.CitationList
 		containerTitle = journal.JournalMetadata.FullTitle
 		contributors = journal.JournalArticle.Contributors
@@ -873,7 +871,7 @@ func Read(query Query) (commonmeta.Data, error) {
 		issue = journal.JournalIssue.Issue
 		itemNumber = journal.JournalArticle.PublisherItem.ItemNumber
 		language = journal.JournalMetadata.Language
-		pages = journal.JournalArticle.Pages
+		// pages = *journal.JournalArticle.Pages
 		program = append(program, journal.JournalArticle.Program...)
 		publicationDate = journal.JournalArticle.PublicationDate
 		titles = journal.JournalArticle.Titles
@@ -881,7 +879,7 @@ func Read(query Query) (commonmeta.Data, error) {
 	case "JournalIssue":
 		journal := meta.Journal
 		containerTitle = journal.JournalMetadata.FullTitle
-		doiData = journal.JournalIssue.DOIData
+		// doiData = journal.JournalIssue.DOIData
 		issn = journal.JournalMetadata.ISSN
 		language = journal.JournalMetadata.Language
 	case "JournalVolume":

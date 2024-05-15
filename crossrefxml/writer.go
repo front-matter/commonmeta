@@ -357,8 +357,74 @@ func Convert(data commonmeta.Data) (Body, error) {
 			DOIData:      doiData,
 			CitationList: citationList,
 		})
+	case "Book":
+		c.Book = append(c.Book, Book{})
+	case "BookChapter":
+		c.Book = append(c.Book, Book{})
+	case "Component":
+		c.SAComponent = append(c.SAComponent, SAComponent{})
+	case "Dataset":
+		c.Database = append(c.Database, Database{})
+	case "Dissertation":
+		c.Dissertation = append(c.Dissertation, Dissertation{
+			Language:        data.Language,
+			PublicationType: "thesis",
+			//PersonName: 		personName,
+			Titles: titles,
+			// ApprovalDate: ApprovalDate{
+			// 	Year:  data.Date.Published.Year,
+			// 	Month: data.Date.Published.Month,
+			// 	Day:   data.Date.Published.Day,
+			// },
+			DOIData:      doiData,
+			CitationList: citationList,
+		})
 	case "JournalArticle":
-		c.Journal = append(c.Journal, Journal{})
+		// var issn string
+		// if len(data.Container.Identifier) > 0 {
+		// 	issn = data.Container.Identifier[0].Identifier
+		// }
+		c.Journal = append(c.Journal, Journal{
+			JournalArticle: JournalArticle{
+				PublicationType: "full_text",
+				Abstract:        abstract,
+				// ArchiveLocations: ArchiveLocations{}
+				CitationList: citationList,
+				Contributors: Contributors{
+					PersonName: personName},
+				// Crossmark: Crossmark{
+				// 	CustomMetadata: customMetadata,
+				// },
+				DOIData: doiData,
+				// Pages:
+				// Program:         program,
+				// PublicationDate: data.Date.Published,
+				// PublisherItem: PublisherItem{
+				// 	ItemNumber: itemNumber,
+				// },
+				Titles: titles,
+			},
+			JournalMetadata: JournalMetadata{
+				FullTitle: data.Container.Title,
+				//ISSN:      []string{issn},
+				Language: data.Language,
+			},
+			JournalIssue: JournalIssue{
+				JournalVolume: JournalVolume{
+					Volume: data.Container.Volume,
+				},
+				Issue: data.Container.Issue,
+			},
+			// JournalVolume: JournalVolume{
+			// 	Volume: data.Container.Volume,
+			// },
+		})
+	case "PeerReview":
+		c.PeerReview = append(c.PeerReview, PeerReview{})
+	case "ProceedingsArticle":
+		c.Conference = append(c.Conference, Conference{})
+	case "Standard":
+		c.Standard = append(c.Standard, Standard{})
 	}
 
 	return c, nil
