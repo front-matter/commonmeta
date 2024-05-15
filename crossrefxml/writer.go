@@ -113,7 +113,7 @@ func Convert(data commonmeta.Data) (Body, error) {
 								Text: a.ID,
 							}
 							institution = append(institution, Institution{
-								InstitutionID:   institutionID,
+								InstitutionID:   &institutionID,
 								InstitutionName: a.Name,
 							})
 						} else {

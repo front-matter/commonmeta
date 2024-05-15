@@ -342,10 +342,10 @@ type Format struct {
 }
 
 type Institution struct {
-	XMLName          xml.Name      `xml:"institution"`
-	InstitutionName  string        `xml:"institution_name,omitempty"`
-	InstitutionPlace string        `xml:"institution_place,omitempty"`
-	InstitutionID    InstitutionID `xml:"institution_id,omitempty"`
+	XMLName          xml.Name       `xml:"institution"`
+	InstitutionName  string         `xml:"institution_name,omitempty"`
+	InstitutionPlace string         `xml:"institution_place,omitempty"`
+	InstitutionID    *InstitutionID `xml:"institution_id,omitempty"`
 }
 
 type InstitutionID struct {
@@ -1319,15 +1319,18 @@ func GetContributors(contrib Contributors) ([]commonmeta.Contributor, error) {
 			var affiliations []commonmeta.Affiliation
 			if len(v.Affiliations.Institution) > 0 {
 				for _, i := range v.Affiliations.Institution {
-					var ID string
-					if i.InstitutionID.Text != "" {
-						ID = utils.NormalizeROR(i.InstitutionID.Text)
-					}
 					if i.InstitutionName != "" {
-						affiliations = append(affiliations, commonmeta.Affiliation{
-							ID:   ID,
-							Name: i.InstitutionName,
-						})
+						if i.InstitutionID != nil && i.InstitutionID.Text != "" {
+							ID = utils.NormalizeROR(i.InstitutionID.Text)
+							affiliations = append(affiliations, commonmeta.Affiliation{
+								ID:   ID,
+								Name: i.InstitutionName,
+							})
+						} else {
+							affiliations = append(affiliations, commonmeta.Affiliation{
+								Name: i.InstitutionName,
+							})
+						}
 					}
 				}
 			} else if v.Affiliation != "" {
