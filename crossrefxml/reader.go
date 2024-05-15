@@ -1116,18 +1116,24 @@ func Read(query Query) (commonmeta.Data, error) {
 
 	if len(citationList.Citation) > 0 {
 		for _, v := range citationList.Citation {
-			reference := commonmeta.Reference{
-				Key:             v.Key,
-				ID:              doiutils.NormalizeDOI(v.DOI.Text),
-				Title:           v.ArticleTitle,
-				PublicationYear: v.CYear,
-				Unstructured:    v.UnstructedCitation,
+			var id string
+			if v.DOI != nil {
+				id = doiutils.NormalizeDOI(v.DOI.Text)
 			}
-			containsKey := slices.ContainsFunc(data.References, func(e commonmeta.Reference) bool {
-				return e.Key != "" && e.Key == reference.Key
-			})
-			if !containsKey {
-				data.References = append(data.References, reference)
+			if id != "" {
+				reference := commonmeta.Reference{
+					Key:             v.Key,
+					ID:              id,
+					Title:           v.ArticleTitle,
+					PublicationYear: v.CYear,
+					Unstructured:    v.UnstructedCitation,
+				}
+				containsKey := slices.ContainsFunc(data.References, func(e commonmeta.Reference) bool {
+					return e.Key != "" && e.Key == reference.Key
+				})
+				if !containsKey {
+					data.References = append(data.References, reference)
+				}
 			}
 		}
 	}
@@ -1309,7 +1315,6 @@ func GetContributors(contrib Contributors) ([]commonmeta.Contributor, error) {
 
 	if len(contrib.PersonName) > 0 {
 		for _, v := range contrib.PersonName {
-			fmt.Print(v.Affiliations)
 			var ID string
 			if v.GivenName != "" || v.Surname != "" {
 				if v.ORCID != "" {
@@ -1317,9 +1322,9 @@ func GetContributors(contrib Contributors) ([]commonmeta.Contributor, error) {
 				}
 			}
 			Type := "Person"
-			if len(v.Affiliations.Institution) > 0 || v.Affiliation != "" {
+			if v.Affiliations != nil || v.Affiliation != "" {
 				var affiliations []*commonmeta.Affiliation
-				if len(v.Affiliations.Institution) > 0 {
+				if v.Affiliations != nil {
 					for _, i := range v.Affiliations.Institution {
 						if i.InstitutionName != "" {
 							if i.InstitutionID != nil && i.InstitutionID.Text != "" {
