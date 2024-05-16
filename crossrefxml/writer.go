@@ -310,13 +310,15 @@ func Convert(data commonmeta.Data) (Body, error) {
 					Text: d,
 				}
 			}
-			citationList.Citation = append(citationList.Citation, Citation{
-				Key:                v.Key,
-				DOI:                &doi,
-				ArticleTitle:       v.Title,
-				CYear:              v.PublicationYear,
-				UnstructedCitation: v.Unstructured,
-			})
+			if d != "" || v.Unstructured == "" {
+				citationList.Citation = append(citationList.Citation, Citation{
+					Key:                v.Key,
+					DOI:                &doi,
+					ArticleTitle:       v.Title,
+					CYear:              v.PublicationYear,
+					UnstructedCitation: v.Unstructured,
+				})
+			}
 		}
 	}
 
