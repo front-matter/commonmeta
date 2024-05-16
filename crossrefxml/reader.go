@@ -417,7 +417,7 @@ type JournalArticle struct {
 	ISSN                      []ISSN            `xml:"issn"`
 	Program                   []Program         `xml:"program"`
 	Crossmark                 *Crossmark        `xml:"crossmark,omitempty"`
-	ArchiveLocations          *ArchiveLocations `xml:"archive_locations"`
+	ArchiveLocations          ArchiveLocations  `xml:"archive_locations"`
 	DOIData                   DOIData           `xml:"doi_data"`
 	CitationList              CitationList      `xml:"citation_list,omitempty"`
 }
@@ -861,11 +861,11 @@ func Read(query Query) (commonmeta.Data, error) {
 	case "JournalArticle":
 		journal := meta.Journal
 		abstract = journal.JournalArticle.Abstract
-		archiveLocations = *journal.JournalArticle.ArchiveLocations
+		archiveLocations = journal.JournalArticle.ArchiveLocations
 		citationList = journal.JournalArticle.CitationList
 		containerTitle = journal.JournalMetadata.FullTitle
 		contributors = journal.JournalArticle.Contributors
-		customMetadata = journal.JournalArticle.Crossmark.CustomMetadata
+		// customMetadata = journal.JournalArticle.Crossmark.CustomMetadata
 		doiData = journal.JournalArticle.DOIData
 		issn = journal.JournalMetadata.ISSN
 		issue = journal.JournalIssue.Issue
