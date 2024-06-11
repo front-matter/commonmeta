@@ -258,8 +258,9 @@ type CreationDate struct {
 }
 
 type Contributors struct {
-	XMLName    xml.Name     `xml:"contributors"`
-	PersonName []PersonName `xml:"person_name"`
+	XMLName      xml.Name       `xml:"contributors"`
+	Organization []Organization `xml:"organization,omitempty"`
+	PersonName   []PersonName   `xml:"person_name,omitempty"`
 }
 
 type Crossmark struct {
@@ -447,6 +448,15 @@ type JournalVolume struct {
 type LicenseRef struct {
 	Text      string `xml:",chardata"`
 	AppliesTo string `xml:"applies_to,attr"`
+}
+
+// OrganizationName represents an organization in Crossref XML metadata.
+type Organization struct {
+	XMLName         xml.Name `xml:"organization"`
+	ContributorRole string   `xml:"contributor_role,attr"`
+	Sequence        string   `xml:"sequence,attr"`
+	Text            string   `xml:",chardata"`
+	Name            string   `xml:"name"`
 }
 
 type OriginalLanguageTitle struct {

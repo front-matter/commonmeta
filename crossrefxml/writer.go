@@ -96,6 +96,7 @@ func Convert(data commonmeta.Data) (Body, error) {
 		}
 	}
 	personName := []PersonName{}
+	organization := []Organization{}
 	if len(data.Contributors) > 0 {
 		for i, contributor := range data.Contributors {
 			contributorRole := "author"
@@ -103,46 +104,55 @@ func Convert(data commonmeta.Data) (Body, error) {
 			if i > 0 {
 				sequence = "additional"
 			}
-			if len(contributor.Affiliations) > 0 {
-				institution := []Institution{}
-				for _, a := range contributor.Affiliations {
-					if a.Name != "" {
-						if a.ID != "" {
-							institutionID := InstitutionID{
-								Type: "ror",
-								Text: a.ID,
-							}
-							institution = append(institution, Institution{
-								InstitutionID:   &institutionID,
-								InstitutionName: a.Name,
-							})
-						} else {
-							institution = append(institution, Institution{
-								InstitutionName: a.Name,
-							})
-						}
-					}
-				}
-				affiliations := Affiliations{
-					Institution: institution,
-				}
-				personName = append(personName, PersonName{
+			if contributor.Type == "Organization" {
+				organization = append(organization, Organization{
 					ContributorRole: contributorRole,
 					Sequence:        sequence,
-					ORCID:           contributor.ID,
-					GivenName:       contributor.GivenName,
-					Surname:         contributor.FamilyName,
-					Affiliations:    &affiliations,
+					Name:            contributor.Name,
 				})
 			} else {
-				personName = append(personName, PersonName{
-					ContributorRole: contributorRole,
-					Sequence:        sequence,
-					ORCID:           contributor.ID,
-					GivenName:       contributor.GivenName,
-					Surname:         contributor.FamilyName,
-				})
+				if len(contributor.Affiliations) > 0 {
+					institution := []Institution{}
+					for _, a := range contributor.Affiliations {
+						if a.Name != "" {
+							if a.ID != "" {
+								institutionID := InstitutionID{
+									Type: "ror",
+									Text: a.ID,
+								}
+								institution = append(institution, Institution{
+									InstitutionID:   &institutionID,
+									InstitutionName: a.Name,
+								})
+							} else {
+								institution = append(institution, Institution{
+									InstitutionName: a.Name,
+								})
+							}
+						}
+					}
+					affiliations := Affiliations{
+						Institution: institution,
+					}
+					personName = append(personName, PersonName{
+						ContributorRole: contributorRole,
+						Sequence:        sequence,
+						ORCID:           contributor.ID,
+						GivenName:       contributor.GivenName,
+						Surname:         contributor.FamilyName,
+						Affiliations:    &affiliations,
+					})
+				} else {
+					personName = append(personName, PersonName{
+						ContributorRole: contributorRole,
+						Sequence:        sequence,
+						ORCID:           contributor.ID,
+						GivenName:       contributor.GivenName,
+						Surname:         contributor.FamilyName,
+					})
+				}
 			}
+
 		}
 	}
 
@@ -353,7 +363,9 @@ func Convert(data commonmeta.Data) (Body, error) {
 			Language:   data.Language,
 			GroupTitle: groupTitle,
 			Contributors: Contributors{
-				PersonName: personName},
+				Organization: organization,
+				PersonName:   personName,
+			},
 			Titles:       titles,
 			PostedDate:   postedDate,
 			Institution:  institution,
@@ -393,7 +405,8 @@ func Convert(data commonmeta.Data) (Body, error) {
 				// ArchiveLocations: ArchiveLocations{}
 				CitationList: citationList,
 				Contributors: Contributors{
-					PersonName: personName},
+					Organization: organization,
+					PersonName:   personName},
 				// Crossmark: Crossmark{
 				// 	CustomMetadata: customMetadata,
 				// },
