@@ -108,7 +108,7 @@ func Convert(data commonmeta.Data) (Body, error) {
 				organization = append(organization, Organization{
 					ContributorRole: contributorRole,
 					Sequence:        sequence,
-					Name:            contributor.Name,
+					Text:            contributor.Name,
 				})
 			} else {
 				if len(contributor.Affiliations) > 0 {

@@ -456,7 +456,6 @@ type Organization struct {
 	ContributorRole string   `xml:"contributor_role,attr"`
 	Sequence        string   `xml:"sequence,attr"`
 	Text            string   `xml:",chardata"`
-	Name            string   `xml:"name"`
 }
 
 type OriginalLanguageTitle struct {
