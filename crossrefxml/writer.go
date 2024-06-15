@@ -293,7 +293,7 @@ func Convert(data commonmeta.Data) (Body, error) {
 			}
 			if slices.Contains(IntraWorkRelationTypes, relation.Type) && id != "" {
 				intraWorkRelation := &IntraWorkRelation{
-					RelationshipType: relation.Type,
+					RelationshipType: utils.CamelCaseString(relation.Type),
 					IdentifierType:   strings.ToLower(identifierType),
 					Text:             id,
 				}
