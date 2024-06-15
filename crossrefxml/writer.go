@@ -279,7 +279,23 @@ func Convert(data commonmeta.Data) (Body, error) {
 			if identifierType == "URL" {
 				identifierType = "uri"
 			}
-			if slices.Contains(InterWorkRelationTypes, relation.Type) && id != "" {
+			identifierTypes := []string{
+				"doi",
+				"issn",
+				"isbn",
+				"uri",
+				"pmid",
+				"pmcid",
+				"purl",
+				"arxiv",
+				"ark",
+				"handle",
+				"uuid",
+				"ecli",
+				"accession",
+				"other",
+			}
+			if slices.Contains(InterWorkRelationTypes, relation.Type) && slices.Contains(identifierTypes, strings.ToLower(identifierType)) && id != "" {
 				// Crossref relation types are camel case rather than pascal case
 				interWorkRelation := &InterWorkRelation{
 					RelationshipType: utils.CamelCaseString(relation.Type),
@@ -291,7 +307,7 @@ func Convert(data commonmeta.Data) (Body, error) {
 				}
 				relatedItem = append(relatedItem, r)
 			}
-			if slices.Contains(IntraWorkRelationTypes, relation.Type) && id != "" {
+			if slices.Contains(IntraWorkRelationTypes, relation.Type) && slices.Contains(identifierTypes, strings.ToLower(identifierType)) && id != "" {
 				intraWorkRelation := &IntraWorkRelation{
 					RelationshipType: utils.CamelCaseString(relation.Type),
 					IdentifierType:   strings.ToLower(identifierType),
