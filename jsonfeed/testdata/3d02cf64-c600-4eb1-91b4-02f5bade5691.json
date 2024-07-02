@@ -1,0 +1,83 @@
+{
+  "abstract": null,
+  "archive_url": null,
+  "authors": [
+    {
+      "name": "Dorothea Strecker",
+      "url": "https://orcid.org/0000-0002-9754-3807"
+    },
+    {
+      "affiliation": [],
+      "name": "Heinz Pampel",
+      "url": "https://orcid.org/0000-0003-3334-2771"
+    }
+  ],
+  "blog": {
+    "archive_prefix": null,
+    "authors": null,
+    "canonical_url": null,
+    "category": "computerAndInformationSciences",
+    "created_at": 1717668020,
+    "current_feed_url": null,
+    "description": "Research Group Information Management @ Humboldt-Universität zu Berlin",
+    "favicon": null,
+    "feed_format": "application/rss+xml",
+    "feed_url": "https://infomgnt.org/index.xml",
+    "filter": null,
+    "funding": null,
+    "generator": "Quarto",
+    "generator_raw": "Quarto 1.4.555",
+    "home_page_url": "https://infomgnt.org",
+    "id": "17927ce5-1239-43fb-a3c9-2acb8a679d11",
+    "indexed": true,
+    "issn": null,
+    "language": "en",
+    "license": "https://creativecommons.org/licenses/by/4.0/legalcode",
+    "mastodon": "",
+    "plan": "Starter",
+    "prefix": "10.59350",
+    "relative_url": null,
+    "ror": null,
+    "secure": true,
+    "slug": "infomgnt",
+    "status": "active",
+    "title": "Research Group Information Management @ Humboldt-Universität zu Berlin",
+    "updated_at": 1718748000,
+    "use_api": null,
+    "use_mastodon": false,
+    "user_id": "dbffda7d-f391-48fb-a6d2-d4a284c59c8d"
+  },
+  "blog_name": "Research Group Information Management @ Humboldt-Universität zu Berlin",
+  "blog_slug": "infomgnt",
+  "content_text": "We are excited to announce the launch of our new project, \"Data\nPractices for Shaping Open Access Transformation - Analysis,\nRecommendation, Training & Networking - OA Datenpraxis\" funded by the\nDeutsche Forschungsgemeinschaft (DFG, German Research Foundation).\n\nTogether with our colleagues at the [Helmholtz Open Science\nOffice](https://os.helmholtz.de/) and the [Scholarly Communication\nAnalytics Team](https://subugoe.github.io/scholcomm_analytics/) at the\n[Lower Saxony State and University Library\nGöttingen](https://www.sub.uni-goettingen.de/sub-aktuell/) (SUB), we,\nthe research group Information Management at the [Berlin School of\nLibrary and Information\nScience](https://www.ibi.hu-berlin.de/en/about-us) (IBI), will work\ntowards strengthening structures for the use of data on the open access\ntransformation at research institutions in Germany.\n\nThe project supports practitioners in research administration, libraries\nand other service institutions in professionalizing their data practices\nthrough various activities. As a first step, the team at IBI will\nconduct a comprehensive study on how research institutions handle\npublication costs. Our research will build on existing research and\nprevious work of the project partners. Our goal is to get a better\nunderstanding of current practices and challenges associated with\nmanaging data on Open Access publications and associated costs.\n\nIn strengthening the abilities of research institutions to leverage data\nto monitor publication output and associated costs, we are addressing\nsome of the recommendations of the German Council of Science and\nHumanities for fostering the Open Access transformation in Germany\n[(Wissenschaftsrat 2022)]{.citation\ncites=\"wissenschaftsrat_empfehlungen_2022\"}. Additional information\nabout the project and its goals can be found in the project proposal (in\nGerman) [(Pampel et al. 2024)]{.citation\ncites=\"pampel_datenpraxis_2024\"}.\n\nAt this year's Open-Access-Tage in Cologne, we are organizing a workshop\nwith [Open-Access-Büro Berlin](https://www.open-access-berlin.de/),\n[Vernetzungs- und Kompetenzstelle Open Access\nBrandenburg](https://open-access-brandenburg.de/) and [Open Access\nMonitor](https://open-access-monitor.de/) at Forschungszentrum Jülich\n(FZJ). If you are interested in Open Access reporting and are attending,\nplease feel free to approach us at the conference or contact us via\n[email](info.oa-datenpraxis@listserv.dfn.de).\n\nWe will report on current activities and project outputs on the [project\nwebsite](https://oa-datenpraxis.de/) and\n[Mastodon](https://openbiblio.social/@oa_datenpraxis).\n\n![](https://infomgnt.org/posts/2024-07-01-Vorstellung-OA-Datenpraxis/logo_oa_datenpraxis.png){.img-fluid}\n\nFurther information about the research group can be found on our\n[official website](http://hu.berlin/infomgnt).\n\nThis text -- excluding quotes and otherwise labeled parts -- is licensed\nunder the [CC BY 4.0\nDEED](https://creativecommons.org/licenses/by/4.0/deed.de).\n\n:::::::::::: {#quarto-appendix .default}\n:::::: {#quarto-bibliography .section .quarto-appendix-contents}\n## References {#references .anchored .quarto-appendix-heading}\n\n::::: {#refs .references .csl-bib-body .hanging-indent entry-spacing=\"0\"}\n::: {#ref-pampel_datenpraxis_2024 .csl-entry}\nPampel, Heinz, Najko Jahn, Roland Bertelmann, Wolfram Horstmann, Laura\nRothfritz, Lea Maria Ferguson, Birgit Schmidt, and Anna Stisser. 2024.\n\"Datenpraxis Zur Gestaltung Der Open-Access-Transformation - Analyse,\nEmpfehlung, Training & Vernetzung (OA Datenpraxis).\"\n<https://doi.org/10.5281/ZENODO.10794298>.\n:::\n\n::: {#ref-wissenschaftsrat_empfehlungen_2022 .csl-entry}\nWissenschaftsrat. 2022. \"Empfehlungen Zur Transformation Des\nWissenschaftlichen Publizierens Zu Open Access.\"\n<https://doi.org/10.57674/FYRC-VB61>.\n:::\n:::::\n::::::\n\n::::::: {#quarto-citation .section .quarto-appendix-contents}\n## Citation {#citation .anchored .quarto-appendix-heading}\n\n<div>\n\n::: {.quarto-appendix-secondary-label}\nBibTeX citation:\n:::\n\n``` {.sourceCode .code-with-copy .quarto-appendix-bibtex}\n@online{strecker2024,\n  author = {Strecker, Dorothea and Pampel, Heinz},\n  title = {Project Launch: {OA} {Datenpraxis-} {Data} {Practices} for\n    {Shaping} the {Open} {Access} {Transformation}},\n  date = {2024-06-19},\n  url = {https://infomgnt.org/posts/2024-07-01-Vorstellung-OA-Datenpraxis/},\n  langid = {en}\n}\n```\n\n::: {.quarto-appendix-secondary-label}\nFor attribution, please cite this work as:\n:::\n\n::: {#ref-strecker2024 .csl-entry .quarto-appendix-citeas}\nStrecker, Dorothea, and Heinz Pampel. 2024. \"Project Launch: OA\nDatenpraxis- Data Practices for Shaping the Open Access Transformation.\"\nJune 19, 2024.\n<https://infomgnt.org/posts/2024-07-01-Vorstellung-OA-Datenpraxis/>.\n:::\n\n</div>\n:::::::\n::::::::::::\n",
+  "doi": "https://doi.org/10.59350/es0dc-vhb02",
+  "guid": "https://infomgnt.org/posts/2024-07-01-Vorstellung-OA-Datenpraxis/",
+  "id": "3d02cf64-c600-4eb1-91b4-02f5bade5691",
+  "image": "https://infomgnt.org/posts/2024-07-01-Vorstellung-OA-Datenpraxis/logo_oa_datenpraxis.png",
+  "indexed_at": 1719930844,
+  "language": "en",
+  "published_at": 1718748000,
+  "reference": [
+    {
+      "id": "https://doi.org/10.5281/zenodo.10794298",
+      "key": "ref1",
+      "publicationYear": "2024",
+      "title": "Datenpraxis zur Gestaltung der Open-Access-Transformation - Analyse, Empfehlung, Training & Vernetzung (OA Datenpraxis)"
+    },
+    {
+      "id": "https://doi.org/10.57674/fyrc-vb61",
+      "key": "ref2",
+      "publicationYear": "2022",
+      "title": "Empfehlungen zur Transformation des wissenschaftlichen Publizierens zu Open Access"
+    }
+  ],
+  "relationships": [],
+  "summary": "We are excited to announce the launch of our new project, “Data Practices for Shaping Open Access Transformation - Analysis, Recommendation, Training &amp;",
+  "tags": [
+    "Lab Life",
+    "Research"
+  ],
+  "title": "Project launch: OA Datenpraxis- Data Practices for Shaping the Open Access Transformation",
+  "updated_at": 1718748000,
+  "url": "https://infomgnt.org/posts/2024-07-01-Vorstellung-OA-Datenpraxis"
+}

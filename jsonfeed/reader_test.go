@@ -53,6 +53,7 @@ func TestFetch(t *testing.T) {
 	testCases := []testCase{
 		{name: "blog post with funding", id: "8a4de443-3347-4b82-b57d-e3c82b6485fc"},
 		{name: "project blog", id: "4d51f3c9-151d-4030-9893-ddbca37f54bb"},
+		{name: "url with uppercase characters", id: "3d02cf64-c600-4eb1-91b4-02f5bade5691"},
 	}
 	for _, tc := range testCases {
 		got, err := jsonfeed.Fetch(tc.id)

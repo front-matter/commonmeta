@@ -349,7 +349,7 @@ func Read(content Content) (commonmeta.Data, error) {
 		{Title: utils.Sanitize(content.Title)},
 	}
 
-	url, err := utils.NormalizeURL(content.URL, true, true)
+	url, err := utils.NormalizeURL(content.URL, true, false)
 	if err != nil {
 		return data, err
 	}
