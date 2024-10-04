@@ -656,17 +656,18 @@ func Read(content Content) (commonmeta.Data, error) {
 		}
 	}
 
-	if content.Publisher != "" {
+	data.Provider = "Crossref"
+
+	if content.Publisher != "" || content.Member != "" {
+		var id string
+		if content.Member != "" {
+			id = fmt.Sprintf("https://api.crossref.org/members/%s", content.Member)
+		}
 		data.Publisher = commonmeta.Publisher{
+			ID:   id,
 			Name: content.Publisher,
 		}
-	} else if content.Member != "" {
-		data.Publisher = commonmeta.Publisher{
-			ID: content.Member,
-		}
 	}
-
-	data.Provider = "Crossref"
 
 	for _, v := range content.Reference {
 		reference := commonmeta.Reference{
