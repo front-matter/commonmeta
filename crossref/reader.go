@@ -36,7 +36,7 @@ func NewReader(r io.Reader) *Reader {
 	}
 }
 
-// Content is the struct for the message in tge JSON response from the Crossref API
+// Content is the struct for the message in the JSON response from the Crossref API
 type Content struct {
 	ID       string   `json:"id"`
 	Type     string   `json:"type"`
@@ -56,6 +56,7 @@ type Content struct {
 			Name string `json:"name"`
 		} `json:"affiliation"`
 	} `json:"author"`
+	Member         string     `json:"member"`
 	ContainerTitle []string   `json:"container-title"`
 	DOI            string     `json:"doi"`
 	Files          []struct{} `json:"files"`
@@ -655,13 +656,17 @@ func Read(content Content) (commonmeta.Data, error) {
 		}
 	}
 
-	data.Provider = "Crossref"
-
 	if content.Publisher != "" {
 		data.Publisher = commonmeta.Publisher{
 			Name: content.Publisher,
 		}
+	} else if content.Member != "" {
+		data.Publisher = commonmeta.Publisher{
+			ID: content.Member,
+		}
 	}
+
+	data.Provider = "Crossref"
 
 	for _, v := range content.Reference {
 		reference := commonmeta.Reference{
