@@ -70,6 +70,7 @@ type Blog struct {
 	License     string  `json:"license"`
 	Prefix      string  `json:"prefix"`
 	Slug        string  `json:"slug"`
+	Status      string  `json:"status"`
 	Title       string  `json:"title"`
 }
 
@@ -350,9 +351,13 @@ func Read(content Content) (commonmeta.Data, error) {
 	}
 
 	url, err := utils.NormalizeURL(content.URL, true, false)
+	if content.Blog.Status == "archived" {
+		url, err = utils.NormalizeURL(content.ArchiveURL, true, false)
+	}
 	if err != nil {
 		return data, err
 	}
+
 	data.URL = url
 	return data, nil
 }
