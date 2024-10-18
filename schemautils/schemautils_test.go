@@ -69,7 +69,7 @@ func TestJSONSchemaErrorsTestdata(t *testing.T) {
 	}
 
 	testCases := []testCase{
-		{meta: "journal_article.commonmeta.json", schema: "commonmeta_v0.14", want: 0},
+		{meta: "journal_article.commonmeta.json", schema: "commonmeta_v0.15", want: 0},
 		{meta: "citeproc.json", schema: "csl-data", want: 0},
 		{meta: "datacite.json", schema: "datacite-v4.5", want: 0},
 		{meta: "datacite-instrument.json", schema: "datacite-v4.5", want: 0},
