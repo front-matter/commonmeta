@@ -79,7 +79,7 @@ func Convert(data commonmeta.Data) (Inveniordm, error) {
 					Name:        v.Name,
 					GivenName:   v.GivenName,
 					FamilyName:  v.FamilyName,
-					Type:        v.Type + "al",
+					Type:        strings.ToLower(v.Type + "al"),
 					Identifiers: identifiers,
 				}
 				contributor := Creator{
