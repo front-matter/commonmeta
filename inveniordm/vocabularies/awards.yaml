@@ -1,0 +1,30 @@
+- id: "654039"
+  title:
+    en: "Technical and Human Infrastructure for Open Research"
+  number: "654039"
+  acronym: THOR
+  funder:
+    id: 00k4n6c32
+  identifiers:
+    - identifier: https://doi.org/10.3030/654039
+      scheme: doi
+- id: "777523"
+  title:
+    en: "Connected Open Identifiers for Discovery, Access and Use of Research Resources"
+  number: "777523"
+  acronym: FREYA
+  funder:
+    id: 00k4n6c32
+  identifiers:
+    - identifier: https://doi.org/10.3030/777523
+      scheme: doi
+- id: "422587133"
+  title:
+    en: "re3data – Offene und nutzerorientierte Referenz für Forschungsdatenrepositorien"
+  number: "422587133"
+  acronym: COREF
+  funder:
+    id: 018mejw64
+  identifiers:
+    - identifier: https://gepris-extern.dfg.de/gepris/projekt/422587133
+      scheme: url

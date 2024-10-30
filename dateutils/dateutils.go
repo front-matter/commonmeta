@@ -142,6 +142,12 @@ func GetDateFromCrossrefParts(strParts ...string) string {
 	return GetDateFromParts(parts...)
 }
 
+// GetDateFromDatetime returns a datetime string from a Unix timestamp
+func GetDateFromDatetime(iso8601Time string) string {
+	date, _ := time.Parse(Iso8601DateTimeFormat, iso8601Time)
+	return date.Format(Iso8601DateFormat)
+}
+
 func StripMilliseconds(iso8601Time string) string {
 	if iso8601Time == "" {
 		return ""

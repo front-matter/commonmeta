@@ -12,6 +12,7 @@ import (
 	"strings"
 	"time"
 
+	iso639_3 "github.com/barbashov/iso639-3"
 	"github.com/front-matter/commonmeta/crockford"
 	"github.com/front-matter/commonmeta/doiutils"
 	"github.com/microcosm-cc/bluemonday"
@@ -208,10 +209,15 @@ func FindFromFormatByID(id string) string {
 	if strings.Contains(id, "codemeta.json") {
 		return "codemeta"
 	}
-	if strings.Contains(id, "json_feed_item") {
-		return "json_feed_item"
+	if strings.Contains(id, "jsonfeed") {
+		return "jsonfeed"
 	}
-	if strings.Contains(id, "zenodo.org") {
+	r := regexp.MustCompile(`^https:/(/)?api\.rogue-scholar\.org/posts/(.+)$`)
+	if len(r.FindStringSubmatch(id)) > 0 {
+		return "jsonfeed"
+	}
+	r = regexp.MustCompile(`^https:/(/)(.+)/api/records/(.+)$`)
+	if len(r.FindStringSubmatch(id)) > 0 {
 		return "inveniordm"
 	}
 	return "schema_org"
@@ -243,7 +249,7 @@ func FindFromFormatByDict(dct map[string]interface{}) string {
 		return "codemeta"
 	}
 	if _, ok := dct["guid"]; ok {
-		return "json_feed_item"
+		return "jsonfeed"
 	}
 	if v, ok := dct["schemaVersion"]; ok && strings.HasPrefix(v.(string), "http://datacite.org/schema/kernel") {
 		return "datacite"
@@ -282,7 +288,7 @@ func FindFromFormatByString(str string) string {
 		return "codemeta"
 	}
 	if _, ok := data["guid"]; ok {
-		return "json_feed_item"
+		return "jsonfeed"
 	}
 	if v, ok := data["schemaVersion"]; ok && strings.HasPrefix(v.(string), "http://datacite.org/schema/kernel") {
 		return "datacite"
@@ -447,6 +453,10 @@ func GetROR(ror string) (ROR, error) {
 func ValidateID(id string) (string, string) {
 	doi, ok := doiutils.ValidateDOI(id)
 	if ok {
+		prefix, _ := doiutils.ValidatePrefix(doi)
+		if prefix == "10.13039" {
+			return doi, "Crossref Funder ID"
+		}
 		return doi, "DOI"
 	}
 	uuid, ok := ValidateUUID(id)
@@ -509,6 +519,17 @@ func CamelCaseToWords(str string) string {
 // CamelCaseString converts a pascal case string to camel case
 func CamelCaseString(str string) string {
 	return strings.ToLower(str[:1]) + str[1:]
+}
+
+func GetLanguage(lang string, format string) string {
+	language := iso639_3.FromAnyCode(lang)
+	if format == "iso639-3" {
+		return language.Part3
+	} else if format == "name" {
+		return language.Name
+	} else {
+		return language.Part1
+	}
 }
 
 func EncodeDOI(prefix string) string {

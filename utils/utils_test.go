@@ -303,3 +303,10 @@ func ExampleDecodeDOI() {
 	// Output:
 	// 10.73731
 }
+
+func ExampleGetLanguage() {
+	i := utils.GetLanguage("de", "iso639-3")
+	fmt.Println(i)
+	// Output:
+	// deu
+}

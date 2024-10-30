@@ -87,3 +87,10 @@ func ExampleStripMilliseconds() {
 	// Output:
 	// 2021-01-22T10:00:00Z
 }
+
+func ExampleParseDate() {
+	s := dateutils.ParseDate("2021-01-22T10:00:00")
+	fmt.Println(s)
+	// Output:
+	// 2021-01-22
+}

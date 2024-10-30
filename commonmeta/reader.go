@@ -108,9 +108,11 @@ type Data struct {
 	AdditionalType    string             `db:"additional_type" json:"additionalType,omitempty"`
 	ArchiveLocations  []string           `db:"archive_locations" json:"archiveLocations,omitempty"`
 	Container         Container          `db:"container" json:"container,omitempty"`
+	ContentText       string             `db:"content" json:"content_text,omitempty"`
 	Contributors      []Contributor      `db:"contributors" json:"contributors,omitempty"`
 	Date              Date               `db:"date" json:"date,omitempty"`
 	Descriptions      []Description      `db:"descriptions" json:"descriptions,omitempty"`
+	FeatureImage      string             `db:"image" json:"feature_image,omitempty"`
 	Files             []File             `db:"files" json:"files,omitempty"`
 	FundingReferences []FundingReference `db:"funding_references" json:"fundingReferences,omitempty"`
 	GeoLocations      []GeoLocation      `db:"geo_locations" json:"geoLocations,omitempty"`
@@ -195,6 +197,7 @@ type FundingReference struct {
 	FunderIdentifierType string `json:"funderIdentifierType,omitempty"`
 	FunderName           string `json:"funderName,omitempty"`
 	AwardNumber          string `json:"awardNumber,omitempty"`
+	AwardTitle           string `json:"awardTitle,omitempty"`
 	AwardURI             string `json:"award_uri,omitempty"`
 }
 

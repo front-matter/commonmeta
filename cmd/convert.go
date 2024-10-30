@@ -15,6 +15,7 @@ import (
 	"github.com/front-matter/commonmeta/csl"
 	"github.com/front-matter/commonmeta/datacite"
 	"github.com/front-matter/commonmeta/doiutils"
+	"github.com/front-matter/commonmeta/inveniordm"
 	"github.com/front-matter/commonmeta/jsonfeed"
 	"github.com/front-matter/commonmeta/schemaorg"
 	"github.com/front-matter/commonmeta/utils"
@@ -123,6 +124,8 @@ commonmeta 10.5555/12345678`,
 				Registrant: registrant,
 			}
 			output, jsErr = crossrefxml.Write(data, account)
+		} else if to == "inveniordm" {
+			output, jsErr = inveniordm.Write(data)
 		}
 
 		if err != nil {

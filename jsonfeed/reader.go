@@ -33,7 +33,8 @@ type Content struct {
 	Blog          Blog        `json:"blog"`
 	BlogName      string      `json:"blog_name"`
 	BlogSlug      string      `json:"blog_slug"`
-	Image         string      `json:"image"`
+	ContentText   string      `json:"content_text"`
+	FeatureImage  string      `json:"image"`
 	IndexedAt     int64       `json:"indexed_at"`
 	Language      string      `json:"language"`
 	PublishedAt   int64       `json:"published_at"`
@@ -98,13 +99,62 @@ type Reference struct {
 // relation types to include
 var relationTypes = []string{"IsPartOf", "HasPart", "IsVariantFormOf", "IsOriginalFormOf", "IsIdenticalTo", "IsTranslationOf", "IsReviewedBy", "Reviews", "HasReview", "IsPreprintOf", "HasPreprint", "IsSupplementTo", "IsSupplementedBy"}
 
+// FOSKeyMappings maps OECD FOS keys to OECD FOS strings
+var FOSKeyMappings = map[string]string{
+	"naturalSciences":                          "Natural sciences",
+	"mathematics":                              "Mathematics",
+	"computerAndInformationSciences":           "Computer and information sciences",
+	"physicalSciences":                         "Physical sciences",
+	"chemicalSciences":                         "Chemical sciences",
+	"earthAndRelatedEnvironmentalSciences":     "Earth and related environmental sciences",
+	"biologicalSciences":                       "Biological sciences",
+	"otherNaturalSciences":                     "Other natural sciences",
+	"engineeringAndTechnology":                 "Engineering and technology",
+	"civilEngineering":                         "Civil engineering",
+	"electricalEngineering":                    "Electrical engineering, electronic engineering, information engineering",
+	"mechanicalEngineering":                    "Mechanical engineering",
+	"chemicalEngineering":                      "Chemical engineering",
+	"materialsEngineering":                     "Materials engineering",
+	"medicalEngineering":                       "Medical engineering",
+	"environmentalEngineering":                 "Environmental engineering",
+	"environmentalBiotechnology":               "Environmental biotechnology",
+	"industrialBiotechnology":                  "Industrial biotechnology",
+	"nanoTechnology":                           "Nano technology",
+	"otherEngineeringAndTechnologies":          "Other engineering and technologies",
+	"medicalAndHealthSciences":                 "Medical and health sciences",
+	"basicMedicine":                            "Basic medicine",
+	"clinicalMedicine":                         "Clinical medicine",
+	"healthSciences":                           "Health sciences",
+	"healthBiotechnology":                      "Health biotechnology",
+	"otherMedicalSciences":                     "Other medical sciences",
+	"agriculturalSciences":                     "Agricultural sciences",
+	"agricultureForestryAndFisheries":          "Agriculture, forestry, and fisheries",
+	"animalAndDairyScience":                    "Animal and dairy science",
+	"veterinaryScience":                        "Veterinary science",
+	"agriculturalBiotechnology":                "Agricultural biotechnology",
+	"otherAgriculturalSciences":                "Other agricultural sciences",
+	"socialScience":                            "Social science",
+	"psychology":                               "Psychology",
+	"economicsAndBusiness":                     "Economics and business",
+	"educationalSciences":                      "Educational sciences",
+	"sociology":                                "Sociology",
+	"law":                                      "Law",
+	"politicalScience":                         "Political science",
+	"socialAndEconomicGeography":               "Social and economic geography",
+	"mediaAndCommunications":                   "Media and communications",
+	"otherSocialSciences":                      "Other social sciences",
+	"humanities":                               "Humanities",
+	"historyAndArchaeology":                    "History and archaeology",
+	"languagesAndLiterature":                   "Languages and literature",
+	"philosophyEthicsAndReligion":              "Philosophy, ethics and religion",
+	"artsArtsHistoryOfArtsPerformingArtsMusic": "Arts (arts, history of arts, performing arts, music)",
+	"otherHumanities":                          "Other humanities",
+}
+
 // Fetch fetches JSON Feed metadata and returns Commonmeta metadata.
 func Fetch(str string) (commonmeta.Data, error) {
 	var data commonmeta.Data
-	id, ok := utils.ValidateUUID(str)
-	if !ok {
-		return data, errors.New("invalid uuid")
-	}
+	id, _ := utils.ValidateID(str)
 	content, err := Get(id)
 	if err != nil {
 		return data, err
@@ -122,8 +172,7 @@ func Get(id string) (Content, error) {
 	client := &http.Client{
 		Timeout: time.Second * 10,
 	}
-	url := "https://api.rogue-scholar.org/posts/" + id
-	resp, err := client.Get(url)
+	resp, err := client.Get(id)
 	if err != nil {
 		return content, err
 	}
@@ -292,6 +341,12 @@ func Read(content Content) (commonmeta.Data, error) {
 		Identifier:     content.ID,
 		IdentifierType: "UUID",
 	})
+	if content.GUID != "" {
+		data.Identifiers = append(data.Identifiers, commonmeta.Identifier{
+			Identifier:     content.GUID,
+			IdentifierType: "GUID",
+		})
+	}
 
 	data.Language = content.Language
 
@@ -341,8 +396,9 @@ func Read(content Content) (commonmeta.Data, error) {
 	}
 
 	if content.Blog.Category != "" {
+		subject := FOSKeyMappings[content.Blog.Category]
 		data.Subjects = []commonmeta.Subject{
-			{Subject: content.Blog.Category},
+			{Subject: subject},
 		}
 	}
 
@@ -359,6 +415,9 @@ func Read(content Content) (commonmeta.Data, error) {
 	}
 
 	data.URL = url
+	data.ContentText = content.ContentText
+	data.FeatureImage = content.FeatureImage
+
 	return data, nil
 }
 
