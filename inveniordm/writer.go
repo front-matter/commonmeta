@@ -336,7 +336,7 @@ func Convert(data commonmeta.Data) (Inveniordm, error) {
 	}
 	if data.License.URL != "" {
 		right := Right{
-			ID: data.License.ID,
+			ID: strings.ToLower(data.License.ID),
 		}
 		inveniordm.Metadata.Rights = append(inveniordm.Metadata.Rights, right)
 	}
