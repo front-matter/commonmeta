@@ -11,6 +11,7 @@ import (
 
 	"github.com/front-matter/commonmeta/commonmeta"
 	"github.com/front-matter/commonmeta/csl"
+	"github.com/front-matter/commonmeta/inveniordm"
 	"github.com/xeipuuv/gojsonschema"
 
 	"github.com/front-matter/commonmeta/crossref"
@@ -108,6 +109,8 @@ var listCmd = &cobra.Command{
 			output, jsErr = crossrefxml.WriteAll(data, account)
 		} else if to == "schemaorg" {
 			output, jsErr = schemaorg.WriteAll(data)
+		} else if to == "inveniordm" {
+			output, jsErr = inveniordm.WriteAll(data)
 		}
 
 		if to == "crossrefxml" {

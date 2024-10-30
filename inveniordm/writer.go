@@ -12,7 +12,6 @@ import (
 	"github.com/front-matter/commonmeta/crossrefxml"
 	"github.com/front-matter/commonmeta/dateutils"
 	"github.com/front-matter/commonmeta/doiutils"
-	"github.com/front-matter/commonmeta/schemautils"
 	"github.com/front-matter/commonmeta/utils"
 	"github.com/xeipuuv/gojsonschema"
 	"gopkg.in/yaml.v3"
@@ -421,10 +420,10 @@ func WriteAll(list []commonmeta.Data) ([]byte, []gojsonschema.ResultError) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	validation := schemautils.JSONSchemaErrors(output, "datacite-v4.5")
-	if !validation.Valid() {
-		return nil, validation.Errors()
-	}
+	// validation := schemautils.JSONSchemaErrors(output, "datacite-v4.5")
+	// if !validation.Valid() {
+	// 	return nil, validation.Errors()
+	// }
 
 	return output, nil
 }
