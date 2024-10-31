@@ -138,93 +138,26 @@ func Convert(data commonmeta.Data) (Inveniordm, error) {
 	}
 	inveniordm.Metadata.Identifiers = append(inveniordm.Metadata.Identifiers, identifier)
 
-	if data.Date.Accepted != "" {
-		inveniordm.Metadata.Dates = append(inveniordm.Metadata.Dates, Date{
-			Date: data.Date.Accepted,
-			Type: Type{
-				ID: "accepted",
-			},
-		})
-	}
-	if data.Date.Available != "" {
-		inveniordm.Metadata.Dates = append(inveniordm.Metadata.Dates, Date{
-			Date: data.Date.Available,
-			Type: Type{
-				ID: "available",
-			},
-		})
-	}
-	if data.Date.Collected != "" {
-		inveniordm.Metadata.Dates = append(inveniordm.Metadata.Dates, Date{
-			Date: data.Date.Collected,
-			Type: Type{
-				ID: "collected",
-			},
-		})
-	}
-	if data.Date.Created != "" {
-		inveniordm.Metadata.Dates = append(inveniordm.Metadata.Dates, Date{
-			Date: data.Date.Created,
-			Type: Type{
-				ID: "created",
-			},
-		})
-	}
-	if data.Date.Published != "" {
-		inveniordm.Metadata.Dates = append(inveniordm.Metadata.Dates, Date{
-			Date: data.Date.Published,
-			Type: Type{
-				ID: "issued",
-			},
-		})
-	}
-	if data.Date.Accessed != "" {
-		inveniordm.Metadata.Dates = append(inveniordm.Metadata.Dates, Date{
-			Date: data.Date.Accessed,
-			Type: Type{
-				ID: "other",
-			},
-		})
-	}
-	if data.Date.Other != "" {
-		inveniordm.Metadata.Dates = append(inveniordm.Metadata.Dates, Date{
-			Date: data.Date.Other,
-			Type: Type{
-				ID: "other",
-			},
-		})
-	}
-	if data.Date.Submitted != "" {
-		inveniordm.Metadata.Dates = append(inveniordm.Metadata.Dates, Date{
-			Date: data.Date.Submitted,
-			Type: Type{
-				ID: "submitted",
-			},
-		})
-	}
-	if data.Date.Updated != "" {
-		inveniordm.Metadata.Dates = append(inveniordm.Metadata.Dates, Date{
-			Date: data.Date.Updated,
-			Type: Type{
-				ID: "updated",
-			},
-		})
-	}
-	if data.Date.Valid != "" {
-		inveniordm.Metadata.Dates = append(inveniordm.Metadata.Dates, Date{
-			Date: data.Date.Valid,
-			Type: Type{
-				ID: "valid",
-			},
-		})
-	}
-	if data.Date.Withdrawn != "" {
-		inveniordm.Metadata.Dates = append(inveniordm.Metadata.Dates, Date{
-			Date: data.Date.Withdrawn,
-			Type: Type{
-				ID: "withdrawn",
-			},
-		})
+	// using JSON to iterate over data.Date struct
+	var dates map[string]interface{}
+	d, _ := json.Marshal(data.Date)
+	json.Unmarshal(d, &dates)
+	for t, d := range dates {
+		if dateutils.ValidateEdtf(fmt.Sprintf("%v", d)) != "" {
+			date := fmt.Sprintf("%v", d)
+			id := strings.ToLower(t)
+			if id == "published" {
+				id = "issued"
+			} else if id == "accessed" {
+				id = "other"
+			}
+			inveniordm.Metadata.Dates = append(inveniordm.Metadata.Dates, Date{
+				Date: date,
+				Type: Type{
+					ID: id,
+				},
+			})
+		}
 	}
 
 	if len(data.Descriptions) > 0 {
