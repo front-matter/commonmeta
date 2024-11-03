@@ -6,6 +6,10 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/sfomuseum/go-edtf"
+	"github.com/sfomuseum/go-edtf/common"
+	"github.com/sfomuseum/go-edtf/re"
 )
 
 type DateStruct struct {
@@ -23,22 +27,20 @@ const Iso8601DateTimeFormat = "2006-01-02T15:04:05Z"
 // CrossrefDateTimeFormat is the Crossref date format with time, used in XML for content registration.
 const CrossrefDateTimeFormat = "20060102150405"
 
-// ParseDate parses date strings in various formats and returns a date string in ISO 8601 format
-func ParseDate(date string) string {
-	t, _ := time.Parse(Iso8601DateFormat, date)
-	if t.Year() == 0001 {
-		t, _ = time.Parse("02 January 2006", date)
+// ParseDate parses date strings in various formats and returns a date string in ISO 8601 format.
+// Extracted from the go-edtf library to parse EDTF date strings.
+func ParseDate(edtf_str string) (string, error) {
+	if !re.Date.MatchString(edtf_str) {
+		return "", edtf.Invalid("Date", edtf_str)
 	}
-	if t.Year() == 0001 {
-		t, _ = time.Parse("2006-02", date)
+
+	_, err := common.DateSpanFromEDTF(edtf_str)
+
+	if err != nil {
+		return "", err
 	}
-	if t.Year() == 0001 {
-		t, _ = time.Parse("2006", date)
-	}
-	if t.Year() == 0001 {
-		return ""
-	}
-	return t.Format(Iso8601DateFormat)
+
+	return edtf_str, nil
 }
 
 // GetDateParts return date parts from an ISO 8601 date string

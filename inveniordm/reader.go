@@ -270,7 +270,7 @@ var FOSMappings = map[string]string{
 // CMToInvenioMappings maps Commonmeta identifier types to InvenioRDM identifier types
 var CMToInvenioIdentifierMappings = map[string]string{
 	"Ark":              "ark",
-	"ArXiv":            "arxiv",
+	"arXiv":            "arxiv",
 	"Bibcode":          "ads",
 	"CrossrefFunderID": "crossreffunderid",
 	"DOI":              "doi",

@@ -337,6 +337,7 @@ func Read(content Content) (commonmeta.Data, error) {
 
 	data.FundingReferences = GetFundingReferences(content)
 
+	
 	data.Identifiers = append(data.Identifiers, commonmeta.Identifier{
 		Identifier:     content.ID,
 		IdentifierType: "UUID",
@@ -379,7 +380,8 @@ func Read(content Content) (commonmeta.Data, error) {
 	}
 
 	for _, v := range content.Reference {
-		if v.ID != "" {
+		_, idtype := utils.ValidateID(v.ID)
+		if idtype == "DOI" || idtype == "URL" {
 			reference := commonmeta.Reference{
 				Key:             v.Key,
 				ID:              v.ID,

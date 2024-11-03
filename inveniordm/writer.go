@@ -51,7 +51,8 @@ func Convert(data commonmeta.Data) (Inveniordm, error) {
 		inveniordm.Metadata.Title = data.Titles[0].Title
 	}
 	if len(data.Date.Published) >= 4 {
-		inveniordm.Metadata.PublicationDate = dateutils.GetDateFromDatetime(data.Date.Published)
+		fmt.Println(data.Date.Published)
+		inveniordm.Metadata.PublicationDate, _ = dateutils.ParseDate(data.Date.Published)
 	}
 
 	if len(data.Contributors) > 0 {
@@ -267,12 +268,20 @@ func Convert(data commonmeta.Data) (Inveniordm, error) {
 			inveniordm.Metadata.Subjects = append(inveniordm.Metadata.Subjects, subject)
 		}
 	}
-	if data.License.URL != "" {
-		right := Right{
+	var right Right
+	if data.License.ID != "" {
+		right = Right{
 			ID: strings.ToLower(data.License.ID),
 		}
+	} else if data.License.URL != "" {
+		right = Right{
+			ID: utils.URLToSPDX(data.License.URL),
+		}
+	}
+	if right != (Right{}) {
 		inveniordm.Metadata.Rights = append(inveniordm.Metadata.Rights, right)
 	}
+
 	if len(data.Relations) > 0 {
 		for _, v := range data.Relations {
 			id, identifierType := utils.ValidateID(v.ID)
