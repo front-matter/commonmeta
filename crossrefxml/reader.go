@@ -967,12 +967,12 @@ func Read(query Query) (commonmeta.Data, error) {
 		s := slices.IndexFunc(customMetadata.Assertion, func(c Assertion) bool { return c.Name == "received" })
 		if s != -1 {
 			dateSubmitted := customMetadata.Assertion[s]
-			data.Date.Submitted, _ = dateutils.ParseDate(dateSubmitted.Text)
+			data.Date.Submitted = dateutils.ParseDate(dateSubmitted.Text)
 		}
 		a := slices.IndexFunc(customMetadata.Assertion, func(c Assertion) bool { return c.Name == "accepted" })
 		if a != -1 {
 			dateAccepted := customMetadata.Assertion[a]
-			data.Date.Accepted, _ = dateutils.ParseDate(dateAccepted.Text)
+			data.Date.Accepted = dateutils.ParseDate(dateAccepted.Text)
 		}
 	}
 

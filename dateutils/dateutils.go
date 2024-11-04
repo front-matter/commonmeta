@@ -6,10 +6,6 @@ import (
 	"strconv"
 	"strings"
 	"time"
-
-	"github.com/sfomuseum/go-edtf"
-	"github.com/sfomuseum/go-edtf/common"
-	"github.com/sfomuseum/go-edtf/re"
 )
 
 type DateStruct struct {
@@ -28,19 +24,19 @@ const Iso8601DateTimeFormat = "2006-01-02T15:04:05Z"
 const CrossrefDateTimeFormat = "20060102150405"
 
 // ParseDate parses date strings in various formats and returns a date string in ISO 8601 format.
-// Extracted from the go-edtf library to parse EDTF date strings.
-func ParseDate(edtf_str string) (string, error) {
-	if !re.Date.MatchString(edtf_str) {
-		return "", edtf.Invalid("Date", edtf_str)
+func ParseDate(iso8601Time string) string {
+	date := GetDateStruct(iso8601Time)
+	if date.Year == "0000" {
+		return ""
 	}
-
-	_, err := common.DateSpanFromEDTF(edtf_str)
-
-	if err != nil {
-		return "", err
+	dateStr := date.Year
+	if date.Month != "00" {
+		dateStr += "-" + date.Month
 	}
-
-	return edtf_str, nil
+	if date.Day != "00" {
+		dateStr += "-" + date.Day
+	}
+	return dateStr
 }
 
 // GetDateParts return date parts from an ISO 8601 date string

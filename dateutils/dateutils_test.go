@@ -89,7 +89,7 @@ func ExampleStripMilliseconds() {
 }
 
 func ExampleParseDate() {
-	s, _ := dateutils.ParseDate("2021-01")
+	s := dateutils.ParseDate("2021-01")
 	fmt.Println(s)
 	// Output:
 	// 2021-01
@@ -99,5 +99,5 @@ func ExampleValidateEdtf() {
 	b := dateutils.ValidateEdtf("2024-07-22T22:11:00Z")
 	fmt.Println(b)
 	// Output:
-	// 2024-07-22T22:11:00Z
+	// 2024-07-22
 }
