@@ -51,7 +51,6 @@ func Convert(data commonmeta.Data) (Inveniordm, error) {
 		inveniordm.Metadata.Title = data.Titles[0].Title
 	}
 	if len(data.Date.Published) >= 4 {
-		fmt.Println(data.Date.Published)
 		inveniordm.Metadata.PublicationDate, _ = dateutils.ParseDate(data.Date.Published)
 	}
 
