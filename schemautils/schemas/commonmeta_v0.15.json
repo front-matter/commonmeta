@@ -265,16 +265,17 @@
                   "arXiv",
                   "Bibcode",
                   "DOI",
+                  "GUID",
                   "Handle",
                   "ISBN",
                   "ISSN",
                   "PMID",
                   "PMCID",
                   "PURL",
+                  "RID",
                   "URL",
                   "URN",
                   "UUID",
-                  "GUID",
                   "Other"
                 ]
               }

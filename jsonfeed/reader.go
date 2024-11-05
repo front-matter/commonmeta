@@ -27,6 +27,7 @@ type Content struct {
 	ID            string      `json:"id"`
 	DOI           string      `json:"doi"`
 	GUID          string      `json:"guid"`
+	RID           string      `json:"rid"`
 	Abstract      string      `json:"abstract"`
 	ArchiveURL    string      `json:"archive_url"`
 	Authors       Authors     `json:"authors"`
@@ -337,7 +338,6 @@ func Read(content Content) (commonmeta.Data, error) {
 
 	data.FundingReferences = GetFundingReferences(content)
 
-	
 	data.Identifiers = append(data.Identifiers, commonmeta.Identifier{
 		Identifier:     content.ID,
 		IdentifierType: "UUID",
@@ -346,6 +346,12 @@ func Read(content Content) (commonmeta.Data, error) {
 		data.Identifiers = append(data.Identifiers, commonmeta.Identifier{
 			Identifier:     content.GUID,
 			IdentifierType: "GUID",
+		})
+	}
+	if content.RID != "" {
+		data.Identifiers = append(data.Identifiers, commonmeta.Identifier{
+			Identifier:     content.RID,
+			IdentifierType: "RID",
 		})
 	}
 
