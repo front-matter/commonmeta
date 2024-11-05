@@ -120,8 +120,8 @@ func Convert(data commonmeta.Data) (Inveniordm, error) {
 
 	if len(data.Identifiers) > 0 {
 		for _, v := range data.Identifiers {
-			if v.Identifier != data.ID {
-				scheme := CMToInvenioIdentifierMappings[v.IdentifierType]
+			scheme := CMToInvenioIdentifierMappings[v.IdentifierType]
+			if v.Identifier != data.ID && scheme != "" {
 				identifier := Identifier{
 					Identifier: v.Identifier,
 					Scheme:     scheme,
