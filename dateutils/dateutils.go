@@ -161,15 +161,3 @@ func StripMilliseconds(iso8601Time string) string {
 	}
 	return iso8601Time
 }
-
-// ValidateEdtf validates an EDTF date string.
-// Workaround for a bug in InvenioRDM (edtf 4.0.1)
-func ValidateEdtf(iso8601Time string) string {
-	if iso8601Time == "" {
-		return ""
-	}
-	if strings.Contains(iso8601Time, "T23") {
-		return ""
-	}
-	return iso8601Time
-}

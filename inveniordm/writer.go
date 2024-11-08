@@ -143,7 +143,7 @@ func Convert(data commonmeta.Data) (Inveniordm, error) {
 	d, _ := json.Marshal(data.Date)
 	json.Unmarshal(d, &dates)
 	for t, d := range dates {
-		if dateutils.ValidateEdtf(fmt.Sprintf("%v", d)) != "" {
+		if d != "" {
 			date := fmt.Sprintf("%v", d)
 			id := strings.ToLower(t)
 			if id == "published" {
