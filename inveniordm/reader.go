@@ -54,7 +54,7 @@ type Metadata struct {
 	Dates              []Date              `json:"dates,omitempty"`
 	Description        string              `json:"description,omitempty"`
 	Rights             []Right             `json:"rights,omitempty"`
-	Languages          []Language          `json:"language,omitempty"`
+	Languages          []Language          `json:"languages,omitempty"`
 	Identifiers        []Identifier        `json:"identifiers,omitempty"`
 	RelatedIdentifiers []RelatedIdentifier `json:"related_identifiers,omitempty"`
 	Funding            []Funding           `json:"funding,omitempty"`
