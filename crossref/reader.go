@@ -19,6 +19,8 @@ import (
 	"strings"
 	"time"
 
+	"mvdan.cc/xurls/v2"
+
 	"github.com/front-matter/commonmeta/commonmeta"
 	"github.com/front-matter/commonmeta/dateutils"
 	"github.com/front-matter/commonmeta/doiutils"
@@ -668,11 +670,15 @@ func Read(content Content) (commonmeta.Data, error) {
 			Name: content.Publisher,
 		}
 	}
-
+	rxStrict := xurls.Strict()
 	for _, v := range content.Reference {
+		ID := doiutils.NormalizeDOI(v.DOI)
+		if ID == "" && v.Unstructured != "" {
+			ID = rxStrict.FindString(v.Unstructured)
+		}
 		reference := commonmeta.Reference{
 			Key:             v.Key,
-			ID:              doiutils.NormalizeDOI(v.DOI),
+			ID:              ID,
 			Title:           v.ArticleTitle,
 			PublicationYear: v.Year,
 			Unstructured:    v.Unstructured,
