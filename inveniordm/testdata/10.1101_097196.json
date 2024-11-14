@@ -1,0 +1,379 @@
+{
+  "pids": {
+    "doi": {
+      "identifier": "10.1101/097196",
+      "provider": "external"
+    }
+  },
+  "access": {
+    "record": "public",
+    "files": "public"
+  },
+  "files": {
+    "enabled": false
+  },
+  "metadata": {
+    "resource_type": {
+      "id": "publication-preprint"
+    },
+    "creators": [
+      {
+        "person_or_org": {
+          "type": "personal",
+          "given_name": "Martin",
+          "family_name": "Fenner",
+          "identifiers": [
+            {
+              "identifier": "0000-0003-1419-2405",
+              "scheme": "orcid"
+            }
+          ]
+        }
+      },
+      {
+        "person_or_org": {
+          "type": "personal",
+          "given_name": "Mercè",
+          "family_name": "Crosas",
+          "identifiers": [
+            {
+              "identifier": "0000-0003-1304-1939",
+              "scheme": "orcid"
+            }
+          ]
+        }
+      },
+      {
+        "person_or_org": {
+          "type": "personal",
+          "given_name": "Jeffrey",
+          "family_name": "Grethe",
+          "identifiers": [
+            {
+              "identifier": "0000-0001-5212-7052",
+              "scheme": "orcid"
+            }
+          ]
+        }
+      },
+      {
+        "person_or_org": {
+          "type": "personal",
+          "given_name": "David",
+          "family_name": "Kennedy",
+          "identifiers": [
+            {
+              "identifier": "0000-0002-9377-0797",
+              "scheme": "orcid"
+            }
+          ]
+        }
+      },
+      {
+        "person_or_org": {
+          "type": "personal",
+          "given_name": "Henning",
+          "family_name": "Hermjakob",
+          "identifiers": [
+            {
+              "identifier": "0000-0001-8479-0262",
+              "scheme": "orcid"
+            }
+          ]
+        }
+      },
+      {
+        "person_or_org": {
+          "type": "personal",
+          "given_name": "Philippe",
+          "family_name": "Rocca-Serra",
+          "identifiers": [
+            {
+              "identifier": "0000-0001-9853-5668",
+              "scheme": "orcid"
+            }
+          ]
+        }
+      },
+      {
+        "person_or_org": {
+          "type": "personal",
+          "given_name": "Gustavo",
+          "family_name": "Durand",
+          "identifiers": [
+            {
+              "identifier": "0000-0002-2188-2570",
+              "scheme": "orcid"
+            }
+          ]
+        }
+      },
+      {
+        "person_or_org": {
+          "type": "personal",
+          "given_name": "Robin",
+          "family_name": "Berjon",
+          "identifiers": [
+            {
+              "identifier": "0000-0002-1731-5346",
+              "scheme": "orcid"
+            }
+          ]
+        }
+      },
+      {
+        "person_or_org": {
+          "type": "personal",
+          "given_name": "Sebastian",
+          "family_name": "Karcher",
+          "identifiers": [
+            {
+              "identifier": "0000-0001-8249-7388",
+              "scheme": "orcid"
+            }
+          ]
+        }
+      },
+      {
+        "person_or_org": {
+          "type": "personal",
+          "given_name": "Maryann",
+          "family_name": "Martone",
+          "identifiers": [
+            {
+              "identifier": "0000-0002-8406-3871",
+              "scheme": "orcid"
+            }
+          ]
+        }
+      },
+      {
+        "person_or_org": {
+          "type": "personal",
+          "given_name": "Timothy",
+          "family_name": "Clark",
+          "identifiers": [
+            {
+              "identifier": "0000-0003-4060-7360",
+              "scheme": "orcid"
+            }
+          ]
+        }
+      }
+    ],
+    "title": "A Data Citation Roadmap for Scholarly Data Repositories",
+    "publication_date": "2016-12-28",
+    "subjects": [
+      {
+        "subject": "Scientific Communication and Education"
+      }
+    ],
+    "dates": [
+      {
+        "date": "2016-12-28",
+        "type": {
+          "id": "issued"
+        }
+      }
+    ],
+    "description": "AbstractThis article presents a practical roadmap for scholarly data repositories to implement data citation in accordance with the Joint Declaration of Data Citation Principles, a synopsis and harmonization of the recommendations of major science policy bodies. The roadmap was developed by the Repositories Expert Group, as part of the Data Citation Implementation Pilot (DCIP) project, an initiative of FORCE11.org and the NIH BioCADDIE (https://biocaddie.org) program. The roadmap makes 11 specific recommendations, grouped into three phases of implementation: a) required steps needed to support the Joint Declaration of Data Citation Principles, b) recommended steps that facilitate article/data publication workflows, and c) optional steps that further improve data citation support provided by data repositories.",
+    "rights": [
+      {
+        "id": "cc-by-4.0"
+      }
+    ],
+    "identifiers": [
+      {
+        "identifier": "http://biorxiv.org/lookup/doi/10.1101/097196",
+        "scheme": "url"
+      }
+    ],
+    "related_identifiers": [
+      {
+        "identifier": "",
+        "scheme": "",
+        "relation_type": {
+          "id": "references"
+        }
+      },
+      {
+        "identifier": "http://scholar.harvard.edu/mercecrosas/publications/evolution-data-citation-principles-implementation",
+        "scheme": "url",
+        "relation_type": {
+          "id": "references"
+        }
+      },
+      {
+        "identifier": "http://bioschemas.org/",
+        "scheme": "url",
+        "relation_type": {
+          "id": "references"
+        }
+      },
+      {
+        "identifier": "10.2481/dsj.osom13-043",
+        "scheme": "doi",
+        "relation_type": {
+          "id": "references"
+        }
+      },
+      {
+        "identifier": "10.25490/a97f-egyk",
+        "scheme": "doi",
+        "relation_type": {
+          "id": "references"
+        }
+      },
+      {
+        "identifier": "http://force11.github.io/data-citation-primer/",
+        "scheme": "url",
+        "relation_type": {
+          "id": "references"
+        }
+      },
+      {
+        "identifier": "http://search.datacite.org/works/10.5438/0013",
+        "scheme": "url",
+        "relation_type": {
+          "id": "references"
+        }
+      },
+      {
+        "identifier": "https://search.datacite.org/",
+        "scheme": "url",
+        "relation_type": {
+          "id": "references"
+        }
+      },
+      {
+        "identifier": "https://datamed.org/",
+        "scheme": "url",
+        "relation_type": {
+          "id": "references"
+        }
+      },
+      {
+        "identifier": "https://schema.org/Dataset",
+        "scheme": "url",
+        "relation_type": {
+          "id": "references"
+        }
+      },
+      {
+        "identifier": "http://dublincore.org/documents/2012/06/14/dces/",
+        "scheme": "url",
+        "relation_type": {
+          "id": "references"
+        }
+      },
+      {
+        "identifier": "https://www.elixir-europe.org/",
+        "scheme": "url",
+        "relation_type": {
+          "id": "references"
+        }
+      },
+      {
+        "identifier": "",
+        "scheme": "",
+        "relation_type": {
+          "id": "references"
+        }
+      },
+      {
+        "identifier": "http://purl.org/rss/1.0/modules/prism/",
+        "scheme": "url",
+        "relation_type": {
+          "id": "references"
+        }
+      },
+      {
+        "identifier": "10.3389/fninf.2016.00034",
+        "scheme": "doi",
+        "relation_type": {
+          "id": "references"
+        }
+      },
+      {
+        "identifier": "10.29173/iq757",
+        "scheme": "doi",
+        "relation_type": {
+          "id": "references"
+        }
+      },
+      {
+        "identifier": "10.15252/msb.20156658",
+        "scheme": "doi",
+        "relation_type": {
+          "id": "references"
+        }
+      },
+      {
+        "identifier": "https://github.com/prefixcommons/prefixes",
+        "scheme": "url",
+        "relation_type": {
+          "id": "references"
+        }
+      },
+      {
+        "identifier": "http://www.rfc-base.org/rfc-3986.html",
+        "scheme": "url",
+        "relation_type": {
+          "id": "references"
+        }
+      },
+      {
+        "identifier": "10.1038/sdata.2017.59",
+        "scheme": "doi",
+        "relation_type": {
+          "id": "references"
+        }
+      },
+      {
+        "identifier": "10.7717/peerj-cs.86",
+        "scheme": "doi",
+        "relation_type": {
+          "id": "references"
+        }
+      },
+      {
+        "identifier": "10.7717/peerj-cs.1",
+        "scheme": "doi",
+        "relation_type": {
+          "id": "references"
+        }
+      },
+      {
+        "identifier": "10.1126/science.aah6168",
+        "scheme": "doi",
+        "relation_type": {
+          "id": "references"
+        }
+      },
+      {
+        "identifier": "10.5281/zenodo.55666",
+        "scheme": "doi",
+        "relation_type": {
+          "id": "references"
+        }
+      },
+      {
+        "identifier": "https://www.nap.edu/catalog/13564/for-attribution-developing-data-attribution-and-citation-practices-and-standards",
+        "scheme": "url",
+        "relation_type": {
+          "id": "references"
+        }
+      },
+      {
+        "identifier": "10.1045/november2015-vandesompel",
+        "scheme": "doi",
+        "relation_type": {
+          "id": "references"
+        }
+      }
+    ]
+  },
+  "custom_fields": {
+    "journal:journal": {}
+  }
+}

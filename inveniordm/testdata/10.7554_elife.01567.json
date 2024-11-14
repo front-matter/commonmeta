@@ -1,0 +1,409 @@
+{
+  "pids": {
+    "doi": {
+      "identifier": "10.7554/elife.01567",
+      "provider": "external"
+    }
+  },
+  "access": {
+    "record": "public",
+    "files": "public"
+  },
+  "files": {
+    "enabled": false
+  },
+  "metadata": {
+    "resource_type": {
+      "id": "publication-article"
+    },
+    "creators": [
+      {
+        "person_or_org": {
+          "type": "personal",
+          "given_name": "Martial",
+          "family_name": "Sankar"
+        },
+        "affiliations": [
+          {
+            "name": "Department of Plant Molecular Biology, University of Lausanne, Lausanne, Switzerland"
+          }
+        ]
+      },
+      {
+        "person_or_org": {
+          "type": "personal",
+          "given_name": "Kaisa",
+          "family_name": "Nieminen"
+        },
+        "affiliations": [
+          {
+            "name": "Department of Plant Molecular Biology, University of Lausanne, Lausanne, Switzerland"
+          }
+        ]
+      },
+      {
+        "person_or_org": {
+          "type": "personal",
+          "given_name": "Laura",
+          "family_name": "Ragni"
+        },
+        "affiliations": [
+          {
+            "name": "Department of Plant Molecular Biology, University of Lausanne, Lausanne, Switzerland"
+          }
+        ]
+      },
+      {
+        "person_or_org": {
+          "type": "personal",
+          "given_name": "Ioannis",
+          "family_name": "Xenarios"
+        },
+        "affiliations": [
+          {
+            "name": "Vital-IT, Swiss Institute of Bioinformatics, Lausanne, Switzerland"
+          }
+        ]
+      },
+      {
+        "person_or_org": {
+          "type": "personal",
+          "given_name": "Christian S",
+          "family_name": "Hardtke"
+        },
+        "affiliations": [
+          {
+            "name": "Department of Plant Molecular Biology, University of Lausanne, Lausanne, Switzerland"
+          }
+        ]
+      }
+    ],
+    "title": "Automated quantitative histology reveals vascular morphodynamics during Arabidopsis hypocotyl secondary growth",
+    "publication_date": "2014-02-11",
+    "dates": [
+      {
+        "date": "2014-02-11",
+        "type": {
+          "id": "issued"
+        }
+      }
+    ],
+    "description": "Among various advantages, their small size makes model organisms preferred subjects of investigation. Yet, even in model systems detailed analysis of numerous developmental processes at cellular level is severely hampered by their scale. For instance, secondary growth of Arabidopsis hypocotyls creates a radial pattern of highly specialized tissues that comprises several thousand cells starting from a few dozen. This dynamic process is difficult to follow because of its scale and because it can only be investigated invasively, precluding comprehensive understanding of the cell proliferation, differentiation, and patterning events involved. To overcome such limitation, we established an automated quantitative histology approach. We acquired hypocotyl cross-sections from tiled high-resolution images and extracted their information content using custom high-throughput image processing and segmentation. Coupled with automated cell type recognition through machine learning, we could establish a cellular resolution atlas that reveals vascular morphodynamics during secondary growth, for example equidistant phloem pole formation.",
+    "rights": [
+      {
+        "id": "cc-by-3.0"
+      }
+    ],
+    "languages": [
+      {
+        "id": "eng"
+      }
+    ],
+    "identifiers": [
+      {
+        "identifier": "https://elifesciences.org/articles/01567",
+        "scheme": "url"
+      }
+    ],
+    "related_identifiers": [
+      {
+        "identifier": "10.7554/elife.01567.017",
+        "scheme": "doi",
+        "relation_type": {
+          "id": "hasreview"
+        }
+      },
+      {
+        "identifier": "10.7554/elife.01567.016",
+        "scheme": "doi",
+        "relation_type": {
+          "id": "hasreview"
+        }
+      },
+      {
+        "identifier": "10.5061/dryad.b835k",
+        "scheme": "doi",
+        "relation_type": {
+          "id": "issupplementedby"
+        }
+      },
+      {
+        "identifier": "2050-084X",
+        "scheme": "issn",
+        "relation_type": {
+          "id": "ispartof"
+        }
+      },
+      {
+        "identifier": "10.1038/nature02100",
+        "scheme": "doi",
+        "relation_type": {
+          "id": "references"
+        }
+      },
+      {
+        "identifier": "10.1534/genetics.109.104976",
+        "scheme": "doi",
+        "relation_type": {
+          "id": "references"
+        }
+      },
+      {
+        "identifier": "10.1034/j.1399-3054.2002.1140413.x",
+        "scheme": "doi",
+        "relation_type": {
+          "id": "references"
+        }
+      },
+      {
+        "identifier": "10.1162/089976601750399335",
+        "scheme": "doi",
+        "relation_type": {
+          "id": "references"
+        }
+      },
+      {
+        "identifier": "10.1007/bf00994018",
+        "scheme": "doi",
+        "relation_type": {
+          "id": "references"
+        }
+      },
+      {
+        "identifier": "10.1242/dev.119.1.71",
+        "scheme": "doi",
+        "relation_type": {
+          "id": "references"
+        }
+      },
+      {
+        "identifier": "10.1016/j.semcdb.2009.09.009",
+        "scheme": "doi",
+        "relation_type": {
+          "id": "references"
+        }
+      },
+      {
+        "identifier": "10.1242/dev.091314",
+        "scheme": "doi",
+        "relation_type": {
+          "id": "references"
+        }
+      },
+      {
+        "identifier": "10.1371/journal.pgen.1002997",
+        "scheme": "doi",
+        "relation_type": {
+          "id": "references"
+        }
+      },
+      {
+        "identifier": "10.1038/msb.2010.25",
+        "scheme": "doi",
+        "relation_type": {
+          "id": "references"
+        }
+      },
+      {
+        "identifier": "10.1016/j.biosystems.2012.07.004",
+        "scheme": "doi",
+        "relation_type": {
+          "id": "references"
+        }
+      },
+      {
+        "identifier": "10.1016/j.pbi.2005.11.013",
+        "scheme": "doi",
+        "relation_type": {
+          "id": "references"
+        }
+      },
+      {
+        "identifier": "10.1105/tpc.110.076083",
+        "scheme": "doi",
+        "relation_type": {
+          "id": "references"
+        }
+      },
+      {
+        "identifier": "10.1073/pnas.0808444105",
+        "scheme": "doi",
+        "relation_type": {
+          "id": "references"
+        }
+      },
+      {
+        "identifier": "10.1016/0092-8674(89)90900-8",
+        "scheme": "doi",
+        "relation_type": {
+          "id": "references"
+        }
+      },
+      {
+        "identifier": "10.1126/science.1066609",
+        "scheme": "doi",
+        "relation_type": {
+          "id": "references"
+        }
+      },
+      {
+        "identifier": "10.1104/pp.104.040212",
+        "scheme": "doi",
+        "relation_type": {
+          "id": "references"
+        }
+      },
+      {
+        "identifier": "10.1038/nbt1206-1565",
+        "scheme": "doi",
+        "relation_type": {
+          "id": "references"
+        }
+      },
+      {
+        "identifier": "10.1073/pnas.77.3.1516",
+        "scheme": "doi",
+        "relation_type": {
+          "id": "references"
+        }
+      },
+      {
+        "identifier": "10.1093/bioinformatics/btq046",
+        "scheme": "doi",
+        "relation_type": {
+          "id": "references"
+        }
+      },
+      {
+        "identifier": "10.1105/tpc.111.084020",
+        "scheme": "doi",
+        "relation_type": {
+          "id": "references"
+        }
+      },
+      {
+        "identifier": "10.5061/dryad.b835k",
+        "scheme": "doi",
+        "relation_type": {
+          "id": "references"
+        }
+      },
+      {
+        "identifier": "10.1016/j.cub.2008.02.070",
+        "scheme": "doi",
+        "relation_type": {
+          "id": "references"
+        }
+      },
+      {
+        "identifier": "10.1111/j.1469-8137.2010.03236.x",
+        "scheme": "doi",
+        "relation_type": {
+          "id": "references"
+        }
+      },
+      {
+        "identifier": "10.1007/s00138-011-0345-9",
+        "scheme": "doi",
+        "relation_type": {
+          "id": "references"
+        }
+      },
+      {
+        "identifier": "10.1016/j.cell.2012.02.048",
+        "scheme": "doi",
+        "relation_type": {
+          "id": "references"
+        }
+      },
+      {
+        "identifier": "10.1038/ncb2764",
+        "scheme": "doi",
+        "relation_type": {
+          "id": "references"
+        }
+      },
+      {
+        "identifier": "10.7554/elife.01567.017",
+        "scheme": "doi",
+        "relation_type": {
+          "id": "hasreview"
+        }
+      },
+      {
+        "identifier": "10.7554/elife.01567.016",
+        "scheme": "doi",
+        "relation_type": {
+          "id": "hasreview"
+        }
+      },
+      {
+        "identifier": "10.5061/dryad.b835k",
+        "scheme": "doi",
+        "relation_type": {
+          "id": "issupplementedby"
+        }
+      }
+    ],
+    "funding": [
+      {
+        "funder": {
+          "name": "SystemsX"
+        },
+        "award": {
+          "title": {}
+        }
+      },
+      {
+        "funder": {
+          "name": "EMBO longterm post-doctoral fellowships"
+        },
+        "award": {
+          "title": {}
+        }
+      },
+      {
+        "funder": {
+          "name": "Marie Heim-Voegtlin"
+        },
+        "award": {
+          "title": {}
+        }
+      },
+      {
+        "funder": {
+          "id": "019whta54",
+          "name": "University of Lausanne"
+        },
+        "award": {
+          "title": {}
+        }
+      },
+      {
+        "funder": {
+          "id": "04wfr2810",
+          "name": "EMBO"
+        },
+        "award": {
+          "title": {}
+        }
+      },
+      {
+        "funder": {
+          "id": "00yjd3n13",
+          "name": "Swiss National Science Foundation"
+        },
+        "award": {
+          "title": {}
+        }
+      }
+    ]
+  },
+  "custom_fields": {
+    "journal:journal": {
+      "title": "eLife",
+      "volume": "3",
+      "issn": "2050-084X"
+    }
+  }
+}

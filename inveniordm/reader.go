@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/front-matter/commonmeta/commonmeta"
+	"github.com/front-matter/commonmeta/utils"
 )
 
 // Content represents the InvenioRDM JSON API response.
@@ -296,14 +297,28 @@ var CMToInvenioIdentifierMappings = map[string]string{
 	"Other":            "other",
 }
 
+// Fetch fetches InvenioRDM metadata and returns Commonmeta metadata.
+func Fetch(str string) (commonmeta.Data, error) {
+	var data commonmeta.Data
+	id, _ := utils.ValidateID(str)
+	content, err := Get(id)
+	if err != nil {
+		return data, err
+	}
+	data, err = Read(content)
+	if err != nil {
+		return data, err
+	}
+	return data, nil
+}
+
 // Get retrieves InvenioRDM metadata.
 func Get(id string) (Content, error) {
 	var content Content
 	client := &http.Client{
 		Timeout: time.Second * 10,
 	}
-	url := "https://zenodo.org/api/records/" + id
-	resp, err := client.Get(url)
+	resp, err := client.Get(id)
 	if err != nil {
 		return content, err
 	}

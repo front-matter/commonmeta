@@ -16,17 +16,22 @@ func TestGet(t *testing.T) {
 	}
 
 	publication := inveniordm.Content{
-		ID:    "5244404",
+		ID:    "https://zenodo.org/api/records/5244404",
 		Title: "The Origins of SARS-CoV-2: A Critical Review",
 	}
 	presentation := inveniordm.Content{
-		ID:    "8173303",
+		ID:    "https://zenodo.org/api/records/8173303",
 		Title: "11 July 2023 (Day 2) CERN – NASA Open Science Summit Sketch Notes",
+	}
+	preprint := inveniordm.Content{
+		ID:    "https://rogue-scholar.org/api/records/42jxf-4yd62",
+		Title: "The Origins of SARS-CoV-2: A Critical Review",
 	}
 
 	testCases := []testCase{
 		{pid: presentation.ID, want: presentation.Title, err: nil},
 		{pid: publication.ID, want: publication.Title, err: nil},
+		{pid: preprint.ID, want: preprint.Title, err: nil},
 	}
 	for _, tc := range testCases {
 		got, err := inveniordm.Get(tc.pid)
