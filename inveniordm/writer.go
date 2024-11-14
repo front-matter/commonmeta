@@ -4,9 +4,13 @@ import (
 	"embed"
 	"encoding/json"
 	"fmt"
+	"io"
+	"net/http"
+	"net/url"
 	"path/filepath"
 	"slices"
 	"strings"
+	"time"
 
 	"github.com/front-matter/commonmeta/commonmeta"
 	"github.com/front-matter/commonmeta/crossrefxml"
@@ -283,6 +287,10 @@ func Convert(data commonmeta.Data) (Inveniordm, error) {
 
 	if len(data.Relations) > 0 {
 		for _, v := range data.Relations {
+			// skip IsPartOf relation with InvendioRDM community identifier
+			if v.Type == "IsPartOf" && strings.HasPrefix(v.ID, "https://rogue-scholar.org/api/communities/") {
+				continue
+			}
 			id, identifierType := utils.ValidateID(v.ID)
 			scheme := CMToInvenioIdentifierMappings[identifierType]
 			relationType := Type{ID: strings.ToLower(v.Type)}
@@ -367,4 +375,109 @@ func WriteAll(list []commonmeta.Data) ([]byte, []gojsonschema.ResultError) {
 	// }
 
 	return output, nil
+}
+
+// Post metadata to an InvenioRDM instance.
+func Post(data commonmeta.Data, host string, apiKey string) ([]byte, error) {
+	inveniordm, err := Convert(data)
+	if err != nil {
+		fmt.Println(err)
+	}
+	output, err := json.Marshal(inveniordm)
+	if err != nil {
+		fmt.Println(err)
+	}
+	var communityID string
+	var communityIndex int
+	for i, v := range data.Relations {
+		if v.Type == "IsPartOf" && strings.HasPrefix(v.ID, "https://rogue-scholar.org/api/communities/") {
+			communityID = strings.Split(v.ID, "/")[5]
+			communityIndex = i
+		}
+		if communityIndex != 0 {
+			data.Relations = slices.Delete(data.Relations, i, i)
+		}
+	}
+	type Community struct {
+		ID string `json:"id"`
+	}
+	type Communities struct {
+		Communities []Community `json:"communities"`
+	}
+	community := Community{ID: communityID}
+	var communities Communities
+	communities.Communities = append(communities.Communities, community)
+
+	// create draft record
+	draftURL := url.URL{
+		Scheme: "https",
+		Host:   host,
+		Path:   "/api/records",
+	}
+	req, _ := http.NewRequest("POST", draftURL.String(), strings.NewReader(string(output)))
+	req.Header = http.Header{
+		"Content-Type":  {"application/json"},
+		"Authorization": {"Bearer " + apiKey},
+	}
+	client := &http.Client{
+		Timeout: time.Second * 10,
+	}
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+
+	// publish draft record
+	var draft map[string]interface{}
+	err = json.Unmarshal(body, &draft)
+	if err != nil {
+		fmt.Println("error:", err)
+	}
+	ID := draft["id"].(string)
+	publishURL := url.URL{
+		Scheme: "https",
+		Host:   host,
+		Path:   "/api/records/" + ID + "/draft/actions/publish",
+	}
+	req, _ = http.NewRequest("POST", publishURL.String(), strings.NewReader(string(output)))
+	req.Header = http.Header{
+		"Content-Type":  {"application/json"},
+		"Authorization": {"Bearer " + apiKey},
+	}
+	client = &http.Client{
+		Timeout: time.Second * 10,
+	}
+	resp, err = client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	// add record to community
+	c, _ := json.Marshal(communities)
+	communityURL := url.URL{
+		Scheme: "https",
+		Host:   host,
+		Path:   "/api/records/" + ID + "/communities",
+	}
+	req, _ = http.NewRequest("POST", communityURL.String(), strings.NewReader(string(c)))
+	req.Header = http.Header{
+		"Content-Type":  {"application/json"},
+		"Authorization": {"Bearer " + apiKey},
+	}
+	client = &http.Client{
+		Timeout: time.Second * 10,
+	}
+	resp, err = client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+	body, _ = io.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Println("error:", err)
+	}
+	return body, err
 }
