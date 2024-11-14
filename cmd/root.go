@@ -56,4 +56,6 @@ func init() {
 	rootCmd.PersistentFlags().StringP("depositor", "", "", "Crossref account depositor")
 	rootCmd.PersistentFlags().StringP("email", "", "", "Crossref account email")
 	rootCmd.PersistentFlags().StringP("registrant", "", "", "Crossref account registrant")
+	rootCmd.PersistentFlags().StringP("host", "", "", "InvenioRDM host")
+	rootCmd.PersistentFlags().StringP("token", "", "", "API token")
 }

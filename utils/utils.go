@@ -338,6 +338,17 @@ func ValidateISSN(issn string) (string, bool) {
 	return matched[1], true
 }
 
+// CommunityIDAsURL returns the InvenioRDM community_id expressed as URL
+func CommunityIDAsURL(communityID string, host string) string {
+	if host == "" {
+		host = "rogue-scholar.org"
+	}
+	if communityID == "" {
+		return ""
+	}
+	return fmt.Sprintf("https://%s/api/communities/%s", host, communityID)
+}
+
 // Sanitize removes all HTML tags except for a whitelist of allowed tags. Used for
 // title and description fields.
 func Sanitize(html string) string {

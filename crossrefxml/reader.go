@@ -1354,9 +1354,9 @@ func GetContributors(contrib Contributors) ([]commonmeta.Contributor, error) {
 					for _, i := range v.Affiliations.Institution {
 						if i.InstitutionName != "" {
 							if i.InstitutionID != nil && i.InstitutionID.Text != "" {
-								ID = utils.NormalizeROR(i.InstitutionID.Text)
+								InstitutionID := utils.NormalizeROR(i.InstitutionID.Text)
 								affiliations = append(affiliations, &commonmeta.Affiliation{
-									ID:   ID,
+									ID:   InstitutionID,
 									Name: i.InstitutionName,
 								})
 							} else {
