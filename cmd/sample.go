@@ -9,7 +9,9 @@ import (
 	"fmt"
 
 	"github.com/front-matter/commonmeta/commonmeta"
+	"github.com/front-matter/commonmeta/crossrefxml"
 	"github.com/front-matter/commonmeta/csl"
+	"github.com/front-matter/commonmeta/inveniordm"
 	"github.com/front-matter/commonmeta/schemaorg"
 	"github.com/xeipuuv/gojsonschema"
 
@@ -46,6 +48,10 @@ var sampleCmd = &cobra.Command{
 		hasLicense, _ := cmd.Flags().GetBool("has-license")
 		hasArchive, _ := cmd.Flags().GetBool("has-archive")
 
+		depositor, _ := cmd.Flags().GetString("depositor")
+		email, _ := cmd.Flags().GetString("email")
+		registrant, _ := cmd.Flags().GetString("registrant")
+
 		var data []commonmeta.Data
 		var err error
 		sample := true
@@ -67,16 +73,26 @@ var sampleCmd = &cobra.Command{
 			output, jsErr = csl.WriteAll(data)
 		} else if to == "datacite" {
 			output, jsErr = datacite.WriteAll(data)
+		} else if to == "crossrefxml" {
+			account := crossrefxml.Account{
+				Depositor:  depositor,
+				Email:      email,
+				Registrant: registrant,
+			}
+			output, jsErr = crossrefxml.WriteAll(data, account)
 		} else if to == "schemaorg" {
 			output, jsErr = schemaorg.WriteAll(data)
+		} else if to == "inveniordm" {
+			output, jsErr = inveniordm.WriteAll(data)
 		}
 
-		if err != nil {
-			cmd.PrintErr(err)
+		if to == "crossrefxml" {
+			fmt.Printf("%s\n", output)
+		} else {
+			var out bytes.Buffer
+			json.Indent(&out, output, "", "  ")
+			fmt.Println(out.String())
 		}
-		var out bytes.Buffer
-		json.Indent(&out, output, "", "  ")
-		cmd.Println(out.String())
 
 		if jsErr != nil {
 			cmd.PrintErr(jsErr)
