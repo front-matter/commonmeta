@@ -59,6 +59,9 @@ commonmeta post 10.5555/12345678 -f crossref -t inveniordm -h rogue-scholar.org 
 		host, _ := cmd.Flags().GetString("host")
 		token, _ := cmd.Flags().GetString("token")
 
+		cmd.SetOut(os.Stdout)
+		cmd.SetErr(os.Stderr)
+
 		if input != "" {
 			_, err = os.Stat(input)
 			if err != nil {

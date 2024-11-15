@@ -47,6 +47,9 @@ commonmeta 10.5555/12345678`,
 		email, _ := cmd.Flags().GetString("email")
 		registrant, _ := cmd.Flags().GetString("registrant")
 
+		cmd.SetOut(os.Stdout)
+		cmd.SetErr(os.Stderr)
+
 		if len(args) == 0 {
 			fmt.Println("Please provide an input")
 			return

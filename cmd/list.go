@@ -63,6 +63,9 @@ var listCmd = &cobra.Command{
 		email, _ := cmd.Flags().GetString("email")
 		registrant, _ := cmd.Flags().GetString("registrant")
 
+		cmd.SetOut(os.Stdout)
+		cmd.SetErr(os.Stderr)
+
 		if input != "" {
 			_, err = os.Stat(input)
 			if err != nil {

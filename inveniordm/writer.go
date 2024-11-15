@@ -422,19 +422,19 @@ func PostAll(list []commonmeta.Data, host string, apiKey string) ([]byte, error)
 		// workaround until JSON schema validation is implemented
 		// check for required fields
 		if inveniordm.Metadata.Title == "" {
-			fmt.Println("Title is required: ", data.ID)
+			// fmt.Println("Title is required: ", data.ID)
 			continue
 		}
 		if inveniordm.Metadata.ResourceType.ID == "" {
-			fmt.Println("ResourceType is required: ", data.ID)
+			// fmt.Println("ResourceType is required: ", data.ID)
 			continue
 		}
 		if inveniordm.Metadata.PublicationDate == "" {
-			fmt.Println("PublicationDate is required: ", data.ID)
+			// fmt.Println("PublicationDate is required: ", data.ID)
 			continue
 		}
 		if len(inveniordm.Metadata.Creators) == 0 {
-			fmt.Println("Creators is required: ", data.ID)
+			// fmt.Println("Creators is required: ", data.ID)
 			continue
 		}
 
