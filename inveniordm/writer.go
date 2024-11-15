@@ -1,6 +1,7 @@
 package inveniordm
 
 import (
+	"bytes"
 	"embed"
 	"encoding/json"
 	"fmt"
@@ -449,7 +450,7 @@ func PostAll(list []commonmeta.Data, host string, apiKey string) ([]byte, error)
 			Host:   host,
 			Path:   "/api/records",
 		}
-		req, _ := http.NewRequest("POST", draftURL.String(), strings.NewReader(string(output)))
+		req, _ := http.NewRequest("POST", draftURL.String(), bytes.NewReader(output))
 		req.Header = http.Header{
 			"Content-Type":  {"application/json"},
 			"Authorization": {"Bearer " + apiKey},
@@ -551,7 +552,7 @@ func PostAll(list []commonmeta.Data, host string, apiKey string) ([]byte, error)
 				Host:   host,
 				Path:   "/api/records/" + draft.ID + "/communities",
 			}
-			req, _ = http.NewRequest("POST", communityURL.String(), strings.NewReader(string(c)))
+			req, _ = http.NewRequest("POST", communityURL.String(), bytes.NewReader(c))
 			req.Header = http.Header{
 				"Content-Type":  {"application/json"},
 				"Authorization": {"Bearer " + apiKey},
