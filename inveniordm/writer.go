@@ -419,6 +419,22 @@ func PostAll(list []commonmeta.Data, host string, apiKey string) ([]byte, error)
 			}
 		}
 
+		// remove InvenioRDM rid after storing it
+		type Draft struct {
+			ID string `json:"id"`
+		}
+		var draft Draft
+		var RIDIndex int
+		for i, v := range data.Identifiers {
+			if v.IdentifierType == "RID" && v.Identifier != "" {
+				draft.ID = v.Identifier
+				RIDIndex = i
+			}
+			if RIDIndex != 0 {
+				data.Identifiers = slices.Delete(data.Identifiers, i, i)
+			}
+		}
+
 		// workaround until JSON schema validation is implemented
 		// check for required fields
 		if inveniordm.Metadata.Title == "" {
@@ -443,17 +459,44 @@ func PostAll(list []commonmeta.Data, host string, apiKey string) ([]byte, error)
 			return nil, err
 		}
 
-		// create draft record
-		requestURL := fmt.Sprintf("https://%s/api/records", host)
-		req, _ := http.NewRequest(http.MethodPost, requestURL, bytes.NewReader(output))
-		req.Header = http.Header{
-			"Content-Type":  {"application/json"},
-			"Authorization": {"Bearer " + apiKey},
-		}
+		var requestURL string
+		var req *http.Request
+		var resp *http.Response
 		client := &http.Client{
 			Timeout: time.Second * 10,
 		}
-		resp, err := client.Do(req)
+		if draft.ID != "" {
+			// create draft record from published record if rid is provided
+			requestURL = fmt.Sprintf("https://%s/api/records/%s/draft", host, draft.ID)
+			req, _ = http.NewRequest(http.MethodPost, requestURL, bytes.NewReader(output))
+			req.Header = http.Header{
+				"Content-Type":  {"application/json"},
+				"Authorization": {"Bearer " + apiKey},
+			}
+			resp, err = client.Do(req)
+			if err != nil {
+				return nil, err
+			}
+
+			// update draft record
+			requestURL = fmt.Sprintf("https://%s/api/records/%s/draft", host, draft.ID)
+			req, _ = http.NewRequest(http.MethodPut, requestURL, bytes.NewReader(output))
+			req.Header = http.Header{
+				"Content-Type":  {"application/json"},
+				"Authorization": {"Bearer " + apiKey},
+			}
+			resp, err = client.Do(req)
+		} else {
+			// otherwise create draft record
+			requestURL = fmt.Sprintf("https://%s/api/records", host)
+			req, _ = http.NewRequest(http.MethodPost, requestURL, bytes.NewReader(output))
+			req.Header = http.Header{
+				"Content-Type":  {"application/json"},
+				"Authorization": {"Bearer " + apiKey},
+			}
+			resp, err = client.Do(req)
+		}
+
 		if err != nil {
 			return nil, err
 		}
@@ -465,10 +508,6 @@ func PostAll(list []commonmeta.Data, host string, apiKey string) ([]byte, error)
 		}
 
 		// publish draft record
-		type Draft struct {
-			ID string `json:"id"`
-		}
-		var draft Draft
 		err = json.Unmarshal(body, &draft)
 		if err != nil {
 			return nil, err
