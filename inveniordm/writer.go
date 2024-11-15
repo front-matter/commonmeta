@@ -378,128 +378,162 @@ func WriteAll(list []commonmeta.Data) ([]byte, []gojsonschema.ResultError) {
 	return output, nil
 }
 
-// Post metadata to an InvenioRDM instance.
-func Post(data commonmeta.Data, host string, apiKey string) ([]byte, error) {
-	inveniordm, err := Convert(data)
+// Post a list of inveniordm metadata to an InvenioRDM instance.
+func PostAll(list []commonmeta.Data, host string, apiKey string) ([]byte, error) {
+	type PostResponse struct {
+		ID        string `json:"id"`
+		DOI       string `json:"doi"`
+		Community string `json:"community"`
+	}
+	var postList []PostResponse
+	for _, data := range list {
+		inveniordm, err := Convert(data)
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		// remove IsPartOf relation with InvendioRDM community identifier after storing it
+		var communitySlug string
+		var communityIndex int
+		for i, v := range data.Relations {
+			if v.Type == "IsPartOf" && strings.HasPrefix(v.ID, "https://rogue-scholar.org/api/communities/") {
+				communitySlug = strings.Split(v.ID, "/")[5]
+				communityIndex = i
+			}
+			if communityIndex != 0 {
+				data.Relations = slices.Delete(data.Relations, i, i)
+			}
+		}
+
+		output, err := json.Marshal(inveniordm)
+		if err != nil {
+			return nil, err
+		}
+
+		// create draft record
+		draftURL := url.URL{
+			Scheme: "https",
+			Host:   host,
+			Path:   "/api/records",
+		}
+		req, _ := http.NewRequest("POST", draftURL.String(), strings.NewReader(string(output)))
+		req.Header = http.Header{
+			"Content-Type":  {"application/json"},
+			"Authorization": {"Bearer " + apiKey},
+		}
+		client := &http.Client{
+			Timeout: time.Second * 10,
+		}
+		resp, err := client.Do(req)
+		defer resp.Body.Close()
+		body, _ := io.ReadAll(resp.Body)
+		if resp.StatusCode >= 400 {
+			return body, err
+		}
+
+		// publish draft record
+		type Draft struct {
+			ID string `json:"id"`
+		}
+		var draft Draft
+		err = json.Unmarshal(body, &draft)
+		if err != nil {
+			return nil, err
+		}
+		publishURL := url.URL{
+			Scheme: "https",
+			Host:   host,
+			Path:   "/api/records/" + draft.ID + "/draft/actions/publish",
+		}
+		req, _ = http.NewRequest("POST", publishURL.String(), nil)
+		req.Header = http.Header{
+			"Content-Type":  {"application/json"},
+			"Authorization": {"Bearer " + apiKey},
+		}
+		client = &http.Client{
+			Timeout: time.Second * 10,
+		}
+		resp, err = client.Do(req)
+		defer resp.Body.Close()
+		record, _ := io.ReadAll(resp.Body)
+		if resp.StatusCode >= 400 {
+			return record, err
+		}
+
+		// optionally add record to community
+		if communitySlug != "" {
+			//get community ID from community slug
+			communityURL := url.URL{
+				Scheme: "https",
+				Host:   host,
+				Path:   "/api/communities/" + communitySlug,
+			}
+			req, _ = http.NewRequest("GET", communityURL.String(), nil)
+			req.Header = http.Header{
+				"Content-Type":  {"application/json"},
+				"Authorization": {"Bearer " + apiKey},
+			}
+			client = &http.Client{
+				Timeout: time.Second * 10,
+			}
+			resp, err = client.Do(req)
+			defer resp.Body.Close()
+			body, _ = io.ReadAll(resp.Body)
+			if resp.StatusCode == 404 {
+				continue // skip if community does not exist
+			} else if resp.StatusCode >= 400 {
+				fmt.Println(communityURL.String())
+				return body, err
+			}
+
+			type Community struct {
+				ID   string `json:"id"`
+				Slug string `json:"slug,omitempty"`
+			}
+			var community Community
+			err = json.Unmarshal(body, &community)
+			if err != nil {
+				return nil, err
+			}
+			type Communities struct {
+				Communities []Community `json:"communities"`
+			}
+			com := Community{ID: community.ID}
+			var communities Communities
+			communities.Communities = append(communities.Communities, com)
+			c, _ := json.Marshal(communities)
+			communityURL = url.URL{
+				Scheme: "https",
+				Host:   host,
+				Path:   "/api/records/" + draft.ID + "/communities",
+			}
+			req, _ = http.NewRequest("POST", communityURL.String(), strings.NewReader(string(c)))
+			req.Header = http.Header{
+				"Content-Type":  {"application/json"},
+				"Authorization": {"Bearer " + apiKey},
+			}
+			client = &http.Client{
+				Timeout: time.Second * 10,
+			}
+			resp, err = client.Do(req)
+			defer resp.Body.Close()
+			body, _ = io.ReadAll(resp.Body)
+
+			if resp.StatusCode >= 400 {
+				fmt.Println(communityURL.String(), communities)
+				return body, err
+			}
+		}
+		post := PostResponse{
+			ID:        draft.ID,
+			DOI:       data.ID,
+			Community: communitySlug,
+		}
+		postList = append(postList, post)
+	}
+	output, err := json.Marshal(postList)
 	if err != nil {
 		fmt.Println(err)
 	}
-	output, err := json.Marshal(inveniordm)
-	if err != nil {
-		return nil, err
-	}
-	var communitySlug string
-	var communityIndex int
-	for i, v := range data.Relations {
-		if v.Type == "IsPartOf" && strings.HasPrefix(v.ID, "https://rogue-scholar.org/api/communities/") {
-			communitySlug = strings.Split(v.ID, "/")[5]
-			communityIndex = i
-		}
-		if communityIndex != 0 {
-			data.Relations = slices.Delete(data.Relations, i, i)
-		}
-	}
-
-	// create draft record
-	draftURL := url.URL{
-		Scheme: "https",
-		Host:   host,
-		Path:   "/api/records",
-	}
-	req, _ := http.NewRequest("POST", draftURL.String(), strings.NewReader(string(output)))
-	req.Header = http.Header{
-		"Content-Type":  {"application/json"},
-		"Authorization": {"Bearer " + apiKey},
-	}
-	client := &http.Client{
-		Timeout: time.Second * 10,
-	}
-	resp, err := client.Do(req)
-	defer resp.Body.Close()
-	body, _ := io.ReadAll(resp.Body)
-	if resp.StatusCode >= 400 {
-		return body, err
-	}
-
-	// publish draft record
-	var draft map[string]interface{}
-	err = json.Unmarshal(body, &draft)
-	if err != nil {
-		return nil, err
-	}
-	ID := draft["id"].(string)
-	publishURL := url.URL{
-		Scheme: "https",
-		Host:   host,
-		Path:   "/api/records/" + ID + "/draft/actions/publish",
-	}
-	req, _ = http.NewRequest("POST", publishURL.String(), strings.NewReader(string(output)))
-	req.Header = http.Header{
-		"Content-Type":  {"application/json"},
-		"Authorization": {"Bearer " + apiKey},
-	}
-	client = &http.Client{
-		Timeout: time.Second * 10,
-	}
-	resp, err = client.Do(req)
-	defer resp.Body.Close()
-	record, _ := io.ReadAll(resp.Body)
-	if resp.StatusCode >= 400 {
-		return record, err
-	}
-
-	// add record to community
-	communityURL := url.URL{
-		Scheme: "https",
-		Host:   host,
-		Path:   "/api/communities/" + communitySlug,
-	}
-	req, _ = http.NewRequest("GET", communityURL.String(), nil)
-	req.Header = http.Header{
-		"Content-Type":  {"application/json"},
-		"Authorization": {"Bearer " + apiKey},
-	}
-	client = &http.Client{
-		Timeout: time.Second * 10,
-	}
-	resp, err = client.Do(req)
-	defer resp.Body.Close()
-	body, _ = io.ReadAll(resp.Body)
-	if resp.StatusCode >= 400 {
-		return body, err
-	}
-
-	var community map[string]interface{}
-	err = json.Unmarshal(body, &community)
-	if err != nil {
-		return nil, err
-	}
-	communityID := community["id"].(string)
-	type Community struct {
-		ID string `json:"id"`
-	}
-	type Communities struct {
-		Communities []Community `json:"communities"`
-	}
-	com := Community{ID: communityID}
-	var communities Communities
-	communities.Communities = append(communities.Communities, com)
-	c, _ := json.Marshal(communities)
-	communityURL = url.URL{
-		Scheme: "https",
-		Host:   host,
-		Path:   "/api/records/" + ID + "/communities",
-	}
-	req, _ = http.NewRequest("POST", communityURL.String(), strings.NewReader(string(c)))
-	req.Header = http.Header{
-		"Content-Type":  {"application/json"},
-		"Authorization": {"Bearer " + apiKey},
-	}
-	client = &http.Client{
-		Timeout: time.Second * 10,
-	}
-	resp, err = client.Do(req)
-	defer resp.Body.Close()
-	body, _ = io.ReadAll(resp.Body)
-	return body, err
+	return output, nil
 }
