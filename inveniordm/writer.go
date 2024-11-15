@@ -460,7 +460,7 @@ func PostAll(list []commonmeta.Data, host string, apiKey string) ([]byte, error)
 		resp, err := client.Do(req)
 		defer resp.Body.Close()
 		body, _ := io.ReadAll(resp.Body)
-		if resp.StatusCode >= 400 {
+		if resp.StatusCode != 201 {
 			fmt.Println(data.ID)
 			return body, err
 		}
@@ -490,7 +490,7 @@ func PostAll(list []commonmeta.Data, host string, apiKey string) ([]byte, error)
 		resp, err = client.Do(req)
 		defer resp.Body.Close()
 		record, _ := io.ReadAll(resp.Body)
-		if resp.StatusCode >= 400 {
+		if resp.StatusCode != 202 {
 			fmt.Println(data.ID)
 			return record, err
 		}
