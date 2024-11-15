@@ -458,6 +458,9 @@ func PostAll(list []commonmeta.Data, host string, apiKey string) ([]byte, error)
 			Timeout: time.Second * 10,
 		}
 		resp, err := client.Do(req)
+		if err != nil {
+			return nil, err
+		}
 		defer resp.Body.Close()
 		body, _ := io.ReadAll(resp.Body)
 		if resp.StatusCode != 201 {
@@ -488,6 +491,9 @@ func PostAll(list []commonmeta.Data, host string, apiKey string) ([]byte, error)
 			Timeout: time.Second * 10,
 		}
 		resp, err = client.Do(req)
+		if err != nil {
+			return nil, err
+		}
 		defer resp.Body.Close()
 		record, _ := io.ReadAll(resp.Body)
 		if resp.StatusCode != 202 {
@@ -512,6 +518,9 @@ func PostAll(list []commonmeta.Data, host string, apiKey string) ([]byte, error)
 				Timeout: time.Second * 10,
 			}
 			resp, err = client.Do(req)
+			if err != nil {
+				return nil, err
+			}
 			defer resp.Body.Close()
 			body, _ = io.ReadAll(resp.Body)
 			if resp.StatusCode == 404 {
