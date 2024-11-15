@@ -385,7 +385,7 @@ func Post(data commonmeta.Data, host string, apiKey string) ([]byte, error) {
 	}
 	output, err := json.Marshal(inveniordm)
 	if err != nil {
-		fmt.Println(err)
+		return nil, err
 	}
 	var communityID string
 	var communityIndex int
@@ -423,17 +423,17 @@ func Post(data commonmeta.Data, host string, apiKey string) ([]byte, error) {
 		Timeout: time.Second * 10,
 	}
 	resp, err := client.Do(req)
-	if err != nil {
-		return nil, err
-	}
 	defer resp.Body.Close()
 	body, _ := io.ReadAll(resp.Body)
+	if resp.StatusCode >= 400 {
+		return body, err
+	}
 
 	// publish draft record
 	var draft map[string]interface{}
 	err = json.Unmarshal(body, &draft)
 	if err != nil {
-		fmt.Println("error:", err)
+		return nil, err
 	}
 	ID := draft["id"].(string)
 	publishURL := url.URL{
@@ -450,10 +450,11 @@ func Post(data commonmeta.Data, host string, apiKey string) ([]byte, error) {
 		Timeout: time.Second * 10,
 	}
 	resp, err = client.Do(req)
-	if err != nil {
-		return nil, err
-	}
 	defer resp.Body.Close()
+	body, _ = io.ReadAll(resp.Body)
+	if resp.StatusCode >= 400 {
+		return body, err
+	}
 
 	// add record to community
 	c, _ := json.Marshal(communities)
@@ -471,13 +472,7 @@ func Post(data commonmeta.Data, host string, apiKey string) ([]byte, error) {
 		Timeout: time.Second * 10,
 	}
 	resp, err = client.Do(req)
-	if err != nil {
-		return nil, err
-	}
 	defer resp.Body.Close()
 	body, _ = io.ReadAll(resp.Body)
-	if err != nil {
-		fmt.Println("error:", err)
-	}
 	return body, err
 }
