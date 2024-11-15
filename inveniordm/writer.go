@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"net/url"
 	"path/filepath"
 	"slices"
 	"strings"
@@ -445,12 +444,8 @@ func PostAll(list []commonmeta.Data, host string, apiKey string) ([]byte, error)
 		}
 
 		// create draft record
-		draftURL := url.URL{
-			Scheme: "https",
-			Host:   host,
-			Path:   "/api/records",
-		}
-		req, _ := http.NewRequest("POST", draftURL.String(), bytes.NewReader(output))
+		requestURL := fmt.Sprintf("https://%s/api/records", host)
+		req, _ := http.NewRequest(http.MethodPost, requestURL, bytes.NewReader(output))
 		req.Header = http.Header{
 			"Content-Type":  {"application/json"},
 			"Authorization": {"Bearer " + apiKey},
@@ -478,12 +473,8 @@ func PostAll(list []commonmeta.Data, host string, apiKey string) ([]byte, error)
 		if err != nil {
 			return nil, err
 		}
-		publishURL := url.URL{
-			Scheme: "https",
-			Host:   host,
-			Path:   "/api/records/" + draft.ID + "/draft/actions/publish",
-		}
-		req, _ = http.NewRequest("POST", publishURL.String(), nil)
+		requestURL = fmt.Sprintf("https://%s/api/records/%s/draft/actions/publish", host, draft.ID)
+		req, _ = http.NewRequest(http.MethodPost, requestURL, nil)
 		req.Header = http.Header{
 			"Content-Type":  {"application/json"},
 			"Authorization": {"Bearer " + apiKey},
@@ -505,12 +496,8 @@ func PostAll(list []commonmeta.Data, host string, apiKey string) ([]byte, error)
 		// optionally add record to community
 		if communitySlug != "" {
 			//get community ID from community slug
-			communityURL := url.URL{
-				Scheme: "https",
-				Host:   host,
-				Path:   "/api/communities/" + communitySlug,
-			}
-			req, _ = http.NewRequest("GET", communityURL.String(), nil)
+			requestURL := fmt.Sprintf("https://%s/api/communities/%s", host, communitySlug)
+			req, _ = http.NewRequest(http.MethodGet, requestURL, nil)
 			req.Header = http.Header{
 				"Content-Type":  {"application/json"},
 				"Authorization": {"Bearer " + apiKey},
@@ -527,7 +514,6 @@ func PostAll(list []commonmeta.Data, host string, apiKey string) ([]byte, error)
 			if resp.StatusCode == 404 {
 				continue // skip if community does not exist
 			} else if resp.StatusCode >= 400 {
-				fmt.Println(communityURL.String())
 				return body, err
 			}
 
@@ -547,12 +533,8 @@ func PostAll(list []commonmeta.Data, host string, apiKey string) ([]byte, error)
 			var communities Communities
 			communities.Communities = append(communities.Communities, com)
 			c, _ := json.Marshal(communities)
-			communityURL = url.URL{
-				Scheme: "https",
-				Host:   host,
-				Path:   "/api/records/" + draft.ID + "/communities",
-			}
-			req, _ = http.NewRequest("POST", communityURL.String(), bytes.NewReader(c))
+			requestURL = fmt.Sprintf("https://%s/api/records/%s/communities", host, draft.ID)
+			req, _ = http.NewRequest(http.MethodPost, requestURL, bytes.NewReader(c))
 			req.Header = http.Header{
 				"Content-Type":  {"application/json"},
 				"Authorization": {"Bearer " + apiKey},
@@ -565,7 +547,6 @@ func PostAll(list []commonmeta.Data, host string, apiKey string) ([]byte, error)
 			body, _ = io.ReadAll(resp.Body)
 
 			if resp.StatusCode >= 400 {
-				fmt.Println(communityURL.String(), communities)
 				return body, err
 			}
 		}
