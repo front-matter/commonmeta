@@ -396,6 +396,7 @@ func WriteAll(list []commonmeta.Data) ([]byte, []gojsonschema.ResultError) {
 func PostAll(list []commonmeta.Data, host string, apiKey string) ([]byte, error) {
 	type PostResponse struct {
 		ID        string `json:"id"`
+		UUID      string `json:"uuid"`
 		DOI       string `json:"doi"`
 		Community string `json:"community,omitempty"`
 	}
@@ -420,16 +421,16 @@ func PostAll(list []commonmeta.Data, host string, apiKey string) ([]byte, error)
 		}
 
 		// remove InvenioRDM rid after storing it
-		type Draft struct {
-			ID string `json:"id"`
-		}
-		var draft Draft
+		var draft PostResponse
 		var RIDIndex int
 		for i, v := range data.Identifiers {
 			if v.IdentifierType == "RID" && v.Identifier != "" {
 				draft.ID = v.Identifier
 				RIDIndex = i
+			} else if v.IdentifierType == "UUID" && v.Identifier != "" {
+				draft.UUID = v.Identifier
 			}
+
 			if RIDIndex != 0 {
 				data.Identifiers = slices.Delete(data.Identifiers, i, i)
 			}
@@ -591,6 +592,7 @@ func PostAll(list []commonmeta.Data, host string, apiKey string) ([]byte, error)
 		}
 		post := PostResponse{
 			ID:        draft.ID,
+			UUID:      draft.UUID,
 			DOI:       data.ID,
 			Community: communitySlug,
 		}
