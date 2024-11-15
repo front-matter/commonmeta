@@ -296,25 +296,6 @@ func Convert(data commonmeta.Data) (Inveniordm, error) {
 		inveniordm.Metadata.Rights = append(inveniordm.Metadata.Rights, right)
 	}
 
-	if len(data.Relations) > 0 {
-		for _, v := range data.Relations {
-			// skip IsPartOf relation with InvendioRDM community identifier
-			if v.Type == "IsPartOf" && strings.HasPrefix(v.ID, "https://rogue-scholar.org/api/communities/") {
-				continue
-			}
-			id, identifierType := utils.ValidateID(v.ID)
-			scheme := CMToInvenioIdentifierMappings[identifierType]
-			relationType := CMToInvenioRelationTypeMappings[v.Type]
-			if id != "" && scheme != "" && relationType != "" {
-				RelatedIdentifier := RelatedIdentifier{
-					Identifier:   id,
-					Scheme:       scheme,
-					RelationType: Type{ID: relationType},
-				}
-				inveniordm.Metadata.RelatedIdentifiers = append(inveniordm.Metadata.RelatedIdentifiers, RelatedIdentifier)
-			}
-		}
-	}
 	if len(data.References) > 0 {
 		for _, v := range data.References {
 			id, identifierType := utils.ValidateID(v.ID)
@@ -333,17 +314,22 @@ func Convert(data commonmeta.Data) (Inveniordm, error) {
 
 	if len(data.Relations) > 0 {
 		for _, v := range data.Relations {
-			// skip ISSN IsPartOf relations as they are already included in the Journal metadata
-			if v.Type == "IsPartOf" {
+			id, identifierType := utils.ValidateID(v.ID)
+			// skip IsPartOf relation with InvendioRDM community identifier
+			// skip IsPartOf relation with ISSN as that is already captured in the container
+			if v.Type == "IsPartOf" && (strings.HasPrefix(v.ID, "https://rogue-scholar.org/api/communities/") || identifierType == "ISSN") {
 				continue
 			}
-			id, _ := doiutils.ValidateDOI(v.ID)
-			RelatedIdentifier := RelatedIdentifier{
-				Identifier:   id,
-				Scheme:       "doi",
-				RelationType: Type{ID: strings.ToLower(v.Type)},
+			scheme := CMToInvenioIdentifierMappings[identifierType]
+			relationType := CMToInvenioRelationTypeMappings[v.Type]
+			if id != "" && scheme != "" && relationType != "" {
+				RelatedIdentifier := RelatedIdentifier{
+					Identifier:   id,
+					Scheme:       scheme,
+					RelationType: Type{ID: relationType},
+				}
+				inveniordm.Metadata.RelatedIdentifiers = append(inveniordm.Metadata.RelatedIdentifiers, RelatedIdentifier)
 			}
-			inveniordm.Metadata.RelatedIdentifiers = append(inveniordm.Metadata.RelatedIdentifiers, RelatedIdentifier)
 		}
 	}
 
@@ -396,8 +382,8 @@ func WriteAll(list []commonmeta.Data) ([]byte, []gojsonschema.ResultError) {
 func PostAll(list []commonmeta.Data, host string, apiKey string) ([]byte, error) {
 	type PostResponse struct {
 		ID        string `json:"id"`
-		UUID      string `json:"uuid"`
 		DOI       string `json:"doi"`
+		UUID      string `json:"uuid,omitempty"`
 		Community string `json:"community,omitempty"`
 	}
 	var postList []PostResponse
@@ -474,7 +460,7 @@ func PostAll(list []commonmeta.Data, host string, apiKey string) ([]byte, error)
 				"Content-Type":  {"application/json"},
 				"Authorization": {"Bearer " + apiKey},
 			}
-			resp, err = client.Do(req)
+			_, err = client.Do(req)
 			if err != nil {
 				return nil, err
 			}
@@ -530,6 +516,7 @@ func PostAll(list []commonmeta.Data, host string, apiKey string) ([]byte, error)
 		record, _ := io.ReadAll(resp.Body)
 		if resp.StatusCode != 202 {
 			fmt.Println(data.ID)
+			fmt.Println(requestURL)
 			return record, err
 		}
 
