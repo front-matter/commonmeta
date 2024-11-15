@@ -50,7 +50,7 @@ commonmeta post 10.5555/12345678 -f crossref -t inveniordm -h rogue-scholar.org 
 		hasAward, _ := cmd.Flags().GetBool("has-award")
 		hasLicense, _ := cmd.Flags().GetBool("has-license")
 		hasArchive, _ := cmd.Flags().GetBool("has-archive")
-		sample := false
+		sample, _ := cmd.Flags().GetBool("sample")
 
 		// depositor, _ := cmd.Flags().GetString("depositor")
 		// email, _ := cmd.Flags().GetString("email")
@@ -68,7 +68,11 @@ commonmeta post 10.5555/12345678 -f crossref -t inveniordm -h rogue-scholar.org 
 			str = input
 		}
 
-		if str != "" && from == "commonmeta" {
+		if sample && from == "crossref" {
+			data, err = crossref.FetchAll(number, member, type_, sample, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
+		} else if sample && from == "datacite" {
+			data, err = datacite.FetchAll(number, sample)
+		} else if str != "" && from == "commonmeta" {
 			data, err = commonmeta.LoadAll(str)
 		} else if str != "" && from == "crossref" {
 			data, err = crossref.LoadAll(str)
@@ -78,11 +82,8 @@ commonmeta post 10.5555/12345678 -f crossref -t inveniordm -h rogue-scholar.org 
 			data, err = datacite.LoadAll(str)
 		} else if str != "" && from == "jsonfeed" {
 			data, err = jsonfeed.LoadAll(str)
-		} else if from == "crossref" {
-			data, err = crossref.FetchAll(number, member, type_, sample, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
-		} else if from == "datacite" {
-			data, err = datacite.FetchAll(number, sample)
 		}
+
 		if err != nil {
 			cmd.PrintErr(err)
 		}

@@ -39,6 +39,7 @@ func init() {
 	rootCmd.PersistentFlags().IntP("number", "n", 10, "number of results")
 	rootCmd.PersistentFlags().StringP("member", "m", "", "Crossref member ID")
 	rootCmd.PersistentFlags().StringP("type", "", "", "work type")
+	rootCmd.PersistentFlags().BoolP("sample", "", false, "random sample")
 	rootCmd.PersistentFlags().BoolP("has-orcid", "", false, "has one or more ORCID IDs")
 	rootCmd.PersistentFlags().BoolP("has-ror-id", "", false, "has one or more ROR IDs")
 	rootCmd.PersistentFlags().BoolP("has-references", "", false, "has references")

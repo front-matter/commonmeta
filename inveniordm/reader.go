@@ -69,8 +69,8 @@ type CustomFields struct {
 }
 
 type Award struct {
-	ID          string       `json:"id,omitempty"`
-	Title       AwardTitle   `json:"title,omitempty"`
+	ID string `json:"id,omitempty"`
+	// Title       AwardTitle   `json:"title,omitempty"`
 	Number      string       `json:"number,omitempty"`
 	Identifiers []Identifier `json:"identifiers,omitempty"`
 }
@@ -206,14 +206,40 @@ var InvenioToCMMappings = map[string]string{
 
 // CMTOInvenioMappings maps Commonmeta types to InvenioRDM resource types
 var CMToInvenioMappings = map[string]string{
-	"Article":        "publication-preprint",
-	"Book":           "book",
-	"Dataset":        "dataset",
-	"Image":          "image-other",
-	"JournalArticle": "publication-article",
-	"Presentation":   "presentation",
-	"Software":       "software",
-	"Other":          "other",
+	"Article":               "publication-preprint",
+	"Audiovisual":           "video",
+	"Book":                  "publication-book",
+	"BookChapter":           "publication-section",
+	"Collection":            "publication-annotationcollection",
+	"ComputationalNotebook": "software-computationalnotebook",
+	"Dataset":               "dataset",
+	"Dissertation":          "publication-thesis",
+	"Document":              "publication",
+	"Entry":                 "publication",
+	"Event":                 "event",
+	"Figure":                "image-figure",
+	"Image":                 "image",
+	"Instrument":            "other",
+	"Journal":               "publication-journal",
+	"JournalArticle":        "publication-article",
+	"LegalDocument":         "publication",
+	"Manuscript":            "publication",
+	"Map":                   "other",
+	"Patent":                "publication-patent",
+	"PersonalCommunication": "publication",
+	"PhysicalObject":        "physicalobject",
+	"Post":                  "publication",
+	"Presentation":          "presentation",
+	"ProceedingsArticle":    "publication-conferencepaper",
+	"Proceedings":           "publication-conferenceproceeding",
+	"Report":                "publication-report",
+	"Review":                "publication-peerreview",
+	"Software":              "software",
+	"Sound":                 "audio",
+	"Standard":              "publication-standard",
+	"WebPage":               "publication",
+	"Workflow":              "workflow",
+	"Other":                 "other",
 }
 
 // FOSMappings maps OECD FOS strings to OECD FOS identifiers
@@ -268,7 +294,7 @@ var FOSMappings = map[string]string{
 	"Other humanities": "http://www.oecd.org/science/inno/38235147.pdf?6.5",
 }
 
-// CMToInvenioMappings maps Commonmeta identifier types to InvenioRDM identifier types
+// CMToInvenioIdentifierMappings maps Commonmeta identifier types to InvenioRDM identifier types
 var CMToInvenioIdentifierMappings = map[string]string{
 	"Ark":              "ark",
 	"arXiv":            "arxiv",
@@ -295,6 +321,41 @@ var CMToInvenioIdentifierMappings = map[string]string{
 	"GUID":             "guid",
 	"UUID":             "uuid",
 	"Other":            "other",
+}
+
+// CMToInvenioRelationTypeMappings maps Commonmeta identifier types to InvenioRDM identifier types
+var CMToInvenioRelationTypeMappings = map[string]string{
+	"IsCitedBy":         "iscitedby",
+	"Cites":             "cites",
+	"IsSupplementTo":    "issupplementto",
+	"IsSupplementedBy":  "issupplementedby",
+	"IsContinuedBy":     "iscontinuedby",
+	"Continues":         "continues",
+	"IsNewVersionOf":    "isnewversionof",
+	"IsPreviousVersion": "ispreviousversion",
+	"IsPartOf":          "ispartof",
+	"HasPart":           "haspart",
+	"IsReferencedBy":    "isreferencedby",
+	"References":        "references",
+	"IsDocumentedBy":    "isdocumentedby",
+	"Documents":         "documents",
+	"IsCompiledBy":      "iscompiledby",
+	"Compiles":          "compiles",
+	"IsVariantFormOf":   "isvariantformof",
+	"IsOriginalFormOf":  "isoriginalformof",
+	"IsIdenticalTo":     "isidenticalto",
+	"IsReviewedBy":      "isreviewedby",
+	"Reviews":           "reviews",
+	"IsDerivedFrom":     "isderivedfrom",
+	"IsSourceOf":        "issourceof",
+	"Describes":         "describes",
+	"IsDescribedBy":     "isdescribedby",
+	"IsMetadataFor":     "ismetadatafor",
+	"HasMetadata":       "hasmetadata",
+	"IsAnnotatedBy":     "isannotatedby",
+	"Annotates":         "annotates",
+	"IsCorrectedBy":     "iscorrectedby",
+	"Corrects":          "corrects",
 }
 
 // Fetch fetches InvenioRDM metadata and returns Commonmeta metadata.

@@ -48,8 +48,12 @@ func Convert(data commonmeta.Data) (Inveniordm, error) {
 	inveniordm.Access.Files = "public"
 	inveniordm.Files.Enabled = false
 
+	resourceType := CMToInvenioMappings[data.Type]
+	if resourceType == "" {
+		resourceType = "other"
+	}
 	inveniordm.Metadata.ResourceType = ResourceType{
-		ID: CMToInvenioMappings[data.Type],
+		ID: resourceType,
 	}
 	if len(data.Titles) > 0 {
 		inveniordm.Metadata.Title = data.Titles[0].Title
@@ -187,11 +191,17 @@ func Convert(data commonmeta.Data) (Inveniordm, error) {
 			// first check if award number is in the awards vocabulary
 			for _, a := range awardsVocabulary {
 				if a.ID == v.AwardNumber {
-					award = Award{
-						Number: v.AwardNumber,
-						Title: AwardTitle{
-							En: a.Title.En,
-						},
+					if a.Title.En != "" {
+						award = Award{
+							Number: v.AwardNumber,
+							// Title: AwardTitle{
+							// 	En: a.Title.En,
+							// },
+						}
+					} else {
+						award = Award{
+							Number: v.AwardNumber,
+						}
 					}
 					// if a.Identifiers.Identifier != "" {
 					// 	id, identifierType := utils.ValidateID(a.AwardURI)
@@ -210,22 +220,22 @@ func Convert(data commonmeta.Data) (Inveniordm, error) {
 				award = Award{
 					Number: v.AwardNumber,
 				}
-				if v.AwardTitle != "" {
-					award.Title = AwardTitle{
-						En: v.AwardTitle,
+				// if v.AwardTitle != "" {
+				// 	award.Title = AwardTitle{
+				// 		En: v.AwardTitle,
+				// 	}
+				// }
+				if v.AwardURI != "" {
+					id, identifierType := utils.ValidateID(v.AwardURI)
+					if id == "" {
+						id = v.AwardURI
 					}
+					identifier := Identifier{
+						Identifier: id,
+						Scheme:     strings.ToLower(identifierType),
+					}
+					award.Identifiers = append(award.Identifiers, identifier)
 				}
-			}
-			if v.AwardURI != "" {
-				id, identifierType := utils.ValidateID(v.AwardURI)
-				if id == "" {
-					id = v.AwardURI
-				}
-				identifier := Identifier{
-					Identifier: id,
-					Scheme:     strings.ToLower(identifierType),
-				}
-				award.Identifiers = append(award.Identifiers, identifier)
 			}
 			funding := Funding{
 				Funder: funder,
@@ -294,13 +304,15 @@ func Convert(data commonmeta.Data) (Inveniordm, error) {
 			}
 			id, identifierType := utils.ValidateID(v.ID)
 			scheme := CMToInvenioIdentifierMappings[identifierType]
-			relationType := Type{ID: strings.ToLower(v.Type)}
-			RelatedIdentifier := RelatedIdentifier{
-				Identifier:   id,
-				Scheme:       scheme,
-				RelationType: relationType,
+			relationType := CMToInvenioRelationTypeMappings[v.Type]
+			if id != "" && scheme != "" && relationType != "" {
+				RelatedIdentifier := RelatedIdentifier{
+					Identifier:   id,
+					Scheme:       scheme,
+					RelationType: Type{ID: relationType},
+				}
+				inveniordm.Metadata.RelatedIdentifiers = append(inveniordm.Metadata.RelatedIdentifiers, RelatedIdentifier)
 			}
-			inveniordm.Metadata.RelatedIdentifiers = append(inveniordm.Metadata.RelatedIdentifiers, RelatedIdentifier)
 		}
 	}
 	if len(data.References) > 0 {
@@ -308,12 +320,14 @@ func Convert(data commonmeta.Data) (Inveniordm, error) {
 			id, identifierType := utils.ValidateID(v.ID)
 			scheme := CMToInvenioIdentifierMappings[identifierType]
 			relationType := Type{ID: "references"}
-			RelatedIdentifier := RelatedIdentifier{
-				Identifier:   id,
-				Scheme:       scheme,
-				RelationType: relationType,
+			if id != "" && scheme != "" {
+				RelatedIdentifier := RelatedIdentifier{
+					Identifier:   id,
+					Scheme:       scheme,
+					RelationType: relationType,
+				}
+				inveniordm.Metadata.RelatedIdentifiers = append(inveniordm.Metadata.RelatedIdentifiers, RelatedIdentifier)
 			}
-			inveniordm.Metadata.RelatedIdentifiers = append(inveniordm.Metadata.RelatedIdentifiers, RelatedIdentifier)
 		}
 	}
 
@@ -383,13 +397,13 @@ func PostAll(list []commonmeta.Data, host string, apiKey string) ([]byte, error)
 	type PostResponse struct {
 		ID        string `json:"id"`
 		DOI       string `json:"doi"`
-		Community string `json:"community"`
+		Community string `json:"community,omitempty"`
 	}
 	var postList []PostResponse
 	for _, data := range list {
 		inveniordm, err := Convert(data)
 		if err != nil {
-			fmt.Println(err)
+			return nil, err
 		}
 
 		// remove IsPartOf relation with InvendioRDM community identifier after storing it
@@ -403,6 +417,25 @@ func PostAll(list []commonmeta.Data, host string, apiKey string) ([]byte, error)
 			if communityIndex != 0 {
 				data.Relations = slices.Delete(data.Relations, i, i)
 			}
+		}
+
+		// workaround until JSON schema validation is implemented
+		// check for required fields
+		if inveniordm.Metadata.Title == "" {
+			fmt.Println("Title is required: ", data.ID)
+			continue
+		}
+		if inveniordm.Metadata.ResourceType.ID == "" {
+			fmt.Println("ResourceType is required: ", data.ID)
+			continue
+		}
+		if inveniordm.Metadata.PublicationDate == "" {
+			fmt.Println("PublicationDate is required: ", data.ID)
+			continue
+		}
+		if len(inveniordm.Metadata.Creators) == 0 {
+			fmt.Println("Creators is required: ", data.ID)
+			continue
 		}
 
 		output, err := json.Marshal(inveniordm)
@@ -428,6 +461,7 @@ func PostAll(list []commonmeta.Data, host string, apiKey string) ([]byte, error)
 		defer resp.Body.Close()
 		body, _ := io.ReadAll(resp.Body)
 		if resp.StatusCode >= 400 {
+			fmt.Println(data.ID)
 			return body, err
 		}
 
@@ -457,6 +491,7 @@ func PostAll(list []commonmeta.Data, host string, apiKey string) ([]byte, error)
 		defer resp.Body.Close()
 		record, _ := io.ReadAll(resp.Body)
 		if resp.StatusCode >= 400 {
+			fmt.Println(data.ID)
 			return record, err
 		}
 
