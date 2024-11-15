@@ -262,7 +262,8 @@ func Convert(data commonmeta.Data) (Inveniordm, error) {
 	}
 	if len(data.Subjects) > 0 {
 		for _, v := range data.Subjects {
-			ID := FOSMappings[v.Subject]
+			// ID := FOSMappings[v.Subject]
+			ID := ""
 			var scheme string
 			if ID != "" {
 				scheme = "FOS"
@@ -387,26 +388,17 @@ func Post(data commonmeta.Data, host string, apiKey string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	var communityID string
+	var communitySlug string
 	var communityIndex int
 	for i, v := range data.Relations {
 		if v.Type == "IsPartOf" && strings.HasPrefix(v.ID, "https://rogue-scholar.org/api/communities/") {
-			communityID = strings.Split(v.ID, "/")[5]
+			communitySlug = strings.Split(v.ID, "/")[5]
 			communityIndex = i
 		}
 		if communityIndex != 0 {
 			data.Relations = slices.Delete(data.Relations, i, i)
 		}
 	}
-	type Community struct {
-		ID string `json:"id"`
-	}
-	type Communities struct {
-		Communities []Community `json:"communities"`
-	}
-	community := Community{ID: communityID}
-	var communities Communities
-	communities.Communities = append(communities.Communities, community)
 
 	// create draft record
 	draftURL := url.URL{
@@ -451,14 +443,49 @@ func Post(data commonmeta.Data, host string, apiKey string) ([]byte, error) {
 	}
 	resp, err = client.Do(req)
 	defer resp.Body.Close()
+	record, _ := io.ReadAll(resp.Body)
+	if resp.StatusCode >= 400 {
+		return record, err
+	}
+
+	// add record to community
+	communityURL := url.URL{
+		Scheme: "https",
+		Host:   host,
+		Path:   "/api/communities/" + communitySlug,
+	}
+	req, _ = http.NewRequest("GET", communityURL.String(), nil)
+	req.Header = http.Header{
+		"Content-Type":  {"application/json"},
+		"Authorization": {"Bearer " + apiKey},
+	}
+	client = &http.Client{
+		Timeout: time.Second * 10,
+	}
+	resp, err = client.Do(req)
+	defer resp.Body.Close()
 	body, _ = io.ReadAll(resp.Body)
 	if resp.StatusCode >= 400 {
 		return body, err
 	}
 
-	// add record to community
+	var community map[string]interface{}
+	err = json.Unmarshal(body, &community)
+	if err != nil {
+		return nil, err
+	}
+	communityID := community["id"].(string)
+	type Community struct {
+		ID string `json:"id"`
+	}
+	type Communities struct {
+		Communities []Community `json:"communities"`
+	}
+	com := Community{ID: communityID}
+	var communities Communities
+	communities.Communities = append(communities.Communities, com)
 	c, _ := json.Marshal(communities)
-	communityURL := url.URL{
+	communityURL = url.URL{
 		Scheme: "https",
 		Host:   host,
 		Path:   "/api/records/" + ID + "/communities",

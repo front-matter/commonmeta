@@ -63,7 +63,6 @@ type Authors []struct {
 type Blog struct {
 	ID          string  `json:"id"`
 	Category    string  `json:"category"`
-	CommunityID string  `json:"community_id"`
 	Description string  `json:"description"`
 	Favicon     string  `json:"favicon"`
 	Funding     Funding `json:"funding"`
@@ -284,9 +283,9 @@ func Read(content Content) (commonmeta.Data, error) {
 			Type: "IsPartOf",
 		})
 	}
-	if content.Blog.CommunityID != "" {
+	if content.Blog.Slug != "" {
 		data.Relations = append(data.Relations, commonmeta.Relation{
-			ID:   utils.CommunityIDAsURL(content.Blog.CommunityID, "rogue-scholar.org"),
+			ID:   utils.CommunitySlugAsURL(content.Blog.Slug, "rogue-scholar.org"),
 			Type: "IsPartOf",
 		})
 	}

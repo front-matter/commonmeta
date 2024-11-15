@@ -311,9 +311,9 @@ func ExampleGetLanguage() {
 	// deu
 }
 
-func ExampleCommunityIDAsURL() {
-	s := utils.CommunityIDAsURL("3cf0a553-9634-44fc-836b-7fa3e33d1107", "rogue-scholar.org")
+func ExampleCommunitySlugAsURL() {
+	s := utils.CommunitySlugAsURL("irights", "rogue-scholar.org")
 	fmt.Println(s)
 	// Output:
-	// https://rogue-scholar.org/api/communities/3cf0a553-9634-44fc-836b-7fa3e33d1107
+	// https://rogue-scholar.org/api/communities/irights
 }
