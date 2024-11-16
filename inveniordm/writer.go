@@ -273,8 +273,8 @@ func Convert(data commonmeta.Data) (Inveniordm, error) {
 	}
 	if len(data.Subjects) > 0 {
 		for _, v := range data.Subjects {
-			// ID := FOSMappings[v.Subject]
-			ID := ""
+			ID := FOSMappings[v.Subject]
+			// ID := ""
 			var scheme string
 			if ID != "" {
 				scheme = "FOS"
