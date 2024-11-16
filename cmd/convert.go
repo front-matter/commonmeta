@@ -104,7 +104,7 @@ commonmeta 10.5555/12345678`,
 			} else if from == "datacite" {
 				data, err = datacite.Load(str)
 			} else {
-				cmd.PrintErr("Please provide a valid input")
+				cmd.PrintErr("Please provide a valid input format")
 				return
 			}
 		}

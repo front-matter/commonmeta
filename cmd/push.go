@@ -86,6 +86,9 @@ commonmeta push --sample -f crossref -t inveniordm -h rogue-scholar.org --token 
 			data, err = datacite.LoadAll(str)
 		} else if str != "" && from == "jsonfeed" {
 			data, err = jsonfeed.LoadAll(str)
+		} else {
+			fmt.Println("Please provide a valid input format")
+			return
 		}
 
 		if err != nil {

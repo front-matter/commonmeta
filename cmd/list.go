@@ -89,7 +89,11 @@ var listCmd = &cobra.Command{
 			data, err = crossref.FetchAll(number, member, type_, sample, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
 		} else if from == "datacite" {
 			data, err = datacite.FetchAll(number, sample)
+		} else {
+			fmt.Println("Please provide a valid input format")
+			return
 		}
+
 		if err != nil {
 			cmd.PrintErr(err)
 		}

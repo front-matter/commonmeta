@@ -99,7 +99,7 @@ commonmeta put 10.5555/12345678 -f crossref -t inveniordm -h rogue-scholar.org -
 			} else if from == "datacite" {
 				data, err = datacite.Load(str)
 			} else {
-				cmd.PrintErr("Please provide a valid input")
+				cmd.PrintErr("Please provide a valid input format")
 				return
 			}
 		}
