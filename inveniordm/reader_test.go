@@ -1,6 +1,7 @@
 package inveniordm_test
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/front-matter/commonmeta/inveniordm"
@@ -40,4 +41,11 @@ func TestGet(t *testing.T) {
 				tc.pid, tc.want, got, err)
 		}
 	}
+}
+
+func ExampleSearchByDOI() {
+	s, _ := inveniordm.SearchByDOI("https://doi.org/10.59350/k0746-rsc44", "rogue-scholar.org")
+	fmt.Println(s)
+	// Output:
+	// [xm2mv-r7378]
 }

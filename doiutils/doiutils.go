@@ -50,6 +50,15 @@ func ValidateDOI(doi string) (string, bool) {
 	return matched[6], true
 }
 
+// EscapeDOI escapes a DOI, i.e. replaces '/' with '%2F'
+func EscapeDOI(doi string) string {
+	doistr, ok := ValidateDOI(doi)
+	if !ok {
+		return ""
+	}
+	return strings.ReplaceAll(doistr, "/", "%2F")
+}
+
 // ValidatePrefix validates a DOI prefix for a given DOI
 func ValidatePrefix(doi string) (string, bool) {
 	r, err := regexp.Compile(`^(?:(http|https):/(/)?(dx\.)?(doi\.org|handle\.stage\.datacite\.org|handle\.test\.datacite\.org)/)?(doi:)?(10\.\d{4,5})`)

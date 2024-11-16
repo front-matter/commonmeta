@@ -29,7 +29,7 @@ func JSONSchemaErrors(document []byte, schema ...string) *gojsonschema.Result {
 	s := schema[len(schema)-1]
 
 	// JSON Schema files stored locally to validate against
-	schemata := []string{schemaVersion, "datacite-v4.5", "crossref-v0.2", "csl-data", "cff_v1.2.0"}
+	schemata := []string{schemaVersion, "datacite-v4.5", "crossref-v0.2", "csl-data", "cff_v1.2.0", "invenio-rdm-v0.1"}
 	if !slices.Contains(schemata, s) {
 		log.Fatalf("Schema %s not found", s)
 	}

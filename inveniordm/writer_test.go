@@ -2,6 +2,7 @@ package inveniordm_test
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -64,4 +65,32 @@ func TestWrite(t *testing.T) {
 			t.Errorf("Fetch (%s) mismatch (-want +got):\n%s", tc.id, diff)
 		}
 	}
+}
+
+func ExampleCreateDraftRecord() {
+	s := inveniordm.CreateDraftRecord("10.59350/k0746-rsc44")
+	fmt.Println(s)
+	// Output:
+	// 10.59350%2Fk0746-rsc44
+}
+
+func ExampleEditPublishedRecord() {
+	s := inveniordm.EditPublishedRecord("10.59350/k0746-rsc44")
+	fmt.Println(s)
+	// Output:
+	// 10.59350%2Fk0746-rsc44
+}
+
+func ExampleUpdateDraftRecord() {
+	s := inveniordm.UpdateDraftRecord("10.59350/k0746-rsc44")
+	fmt.Println(s)
+	// Output:
+	// 10.59350%2Fk0746-rsc44
+}
+
+func ExamplePublishDraftRecord() {
+	s := inveniordm.PublishDraftRecord("10.59350/k0746-rsc44")
+	fmt.Println(s)
+	// Output:
+	// 10.59350%2Fk0746-rsc44
 }

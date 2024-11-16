@@ -16,6 +16,7 @@ import (
 	"github.com/front-matter/commonmeta/crossrefxml"
 	"github.com/front-matter/commonmeta/dateutils"
 	"github.com/front-matter/commonmeta/doiutils"
+	"github.com/front-matter/commonmeta/schemautils"
 	"github.com/front-matter/commonmeta/utils"
 	"github.com/xeipuuv/gojsonschema"
 	"gopkg.in/yaml.v3"
@@ -272,8 +273,7 @@ func Convert(data commonmeta.Data) (Inveniordm, error) {
 	}
 	if len(data.Subjects) > 0 {
 		for _, v := range data.Subjects {
-			// ID := FOSMappings[v.Subject]
-			ID := ""
+			ID := FOSMappings[v.Subject]
 			var scheme string
 			if ID != "" {
 				scheme = "FOS"
@@ -348,10 +348,10 @@ func Write(data commonmeta.Data) ([]byte, []gojsonschema.ResultError) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	// validation := schemautils.JSONSchemaErrors(output, "datacite-v4.5")
-	// if !validation.Valid() {
-	// 	return nil, validation.Errors()
-	// }
+	validation := schemautils.JSONSchemaErrors(output, "invenio-rdm-v0.1")
+	if !validation.Valid() {
+		return nil, validation.Errors()
+	}
 
 	return output, nil
 }
@@ -370,35 +370,68 @@ func WriteAll(list []commonmeta.Data) ([]byte, []gojsonschema.ResultError) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	// validation := schemautils.JSONSchemaErrors(output, "datacite-v4.5")
-	// if !validation.Valid() {
-	// 	return nil, validation.Errors()
-	// }
+	validation := schemautils.JSONSchemaErrors(output, "invenio-rdm-v0.1")
+	if !validation.Valid() {
+		return nil, validation.Errors()
+	}
 
 	return output, nil
 }
 
-// Post a list of inveniordm metadata to an InvenioRDM instance.
-func PostAll(list []commonmeta.Data, host string, apiKey string) ([]byte, error) {
-	type PostResponse struct {
-		ID        string `json:"id"`
-		DOI       string `json:"doi"`
-		UUID      string `json:"uuid,omitempty"`
-		Community string `json:"community,omitempty"`
+// Upsert updates or creates a record in InvenioRDM.
+func Upsert(record APIResponse, host string, apiKey string, data commonmeta.Data) (APIResponse, error) {
+	inveniordm, err := Convert(data)
+	if err != nil {
+		return record, err
 	}
-	var postList []PostResponse
-	for _, data := range list {
-		inveniordm, err := Convert(data)
+
+	record.DOI = data.ID
+
+	// check if record already exists in InvenioRDM
+	record.ID, _ = SearchByDOI(data.ID, host)
+
+	if record.ID != "" {
+		// create draft record from published record
+		record, err = EditPublishedRecord(record, host, apiKey)
 		if err != nil {
-			return nil, err
+			return record, err
 		}
 
+		// update draft record
+		record, err = UpdateDraftRecord(record, host, apiKey, inveniordm)
+		if err != nil {
+			return record, err
+		}
+	} else {
+		// create draft record
+		record, err = CreateDraftRecord(record, host, apiKey, inveniordm)
+		if err != nil {
+			return record, err
+		}
+	}
+
+	// publish draft record
+	record, err = PublishDraftRecord(record, host, apiKey)
+	if err != nil {
+		return record, err
+	}
+
+	return record, nil
+}
+
+// UpsertAll updates or creates a list of records in InvenioRDM.
+func UpsertAll(list []commonmeta.Data, host string, apiKey string) ([]byte, error) {
+	var records []APIResponse
+
+	// iterate over list of records
+	for _, data := range list {
+		record := APIResponse{DOI: data.ID}
+
 		// remove IsPartOf relation with InvendioRDM community identifier after storing it
-		var communitySlug string
 		var communityIndex int
 		for i, v := range data.Relations {
 			if v.Type == "IsPartOf" && strings.HasPrefix(v.ID, "https://rogue-scholar.org/api/communities/") {
-				communitySlug = strings.Split(v.ID, "/")[5]
+				record.Community = strings.Split(v.ID, "/")[5]
 				communityIndex = i
 			}
 			if communityIndex != 0 {
@@ -407,14 +440,13 @@ func PostAll(list []commonmeta.Data, host string, apiKey string) ([]byte, error)
 		}
 
 		// remove InvenioRDM rid after storing it
-		var draft PostResponse
 		var RIDIndex int
 		for i, v := range data.Identifiers {
 			if v.IdentifierType == "RID" && v.Identifier != "" {
-				draft.ID = v.Identifier
+				record.ID = v.Identifier
 				RIDIndex = i
 			} else if v.IdentifierType == "UUID" && v.Identifier != "" {
-				draft.UUID = v.Identifier
+				record.UUID = v.Identifier
 			}
 
 			if RIDIndex != 0 {
@@ -422,172 +454,256 @@ func PostAll(list []commonmeta.Data, host string, apiKey string) ([]byte, error)
 			}
 		}
 
-		// workaround until JSON schema validation is implemented
-		// check for required fields
-		if inveniordm.Metadata.Title == "" {
-			// fmt.Println("Title is required: ", data.ID)
-			continue
-		}
-		if inveniordm.Metadata.ResourceType.ID == "" {
-			// fmt.Println("ResourceType is required: ", data.ID)
-			continue
-		}
-		if inveniordm.Metadata.PublicationDate == "" {
-			// fmt.Println("PublicationDate is required: ", data.ID)
-			continue
-		}
-		if len(inveniordm.Metadata.Creators) == 0 {
-			// fmt.Println("Creators is required: ", data.ID)
-			continue
-		}
-
-		output, err := json.Marshal(inveniordm)
+		record, err := Upsert(record, host, apiKey, data)
 		if err != nil {
 			return nil, err
 		}
 
-		var requestURL string
-		var req *http.Request
-		var resp *http.Response
-		client := &http.Client{
-			Timeout: time.Second * 10,
-		}
-		if draft.ID != "" {
-			// create draft record from published record if rid is provided
-			requestURL = fmt.Sprintf("https://%s/api/records/%s/draft", host, draft.ID)
-			req, _ = http.NewRequest(http.MethodPost, requestURL, bytes.NewReader(output))
-			req.Header = http.Header{
-				"Content-Type":  {"application/json"},
-				"Authorization": {"Bearer " + apiKey},
-			}
-			_, err = client.Do(req)
+		// add record to community if community is specified and exists
+		if record.Community != "" {
+			communityID, err := SearchBySlug(record.Community, host)
 			if err != nil {
 				return nil, err
 			}
-
-			// update draft record
-			requestURL = fmt.Sprintf("https://%s/api/records/%s/draft", host, draft.ID)
-			req, _ = http.NewRequest(http.MethodPut, requestURL, bytes.NewReader(output))
-			req.Header = http.Header{
-				"Content-Type":  {"application/json"},
-				"Authorization": {"Bearer " + apiKey},
-			}
-			resp, err = client.Do(req)
-		} else {
-			// otherwise create draft record
-			requestURL = fmt.Sprintf("https://%s/api/records", host)
-			req, _ = http.NewRequest(http.MethodPost, requestURL, bytes.NewReader(output))
-			req.Header = http.Header{
-				"Content-Type":  {"application/json"},
-				"Authorization": {"Bearer " + apiKey},
-			}
-			resp, err = client.Do(req)
-		}
-
-		if err != nil {
-			return nil, err
-		}
-		defer resp.Body.Close()
-		body, _ := io.ReadAll(resp.Body)
-		if resp.StatusCode != 201 {
-			fmt.Println(data.ID)
-			return body, err
-		}
-
-		// publish draft record
-		err = json.Unmarshal(body, &draft)
-		if err != nil {
-			return nil, err
-		}
-		requestURL = fmt.Sprintf("https://%s/api/records/%s/draft/actions/publish", host, draft.ID)
-		req, _ = http.NewRequest(http.MethodPost, requestURL, nil)
-		req.Header = http.Header{
-			"Content-Type":  {"application/json"},
-			"Authorization": {"Bearer " + apiKey},
-		}
-		client = &http.Client{
-			Timeout: time.Second * 10,
-		}
-		resp, err = client.Do(req)
-		if err != nil {
-			return nil, err
-		}
-		defer resp.Body.Close()
-		record, _ := io.ReadAll(resp.Body)
-		if resp.StatusCode != 202 {
-			fmt.Println(data.ID)
-			fmt.Println(requestURL)
-			return record, err
-		}
-
-		// optionally add record to community
-		if communitySlug != "" {
-			//get community ID from community slug
-			requestURL := fmt.Sprintf("https://%s/api/communities/%s", host, communitySlug)
-			req, _ = http.NewRequest(http.MethodGet, requestURL, nil)
-			req.Header = http.Header{
-				"Content-Type":  {"application/json"},
-				"Authorization": {"Bearer " + apiKey},
-			}
-			client = &http.Client{
-				Timeout: time.Second * 10,
-			}
-			resp, err = client.Do(req)
+			record, err = AddRecordToCommunity(record, host, apiKey, communityID)
 			if err != nil {
 				return nil, err
 			}
-			defer resp.Body.Close()
-			body, _ = io.ReadAll(resp.Body)
-			if resp.StatusCode == 404 {
-				continue // skip if community does not exist
-			} else if resp.StatusCode >= 400 {
-				return body, err
-			}
-
-			type Community struct {
-				ID   string `json:"id"`
-				Slug string `json:"slug,omitempty"`
-			}
-			var community Community
-			err = json.Unmarshal(body, &community)
-			if err != nil {
-				return nil, err
-			}
-			type Communities struct {
-				Communities []Community `json:"communities"`
-			}
-			com := Community{ID: community.ID}
-			var communities Communities
-			communities.Communities = append(communities.Communities, com)
-			c, _ := json.Marshal(communities)
-			requestURL = fmt.Sprintf("https://%s/api/records/%s/communities", host, draft.ID)
-			req, _ = http.NewRequest(http.MethodPost, requestURL, bytes.NewReader(c))
-			req.Header = http.Header{
-				"Content-Type":  {"application/json"},
-				"Authorization": {"Bearer " + apiKey},
-			}
-			client = &http.Client{
-				Timeout: time.Second * 10,
-			}
-			resp, err = client.Do(req)
-			defer resp.Body.Close()
-			body, _ = io.ReadAll(resp.Body)
-
-			if resp.StatusCode >= 400 {
-				return body, err
-			}
 		}
-		post := PostResponse{
-			ID:        draft.ID,
-			UUID:      draft.UUID,
-			DOI:       data.ID,
-			Community: communitySlug,
-		}
-		postList = append(postList, post)
+
+		records = append(records, record)
+
 	}
-	output, err := json.Marshal(postList)
+
+	output, err := json.Marshal(records)
 	if err != nil {
 		fmt.Println(err)
 	}
 	return output, nil
+}
+
+// CreateDraftRecord creates a draft record in InvenioRDM.
+func CreateDraftRecord(record APIResponse, host string, apiKey string, inveniordm Inveniordm) (APIResponse, error) {
+	output, err := json.Marshal(inveniordm)
+	if err != nil {
+		return record, err
+	}
+
+	type Response struct {
+		*Inveniordm
+		Created string `json:"created,omitempty"`
+		Updated string `json:"updated,omitempty"`
+	}
+	var response Response
+
+	var requestURL string
+	var req *http.Request
+	var resp *http.Response
+	client := &http.Client{
+		Timeout: time.Second * 10,
+	}
+
+	requestURL = fmt.Sprintf("https://%s/api/records", host)
+	req, _ = http.NewRequest(http.MethodPost, requestURL, bytes.NewReader(output))
+	req.Header = http.Header{
+		"Content-Type":  {"application/json"},
+		"Authorization": {"Bearer " + apiKey},
+	}
+	resp, err = client.Do(req)
+	if err != nil {
+		return record, err
+	}
+	defer resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	err = json.Unmarshal(body, &response)
+	if err != nil {
+		return record, err
+	}
+	if response != (Response{}) {
+		record.ID = response.ID
+		record.Created = response.Created
+		record.Updated = response.Updated
+		record.Status = "draft"
+	}
+	return record, nil
+}
+
+// EditPublishedRecord creates a draft record from a published record in InvenioRDM.
+func EditPublishedRecord(record APIResponse, host string, apiKey string) (APIResponse, error) {
+	type Response struct {
+		*Inveniordm
+		Created string `json:"created,omitempty"`
+		Updated string `json:"updated,omitempty"`
+	}
+	var response Response
+	var requestURL string
+	var req *http.Request
+	client := &http.Client{
+		Timeout: time.Second * 10,
+	}
+
+	requestURL = fmt.Sprintf("https://%s/api/records/%s/draft", host, record.ID)
+	req, _ = http.NewRequest(http.MethodPost, requestURL, nil)
+	req.Header = http.Header{
+		"Content-Type":  {"application/json"},
+		"Authorization": {"Bearer " + apiKey},
+	}
+	resp, err := client.Do(req)
+	if err != nil {
+		return record, err
+	}
+	defer resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	err = json.Unmarshal(body, &response)
+	if err != nil {
+		return record, err
+	}
+	record.Updated = response.Updated
+	return record, nil
+}
+
+// UpdateDraftRecord updates a draft record in InvenioRDM.
+func UpdateDraftRecord(record APIResponse, host string, apiKey string, inveniordm Inveniordm) (APIResponse, error) {
+	output, err := json.Marshal(inveniordm)
+	if err != nil {
+		return record, err
+	}
+
+	type Response struct {
+		*Inveniordm
+		Created string `json:"created,omitempty"`
+		Updated string `json:"updated,omitempty"`
+	}
+	var response Response
+	requestURL := fmt.Sprintf("https://%s/api/records/%s/draft", host, record.ID)
+	req, _ := http.NewRequest(http.MethodPut, requestURL, bytes.NewReader(output))
+	req.Header = http.Header{
+		"Content-Type":  {"application/json"},
+		"Authorization": {"Bearer " + apiKey},
+	}
+	client := &http.Client{
+		Timeout: time.Second * 10,
+	}
+	resp, err := client.Do(req)
+	if err != nil {
+		return record, err
+	}
+	defer resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	err = json.Unmarshal(body, &response)
+	if err != nil {
+		return record, err
+	}
+	err = json.Unmarshal(body, &response)
+	if err != nil {
+		return record, err
+	}
+	record.Updated = response.Updated
+	return record, nil
+}
+
+// PublishDraftRecord publishes a draft record in InvenioRDM.
+func PublishDraftRecord(record APIResponse, host string, apiKey string) (APIResponse, error) {
+	type Response struct {
+		*Inveniordm
+		Created string `json:"created,omitempty"`
+		Updated string `json:"updated,omitempty"`
+		Status  string `json:"status,omitempty"`
+	}
+	var response Response
+	requestURL := fmt.Sprintf("https://%s/api/records/%s/draft/actions/publish", host, record.ID)
+	req, _ := http.NewRequest(http.MethodPost, requestURL, nil)
+	req.Header = http.Header{
+		"Content-Type":  {"application/json"},
+		"Authorization": {"Bearer " + apiKey},
+	}
+	client := &http.Client{
+		Timeout: time.Second * 10,
+	}
+	resp, err := client.Do(req)
+	if err != nil {
+		return record, err
+	}
+	defer resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	if resp.StatusCode != 202 {
+		return record, err
+	}
+	err = json.Unmarshal(body, &response)
+	if err != nil {
+		return record, err
+	}
+	record.Created = response.Created
+	record.Updated = response.Updated
+	record.Status = response.Status
+	return record, nil
+}
+
+// CreateCommunity creates a community in InvenioRDM.
+func CreateCommunity(community string, host string, apiKey string) (string, error) {
+	type Response struct {
+		ID string `json:"id"`
+	}
+	var response Response
+	var requestURL string
+	var req *http.Request
+	client := &http.Client{
+		Timeout: time.Second * 10,
+	}
+
+	requestURL = fmt.Sprintf("https://%s/api/communities", host)
+	req, _ = http.NewRequest(http.MethodPost, requestURL, nil)
+	req.Header = http.Header{
+		"Content-Type":  {"application/json"},
+		"Authorization": {"Bearer " + apiKey},
+	}
+	resp, err := client.Do(req)
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	err = json.Unmarshal(body, &response)
+	if err != nil {
+		return "", err
+	}
+	return response.ID, nil
+}
+
+// AddRecordToCommunity adds record to InvenioRDM community.
+func AddRecordToCommunity(record APIResponse, host string, apiKey string, communityID string) (APIResponse, error) {
+	type Response struct {
+		ID string `json:"id"`
+	}
+	type Community struct {
+		ID   string `json:"id"`
+		Slug string `json:"slug,omitempty"`
+	}
+	type Communities struct {
+		Communities []Community `json:"communities"`
+	}
+	var response Response
+	client := &http.Client{
+		Timeout: time.Second * 10,
+	}
+
+	community := Community{ID: communityID}
+	var communities Communities
+	communities.Communities = append(communities.Communities, community)
+	output, _ := json.Marshal(communities)
+
+	requestURL := fmt.Sprintf("https://%s/api/communities/%s", host, communityID)
+	req, _ := http.NewRequest(http.MethodPost, requestURL, bytes.NewReader(output))
+	req.Header = http.Header{
+		"Content-Type":  {"application/json"},
+		"Authorization": {"Bearer " + apiKey},
+	}
+	resp, err := client.Do(req)
+	if err != nil {
+		return record, err
+	}
+	defer resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	err = json.Unmarshal(body, &response)
+	return record, err
 }

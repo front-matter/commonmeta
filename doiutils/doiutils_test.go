@@ -1,6 +1,7 @@
 package doiutils_test
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/front-matter/commonmeta/doiutils"
@@ -113,4 +114,11 @@ func TestIsRogueScholarDOI(t *testing.T) {
 				tc.input, tc.want, got)
 		}
 	}
+}
+
+func ExampleEscapeDOI() {
+	s := doiutils.EscapeDOI("10.59350/k0746-rsc44")
+	fmt.Println(s)
+	// Output:
+	// 10.59350%2Fk0746-rsc44
 }

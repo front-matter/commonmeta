@@ -1,0 +1,81 @@
+{
+  "pids": {
+    "doi": {
+      "identifier": "10.59350/cc0tb-k5d32",
+      "provider": "external"
+    }
+  },
+  "access": {
+    "record": "public",
+    "files": "public"
+  },
+  "files": {
+    "enabled": false
+  },
+  "metadata": {
+    "resource_type": {
+      "id": "publication-preprint"
+    },
+    "creators": [
+      {
+        "person_or_org": {
+          "type": "personal",
+          "given_name": "Jeremy",
+          "family_name": "Kun"
+        }
+      }
+    ],
+    "title": "The last few months in HEIR",
+    "publication_date": "2024-11-15",
+    "subjects": [
+      {
+        "subject": "Mathematics"
+      }
+    ],
+    "dates": [
+      {
+        "date": "2024-11-15T19:25:51Z",
+        "type": {
+          "id": "issued"
+        }
+      },
+      {
+        "date": "2024-11-15T19:25:51Z",
+        "type": {
+          "id": "updated"
+        }
+      }
+    ],
+    "description": "In my little corner of the FHE world, things have been steadily heating up. For those who don’t know, my main work project right now is HEIR (Homomorphic Encryption Intermediate Representation), a compiler toolchain for fully homomorphic encryption (FHE). For an extended introduction see this talk from October 2023. The primary focus of HEIR is to compile to FHE hardware accelerators. And boy there are a lot of them.",
+    "rights": [
+      {
+        "id": "cc-by-4.0"
+      }
+    ],
+    "languages": [
+      {
+        "id": "eng"
+      }
+    ],
+    "identifiers": [
+      {
+        "identifier": "b3570e60-f09d-4052-9c48-69e2443f032b",
+        "scheme": "uuid"
+      },
+      {
+        "identifier": "https://www.jeremykun.com/shortform/2024-11-15-0831/",
+        "scheme": "guid"
+      },
+      {
+        "identifier": "https://www.jeremykun.com/shortform/2024-11-15-0831",
+        "scheme": "url"
+      }
+    ]
+  },
+  "custom_fields": {
+    "journal:journal": {
+      "title": "Math ∩ Programming"
+    },
+    "rs:content_text": "In my little corner of the FHE world, things have been steadily heating\nup. For those who don't know, my main work project right now is HEIR\n(Homomorphic Encryption Intermediate Representation), a compiler\ntoolchain for fully homomorphic encryption (FHE). For an extended\nintroduction see this talk from October 2023. The primary focus of HEIR\nis to compile to FHE hardware accelerators. And boy there are a lot of\nthem. There are GPU and FPGA accelerators, as well as special purpose\nASICs and even optical accelerators (discrete Fourier transforms at the\nspeed of light).\n"
+  }
+}

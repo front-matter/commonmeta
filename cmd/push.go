@@ -1,5 +1,5 @@
 /*
-Copyright © 2024 NAME HERE <EMAIL ADDRESS>
+Copyright © 2024 Front Matter <info@front-matter.io>
 */
 package cmd
 
@@ -20,13 +20,14 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var postCmd = &cobra.Command{
-	Use:   "post",
-	Short: "Post scholarly metadata with a service",
-	Long: `Post scholarly metadata to a service. Currently
-the only supported output service is InvenioRDM. Example usage:
+var pushCmd = &cobra.Command{
+	Use:   "push",
+	Short: "Push scholarly metadata into a service",
+	Long: `Convert scholarly metadata between formats and register with
+a service. Multiple formats are supported, registration is currently
+only supported with InvenioRDM. Example usage:
 
-commonmeta post 10.5555/12345678 -f crossref -t inveniordm -h rogue-scholar.org --token mytoken`,
+commonmeta push --sample -f crossref -t inveniordm -h rogue-scholar.org --token mytoken`,
 
 	Run: func(cmd *cobra.Command, args []string) {
 		var input string
@@ -93,7 +94,7 @@ commonmeta post 10.5555/12345678 -f crossref -t inveniordm -h rogue-scholar.org 
 
 		var output []byte
 		if to == "inveniordm" {
-			output, err = inveniordm.PostAll(data, host, token)
+			output, err = inveniordm.UpsertAll(data, host, token)
 		} else {
 			fmt.Println("Please provide a valid service")
 			return
@@ -110,5 +111,5 @@ commonmeta post 10.5555/12345678 -f crossref -t inveniordm -h rogue-scholar.org 
 }
 
 func init() {
-	rootCmd.AddCommand(postCmd)
+	rootCmd.AddCommand(pushCmd)
 }

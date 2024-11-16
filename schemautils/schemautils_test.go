@@ -74,6 +74,7 @@ func TestJSONSchemaErrorsTestdata(t *testing.T) {
 		{meta: "datacite.json", schema: "datacite-v4.5", want: 0},
 		{meta: "datacite-instrument.json", schema: "datacite-v4.5", want: 0},
 		{meta: "datacite_software_version.json", schema: "datacite-v4.5", want: 0},
+		{meta: "inveniordm.json", schema: "invenio-rdm-v0.1", want: 0},
 	}
 	for _, tc := range testCases {
 		filepath := filepath.Join("testdata", tc.meta)

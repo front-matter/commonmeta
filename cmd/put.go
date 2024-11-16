@@ -12,28 +12,25 @@ import (
 
 	"github.com/front-matter/commonmeta/commonmeta"
 	"github.com/front-matter/commonmeta/crossrefxml"
-	"github.com/front-matter/commonmeta/csl"
 	"github.com/front-matter/commonmeta/datacite"
 	"github.com/front-matter/commonmeta/doiutils"
 	"github.com/front-matter/commonmeta/inveniordm"
 	"github.com/front-matter/commonmeta/jsonfeed"
-	"github.com/front-matter/commonmeta/schemaorg"
 	"github.com/front-matter/commonmeta/utils"
-	"github.com/xeipuuv/gojsonschema"
 
 	"github.com/front-matter/commonmeta/crossref"
 
 	"github.com/spf13/cobra"
 )
 
-var convertCmd = &cobra.Command{
-	Use:   "convert",
-	Short: "Convert scholarly metadata from one format to another",
-	Long: `Convert scholarly metadata between formats. Currently
-supported input formats are Crossref and DataCite DOIs, currently
-the only supported output format is Commonmeta. Example usage:
+var putCmd = &cobra.Command{
+	Use:   "put",
+	Short: "Put scholarly metadata into a service",
+	Long: `Convert scholarly metadata between formats and register with
+a service. Multiple formats are supported, registration is currently
+only supported with InvenioRDM. Example usage:
 
-commonmeta 10.5555/12345678`,
+commonmeta put 10.5555/12345678 -f crossref -t inveniordm -h rogue-scholar.org --token mytoken`,
 
 	Run: func(cmd *cobra.Command, args []string) {
 		var id string  // an identifier, content fetched via API
@@ -41,11 +38,9 @@ commonmeta 10.5555/12345678`,
 		var err error
 		var data commonmeta.Data
 
-		// loginID, _ := cmd.Flags().GetString("login_id")
-		// loginPassword, _ := cmd.Flags().GetString("login_passwd")
-		depositor, _ := cmd.Flags().GetString("depositor")
-		email, _ := cmd.Flags().GetString("email")
-		registrant, _ := cmd.Flags().GetString("registrant")
+		to, _ := cmd.Flags().GetString("to")
+		host, _ := cmd.Flags().GetString("host")
+		token, _ := cmd.Flags().GetString("token")
 
 		cmd.SetOut(os.Stdout)
 		cmd.SetErr(os.Stderr)
@@ -109,46 +104,36 @@ commonmeta 10.5555/12345678`,
 			}
 		}
 
-		var output []byte
-		var jsErr []gojsonschema.ResultError
-		to, _ := cmd.Flags().GetString("to")
-		if to == "commonmeta" {
-			output, jsErr = commonmeta.Write(data)
-		} else if to == "csl" {
-			output, jsErr = csl.Write(data)
-		} else if to == "datacite" {
-			output, jsErr = datacite.Write(data)
-		} else if to == "schemaorg" {
-			output, jsErr = schemaorg.Write(data)
-		} else if to == "crossrefxml" {
-			account := crossrefxml.Account{
-				Depositor:  depositor,
-				Email:      email,
-				Registrant: registrant,
-			}
-			output, jsErr = crossrefxml.Write(data, account)
-		} else if to == "inveniordm" {
-			output, jsErr = inveniordm.Write(data)
-		}
-
 		if err != nil {
 			cmd.PrintErr(err)
 		}
 
-		if to == "crossrefxml" {
-			cmd.Printf("%s\n", output)
+		var output []byte
+		if to == "inveniordm" {
+			var record inveniordm.APIResponse
+			record, err = inveniordm.Upsert(record, host, token, data)
+			if err != nil {
+				cmd.PrintErr(err)
+			}
+			output, err = json.Marshal(record)
+			if err != nil {
+				cmd.PrintErr(err)
+			}
 		} else {
-			var out bytes.Buffer
-			json.Indent(&out, output, "", "  ")
-			cmd.Println(out.String())
+			fmt.Println("Please provide a valid service")
+			return
 		}
 
-		if jsErr != nil {
-			cmd.PrintErr(jsErr)
+		var out bytes.Buffer
+		json.Indent(&out, output, "", "  ")
+		cmd.Println(out.String())
+
+		if err != nil {
+			cmd.PrintErr(err)
 		}
 	},
 }
 
 func init() {
-	rootCmd.AddCommand(convertCmd)
+	rootCmd.AddCommand(putCmd)
 }

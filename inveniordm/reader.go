@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/front-matter/commonmeta/commonmeta"
+	"github.com/front-matter/commonmeta/doiutils"
 	"github.com/front-matter/commonmeta/utils"
 )
 
@@ -18,8 +19,28 @@ type Content struct {
 	Title string `json:"title"`
 }
 
+// Query represents the InvenioRDM JSON API query.
+type Query struct {
+	Hits struct {
+		Hits  []Inveniordm `json:"hits"`
+		Total int          `json:"total"`
+	} `json:"hits"`
+}
+
+type APIResponse struct {
+	ID         string `json:"id"`
+	DOI        string `json:"doi"`
+	UUID       string `json:"uuid,omitempty"`
+	Community  string `json:"community,omitempty"`
+	Created    string `json:"created,omitempty"`
+	Updated    string `json:"updated,omitempty"`
+	RevisionID int    `json:"revision_id,omitempty"`
+	Status     string `json:"status,omitempty"`
+}
+
 // Inveniordm represents the InvenioRDM metadata.
 type Inveniordm struct {
+	ID           string       `json:"id,omitempty"`
 	Pids         Pids         `json:"pids"`
 	Access       Access       `json:"access"`
 	Files        Files        `json:"files"`
@@ -225,7 +246,7 @@ var CMToInvenioMappings = map[string]string{
 	"LegalDocument":         "publication",
 	"Manuscript":            "publication",
 	"Map":                   "other",
-	"Patent":                "publication-patent",
+	"Patent":                "patent",
 	"PersonalCommunication": "publication",
 	"PhysicalObject":        "physicalobject",
 	"Post":                  "publication",
@@ -396,6 +417,63 @@ func Get(id string) (Content, error) {
 		fmt.Println("error:", err)
 	}
 	return content, err
+}
+
+// SearchByDOI searches InvenioRDM records by external DOI.
+func SearchByDOI(doi string, host string) (string, error) {
+	var query Query
+	doistr := doiutils.EscapeDOI(doi)
+	requestURL := fmt.Sprintf("https://%s/api/records?q=doi:%s", host, doistr)
+	req, _ := http.NewRequest(http.MethodGet, requestURL, nil)
+	req.Header = http.Header{
+		"Content-Type": {"application/json"},
+	}
+	client := &http.Client{
+		Timeout: time.Second * 10,
+	}
+	resp, err := client.Do(req)
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	err = json.Unmarshal(body, &query)
+	if err != nil {
+		return "", err
+	}
+	if query.Hits.Total == 0 {
+		return "", nil
+	} else {
+		return query.Hits.Hits[0].ID, nil
+	}
+}
+
+// SearchBySlug searches InvenioRDM communities by slug.
+func SearchBySlug(slug string, host string) (string, error) {
+	var query Query
+	requestURL := fmt.Sprintf("https://%s/api/communities?q=slug:%s", host, slug)
+	req, _ := http.NewRequest(http.MethodGet, requestURL, nil)
+	req.Header = http.Header{
+		"Content-Type": {"application/json"},
+	}
+	client := &http.Client{
+		Timeout: time.Second * 10,
+	}
+	resp, err := client.Do(req)
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	err = json.Unmarshal(body, &query)
+	if err != nil {
+		return "", err
+	}
+	if query.Hits.Total == 0 {
+		return "", nil
+	} else {
+		return query.Hits.Hits[0].ID, nil
+	}
 }
 
 // Read reads InvenioRDM JSON API response and converts it into Commonmeta metadata.

@@ -1,0 +1,454 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "id": "invenio-rdm-v0.1.json",
+  "title": "InvenioRDM v0.1",
+  "description": "JSON schema representation of the InvenioRDM v12 schema.",
+  "resource": {
+    "anyOf": [
+      { "$ref": "#/definitions/resource" },
+      {
+        "type": "array",
+        "description": "An array of resource objects.",
+        "items": { "$ref": "#/definitions/resource" }
+      }
+    ]
+  },
+  "definitions": {
+    "resource": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "description": "The unique identifier of the record.",
+          "type": "string"
+        },
+        "pids": {
+          "description": "The persistent identifiers of the record.",
+          "type": "object",
+          "properties": {
+            "doi": {
+              "description": "The digital object identifier (DOI) of the record.",
+              "type": "object",
+              "properties": {
+                "identifier": {
+                  "description": "The digital object identifier (DOI).",
+                  "type": "string"
+                },
+                "provider": {
+                  "description": "The provider of the DOI.",
+                  "type": "string",
+                  "enum": ["external"]
+                }
+              }
+            }
+          },
+          "required": ["doi"]
+        },
+        "access": {
+          "description": "The access of the record.",
+          "type": "object",
+          "properties": {
+            "record": {
+              "description": "The access of the record.",
+              "type": "string",
+              "enum": ["public", "restricted"]
+            },
+            "files": {
+              "description": "The access of the files.",
+              "type": "string",
+              "enum": ["public", "restricted"]
+            }
+          },
+          "required": ["record", "files"]
+        },
+        "files": {
+          "description": "The files of the record.",
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "description": "Whether the files are enabled.",
+              "type": "boolean"
+            }
+          },
+          "required": ["enabled"]
+        },
+        "metadata": {
+          "description": "The metadata of the record.",
+          "type": "object",
+          "properties": {
+            "resource_type": {
+              "description": "The type of the resource.",
+              "type": "object",
+              "properties": {
+                "id": {
+                  "description": "The unique identifier of the resource type.",
+                  "type": "string",
+                  "enum": ["dataset", "publication-preprint"]
+                }
+              },
+              "required": ["id"]
+            },
+            "creators": {
+              "description": "The creators of the resource.",
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "person_or_org": {
+                    "description": "The person or organization.",
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "description": "The type of the person or organization.",
+                        "type": "string",
+                        "enum": ["personal", "organizational"]
+                      },
+                      "given_name": {
+                        "description": "The given name of the person.",
+                        "type": "string"
+                      },
+                      "family_name": {
+                        "description": "The family name of the person.",
+                        "type": "string"
+                      },
+                      "name": {
+                        "description": "The name of the organization.",
+                        "type": "string"
+                      },
+                      "identifiers": {
+                        "description": "The identifiers of the person or organization.",
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "identifier": {
+                              "description": "The identifier of the person or organization.",
+                              "type": "string"
+                            },
+                            "scheme": {
+                              "description": "The scheme of the identifier.",
+                              "type": "string",
+                              "enum": ["orcid", "ror"]
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "affiliations": {
+                      "description": "The affiliations of the person or organization.",
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "description": "The name of the affiliation.",
+                            "type": "string"
+                          },
+                          "id": {
+                            "description": "The unique identifier of the affiliation.",
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "title": {
+              "description": "The title of the resource.",
+              "type": "string"
+            },
+            "publication_date": {
+              "description": "The publication date of the resource.",
+              "type": "string",
+              "format": "date"
+            },
+            "subjects": {
+              "description": "The subjects of the resource.",
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "description": "The unique identifier of the subject.",
+                    "type": "string"
+                  },
+                  "subject": {
+                    "description": "The title of the subject.",
+                    "type": "string"
+                  },
+                  "scheme": {
+                    "description": "The scheme of the subject.",
+                    "type": "string",
+                    "enum": ["FOS"]
+                  }
+                }
+              }
+            },
+            "dates": {
+              "description": "The dates of the resource.",
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "date": {
+                    "description": "The date of the resource.",
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "type": {
+                    "description": "The type of the date.",
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "description": "The unique identifier of the date type.",
+                        "type": "string",
+                        "enum": [
+                          "accepted",
+                          "available",
+                          "collected",
+                          "copyrighted",
+                          "created",
+                          "issued",
+                          "other",
+                          "submitted",
+                          "updated",
+                          "valid",
+                          "withdrawn"
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "languages": {
+              "description": "The languages of the resource.",
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "description": "The ISO-639-3 language code.",
+                    "type": "string",
+                    "enum": [
+                      "chi",
+                      "dan",
+                      "dut",
+                      "eng",
+                      "fre",
+                      "ger",
+                      "ita",
+                      "jpn",
+                      "pol",
+                      "por",
+                      "rus",
+                      "spa",
+                      "swe",
+                      "tur"
+                    ]
+                  }
+                }
+              }
+            },
+            "identifiers": {
+              "description": "The identifiers of the resource.",
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "identifier": {
+                    "description": "The identifier of the resource.",
+                    "type": "string"
+                  },
+                  "scheme": {
+                    "description": "The scheme of the identifier.",
+                    "type": "string",
+                    "enum": [
+                      "ark",
+                      "arxiv",
+                      "bibcode",
+                      "doi",
+                      "ean13",
+                      "eissn",
+                      "handle",
+                      "igsn",
+                      "isbn",
+                      "issn",
+                      "istc",
+                      "lissn",
+                      "lsid",
+                      "pmid",
+                      "purl",
+                      "upc",
+                      "url",
+                      "urn",
+                      "w3id"
+                    ]
+                  }
+                }
+              }
+            },
+            "related_identifiers": {
+              "description": "The related identifiers of the resource.",
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "identifier": {
+                    "description": "The identifier of the related resource.",
+                    "type": "string"
+                  },
+                  "scheme": {
+                    "description": "The scheme of the related identifier.",
+                    "type": "string",
+                    "enum": ["doi", "url", "issn"]
+                  },
+                  "relation_type": {
+                    "description": "The type of the relation.",
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "description": "The relation type.",
+                        "type": "string",
+                        "enum": [
+                          "isnewversionof",
+                          "ispreviousversionof",
+                          "isversionof",
+                          "hasversion",
+                          "ispartof",
+                          "haspart",
+                          "isvariantformof",
+                          "isoriginalformof",
+                          "isidenticalto",
+                          "istranslationof",
+                          "isreviewedby",
+                          "reviews",
+                          "ispreprintof",
+                          "haspreprint",
+                          "issupplementto",
+                          "references"
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "rights": {
+              "description": "The rights of the resource.",
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "description": "The unique identifier of the rights.",
+                    "type": "string",
+                    "enum": ["cc-by-4.0"]
+                  }
+                }
+              }
+            },
+            "description": {
+              "description": "The description of the resource.",
+              "type": "string"
+            },
+            "funding": {
+              "description": "The funding of the resource.",
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "funder": {
+                    "description": "The funder of the resource.",
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "description": "The identifier of the funder.",
+                        "type": "string"
+                      },
+                      "name": {
+                        "description": "The name of the funder.",
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "award": {
+                    "description": "The award of the resource.",
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "description": "The identifier of the award.",
+                        "type": "string"
+                      },
+                      "number": {
+                        "description": "The number of the award.",
+                        "type": "string"
+                      },
+                      "title": {
+                        "description": "The title of the award.",
+                        "type": "string"
+                      },
+                      "identifiers": {
+                        "description": "The identifiers of the award.",
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "identifier": {
+                              "description": "The identifier of the award.",
+                              "type": "string"
+                            },
+                            "scheme": {
+                              "description": "The scheme of the identifier.",
+                              "type": "string",
+                              "enum": ["grid", "ror", "doi"]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "required": ["resource_type", "creators", "title", "publication_date"]
+        },
+        "custom_fields": {
+          "description": "The custom fields of the record.",
+          "type": "object",
+          "properties": {
+            "journal:journal": {
+              "description": "The journal of the record.",
+              "type": "object",
+              "properties": {
+                "title": {
+                  "description": "The title of the journal.",
+                  "type": "string"
+                },
+                "volume": {
+                  "description": "The volume of the journal.",
+                  "type": "string"
+                },
+                "issue": {
+                  "description": "The issue of the journal.",
+                  "type": "string"
+                },
+                "pages": {
+                  "description": "The pages of the journal.",
+                  "type": "string"
+                },
+                "issn": {
+                  "description": "The International Standard Serial Number (ISSN) of the journal.",
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
