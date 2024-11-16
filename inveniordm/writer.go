@@ -273,7 +273,8 @@ func Convert(data commonmeta.Data) (Inveniordm, error) {
 	}
 	if len(data.Subjects) > 0 {
 		for _, v := range data.Subjects {
-			ID := FOSMappings[v.Subject]
+			// ID := FOSMappings[v.Subject]
+			ID := ""
 			var scheme string
 			if ID != "" {
 				scheme = "FOS"
@@ -387,6 +388,32 @@ func Upsert(record APIResponse, host string, apiKey string, data commonmeta.Data
 
 	record.DOI = data.ID
 
+	// remove IsPartOf relation with InvendioRDM community identifier after storing it
+	var communityIndex int
+	for i, v := range data.Relations {
+		if v.Type == "IsPartOf" && strings.HasPrefix(v.ID, "https://rogue-scholar.org/api/communities/") {
+			record.Community = strings.Split(v.ID, "/")[5]
+			communityIndex = i
+		}
+		if communityIndex != 0 {
+			data.Relations = slices.Delete(data.Relations, i, i)
+		}
+	}
+
+	// remove InvenioRDM rid after storing it
+	var RIDIndex int
+	for i, v := range data.Identifiers {
+		if v.IdentifierType == "RID" && v.Identifier != "" {
+			record.ID = v.Identifier
+			RIDIndex = i
+		} else if v.IdentifierType == "UUID" && v.Identifier != "" {
+			record.UUID = v.Identifier
+		}
+		if RIDIndex != 0 {
+			data.Identifiers = slices.Delete(data.Identifiers, i, i)
+		}
+	}
+
 	// check if record already exists in InvenioRDM
 	record.ID, _ = SearchByDOI(data.ID, host)
 
@@ -416,6 +443,18 @@ func Upsert(record APIResponse, host string, apiKey string, data commonmeta.Data
 		return record, err
 	}
 
+	// add record to community if community is specified and exists
+	if record.Community != "" {
+		communityID, err := SearchBySlug(record.Community, host)
+		if err != nil {
+			return record, err
+		}
+		record, err = AddRecordToCommunity(record, host, apiKey, communityID)
+		if err != nil {
+			return record, err
+		}
+	}
+
 	return record, nil
 }
 
@@ -427,52 +466,12 @@ func UpsertAll(list []commonmeta.Data, host string, apiKey string) ([]byte, erro
 	for _, data := range list {
 		record := APIResponse{DOI: data.ID}
 
-		// remove IsPartOf relation with InvendioRDM community identifier after storing it
-		var communityIndex int
-		for i, v := range data.Relations {
-			if v.Type == "IsPartOf" && strings.HasPrefix(v.ID, "https://rogue-scholar.org/api/communities/") {
-				record.Community = strings.Split(v.ID, "/")[5]
-				communityIndex = i
-			}
-			if communityIndex != 0 {
-				data.Relations = slices.Delete(data.Relations, i, i)
-			}
-		}
-
-		// remove InvenioRDM rid after storing it
-		var RIDIndex int
-		for i, v := range data.Identifiers {
-			if v.IdentifierType == "RID" && v.Identifier != "" {
-				record.ID = v.Identifier
-				RIDIndex = i
-			} else if v.IdentifierType == "UUID" && v.Identifier != "" {
-				record.UUID = v.Identifier
-			}
-
-			if RIDIndex != 0 {
-				data.Identifiers = slices.Delete(data.Identifiers, i, i)
-			}
-		}
-
 		record, err := Upsert(record, host, apiKey, data)
 		if err != nil {
 			return nil, err
 		}
 
-		// add record to community if community is specified and exists
-		if record.Community != "" {
-			communityID, err := SearchBySlug(record.Community, host)
-			if err != nil {
-				return nil, err
-			}
-			record, err = AddRecordToCommunity(record, host, apiKey, communityID)
-			if err != nil {
-				return nil, err
-			}
-		}
-
 		records = append(records, record)
-
 	}
 
 	output, err := json.Marshal(records)
@@ -510,7 +509,7 @@ func CreateDraftRecord(record APIResponse, host string, apiKey string, inveniord
 		"Authorization": {"Bearer " + apiKey},
 	}
 	resp, err = client.Do(req)
-	if err != nil {
+	if resp.StatusCode != 201 {
 		return record, err
 	}
 	defer resp.Body.Close()
@@ -675,24 +674,13 @@ func AddRecordToCommunity(record APIResponse, host string, apiKey string, commun
 	type Response struct {
 		ID string `json:"id"`
 	}
-	type Community struct {
-		ID   string `json:"id"`
-		Slug string `json:"slug,omitempty"`
-	}
-	type Communities struct {
-		Communities []Community `json:"communities"`
-	}
 	var response Response
 	client := &http.Client{
 		Timeout: time.Second * 10,
 	}
 
-	community := Community{ID: communityID}
-	var communities Communities
-	communities.Communities = append(communities.Communities, community)
-	output, _ := json.Marshal(communities)
-
-	requestURL := fmt.Sprintf("https://%s/api/communities/%s", host, communityID)
+	var output = []byte(`{"communities":[{"id":"` + communityID + `"}]}`)
+	requestURL := fmt.Sprintf("https://%s/api/records/%s/communities", host, record.ID)
 	req, _ := http.NewRequest(http.MethodPost, requestURL, bytes.NewReader(output))
 	req.Header = http.Header{
 		"Content-Type":  {"application/json"},
@@ -705,5 +693,6 @@ func AddRecordToCommunity(record APIResponse, host string, apiKey string, commun
 	defer resp.Body.Close()
 	body, _ := io.ReadAll(resp.Body)
 	err = json.Unmarshal(body, &response)
+	record.Status = "added_to_community"
 	return record, err
 }
