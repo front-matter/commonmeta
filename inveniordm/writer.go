@@ -508,7 +508,7 @@ func CreateDraftRecord(record APIResponse, host string, apiKey string, inveniord
 	var req *http.Request
 	var resp *http.Response
 	client := &http.Client{
-		Timeout: time.Second * 10,
+		Timeout: time.Second * 30,
 	}
 
 	requestURL = fmt.Sprintf("https://%s/api/records", host)
@@ -547,7 +547,7 @@ func EditPublishedRecord(record APIResponse, host string, apiKey string) (APIRes
 	var requestURL string
 	var req *http.Request
 	client := &http.Client{
-		Timeout: time.Second * 10,
+		Timeout: time.Second * 30,
 	}
 
 	requestURL = fmt.Sprintf("https://%s/api/records/%s/draft", host, record.ID)
@@ -590,7 +590,7 @@ func UpdateDraftRecord(record APIResponse, host string, apiKey string, inveniord
 		"Authorization": {"Bearer " + apiKey},
 	}
 	client := &http.Client{
-		Timeout: time.Second * 10,
+		Timeout: time.Second * 30,
 	}
 	resp, err := client.Do(req)
 	if err != nil {
@@ -626,7 +626,7 @@ func PublishDraftRecord(record APIResponse, host string, apiKey string) (APIResp
 		"Authorization": {"Bearer " + apiKey},
 	}
 	client := &http.Client{
-		Timeout: time.Second * 10,
+		Timeout: time.Second * 30,
 	}
 	resp, err := client.Do(req)
 	if err != nil {
@@ -656,7 +656,7 @@ func CreateCommunity(community string, host string, apiKey string) (string, erro
 	var requestURL string
 	var req *http.Request
 	client := &http.Client{
-		Timeout: time.Second * 10,
+		Timeout: time.Second * 30,
 	}
 
 	requestURL = fmt.Sprintf("https://%s/api/communities", host)
@@ -685,7 +685,7 @@ func AddRecordToCommunity(record APIResponse, host string, apiKey string, commun
 	}
 	var response Response
 	client := &http.Client{
-		Timeout: time.Second * 10,
+		Timeout: time.Second * 30,
 	}
 
 	var output = []byte(`{"communities":[{"id":"` + communityID + `"}]}`)
@@ -719,7 +719,7 @@ func UpdateLegacyRecord(record APIResponse, legacyKey string) (APIResponse, erro
 		"Prefer":        {"return=minimal"},
 	}
 	client := &http.Client{
-		Timeout: time.Second * 10,
+		Timeout: time.Second * 30,
 	}
 	resp, err := client.Do(req)
 	if resp.StatusCode != 204 {
