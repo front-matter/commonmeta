@@ -81,11 +81,18 @@ func ExampleGetDateFromUnixTimestamp() {
 	// 2021-01-22
 }
 
-func ExampleStripMilliseconds() {
-	s := dateutils.StripMilliseconds("2021-01-22T10:00:00.000Z")
+func ExampleGetUnixTimestampFromDatetime() {
+	s := dateutils.GetUnixTimestampFromDatetime("2024-11-16T22:59:41Z")
 	fmt.Println(s)
 	// Output:
-	// 2021-01-22T10:00:00Z
+	// 1731797981
+}
+
+func ExampleStripMilliseconds() {
+	s := dateutils.StripMilliseconds("2024-11-16T22:59:41.517474+00:00")
+	fmt.Println(s)
+	// Output:
+	// 2024-11-16T22:59:41Z
 }
 
 func ExampleParseDate() {

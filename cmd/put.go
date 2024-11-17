@@ -41,6 +41,7 @@ commonmeta put 10.5555/12345678 -f crossref -t inveniordm -h rogue-scholar.org -
 		to, _ := cmd.Flags().GetString("to")
 		host, _ := cmd.Flags().GetString("host")
 		token, _ := cmd.Flags().GetString("token")
+		legacyKey, _ := cmd.Flags().GetString("legacyKey")
 
 		cmd.SetOut(os.Stdout)
 		cmd.SetErr(os.Stderr)
@@ -111,7 +112,7 @@ commonmeta put 10.5555/12345678 -f crossref -t inveniordm -h rogue-scholar.org -
 		var output []byte
 		if to == "inveniordm" {
 			var record inveniordm.APIResponse
-			record, err = inveniordm.Upsert(record, host, token, data)
+			record, err = inveniordm.Upsert(record, host, token, legacyKey, data)
 			if err != nil {
 				cmd.PrintErr(err)
 			}

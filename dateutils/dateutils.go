@@ -146,6 +146,13 @@ func GetDateFromDatetime(iso8601Time string) string {
 	return date.Format(Iso8601DateFormat)
 }
 
+// GetUnixTimestampFromDatetime returns a Unix timestamp from a datetime
+func GetUnixTimestampFromDatetime(iso8601Time string) int64 {
+	time, _ := time.Parse(Iso8601DateTimeFormat, iso8601Time)
+	return time.Unix()
+}
+
+// StripMilliseconds removes milliseconds from an ISO 8601 datetime string
 func StripMilliseconds(iso8601Time string) string {
 	if iso8601Time == "" {
 		return ""

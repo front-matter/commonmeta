@@ -59,4 +59,5 @@ func init() {
 	rootCmd.PersistentFlags().StringP("registrant", "", "", "Crossref account registrant")
 	rootCmd.PersistentFlags().StringP("host", "", "", "InvenioRDM host")
 	rootCmd.PersistentFlags().StringP("token", "", "", "API token")
+	rootCmd.PersistentFlags().StringP("legacyKey", "", "", "Legacy API token")
 }

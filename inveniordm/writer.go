@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"path/filepath"
 	"slices"
+	"strconv"
 	"strings"
 	"time"
 
@@ -380,7 +381,7 @@ func WriteAll(list []commonmeta.Data) ([]byte, []gojsonschema.ResultError) {
 }
 
 // Upsert updates or creates a record in InvenioRDM.
-func Upsert(record APIResponse, host string, apiKey string, data commonmeta.Data) (APIResponse, error) {
+func Upsert(record APIResponse, host string, apiKey string, legacyKey string, data commonmeta.Data) (APIResponse, error) {
 	inveniordm, err := Convert(data)
 	if err != nil {
 		return record, err
@@ -455,18 +456,26 @@ func Upsert(record APIResponse, host string, apiKey string, data commonmeta.Data
 		}
 	}
 
+	// update rogue-scholar legacy record if host is rogue-scholar.org
+	if host == "rogue-scholar.org" && legacyKey != "" {
+		record, err = UpdateLegacyRecord(record, legacyKey)
+		if err != nil {
+			return record, err
+		}
+	}
+
 	return record, nil
 }
 
 // UpsertAll updates or creates a list of records in InvenioRDM.
-func UpsertAll(list []commonmeta.Data, host string, apiKey string) ([]byte, error) {
+func UpsertAll(list []commonmeta.Data, host string, apiKey string, legacyKey string) ([]byte, error) {
 	var records []APIResponse
 
 	// iterate over list of records
 	for _, data := range list {
 		record := APIResponse{DOI: data.ID}
 
-		record, err := Upsert(record, host, apiKey, data)
+		record, err := Upsert(record, host, apiKey, legacyKey, data)
 		if err != nil {
 			return nil, err
 		}
@@ -695,4 +704,27 @@ func AddRecordToCommunity(record APIResponse, host string, apiKey string, commun
 	err = json.Unmarshal(body, &response)
 	record.Status = "added_to_community"
 	return record, err
+}
+
+// UpdateLegacyRecord updates a record in Rogue Scholar legacy database.
+func UpdateLegacyRecord(record APIResponse, legacyKey string) (APIResponse, error) {
+	now := strconv.FormatInt(time.Now().Unix(), 10)
+	var output = []byte(`{"doi":"` + record.DOI + `", "rid":"` + record.ID + `", "indexed_at":"` + now + `", "indexed":"true"}`)
+	requestURL := fmt.Sprintf("https://db.rogue-scholar.org/rest/v1/posts?id=eq.%s", record.UUID)
+	req, _ := http.NewRequest(http.MethodPatch, requestURL, bytes.NewReader(output))
+	req.Header = http.Header{
+		"Content-Type":  {"application/json"},
+		"apikey":        {legacyKey},
+		"Authorization": {"Bearer " + legacyKey},
+		"Prefer":        {"return=minimal"},
+	}
+	client := &http.Client{
+		Timeout: time.Second * 10,
+	}
+	resp, err := client.Do(req)
+	if resp.StatusCode != 204 {
+		return record, err
+	}
+	record.Status = "updated_legacy"
+	return record, nil
 }

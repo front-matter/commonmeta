@@ -59,6 +59,7 @@ commonmeta push --sample -f crossref -t inveniordm -h rogue-scholar.org --token 
 		to, _ := cmd.Flags().GetString("to")
 		host, _ := cmd.Flags().GetString("host")
 		token, _ := cmd.Flags().GetString("token")
+		legacyKey, _ := cmd.Flags().GetString("legacyKey")
 
 		cmd.SetOut(os.Stdout)
 		cmd.SetErr(os.Stderr)
@@ -97,7 +98,7 @@ commonmeta push --sample -f crossref -t inveniordm -h rogue-scholar.org --token 
 
 		var output []byte
 		if to == "inveniordm" {
-			output, err = inveniordm.UpsertAll(data, host, token)
+			output, err = inveniordm.UpsertAll(data, host, token, legacyKey)
 		} else {
 			fmt.Println("Please provide a valid service")
 			return
