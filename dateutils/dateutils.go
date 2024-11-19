@@ -40,9 +40,9 @@ func ParseDate(iso8601Time string) string {
 }
 
 // GetDateParts return date parts from an ISO 8601 date string
-func GetDateParts(iso8601Time string) map[string][][]int {
+func GetDateParts(iso8601Time string) [][]int {
 	if iso8601Time == "" {
-		return map[string][][]int{"date-parts": {}}
+		return [][]int{}
 	}
 
 	// optionally add missing zeros to the date string
@@ -53,7 +53,7 @@ func GetDateParts(iso8601Time string) map[string][][]int {
 	month, _ := strconv.Atoi(iso8601Time[5:7])
 	day, _ := strconv.Atoi(iso8601Time[8:10])
 	dateParts := [][]int{{year, month, day}}
-	return map[string][][]int{"date-parts": dateParts}
+	return dateParts
 }
 
 // GetDateStruct returns struct with date (year, month, day) from an ISO 8601 date string

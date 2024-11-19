@@ -13,35 +13,6 @@ import (
 	"github.com/xeipuuv/gojsonschema"
 )
 
-type CSL struct {
-	ID             string             `json:"id"`
-	Type           string             `json:"type"`
-	Abstract       string             `json:"abstract,omitempty"`
-	Accessed       map[string][][]int `json:"accessed,omitempty"`
-	Author         []Author           `json:"author,omitempty"`
-	ContainerTitle string             `json:"container-title,omitempty"`
-	DOI            string             `json:"DOI,omitempty"`
-	ISSN           string             `json:"ISSN,omitempty"`
-	Issue          string             `json:"issue,omitempty"`
-	Issued         map[string][][]int `json:"issued,omitempty"`
-	Keyword        string             `json:"keyword,omitempty"`
-	Language       string             `json:"language,omitempty"`
-	License        string             `json:"license,omitempty"`
-	Page           string             `json:"page,omitempty"`
-	Publisher      string             `json:"publisher,omitempty"`
-	Submitted      map[string][][]int `json:"submitted,omitempty"`
-	Title          string             `json:"title,omitempty"`
-	URL            string             `json:"URL,omitempty"`
-	Version        string             `json:"version,omitempty"`
-	Volume         string             `json:"volume,omitempty"`
-}
-
-type Author struct {
-	Given   string `json:"given,omitempty"`
-	Family  string `json:"family,omitempty"`
-	Literal string `json:"literal,omitempty"`
-}
-
 var CMToCSLMappings = map[string]string{
 	"Article":               "article",
 	"JournalArticle":        "article-journal",
@@ -123,13 +94,13 @@ func Convert(data commonmeta.Data) (CSL, error) {
 	}
 
 	if data.Date.Published != "" {
-		csl.Issued = dateutils.GetDateParts(data.Date.Published)
+		csl.Issued.DateAsParts = dateutils.GetDateParts(data.Date.Published)
 	}
 	if data.Date.Submitted != "" {
-		csl.Submitted = dateutils.GetDateParts(data.Date.Submitted)
+		csl.Submitted.DateAsParts = dateutils.GetDateParts(data.Date.Submitted)
 	}
 	if data.Date.Accessed != "" {
-		csl.Accessed = dateutils.GetDateParts(data.Date.Accessed)
+		csl.Accessed.DateAsParts = dateutils.GetDateParts(data.Date.Accessed)
 	}
 
 	if len(data.Descriptions) > 0 {
