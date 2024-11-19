@@ -85,6 +85,8 @@ var listCmd = &cobra.Command{
 			data, err = datacite.LoadAll(str)
 		} else if str != "" && from == "jsonfeed" {
 			data, err = jsonfeed.LoadAll(str)
+		} else if str != "" && from == "csl" {
+			data, err = csl.LoadAll(str)
 		} else if from == "crossref" {
 			data, err = crossref.FetchAll(number, member, type_, sample, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
 		} else if from == "datacite" {

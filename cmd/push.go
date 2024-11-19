@@ -11,6 +11,7 @@ import (
 
 	"github.com/front-matter/commonmeta/commonmeta"
 	"github.com/front-matter/commonmeta/crossrefxml"
+	"github.com/front-matter/commonmeta/csl"
 	"github.com/front-matter/commonmeta/datacite"
 	"github.com/front-matter/commonmeta/inveniordm"
 	"github.com/front-matter/commonmeta/jsonfeed"
@@ -89,6 +90,8 @@ commonmeta push --sample -f crossref -t inveniordm -h rogue-scholar.org --token 
 			data, err = datacite.LoadAll(str)
 		} else if str != "" && from == "jsonfeed" {
 			data, err = jsonfeed.LoadAll(str)
+		} else if str != "" && from == "csl" {
+			data, err = csl.LoadAll(str)
 		} else {
 			fmt.Println("Please provide a valid input format")
 			return

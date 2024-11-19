@@ -12,6 +12,7 @@ import (
 
 	"github.com/front-matter/commonmeta/commonmeta"
 	"github.com/front-matter/commonmeta/crossrefxml"
+	"github.com/front-matter/commonmeta/csl"
 	"github.com/front-matter/commonmeta/datacite"
 	"github.com/front-matter/commonmeta/doiutils"
 	"github.com/front-matter/commonmeta/inveniordm"
@@ -104,6 +105,8 @@ commonmeta put 10.5555/12345678 -f crossref -t inveniordm -h rogue-scholar.org -
 				data, err = crossrefxml.Load(str)
 			} else if from == "datacite" {
 				data, err = datacite.Load(str)
+			} else if from == "csl" {
+				data, err = csl.Load(str)
 			} else {
 				cmd.PrintErr("Please provide a valid input format")
 				return
