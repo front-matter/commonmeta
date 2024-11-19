@@ -14,10 +14,12 @@ import (
 func UpdateLegacyRecord(record commonmeta.APIResponse, legacyKey string, field string) (commonmeta.APIResponse, error) {
 	now := strconv.FormatInt(time.Now().Unix(), 10)
 	var output []byte
-	if field == "rid" {
+	if field == "rid" && record.ID != "" {
 		output = []byte(`{"rid":"` + record.ID + `", "indexed_at":"` + now + `", "indexed":"true"}`)
-	} else {
+	} else if record.DOI != "" {
 		output = []byte(`{"doi":"` + record.DOI + `", "indexed_at":"` + now + `", "indexed":"true"}`)
+	} else {
+		return record, fmt.Errorf("no valid field to update")
 	}
 	requestURL := fmt.Sprintf("https://db.rogue-scholar.org/rest/v1/posts?id=eq.%s", record.UUID)
 	req, _ := http.NewRequest(http.MethodPatch, requestURL, bytes.NewReader(output))

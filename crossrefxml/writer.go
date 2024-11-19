@@ -611,6 +611,7 @@ func Upsert(record commonmeta.APIResponse, account Account, legacyKey string, da
 		if err != nil {
 			return record, err
 		}
+		record.Status = "submitted_and_updated_legacy"
 	}
 
 	return record, nil
@@ -687,13 +688,14 @@ func UpsertAll(list []commonmeta.Data, account Account, legacyKey string) ([]com
 
 	// update rogue-scholar legacy record with doi if legacy key is provided
 	for i := range records {
+		records[i].Status = "submitted"
 		if doiutils.IsRogueScholarDOI(records[i].DOI) && legacyKey != "" {
 			records[i], err = roguescholar.UpdateLegacyRecord(records[i], legacyKey, "doi")
 			if err != nil {
 				return records, err
 			}
+			records[i].Status = "submitted_and_updated_legacy"
 		}
-		records[i].Status = "submitted"
 	}
 	return records, nil
 }
