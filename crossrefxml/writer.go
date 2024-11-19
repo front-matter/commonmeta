@@ -544,6 +544,13 @@ func WriteAll(list []commonmeta.Data, account Account) ([]byte, []gojsonschema.R
 // Upsert updates or creates Crossrefxml metadata.
 func Upsert(record commonmeta.APIResponse, account Account, legacyKey string, data commonmeta.Data) (commonmeta.APIResponse, error) {
 	record.DOI = data.ID
+	if doiutils.IsRogueScholarDOI(data.ID) {
+		for _, identifier := range data.Identifiers {
+			if identifier.IdentifierType == "UUID" {
+				record.UUID = identifier.Identifier
+			}
+		}
+	}
 
 	type HTML struct {
 		Head struct {
@@ -623,6 +630,13 @@ func UpsertAll(list []commonmeta.Data, account Account, legacyKey string) ([]com
 	for _, data := range list {
 		record := commonmeta.APIResponse{
 			DOI: data.ID,
+		}
+		if doiutils.IsRogueScholarDOI(data.ID) {
+			for _, identifier := range data.Identifiers {
+				if identifier.IdentifierType == "UUID" {
+					record.UUID = identifier.Identifier
+				}
+			}
 		}
 		records = append(records, record)
 	}

@@ -15,6 +15,9 @@ func UpdateLegacyRecord(record commonmeta.APIResponse, legacyKey string, field s
 	if legacyKey == "" {
 		return record, fmt.Errorf("no legacy key provided")
 	}
+	if record.UUID == "" {
+		return record, fmt.Errorf("no UUID provided")
+	}
 	now := strconv.FormatInt(time.Now().Unix(), 10)
 	var output []byte
 	if field == "rid" && record.ID != "" {
