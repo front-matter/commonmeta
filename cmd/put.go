@@ -127,7 +127,7 @@ commonmeta put 10.5555/12345678 -f crossref -t inveniordm -h rogue-scholar.org -
 				LoginID:     loginID,
 				LoginPasswd: loginPasswd,
 			}
-			record, err = crossrefxml.Upsert(record, account, data)
+			record, err = crossrefxml.Upsert(record, account, legacyKey, data)
 		} else if to == "inveniordm" {
 			if host == "" || token == "" {
 				fmt.Println("Please provide an inveniordm host and token")

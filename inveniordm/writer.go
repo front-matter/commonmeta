@@ -456,9 +456,9 @@ func Upsert(record commonmeta.APIResponse, host string, apiKey string, legacyKey
 		}
 	}
 
-	// update rogue-scholar legacy record if host is rogue-scholar.org
+	// update rogue-scholar legacy record with Invenio rid if host is rogue-scholar.org
 	if host == "rogue-scholar.org" && legacyKey != "" {
-		record, err = UpdateLegacyRecord(record, legacyKey)
+		record, err = UpdateLegacyRecord(record, legacyKey, "rid")
 		if err != nil {
 			return record, err
 		}
@@ -703,9 +703,14 @@ func AddRecordToCommunity(record commonmeta.APIResponse, host string, apiKey str
 }
 
 // UpdateLegacyRecord updates a record in Rogue Scholar legacy database.
-func UpdateLegacyRecord(record commonmeta.APIResponse, legacyKey string) (commonmeta.APIResponse, error) {
+func UpdateLegacyRecord(record commonmeta.APIResponse, legacyKey string, field string) (commonmeta.APIResponse, error) {
 	now := strconv.FormatInt(time.Now().Unix(), 10)
-	var output = []byte(`{"doi":"` + record.DOI + `", "rid":"` + record.ID + `", "indexed_at":"` + now + `", "indexed":"true"}`)
+	var output []byte
+	if field == "rid" {
+		output = []byte(`{"rid":"` + record.ID + `", "indexed_at":"` + now + `", "indexed":"true"}`)
+	} else {
+		output = []byte(`{"doi":"` + record.DOI + `", "indexed_at":"` + now + `", "indexed":"true"}`)
+	}
 	requestURL := fmt.Sprintf("https://db.rogue-scholar.org/rest/v1/posts?id=eq.%s", record.UUID)
 	req, _ := http.NewRequest(http.MethodPatch, requestURL, bytes.NewReader(output))
 	req.Header = http.Header{

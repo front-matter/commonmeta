@@ -16,6 +16,7 @@ import (
 	"github.com/front-matter/commonmeta/commonmeta"
 	"github.com/front-matter/commonmeta/dateutils"
 	"github.com/front-matter/commonmeta/doiutils"
+	"github.com/front-matter/commonmeta/inveniordm"
 	"github.com/front-matter/commonmeta/utils"
 	"github.com/google/uuid"
 	"github.com/xeipuuv/gojsonschema"
@@ -541,7 +542,7 @@ func WriteAll(list []commonmeta.Data, account Account) ([]byte, []gojsonschema.R
 }
 
 // Upsert updates or creates Crossrefxml metadata.
-func Upsert(record commonmeta.APIResponse, account Account, data commonmeta.Data) (commonmeta.APIResponse, error) {
+func Upsert(record commonmeta.APIResponse, account Account, legacyKey string, data commonmeta.Data) (commonmeta.APIResponse, error) {
 	record.DOI = data.ID
 
 	type HTML struct {
@@ -603,11 +604,20 @@ func Upsert(record commonmeta.APIResponse, account Account, data commonmeta.Data
 		return record, errors.New(response.Body.P)
 	}
 	record.Status = "submitted"
+
+	// update rogue-scholar legacy record if legacy key is provided
+	if doiutils.IsRogueScholarDOI(data.ID) && legacyKey != "" {
+		record, err = inveniordm.UpdateLegacyRecord(record, legacyKey, "doi")
+		if err != nil {
+			return record, err
+		}
+	}
+
 	return record, nil
 }
 
 // UpsertAll updates or creates a list of Crossrefxml metadata.
-func UpsertAll(list []commonmeta.Data, account Account) ([]commonmeta.APIResponse, error) {
+func UpsertAll(list []commonmeta.Data, account Account, legacyKey string) ([]commonmeta.APIResponse, error) {
 	var records []commonmeta.APIResponse
 	for _, data := range list {
 		record := commonmeta.APIResponse{
@@ -674,7 +684,15 @@ func UpsertAll(list []commonmeta.Data, account Account) ([]commonmeta.APIRespons
 	if response.Body.H2 == "FAILURE" {
 		return records, errors.New(response.Body.P)
 	}
+
+	// update rogue-scholar legacy record with doi if legacy key is provided
 	for i := range records {
+		if doiutils.IsRogueScholarDOI(records[i].DOI) && legacyKey != "" {
+			records[i], err = inveniordm.UpdateLegacyRecord(records[i], legacyKey, "doi")
+			if err != nil {
+				return records, err
+			}
+		}
 		records[i].Status = "submitted"
 	}
 	return records, nil

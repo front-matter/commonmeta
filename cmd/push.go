@@ -107,7 +107,7 @@ commonmeta push --sample -f crossref -t inveniordm -h rogue-scholar.org --token 
 				LoginID:     loginID,
 				LoginPasswd: loginPasswd,
 			}
-			records, err = crossrefxml.UpsertAll(data, account)
+			records, err = crossrefxml.UpsertAll(data, account, legacyKey)
 		} else if to == "inveniordm" {
 			records, err = inveniordm.UpsertAll(data, host, token, legacyKey)
 		} else {
