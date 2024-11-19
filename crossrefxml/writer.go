@@ -9,6 +9,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"slices"
+	"strconv"
 	"strings"
 	"time"
 
@@ -559,8 +560,8 @@ func Upsert(record commonmeta.APIResponse, account Account, data commonmeta.Data
 	if jsErr != nil {
 		return record, errors.New("JSON schema validation failed")
 	}
-	// the filename displayed in the Crossref admin interface
-	filename := doiutils.EscapeDOI(data.ID)
+	// the filename displayed in the Crossref admin interface, using the current UNIX timestamp
+	filename := strconv.FormatInt(time.Now().Unix(), 10)
 
 	client := &http.Client{
 		Timeout: 10 * time.Second,
@@ -577,8 +578,6 @@ func Upsert(record commonmeta.APIResponse, account Account, data commonmeta.Data
 	w.WriteField("login_id", account.LoginID)
 	w.WriteField("login_passwd", account.LoginPasswd)
 	w.Close()
-
-	// fmt.Println(strings.NewReader(b.String()))
 
 	postUrl := "https://doi.crossref.org/servlet/deposit"
 	req, err := http.NewRequest(http.MethodPost, postUrl, strings.NewReader(b.String()))
@@ -610,66 +609,73 @@ func Upsert(record commonmeta.APIResponse, account Account, data commonmeta.Data
 // UpsertAll updates or creates a list of Crossrefxml metadata.
 func UpsertAll(list []commonmeta.Data, account Account) ([]commonmeta.APIResponse, error) {
 	var records []commonmeta.APIResponse
-
-	// the envelope for the XML response from the Crossref API
-	type CrossrefResult struct {
-		XMLName        xml.Name `xml:"crossref_result"`
-		Xmlns          string   `xml:"xmlns,attr"`
-		Version        string   `xml:"version,attr"`
-		Xsi            string   `xml:"xsi,attr"`
-		SchemaLocation string   `xml:"schemaLocation,attr"`
-		QueryResult    struct {
-			Head struct {
-				DoiBatchID string `xml:"doi_batch_id"`
-			} `xml:"head"`
-			Body struct {
-				Query Query `xml:"query"`
-			} `xml:"body"`
-		} `xml:"query_result"`
-	}
-	crossrefResult := CrossrefResult{
-		Version: "5.3.1",
-		Xmlns:   "http://www.crossref.org/schema/5.3.1",
+	for _, data := range list {
+		record := commonmeta.APIResponse{
+			DOI: data.ID,
+		}
+		records = append(records, record)
 	}
 
-	output, jsErr := WriteAll(list, account)
+	type HTML struct {
+		Head struct {
+			Title string `xml:"title"`
+		} `xml:"head"`
+		Body struct {
+			H2 string `xml:"h2"`
+			P  string `xml:"p"`
+		} `xml:"body"`
+	}
+	type Response HTML
+	var response Response
+
+	crossrefxml, jsErr := WriteAll(list, account)
 	if jsErr != nil {
 		return records, errors.New("JSON schema validation failed")
 	}
+	// the filename displayed in the Crossref admin interface, using the current UNIX timestamp
+	filename := strconv.FormatInt(time.Now().Unix(), 10)
 
-	var req *http.Request
-	var resp *http.Response
 	client := &http.Client{
-		Timeout: time.Second * 30,
+		Timeout: 10 * time.Second,
 	}
 
-	req, _ = http.NewRequest(http.MethodPost, "https://doi.crossref.org/servlet/deposit", bytes.NewReader(output))
-	req.Header = http.Header{
-		"Content-Type": {"application/xml; charset=utf-8"},
-		"operation":    {"doMDUpload"},
-		"login_id":     {account.LoginID},
-		"login_passwd": {account.LoginPasswd},
+	var b bytes.Buffer
+	w := multipart.NewWriter(&b)
+	part, _ := w.CreateFormFile("fname", filename)
+	_, err := part.Write(crossrefxml)
+	if err != nil {
+		return records, err
+	}
+	w.WriteField("operation", "doMDUpload")
+	w.WriteField("login_id", account.LoginID)
+	w.WriteField("login_passwd", account.LoginPasswd)
+	w.Close()
+
+	postUrl := "https://doi.crossref.org/servlet/deposit"
+	req, err := http.NewRequest(http.MethodPost, postUrl, strings.NewReader(b.String()))
+	req.Header.Add("Content-Type", w.FormDataContentType())
+	if err != nil {
+		return records, err
 	}
 	resp, err := client.Do(req)
-	if resp.StatusCode >= 400 {
+	if err != nil {
+		fmt.Println("Error uploading batch", err)
 		return records, err
 	}
 	defer resp.Body.Close()
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		fmt.Println("error:", err)
 		return records, err
 	}
-	err = xml.Unmarshal(body, &crossrefResult)
+	err = xml.Unmarshal(body, &response)
 	if err != nil {
-		fmt.Println("error:", err)
+		return records, err
 	}
-
-	// if response != (Response{}) {
-	// 	record.ID = response.ID
-	// 	record.Created = response.Created
-	// 	record.Updated = response.Updated
-	// 	record.Status = "draft"
-	// }
+	if response.Body.H2 == "FAILURE" {
+		return records, errors.New(response.Body.P)
+	}
+	for i := range records {
+		records[i].Status = "submitted"
+	}
 	return records, nil
 }

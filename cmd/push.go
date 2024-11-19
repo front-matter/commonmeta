@@ -53,9 +53,11 @@ commonmeta push --sample -f crossref -t inveniordm -h rogue-scholar.org --token 
 		hasArchive, _ := cmd.Flags().GetBool("has-archive")
 		sample, _ := cmd.Flags().GetBool("sample")
 
-		// depositor, _ := cmd.Flags().GetString("depositor")
-		// email, _ := cmd.Flags().GetString("email")
-		// registrant, _ := cmd.Flags().GetString("registrant")
+		depositor, _ := cmd.Flags().GetString("depositor")
+		email, _ := cmd.Flags().GetString("email")
+		registrant, _ := cmd.Flags().GetString("registrant")
+		loginID, _ := cmd.Flags().GetString("login_id")
+		loginPasswd, _ := cmd.Flags().GetString("login_passwd")
 		to, _ := cmd.Flags().GetString("to")
 		host, _ := cmd.Flags().GetString("host")
 		token, _ := cmd.Flags().GetString("token")
@@ -96,15 +98,34 @@ commonmeta push --sample -f crossref -t inveniordm -h rogue-scholar.org --token 
 			cmd.PrintErr(err)
 		}
 
-		var output []byte
-		if to == "inveniordm" {
-			output, err = inveniordm.UpsertAll(data, host, token, legacyKey)
+		var records []commonmeta.APIResponse
+		if to == "crossrefxml" {
+			account := crossrefxml.Account{
+				Depositor:   depositor,
+				Email:       email,
+				Registrant:  registrant,
+				LoginID:     loginID,
+				LoginPasswd: loginPasswd,
+			}
+			records, err = crossrefxml.UpsertAll(data, account)
+		} else if to == "inveniordm" {
+			records, err = inveniordm.UpsertAll(data, host, token, legacyKey)
 		} else {
 			fmt.Println("Please provide a valid service")
 			return
 		}
 
+		if err != nil {
+			cmd.PrintErr(err)
+		}
+
+		var output []byte
 		var out bytes.Buffer
+		output, err = json.Marshal(records)
+		if err != nil {
+			cmd.PrintErr(err)
+		}
+
 		json.Indent(&out, output, "", "  ")
 		cmd.Println(out.String())
 

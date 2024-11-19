@@ -381,7 +381,7 @@ func WriteAll(list []commonmeta.Data) ([]byte, []gojsonschema.ResultError) {
 }
 
 // Upsert updates or creates a record in InvenioRDM.
-func Upsert(record APIResponse, host string, apiKey string, legacyKey string, data commonmeta.Data) (APIResponse, error) {
+func Upsert(record commonmeta.APIResponse, host string, apiKey string, legacyKey string, data commonmeta.Data) (commonmeta.APIResponse, error) {
 	inveniordm, err := Convert(data)
 	if err != nil {
 		return record, err
@@ -468,12 +468,12 @@ func Upsert(record APIResponse, host string, apiKey string, legacyKey string, da
 }
 
 // UpsertAll updates or creates a list of records in InvenioRDM.
-func UpsertAll(list []commonmeta.Data, host string, apiKey string, legacyKey string) ([]byte, error) {
-	var records []APIResponse
+func UpsertAll(list []commonmeta.Data, host string, apiKey string, legacyKey string) ([]commonmeta.APIResponse, error) {
+	var records []commonmeta.APIResponse
 
 	// iterate over list of records
 	for _, data := range list {
-		record := APIResponse{DOI: data.ID}
+		record := commonmeta.APIResponse{DOI: data.ID}
 
 		record, err := Upsert(record, host, apiKey, legacyKey, data)
 		if err != nil {
@@ -483,15 +483,11 @@ func UpsertAll(list []commonmeta.Data, host string, apiKey string, legacyKey str
 		records = append(records, record)
 	}
 
-	output, err := json.Marshal(records)
-	if err != nil {
-		fmt.Println(err)
-	}
-	return output, nil
+	return records, nil
 }
 
 // CreateDraftRecord creates a draft record in InvenioRDM.
-func CreateDraftRecord(record APIResponse, host string, apiKey string, inveniordm Inveniordm) (APIResponse, error) {
+func CreateDraftRecord(record commonmeta.APIResponse, host string, apiKey string, inveniordm Inveniordm) (commonmeta.APIResponse, error) {
 	output, err := json.Marshal(inveniordm)
 	if err != nil {
 		return record, err
@@ -518,7 +514,7 @@ func CreateDraftRecord(record APIResponse, host string, apiKey string, inveniord
 		"Authorization": {"Bearer " + apiKey},
 	}
 	resp, err = client.Do(req)
-	if resp.StatusCode != 201 {
+	if err != nil || resp.StatusCode != 201 {
 		return record, err
 	}
 	defer resp.Body.Close()
@@ -537,7 +533,7 @@ func CreateDraftRecord(record APIResponse, host string, apiKey string, inveniord
 }
 
 // EditPublishedRecord creates a draft record from a published record in InvenioRDM.
-func EditPublishedRecord(record APIResponse, host string, apiKey string) (APIResponse, error) {
+func EditPublishedRecord(record commonmeta.APIResponse, host string, apiKey string) (commonmeta.APIResponse, error) {
 	type Response struct {
 		*Inveniordm
 		Created string `json:"created,omitempty"`
@@ -571,7 +567,7 @@ func EditPublishedRecord(record APIResponse, host string, apiKey string) (APIRes
 }
 
 // UpdateDraftRecord updates a draft record in InvenioRDM.
-func UpdateDraftRecord(record APIResponse, host string, apiKey string, inveniordm Inveniordm) (APIResponse, error) {
+func UpdateDraftRecord(record commonmeta.APIResponse, host string, apiKey string, inveniordm Inveniordm) (commonmeta.APIResponse, error) {
 	output, err := json.Marshal(inveniordm)
 	if err != nil {
 		return record, err
@@ -611,7 +607,7 @@ func UpdateDraftRecord(record APIResponse, host string, apiKey string, inveniord
 }
 
 // PublishDraftRecord publishes a draft record in InvenioRDM.
-func PublishDraftRecord(record APIResponse, host string, apiKey string) (APIResponse, error) {
+func PublishDraftRecord(record commonmeta.APIResponse, host string, apiKey string) (commonmeta.APIResponse, error) {
 	type Response struct {
 		*Inveniordm
 		Created string `json:"created,omitempty"`
@@ -679,7 +675,7 @@ func CreateCommunity(community string, host string, apiKey string) (string, erro
 }
 
 // AddRecordToCommunity adds record to InvenioRDM community.
-func AddRecordToCommunity(record APIResponse, host string, apiKey string, communityID string) (APIResponse, error) {
+func AddRecordToCommunity(record commonmeta.APIResponse, host string, apiKey string, communityID string) (commonmeta.APIResponse, error) {
 	type Response struct {
 		ID string `json:"id"`
 	}
@@ -707,7 +703,7 @@ func AddRecordToCommunity(record APIResponse, host string, apiKey string, commun
 }
 
 // UpdateLegacyRecord updates a record in Rogue Scholar legacy database.
-func UpdateLegacyRecord(record APIResponse, legacyKey string) (APIResponse, error) {
+func UpdateLegacyRecord(record commonmeta.APIResponse, legacyKey string) (commonmeta.APIResponse, error) {
 	now := strconv.FormatInt(time.Now().Unix(), 10)
 	var output = []byte(`{"doi":"` + record.DOI + `", "rid":"` + record.ID + `", "indexed_at":"` + now + `", "indexed":"true"}`)
 	requestURL := fmt.Sprintf("https://db.rogue-scholar.org/rest/v1/posts?id=eq.%s", record.UUID)

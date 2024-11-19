@@ -27,17 +27,6 @@ type Query struct {
 	} `json:"hits"`
 }
 
-type APIResponse struct {
-	ID         string `json:"id"`
-	DOI        string `json:"doi"`
-	UUID       string `json:"uuid,omitempty"`
-	Community  string `json:"community,omitempty"`
-	Created    string `json:"created,omitempty"`
-	Updated    string `json:"updated,omitempty"`
-	RevisionID int    `json:"revision_id,omitempty"`
-	Status     string `json:"status,omitempty"`
-}
-
 // Inveniordm represents the InvenioRDM metadata.
 type Inveniordm struct {
 	ID           string       `json:"id,omitempty"`

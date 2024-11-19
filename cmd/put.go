@@ -38,6 +38,11 @@ commonmeta put 10.5555/12345678 -f crossref -t inveniordm -h rogue-scholar.org -
 		var err error
 		var data commonmeta.Data
 
+		depositor, _ := cmd.Flags().GetString("depositor")
+		email, _ := cmd.Flags().GetString("email")
+		registrant, _ := cmd.Flags().GetString("registrant")
+		loginID, _ := cmd.Flags().GetString("login_id")
+		loginPasswd, _ := cmd.Flags().GetString("login_passwd")
 		to, _ := cmd.Flags().GetString("to")
 		host, _ := cmd.Flags().GetString("host")
 		token, _ := cmd.Flags().GetString("token")
@@ -109,14 +114,26 @@ commonmeta put 10.5555/12345678 -f crossref -t inveniordm -h rogue-scholar.org -
 			cmd.PrintErr(err)
 		}
 
-		var output []byte
-		if to == "inveniordm" {
-			var record inveniordm.APIResponse
-			record, err = inveniordm.Upsert(record, host, token, legacyKey, data)
-			if err != nil {
-				cmd.PrintErr(err)
+		var record commonmeta.APIResponse
+		if to == "crossrefxml" {
+			// if depositor == "" || email == "" || registrant == "" || loginID == "" || loginPasswd == "" {
+			// 	fmt.Println("Please provide a crossref depositor, email, registrant, login_id and login_passwd")
+			// 	return
+			// }
+			account := crossrefxml.Account{
+				Depositor:   depositor,
+				Email:       email,
+				Registrant:  registrant,
+				LoginID:     loginID,
+				LoginPasswd: loginPasswd,
 			}
-			output, err = json.Marshal(record)
+			record, err = crossrefxml.Upsert(record, account, data)
+		} else if to == "inveniordm" {
+			if host == "" || token == "" {
+				fmt.Println("Please provide an inveniordm host and token")
+				return
+			}
+			record, err = inveniordm.Upsert(record, host, token, legacyKey, data)
 			if err != nil {
 				cmd.PrintErr(err)
 			}
@@ -125,7 +142,17 @@ commonmeta put 10.5555/12345678 -f crossref -t inveniordm -h rogue-scholar.org -
 			return
 		}
 
+		if err != nil {
+			cmd.PrintErr(err)
+		}
+
+		var output []byte
 		var out bytes.Buffer
+		output, err = json.Marshal(record)
+		if err != nil {
+			cmd.PrintErr(err)
+		}
+
 		json.Indent(&out, output, "", "  ")
 		cmd.Println(out.String())
 

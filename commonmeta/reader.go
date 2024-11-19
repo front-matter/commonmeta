@@ -276,6 +276,18 @@ type Title struct {
 	Language string `json:"language,omitempty"`
 }
 
+type APIResponse struct {
+	DOI        string `json:"doi"`
+	ID         string `json:"id,omitempty"`
+	DOIBatchID string `json:"doi_batch_id,omitempty"`
+	UUID       string `json:"uuid,omitempty"`
+	Community  string `json:"community,omitempty"`
+	Created    string `json:"created,omitempty"`
+	Updated    string `json:"updated,omitempty"`
+	Timestamp  string `json:"timestamp,omitempty"`
+	Status     string `json:"status,omitempty"`
+}
+
 // Load loads the metadata for a single work from a JSON file
 func Load(filename string) (Data, error) {
 	var data Data
