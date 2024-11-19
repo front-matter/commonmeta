@@ -12,6 +12,9 @@ import (
 
 // UpdateLegacyRecord updates a record in Rogue Scholar legacy database.
 func UpdateLegacyRecord(record commonmeta.APIResponse, legacyKey string, field string) (commonmeta.APIResponse, error) {
+	if legacyKey == "" {
+		return record, fmt.Errorf("no legacy key provided")
+	}
 	now := strconv.FormatInt(time.Now().Unix(), 10)
 	var output []byte
 	if field == "rid" && record.ID != "" {
