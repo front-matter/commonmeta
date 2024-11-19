@@ -16,7 +16,7 @@ import (
 	"github.com/front-matter/commonmeta/commonmeta"
 	"github.com/front-matter/commonmeta/dateutils"
 	"github.com/front-matter/commonmeta/doiutils"
-	"github.com/front-matter/commonmeta/inveniordm"
+	"github.com/front-matter/commonmeta/roguescholar"
 	"github.com/front-matter/commonmeta/utils"
 	"github.com/google/uuid"
 	"github.com/xeipuuv/gojsonschema"
@@ -607,7 +607,7 @@ func Upsert(record commonmeta.APIResponse, account Account, legacyKey string, da
 
 	// update rogue-scholar legacy record if legacy key is provided
 	if doiutils.IsRogueScholarDOI(data.ID) && legacyKey != "" {
-		record, err = inveniordm.UpdateLegacyRecord(record, legacyKey, "doi")
+		record, err = roguescholar.UpdateLegacyRecord(record, legacyKey, "doi")
 		if err != nil {
 			return record, err
 		}
@@ -688,7 +688,7 @@ func UpsertAll(list []commonmeta.Data, account Account, legacyKey string) ([]com
 	// update rogue-scholar legacy record with doi if legacy key is provided
 	for i := range records {
 		if doiutils.IsRogueScholarDOI(records[i].DOI) && legacyKey != "" {
-			records[i], err = inveniordm.UpdateLegacyRecord(records[i], legacyKey, "doi")
+			records[i], err = roguescholar.UpdateLegacyRecord(records[i], legacyKey, "doi")
 			if err != nil {
 				return records, err
 			}

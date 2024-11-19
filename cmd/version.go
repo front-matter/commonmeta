@@ -13,7 +13,7 @@ var versionCmd = &cobra.Command{
 	Short: "Print the version number of commonmeta",
 	Long:  `All software has versions. This is commonmeta's`,
 	Run: func(cmd *cobra.Command, args []string) {
-		cmd.Println("Commonmeta v0.6.1 -- HEAD")
+		cmd.Println("Commonmeta v0.6.2 -- HEAD")
 	},
 }
 
