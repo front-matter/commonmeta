@@ -9,13 +9,21 @@ import (
 )
 
 type DateStruct struct {
-	Year  string
-	Month string
-	Day   string
+	Year  int
+	Month int
+	Day   int
 }
+
+type DateSlice []interface{}
 
 // Iso8601DateFormat is the ISO 8601 date format without time.
 const Iso8601DateFormat = "2006-01-02"
+
+// Iso8601DateMonthFormat is the ISO 8601 date format without time and day.
+const Iso8601DateMonthFormat = "2006-01"
+
+// Iso8601DateYearFormat is the ISO 8601 date format without time, month and day.
+const Iso8601DateYearFormat = "2006"
 
 // Iso8601DateTimeFormat is the ISO 8601 date format with time.
 const Iso8601DateTimeFormat = "2006-01-02T15:04:05Z"
@@ -26,23 +34,24 @@ const CrossrefDateTimeFormat = "20060102150405"
 // ParseDate parses date strings in various formats and returns a date string in ISO 8601 format.
 func ParseDate(iso8601Time string) string {
 	date := GetDateStruct(iso8601Time)
-	if date.Year == "0000" {
+	if date.Year == 0 {
 		return ""
 	}
-	dateStr := date.Year
-	if date.Month != "00" {
-		dateStr += "-" + date.Month
+	dateStr := fmt.Sprintf("%04d", date.Year)
+	if date.Month != 0 {
+		dateStr += "-" + fmt.Sprintf("%02d", date.Month)
 	}
-	if date.Day != "00" {
-		dateStr += "-" + date.Day
+	if date.Day != 0 {
+		dateStr += "-" + fmt.Sprintf("%02d", date.Day)
 	}
 	return dateStr
 }
 
 // GetDateParts return date parts from an ISO 8601 date string
-func GetDateParts(iso8601Time string) [][]int {
+func GetDateParts(iso8601Time string) []DateSlice {
+	var dateParts []DateSlice
 	if iso8601Time == "" {
-		return [][]int{}
+		return dateParts
 	}
 
 	// optionally add missing zeros to the date string
@@ -52,7 +61,7 @@ func GetDateParts(iso8601Time string) [][]int {
 	year, _ := strconv.Atoi(iso8601Time[0:4])
 	month, _ := strconv.Atoi(iso8601Time[5:7])
 	day, _ := strconv.Atoi(iso8601Time[8:10])
-	dateParts := [][]int{{year, month, day}}
+	dateParts = append(dateParts, DateSlice{year, month, day})
 	return dateParts
 }
 
@@ -66,9 +75,9 @@ func GetDateStruct(iso8601Time string) DateStruct {
 	if len(iso8601Time) < 10 {
 		iso8601Time = iso8601Time + strings.Repeat("0", 10-len(iso8601Time))
 	}
-	year := iso8601Time[0:4]
-	month := iso8601Time[5:7]
-	day := iso8601Time[8:10]
+	year, _ := strconv.Atoi(iso8601Time[0:4])
+	month, _ := strconv.Atoi(iso8601Time[5:7])
+	day, _ := strconv.Atoi(iso8601Time[8:10])
 
 	return DateStruct{
 		Year:  year,
@@ -88,23 +97,38 @@ func GetDateTimeFromUnixTimestamp(timestamp int64) string {
 }
 
 // GetDateFromDateParts returns a date string from date parts
-func GetDateFromDateParts(dateAsParts [][]int) string {
+// uses interface{} to allow for float64 and string types
+func GetDateFromDateParts(dateAsParts []DateSlice) string {
 	dateParts := dateAsParts[0]
-	switch len(dateParts) {
-	case 0:
+	length := len(dateParts)
+	var year, month, day float64
+	var ok bool
+	if length == 0 {
 		return ""
-	case 1:
-		year := dateParts[0]
+	}
+	if length > 0 {
+		year, ok = dateParts[0].(float64)
+		if !ok {
+			year, _ = strconv.ParseFloat(dateParts[0].(string), 64)
+		}
 		if year == 0 {
 			return ""
 		}
-		return GetDateFromParts(year)
-	case 2:
-		year, month := dateParts[0], dateParts[1]
-		return GetDateFromParts(year, month)
-	case 3:
-		year, month, day := dateParts[0], dateParts[1], dateParts[2]
-		return GetDateFromParts(year, month, day)
+		return GetDateFromParts(int(year))
+	}
+	if length > 1 {
+		month, ok = dateParts[1].(float64)
+		if !ok {
+			month, _ = strconv.ParseFloat(dateParts[1].(string), 64)
+		}
+		return GetDateFromParts(int(year), int(month))
+	}
+	if length > 2 {
+		day, ok = dateParts[2].(float64)
+		if !ok {
+			day, _ = strconv.ParseFloat(dateParts[2].(string), 64)
+		}
+		return GetDateFromParts(int(year), int(month), int(day))
 	}
 	return ""
 }

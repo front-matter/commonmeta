@@ -70,16 +70,16 @@ type Content struct {
 	GroupTitle string `json:"group-title"`
 	Issue      string `json:"issue"`
 	Published  struct {
-		DateAsParts [][]int `json:"date-parts"`
-		DateTime    string  `json:"date-time"`
+		DateAsParts []dateutils.DateSlice `json:"date-parts"`
+		DateTime    string                `json:"date-time"`
 	} `json:"published"`
 	Issued struct {
-		DateAsParts [][]int `json:"date-parts"`
-		DateTime    string  `json:"date-time"`
+		DateAsParts []dateutils.DateSlice `json:"date-parts"`
+		DateTime    string                `json:"date-time"`
 	} `json:"issued"`
 	Created struct {
-		DateAsParts [][]int `json:"date-parts"`
-		DateTime    string  `json:"date-time"`
+		DateAsParts []dateutils.DateSlice `json:"date-parts"`
+		DateTime    string                `json:"date-time"`
 	} `json:"created"`
 	ISSNType []struct {
 		Value string `json:"value"`

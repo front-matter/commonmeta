@@ -372,9 +372,9 @@ func Convert(data commonmeta.Data) (Body, error) {
 			datePublished := dateutils.GetDateStruct(data.Date.Published)
 			postedDate = PostedDate{
 				MediaType: "online",
-				Year:      datePublished.Year,
-				Month:     datePublished.Month,
-				Day:       datePublished.Day,
+				Year:      fmt.Sprintf("%02d", datePublished.Month),
+				Month:     fmt.Sprintf("%02d", datePublished.Month),
+				Day:       fmt.Sprintf("%02d", datePublished.Day),
 			}
 		}
 		c.PostedContent = append(c.PostedContent, PostedContent{

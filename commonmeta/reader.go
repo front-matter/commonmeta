@@ -245,7 +245,7 @@ type License struct {
 // Publisher represents the publisher of a publication, defined in the commonmeta JSON Schema.
 type Publisher struct {
 	ID   string `json:"id,omitempty"`
-	Name string `json:"name"`
+	Name string `json:"name,omitempty"`
 }
 
 // Reference represents the reference of a publication, defined in the commonmeta JSON Schema.

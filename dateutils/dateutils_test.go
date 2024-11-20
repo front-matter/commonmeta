@@ -54,10 +54,10 @@ func TestGetDateStruct(t *testing.T) {
 		want dateutils.DateStruct
 	}
 	testCases := []testCase{
-		{date: "2021-01-22", want: dateutils.DateStruct{Year: "2021", Month: "01", Day: "22"}},
-		{date: "2021-01", want: dateutils.DateStruct{Year: "2021", Month: "01", Day: "00"}},
-		{date: "2021", want: dateutils.DateStruct{Year: "2021", Month: "00", Day: "00"}},
-		{date: "", want: dateutils.DateStruct{Year: "", Month: "", Day: ""}},
+		{date: "2021-01-22", want: dateutils.DateStruct{Year: 2021, Month: 1, Day: 22}},
+		{date: "2021-01", want: dateutils.DateStruct{Year: 2021, Month: 1, Day: 0}},
+		{date: "2021", want: dateutils.DateStruct{Year: 2021, Month: 0, Day: 0}},
+		{date: "", want: dateutils.DateStruct{Year: 0, Month: 0, Day: 0}},
 	}
 	for _, tc := range testCases {
 		got := dateutils.GetDateStruct(tc.date)

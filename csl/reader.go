@@ -4,6 +4,7 @@ package csl
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"log"
 	"os"
 	"path"
@@ -21,25 +22,31 @@ type CSL struct {
 	Type     string `json:"type"`
 	Abstract string `json:"abstract,omitempty"`
 	Accessed struct {
-		DateAsParts [][]interface{} `json:"date-parts"`
+		DateAsParts []dateutils.DateSlice `json:"date-parts"`
+		DateTime    string                `json:"date-time"`
 	} `json:"accessed"`
-	Author         []Author `json:"author,omitempty"`
-	Categories     []string `json:"categories,omitempty"`
-	ContainerTitle string   `json:"container-title,omitempty"`
-	DOI            string   `json:"DOI,omitempty"`
-	Editor         []Author `json:"editor,omitempty"`
-	ISSN           string   `json:"ISSN,omitempty"`
-	Issue          string   `json:"issue,omitempty"`
-	Issued         struct {
-		DateAsParts [][]interface{} `json:"date-parts"`
+	Author              []Author `json:"author,omitempty"`
+	Categories          []string `json:"categories,omitempty"`
+	ContainerTitle      string   `json:"container-title,omitempty"`
+	ContainerTitleShort string   `json:"container-title-short,omitempty"`
+	DOI                 string   `json:"DOI,omitempty"`
+	Editor              []Author `json:"editor,omitempty"`
+	ISSN                string   `json:"ISSN,omitempty"`
+	Issue               string   `json:"issue,omitempty"`
+	Issued              struct {
+		DateAsParts []dateutils.DateSlice `json:"date-parts"`
+		DateTime    string                `json:"date-time"`
 	} `json:"issued"`
-	Keyword                      string `json:"keyword,omitempty"`
-	Language                     string `json:"language,omitempty"`
-	License                      string `json:"license,omitempty"`
-	Page                         string `json:"page,omitempty"`
-	Publisher                    string `json:"publisher,omitempty"`
-	Submitted_and_updated_legacy struct {
-		DateAsParts [][]interface{} `json:"date-parts"`
+	Keyword   string `json:"keyword,omitempty"`
+	Language  string `json:"language,omitempty"`
+	License   string `json:"license,omitempty"`
+	Page      string `json:"page,omitempty"`
+	PMID      string `json:"PMID,omitempty"`
+	Publisher string `json:"publisher,omitempty"`
+	Source    string `json:"source,omitempty"`
+	Submitted struct {
+		DateAsParts []dateutils.DateSlice `json:"date-parts"`
+		DateTime    string                `json:"date-time"`
 	} `json:"submitted"`
 	Title   string `json:"title,omitempty"`
 	URL     string `json:"URL,omitempty"`
@@ -54,18 +61,28 @@ type CSL struct {
 
 type Content struct {
 	*CSL
+	Accessed struct {
+		DateAsParts json.RawMessage `json:"date-parts"`
+	} `json:"accessed"`
+	Issued struct {
+		DateAsParts json.RawMessage `json:"date-parts"`
+	} `json:"issued"`
 	Publisher json.RawMessage `json:"publisher"`
+	Submitted struct {
+		DateAsParts json.RawMessage `json:"date-parts"`
+	} `json:"submitted"`
 }
 
 // Authors represents the author in the CSL item.
 type Author struct {
-	Family  string `json:"family"`
-	Given   string `json:"given"`
-	Literal string `json:"literal"`
+	Family              string `json:"family,omitempty"`
+	Given               string `json:"given,omitempty"`
+	NonDroppingParticle string `json:"non-dropping-particle,omitempty"`
+	Literal             string `json:"literal,omitempty"`
 }
 
 type Publisher struct {
-	Name string `json:"name"`
+	Name string `json:"name,omitempty"`
 }
 
 // source: https://docs.citationstyles.org/en/stable/specification.html?highlight=book#appendix-iii-types
@@ -193,8 +210,8 @@ func Read(content Content) (commonmeta.Data, error) {
 	}
 
 	var identifier, identifierType string
-	if content.ISSN != "" {
-		identifier := content.ISSN
+	if len(content.ISSN) >= 9 {
+		identifier = content.ISSN[:9] // remove extra info, e.g. (Electronic)
 		identifierType = "ISSN"
 		data.Relations = append(data.Relations, commonmeta.Relation{
 			ID:   utils.ISSNAsURL(identifier),
@@ -206,7 +223,7 @@ func Read(content Content) (commonmeta.Data, error) {
 	if content.Page != "" {
 		pages := strings.Split(content.Page, "-")
 		firstPage = pages[0]
-		if len(pages) > 1 {
+		if len(pages) > 1 && pages[1] > firstPage {
 			lastPage = pages[1]
 		}
 	}
@@ -217,8 +234,9 @@ func Read(content Content) (commonmeta.Data, error) {
 		Identifier:     identifier,
 		IdentifierType: identifierType,
 		Volume:         content.Volume,
-		Issue:          firstPage,
-		FirstPage:      lastPage,
+		Issue:          content.Issue,
+		FirstPage:      firstPage,
+		LastPage:       lastPage,
 	}
 
 	if len(content.Author) > 0 {
@@ -254,25 +272,28 @@ func Read(content Content) (commonmeta.Data, error) {
 		}
 	}
 
-	// parse date parts as either string or int
-	// var publisher Publisher
-	// var publisherName string
-	// err = json.Unmarshal(content.Issued.DateAsParts, &publisher)
-	// if err != nil {
-	// 	err = json.Unmarshal(content.Issued.DateAsParts, &publisherName)
-	// }
-	// if err != nil {
-	// 	log.Println(err)
-	// }
-
+	// parse date parts, which can be int or string
+	var dateAsParts []dateutils.DateSlice
 	if len(content.Issued.DateAsParts) > 0 {
-		data.Date.Published = dateutils.GetDateFromDateParts(content.Issued.DateAsParts)
+		err := json.Unmarshal(content.Issued.DateAsParts, &dateAsParts)
+		if err != nil {
+			fmt.Println(err)
+		}
+		data.Date.Published = dateutils.GetDateFromDateParts(dateAsParts)
 	}
 	if len(content.Submitted.DateAsParts) > 0 {
-		data.Date.Submitted = dateutils.GetDateFromDateParts(content.Submitted.DateAsParts)
+		err := json.Unmarshal(content.Submitted.DateAsParts, &dateAsParts)
+		if err != nil {
+			fmt.Println(err)
+		}
+		data.Date.Submitted = dateutils.GetDateFromDateParts(dateAsParts)
 	}
 	if len(content.Accessed.DateAsParts) > 0 {
-		data.Date.Accessed = dateutils.GetDateFromDateParts(content.Accessed.DateAsParts)
+		err := json.Unmarshal(content.Accessed.DateAsParts, &dateAsParts)
+		if err != nil {
+			fmt.Println(err)
+		}
+		data.Date.Accessed = dateutils.GetDateFromDateParts(dateAsParts)
 	}
 
 	description := content.Abstract
@@ -282,6 +303,9 @@ func Read(content Content) (commonmeta.Data, error) {
 
 	if content.ID != "" && content.ID != data.ID {
 		id, identifierType := utils.ValidateID(content.ID)
+		if id == "" {
+			id = content.ID
+		}
 		if identifierType == "" {
 			identifierType = "Other"
 		}
@@ -293,19 +317,22 @@ func Read(content Content) (commonmeta.Data, error) {
 
 	data.Language = content.Language
 
-	licenseURL, err := utils.NormalizeURL(content.License, true, true)
-	if err != nil {
-		return data, err
-	}
-	licenseID := utils.URLToSPDX(licenseURL)
-	data.License = commonmeta.License{
-		ID:  licenseID,
-		URL: licenseURL,
+	if content.License != "" {
+		licenseURL, err := utils.NormalizeURL(content.License, true, true)
+		if err != nil {
+			return data, err
+		}
+		licenseID := utils.URLToSPDX(licenseURL)
+		data.License = commonmeta.License{
+			ID:  licenseID,
+			URL: licenseURL,
+		}
 	}
 
 	// parse Publisher as either string or struct
 	var publisher Publisher
 	var publisherName string
+	var err error
 	err = json.Unmarshal(content.Publisher, &publisher)
 	if err != nil {
 		err = json.Unmarshal(content.Publisher, &publisherName)
@@ -346,8 +373,9 @@ func Read(content Content) (commonmeta.Data, error) {
 	if err != nil {
 		return data, err
 	}
-
 	data.URL = url
+
+	data.Version = content.Version
 
 	return data, nil
 }

@@ -73,6 +73,9 @@ func NormalizeURL(str string, secure bool, lower bool) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	if u.Host == "" {
+		return "", nil
+	}
 	// strip trailing slash if no query
 	if u.Path != "" && len(u.RawQuery) == 0 && u.Path[len(u.Path)-1] == '/' {
 		u.Path = u.Path[:len(u.Path)-1]
