@@ -296,9 +296,10 @@ func Read(content Content) (commonmeta.Data, error) {
 		data.Date.Accessed = dateutils.GetDateFromDateParts(dateAsParts)
 	}
 
-	description := content.Abstract
-	data.Descriptions = []commonmeta.Description{
-		{Description: utils.Sanitize(description), Type: "Abstract"},
+	if content.Abstract == "" {
+		data.Descriptions = []commonmeta.Description{
+			{Description: utils.Sanitize(content.Abstract), Type: "Abstract"},
+		}
 	}
 
 	if content.ID != "" && content.ID != data.ID {
@@ -315,8 +316,9 @@ func Read(content Content) (commonmeta.Data, error) {
 		})
 	}
 
-	data.Language = content.Language
-
+	if content.Language != "" {
+		data.Language = utils.GetLanguage(content.Language, "iso639-1")
+	}
 	if content.License != "" {
 		licenseURL, err := utils.NormalizeURL(content.License, true, true)
 		if err != nil {

@@ -537,7 +537,9 @@ func CamelCaseString(str string) string {
 
 func GetLanguage(lang string, format string) string {
 	language := iso639_3.FromAnyCode(lang)
-	if format == "iso639-3" {
+	if language == nil {
+		return ""
+	} else if format == "iso639-3" {
 		return language.Part3
 	} else if format == "name" {
 		return language.Name
