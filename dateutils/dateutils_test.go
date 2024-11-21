@@ -74,6 +74,13 @@ func ExampleGetDateParts() {
 	// [[2023 12 6]]
 }
 
+func ExampleGetDateFromDateParts() {
+	s := dateutils.GetDateFromDateParts([]dateutils.DateSlice{{2024}})
+	fmt.Println(s)
+	// Output:
+	// 2024-11-11
+}
+
 func ExampleGetDateFromUnixTimestamp() {
 	s := dateutils.GetDateFromUnixTimestamp(1611312000)
 	fmt.Println(s)

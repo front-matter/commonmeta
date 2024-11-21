@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"log"
 	"os"
 	"path"
 	"strings"
@@ -40,6 +39,7 @@ type CSL struct {
 	Keyword   string `json:"keyword,omitempty"`
 	Language  string `json:"language,omitempty"`
 	License   string `json:"license,omitempty"`
+	Note      string `json:"note,omitempty"`
 	Page      string `json:"page,omitempty"`
 	PMID      string `json:"PMID,omitempty"`
 	Publisher string `json:"publisher,omitempty"`
@@ -61,16 +61,7 @@ type CSL struct {
 
 type Content struct {
 	*CSL
-	Accessed struct {
-		DateAsParts json.RawMessage `json:"date-parts"`
-	} `json:"accessed"`
-	Issued struct {
-		DateAsParts json.RawMessage `json:"date-parts"`
-	} `json:"issued"`
 	Publisher json.RawMessage `json:"publisher"`
-	Submitted struct {
-		DateAsParts json.RawMessage `json:"date-parts"`
-	} `json:"submitted"`
 }
 
 // Authors represents the author in the CSL item.
@@ -148,7 +139,6 @@ func Load(filename string) (commonmeta.Data, error) {
 		return data, errors.New("error reading file")
 	}
 	defer file.Close()
-
 	decoder := json.NewDecoder(file)
 	err = decoder.Decode(&content)
 	if err != nil {
@@ -201,7 +191,10 @@ func Read(content Content) (commonmeta.Data, error) {
 
 	if content.DOI != "" {
 		data.ID = doiutils.NormalizeDOI(content.DOI)
-	} else {
+	} else if strings.HasPrefix(content.Note, "DOI: ") {
+		doi := strings.TrimPrefix(content.Note, "DOI: ")
+		data.ID = doiutils.NormalizeDOI(doi)
+	} else if content.URL != "" {
 		data.ID = content.URL
 	}
 	data.Type = CSLToCMMappings[content.Type]
@@ -273,36 +266,23 @@ func Read(content Content) (commonmeta.Data, error) {
 	}
 
 	// parse date parts, which can be int or string
-	var dateAsParts []dateutils.DateSlice
 	if len(content.Issued.DateAsParts) > 0 {
-		err := json.Unmarshal(content.Issued.DateAsParts, &dateAsParts)
-		if err != nil {
-			fmt.Println(err)
-		}
-		data.Date.Published = dateutils.GetDateFromDateParts(dateAsParts)
+		data.Date.Published = dateutils.GetDateFromDateParts(content.Issued.DateAsParts)
 	}
 	if len(content.Submitted.DateAsParts) > 0 {
-		err := json.Unmarshal(content.Submitted.DateAsParts, &dateAsParts)
-		if err != nil {
-			fmt.Println(err)
-		}
-		data.Date.Submitted = dateutils.GetDateFromDateParts(dateAsParts)
+		data.Date.Submitted = dateutils.GetDateFromDateParts(content.Submitted.DateAsParts)
 	}
 	if len(content.Accessed.DateAsParts) > 0 {
-		err := json.Unmarshal(content.Accessed.DateAsParts, &dateAsParts)
-		if err != nil {
-			fmt.Println(err)
-		}
-		data.Date.Accessed = dateutils.GetDateFromDateParts(dateAsParts)
+		data.Date.Accessed = dateutils.GetDateFromDateParts(content.Accessed.DateAsParts)
 	}
 
-	if content.Abstract == "" {
+	if content.Abstract != "" {
 		data.Descriptions = []commonmeta.Description{
 			{Description: utils.Sanitize(content.Abstract), Type: "Abstract"},
 		}
 	}
 
-	if content.ID != "" && content.ID != data.ID {
+	if content.ID != "" {
 		id, identifierType := utils.ValidateID(content.ID)
 		if id == "" {
 			id = content.ID
@@ -310,10 +290,12 @@ func Read(content Content) (commonmeta.Data, error) {
 		if identifierType == "" {
 			identifierType = "Other"
 		}
-		data.Identifiers = append(data.Identifiers, commonmeta.Identifier{
-			Identifier:     id,
-			IdentifierType: identifierType,
-		})
+		if identifierType != "DOI" {
+			data.Identifiers = append(data.Identifiers, commonmeta.Identifier{
+				Identifier:     id,
+				IdentifierType: identifierType,
+			})
+		}
 	}
 
 	if content.Language != "" {
@@ -332,23 +314,25 @@ func Read(content Content) (commonmeta.Data, error) {
 	}
 
 	// parse Publisher as either string or struct
-	var publisher Publisher
-	var publisherName string
-	var err error
-	err = json.Unmarshal(content.Publisher, &publisher)
-	if err != nil {
-		err = json.Unmarshal(content.Publisher, &publisherName)
-	}
-	if err != nil {
-		log.Println(err)
-	}
-	if publisher.Name != "" {
-		data.Publisher = commonmeta.Publisher{
-			Name: publisher.Name,
+	if len(content.Publisher) != 0 {
+		var publisher Publisher
+		var publisherName string
+		var err error
+		err = json.Unmarshal(content.Publisher, &publisher)
+		if err != nil {
+			err = json.Unmarshal(content.Publisher, &publisherName)
 		}
-	} else if publisherName != "" {
-		data.Publisher = commonmeta.Publisher{
-			Name: publisherName,
+		if err != nil {
+			fmt.Println(2, err)
+		}
+		if publisher.Name != "" {
+			data.Publisher = commonmeta.Publisher{
+				Name: publisher.Name,
+			}
+		} else if publisherName != "" {
+			data.Publisher = commonmeta.Publisher{
+				Name: publisherName,
+			}
 		}
 	}
 
@@ -388,7 +372,8 @@ func ReadAll(content []Content) ([]commonmeta.Data, error) {
 	for _, v := range content {
 		d, err := Read(v)
 		if err != nil {
-			log.Println(err)
+			fmt.Println(v.ID)
+			fmt.Println(err)
 		}
 		data = append(data, d)
 	}

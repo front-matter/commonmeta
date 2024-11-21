@@ -101,34 +101,30 @@ func GetDateTimeFromUnixTimestamp(timestamp int64) string {
 func GetDateFromDateParts(dateAsParts []DateSlice) string {
 	dateParts := dateAsParts[0]
 	length := len(dateParts)
-	var year, month, day float64
-	var ok bool
-	if length == 0 {
+	parts := make([]float64, length)
+	if length == 0 || dateParts[0] == nil {
 		return ""
 	}
-	if length > 0 {
-		year, ok = dateParts[0].(float64)
-		if !ok {
-			year, _ = strconv.ParseFloat(dateParts[0].(string), 64)
+	for i, part := range dateParts {
+		switch v := part.(type) {
+		case string:
+			parts[i], _ = strconv.ParseFloat(part.(string), 64)
+		case int:
+			parts[i] = float64(part.(int))
+		case float64:
+			parts[i] = part.(float64)
+		default:
+			fmt.Printf("I don't know about type %T!\n", v)
 		}
-		if year == 0 {
-			return ""
-		}
-		return GetDateFromParts(int(year))
 	}
-	if length > 1 {
-		month, ok = dateParts[1].(float64)
-		if !ok {
-			month, _ = strconv.ParseFloat(dateParts[1].(string), 64)
-		}
-		return GetDateFromParts(int(year), int(month))
-	}
-	if length > 2 {
-		day, ok = dateParts[2].(float64)
-		if !ok {
-			day, _ = strconv.ParseFloat(dateParts[2].(string), 64)
-		}
-		return GetDateFromParts(int(year), int(month), int(day))
+	if parts[0] == 0 {
+		return ""
+	} else if length == 1 {
+		return GetDateFromParts(int(parts[0]))
+	} else if length == 2 {
+		return GetDateFromParts(int(parts[0]), int(parts[1]))
+	} else if length == 3 {
+		return GetDateFromParts(int(parts[0]), int(parts[1]), int(parts[2]))
 	}
 	return ""
 }
