@@ -121,10 +121,6 @@ commonmeta put 10.5555/12345678 -f crossref -t inveniordm -h rogue-scholar.org -
 
 		var record commonmeta.APIResponse
 		if to == "crossrefxml" {
-			// if depositor == "" || email == "" || registrant == "" || loginID == "" || loginPasswd == "" {
-			// 	fmt.Println("Please provide a crossref depositor, email, registrant, login_id and login_passwd")
-			// 	return
-			// }
 			account := crossrefxml.Account{
 				Depositor:   depositor,
 				Email:       email,

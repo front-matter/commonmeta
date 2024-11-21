@@ -2,7 +2,6 @@ package inveniordm
 
 import (
 	"bytes"
-	"context"
 	"crypto/tls"
 	"embed"
 	"encoding/json"
@@ -11,7 +10,6 @@ import (
 	"net/http"
 	"path/filepath"
 	"slices"
-	"strconv"
 	"strings"
 	"time"
 
@@ -545,26 +543,19 @@ func CreateDraftRecord(record commonmeta.APIResponse, client *InvenioRDMClient, 
 		"Authorization": {"Bearer " + apiKey},
 	}
 	resp, err = client.Do(req)
-	fmt.Println("x-ratelimit-remaining:", resp.Header.Get("x-ratelimit-remaining"))
 	if err != nil {
-		fmt.Println("error creating draft record:", err)
 		return record, err
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode == 429 {
-		reset, _ := strconv.ParseInt(resp.Header.Get("x-ratelimit-reset"), 10, 64)
-		interval := reset - time.Now().Unix()
-		fmt.Println("x-ratelimit-reset in", interval)
 		record.Status = "failed_rate_limited"
 		return record, fmt.Errorf("rate limited")
 	} else if resp.StatusCode != 201 {
-		fmt.Println("HTTP response error:", resp.StatusCode)
 		return record, err
 	}
 	body, _ := io.ReadAll(resp.Body)
 	err = json.Unmarshal(body, &response)
 	if err != nil {
-		fmt.Println("error creating draft record:", err)
 		return record, err
 	}
 	if response != (Response{}) {
@@ -596,7 +587,6 @@ func EditPublishedRecord(record commonmeta.APIResponse, client *InvenioRDMClient
 	if err != nil {
 		return record, err
 	}
-	fmt.Println("x-ratelimit-remaining:", resp.Header.Get("x-ratelimit-remaining"))
 	defer resp.Body.Close()
 	body, _ := io.ReadAll(resp.Body)
 	err = json.Unmarshal(body, &response)
@@ -630,7 +620,6 @@ func UpdateDraftRecord(record commonmeta.APIResponse, client *InvenioRDMClient, 
 	if err != nil {
 		return record, err
 	}
-	fmt.Println("x-ratelimit-remaining:", resp.Header.Get("x-ratelimit-remaining"))
 	defer resp.Body.Close()
 	body, _ := io.ReadAll(resp.Body)
 	err = json.Unmarshal(body, &response)
@@ -664,7 +653,6 @@ func PublishDraftRecord(record commonmeta.APIResponse, client *InvenioRDMClient,
 	if err != nil {
 		return record, err
 	}
-	fmt.Println("x-ratelimit-remaining:", resp.Header.Get("x-ratelimit-remaining"))
 	defer resp.Body.Close()
 	body, _ := io.ReadAll(resp.Body)
 	if resp.StatusCode != 202 {
@@ -698,7 +686,6 @@ func CreateCommunity(community string, client *InvenioRDMClient, apiKey string) 
 	if err != nil {
 		return "", err
 	}
-	fmt.Println("x-ratelimit-remaining:", resp.Header.Get("x-ratelimit-remaining"))
 	defer resp.Body.Close()
 	body, _ := io.ReadAll(resp.Body)
 	err = json.Unmarshal(body, &response)
@@ -725,7 +712,6 @@ func AddRecordToCommunity(record commonmeta.APIResponse, client *InvenioRDMClien
 	if err != nil {
 		return record, err
 	}
-	fmt.Println("x-ratelimit-remaining:", resp.Header.Get("x-ratelimit-remaining"))
 	defer resp.Body.Close()
 	body, _ := io.ReadAll(resp.Body)
 	err = json.Unmarshal(body, &response)
@@ -742,11 +728,11 @@ type InvenioRDMClient struct {
 
 func (c *InvenioRDMClient) Do(req *http.Request) (*http.Response, error) {
 	// Comment out the below 5 lines to turn off ratelimiting
-	ctx := context.Background()
-	err := c.Ratelimiter.Wait(ctx) // This is a blocking call. Honors the rate limit
-	if err != nil {
-		return nil, err
-	}
+	// ctx := context.Background()
+	// err := c.Ratelimiter.Wait(ctx) // This is a blocking call. Honors the rate limit
+	// if err != nil {
+	// 	return nil, err
+	// }
 	resp, err := c.client.Do(req)
 	if err != nil {
 		return nil, err

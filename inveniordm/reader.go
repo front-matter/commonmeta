@@ -421,7 +421,6 @@ func SearchByDOI(doi string, client *InvenioRDMClient) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	fmt.Println("x-ratelimit-remaining:", resp.Header.Get("x-ratelimit-remaining"))
 	defer resp.Body.Close()
 	body, _ := io.ReadAll(resp.Body)
 	err = json.Unmarshal(body, &query)
@@ -447,9 +446,9 @@ func SearchBySlug(slug string, client *InvenioRDMClient) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	fmt.Println("x-ratelimit-remaining:", resp.Header.Get("x-ratelimit-remaining"))
 	defer resp.Body.Close()
 	body, _ := io.ReadAll(resp.Body)
+
 	err = json.Unmarshal(body, &query)
 	if err != nil {
 		return "", err
