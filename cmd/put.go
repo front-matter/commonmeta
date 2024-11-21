@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/front-matter/commonmeta/commonmeta"
 	"github.com/front-matter/commonmeta/crossrefxml"
@@ -18,6 +19,7 @@ import (
 	"github.com/front-matter/commonmeta/inveniordm"
 	"github.com/front-matter/commonmeta/jsonfeed"
 	"github.com/front-matter/commonmeta/utils"
+	"golang.org/x/time/rate"
 
 	"github.com/front-matter/commonmeta/crossref"
 
@@ -136,7 +138,9 @@ commonmeta put 10.5555/12345678 -f crossref -t inveniordm -h rogue-scholar.org -
 				fmt.Println("Please provide an inveniordm host and token")
 				return
 			}
-			record, err = inveniordm.Upsert(record, host, token, legacyKey, data)
+			rl := rate.NewLimiter(rate.Every(30*time.Second), 300) // 300 request every 30 seconds
+			client := inveniordm.NewClient(rl, host)
+			record, err = inveniordm.Upsert(record, client, token, legacyKey, data)
 			if err != nil {
 				cmd.PrintErr(err)
 			}

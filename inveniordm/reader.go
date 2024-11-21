@@ -393,10 +393,10 @@ func Get(id string) (Content, error) {
 	if err != nil {
 		return content, err
 	}
+	defer resp.Body.Close()
 	if resp.StatusCode != 200 {
 		return content, fmt.Errorf("status code error: %d %s", resp.StatusCode, resp.Status)
 	}
-	defer resp.Body.Close()
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return content, err
@@ -409,16 +409,13 @@ func Get(id string) (Content, error) {
 }
 
 // SearchByDOI searches InvenioRDM records by external DOI.
-func SearchByDOI(doi string, host string) (string, error) {
+func SearchByDOI(doi string, client *InvenioRDMClient) (string, error) {
 	var query Query
 	doistr := doiutils.EscapeDOI(doi)
-	requestURL := fmt.Sprintf("https://%s/api/records?q=doi:%s", host, doistr)
+	requestURL := fmt.Sprintf("https://%s/api/records?q=doi:%s", client.Host, doistr)
 	req, _ := http.NewRequest(http.MethodGet, requestURL, nil)
 	req.Header = http.Header{
 		"Content-Type": {"application/json"},
-	}
-	client := &http.Client{
-		Timeout: time.Second * 10,
 	}
 	resp, err := client.Do(req)
 	if err != nil {
@@ -438,15 +435,12 @@ func SearchByDOI(doi string, host string) (string, error) {
 }
 
 // SearchBySlug searches InvenioRDM communities by slug.
-func SearchBySlug(slug string, host string) (string, error) {
+func SearchBySlug(slug string, client *InvenioRDMClient) (string, error) {
 	var query Query
-	requestURL := fmt.Sprintf("https://%s/api/communities?q=slug:%s", host, slug)
+	requestURL := fmt.Sprintf("https://%s/api/communities?q=slug:%s", client.Host, slug)
 	req, _ := http.NewRequest(http.MethodGet, requestURL, nil)
 	req.Header = http.Header{
 		"Content-Type": {"application/json"},
-	}
-	client := &http.Client{
-		Timeout: time.Second * 10,
 	}
 	resp, err := client.Do(req)
 	if err != nil {

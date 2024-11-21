@@ -8,7 +8,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"math/rand"
 	"net/http"
 	"path/filepath"
 	"slices"
@@ -403,7 +402,7 @@ func WriteAll(list []commonmeta.Data) ([]byte, []gojsonschema.ResultError) {
 }
 
 // Upsert updates or creates a record in InvenioRDM.
-func Upsert(record commonmeta.APIResponse, host string, apiKey string, legacyKey string, data commonmeta.Data) (commonmeta.APIResponse, error) {
+func Upsert(record commonmeta.APIResponse, client *InvenioRDMClient, apiKey string, legacyKey string, data commonmeta.Data) (commonmeta.APIResponse, error) {
 	inveniordm, err := Convert(data)
 	if err != nil {
 		return record, err
@@ -449,48 +448,48 @@ func Upsert(record commonmeta.APIResponse, host string, apiKey string, legacyKey
 		}
 	}
 	// check if record already exists in InvenioRDM
-	record.ID, _ = SearchByDOI(data.ID, host)
+	record.ID, _ = SearchByDOI(data.ID, client)
 
 	if record.ID == "" {
 		// create draft record
-		record, err = CreateDraftRecord(record, host, apiKey, inveniordm)
+		record, err = CreateDraftRecord(record, client, apiKey, inveniordm)
 		if err != nil {
 			return record, err
 		}
 	} else {
 		// create draft record from published record
-		record, err = EditPublishedRecord(record, host, apiKey)
+		record, err = EditPublishedRecord(record, client, apiKey)
 		if err != nil {
 			return record, err
 		}
 
 		// update draft record
-		record, err = UpdateDraftRecord(record, host, apiKey, inveniordm)
+		record, err = UpdateDraftRecord(record, client, apiKey, inveniordm)
 		if err != nil {
 			return record, err
 		}
 	}
 
 	// publish draft record
-	record, err = PublishDraftRecord(record, host, apiKey)
+	record, err = PublishDraftRecord(record, client, apiKey)
 	if err != nil {
 		return record, err
 	}
 
 	// add record to community if community is specified and exists
 	if record.Community != "" {
-		communityID, err := SearchBySlug(record.Community, host)
+		communityID, err := SearchBySlug(record.Community, client)
 		if err != nil {
 			return record, err
 		}
-		record, err = AddRecordToCommunity(record, host, apiKey, communityID)
+		record, err = AddRecordToCommunity(record, client, apiKey, communityID)
 		if err != nil {
 			return record, err
 		}
 	}
 
 	// update rogue-scholar legacy record with Invenio rid if host is rogue-scholar.org
-	if host == "rogue-scholar.org" && legacyKey != "" {
+	if client.Host == "rogue-scholar.org" && legacyKey != "" {
 		record, err = roguescholar.UpdateLegacyRecord(record, legacyKey, "rid")
 		if err != nil {
 			return record, err
@@ -504,18 +503,22 @@ func Upsert(record commonmeta.APIResponse, host string, apiKey string, legacyKey
 func UpsertAll(list []commonmeta.Data, host string, apiKey string, legacyKey string) ([]commonmeta.APIResponse, error) {
 	var records []commonmeta.APIResponse
 
+	// create a new http client with rate limiting and ssl certificate handling on localhost
+	rl := rate.NewLimiter(rate.Every(30*time.Second), 300) // 300 request every 30 seconds
+	client := NewClient(rl, host)
+
 	// iterate over list of records, shuffled to random order to reduce rate limiting issues
-	for i := range list {
-		j := rand.Intn(i + 1)
-		list[i], list[j] = list[j], list[i]
-	}
+	// for i := range list {
+	// 	j := rand.Intn(i + 1)
+	// 	list[i], list[j] = list[j], list[i]
+	// }
 	for _, data := range list {
 		record := commonmeta.APIResponse{ID: data.ID}
 		doi, ok := doiutils.ValidateDOI(data.ID)
 		if !ok && doi == "" {
 			record.Status = "failed_missing_doi"
 		} else {
-			record, _ = Upsert(record, host, apiKey, legacyKey, data)
+			record, _ = Upsert(record, client, apiKey, legacyKey, data)
 		}
 
 		records = append(records, record)
@@ -525,7 +528,7 @@ func UpsertAll(list []commonmeta.Data, host string, apiKey string, legacyKey str
 }
 
 // CreateDraftRecord creates a draft record in InvenioRDM.
-func CreateDraftRecord(record commonmeta.APIResponse, host string, apiKey string, inveniordm Inveniordm) (commonmeta.APIResponse, error) {
+func CreateDraftRecord(record commonmeta.APIResponse, client *InvenioRDMClient, apiKey string, inveniordm Inveniordm) (commonmeta.APIResponse, error) {
 	output, err := json.Marshal(inveniordm)
 	if err != nil {
 		return record, err
@@ -541,9 +544,7 @@ func CreateDraftRecord(record commonmeta.APIResponse, host string, apiKey string
 	var requestURL string
 	var req *http.Request
 	var resp *http.Response
-	rl := rate.NewLimiter(rate.Every(30*time.Second), 50) // 50 request every 10 seconds
-	client := NewClient(rl, host)
-	requestURL = fmt.Sprintf("https://%s/api/records", host)
+	requestURL = fmt.Sprintf("https://%s/api/records", client.Host)
 	req, _ = http.NewRequest(http.MethodPost, requestURL, bytes.NewReader(output))
 	req.Header = http.Header{
 		"Content-Type":  {"application/json"},
@@ -555,6 +556,7 @@ func CreateDraftRecord(record commonmeta.APIResponse, host string, apiKey string
 		fmt.Println("error creating draft record:", err)
 		return record, err
 	}
+	defer resp.Body.Close()
 	if resp.StatusCode == 429 {
 		reset, _ := strconv.ParseInt(resp.Header.Get("x-ratelimit-reset"), 10, 64)
 		interval := reset - time.Now().Unix()
@@ -565,7 +567,6 @@ func CreateDraftRecord(record commonmeta.APIResponse, host string, apiKey string
 		fmt.Println("HTTP response error:", resp.StatusCode)
 		return record, err
 	}
-	defer resp.Body.Close()
 	body, _ := io.ReadAll(resp.Body)
 	err = json.Unmarshal(body, &response)
 	if err != nil {
@@ -582,7 +583,7 @@ func CreateDraftRecord(record commonmeta.APIResponse, host string, apiKey string
 }
 
 // EditPublishedRecord creates a draft record from a published record in InvenioRDM.
-func EditPublishedRecord(record commonmeta.APIResponse, host string, apiKey string) (commonmeta.APIResponse, error) {
+func EditPublishedRecord(record commonmeta.APIResponse, client *InvenioRDMClient, apiKey string) (commonmeta.APIResponse, error) {
 	type Response struct {
 		*Inveniordm
 		Created string `json:"created,omitempty"`
@@ -591,9 +592,7 @@ func EditPublishedRecord(record commonmeta.APIResponse, host string, apiKey stri
 	var response Response
 	var requestURL string
 	var req *http.Request
-	rl := rate.NewLimiter(rate.Every(30*time.Second), 50) // 50 request every 10 seconds
-	client := NewClient(rl, host)
-	requestURL = fmt.Sprintf("https://%s/api/records/%s/draft", host, record.ID)
+	requestURL = fmt.Sprintf("https://%s/api/records/%s/draft", client.Host, record.ID)
 	req, _ = http.NewRequest(http.MethodPost, requestURL, nil)
 	req.Header = http.Header{
 		"Content-Type":  {"application/json"},
@@ -614,7 +613,7 @@ func EditPublishedRecord(record commonmeta.APIResponse, host string, apiKey stri
 }
 
 // UpdateDraftRecord updates a draft record in InvenioRDM.
-func UpdateDraftRecord(record commonmeta.APIResponse, host string, apiKey string, inveniordm Inveniordm) (commonmeta.APIResponse, error) {
+func UpdateDraftRecord(record commonmeta.APIResponse, client *InvenioRDMClient, apiKey string, inveniordm Inveniordm) (commonmeta.APIResponse, error) {
 	output, err := json.Marshal(inveniordm)
 	if err != nil {
 		return record, err
@@ -626,14 +625,12 @@ func UpdateDraftRecord(record commonmeta.APIResponse, host string, apiKey string
 		Updated string `json:"updated,omitempty"`
 	}
 	var response Response
-	requestURL := fmt.Sprintf("https://%s/api/records/%s/draft", host, record.ID)
+	requestURL := fmt.Sprintf("https://%s/api/records/%s/draft", client.Host, record.ID)
 	req, _ := http.NewRequest(http.MethodPut, requestURL, bytes.NewReader(output))
 	req.Header = http.Header{
 		"Content-Type":  {"application/json"},
 		"Authorization": {"Bearer " + apiKey},
 	}
-	rl := rate.NewLimiter(rate.Every(30*time.Second), 50) // 50 request every 10 seconds
-	client := NewClient(rl, host)
 	resp, err := client.Do(req)
 	if err != nil {
 		return record, err
@@ -653,7 +650,7 @@ func UpdateDraftRecord(record commonmeta.APIResponse, host string, apiKey string
 }
 
 // PublishDraftRecord publishes a draft record in InvenioRDM.
-func PublishDraftRecord(record commonmeta.APIResponse, host string, apiKey string) (commonmeta.APIResponse, error) {
+func PublishDraftRecord(record commonmeta.APIResponse, client *InvenioRDMClient, apiKey string) (commonmeta.APIResponse, error) {
 	type Response struct {
 		*Inveniordm
 		Created string `json:"created,omitempty"`
@@ -661,14 +658,12 @@ func PublishDraftRecord(record commonmeta.APIResponse, host string, apiKey strin
 		Status  string `json:"status,omitempty"`
 	}
 	var response Response
-	requestURL := fmt.Sprintf("https://%s/api/records/%s/draft/actions/publish", host, record.ID)
+	requestURL := fmt.Sprintf("https://%s/api/records/%s/draft/actions/publish", client.Host, record.ID)
 	req, _ := http.NewRequest(http.MethodPost, requestURL, nil)
 	req.Header = http.Header{
 		"Content-Type":  {"application/json"},
 		"Authorization": {"Bearer " + apiKey},
 	}
-	rl := rate.NewLimiter(rate.Every(30*time.Second), 50) // 50 request every 10 seconds
-	client := NewClient(rl, host)
 	resp, err := client.Do(req)
 	if err != nil {
 		return record, err
@@ -689,16 +684,14 @@ func PublishDraftRecord(record commonmeta.APIResponse, host string, apiKey strin
 }
 
 // CreateCommunity creates a community in InvenioRDM.
-func CreateCommunity(community string, host string, apiKey string) (string, error) {
+func CreateCommunity(community string, client *InvenioRDMClient, apiKey string) (string, error) {
 	type Response struct {
 		ID string `json:"id"`
 	}
 	var response Response
 	var requestURL string
 	var req *http.Request
-	rl := rate.NewLimiter(rate.Every(30*time.Second), 50) // 50 request every 10 seconds
-	client := NewClient(rl, host)
-	requestURL = fmt.Sprintf("https://%s/api/communities", host)
+	requestURL = fmt.Sprintf("https://%s/api/communities", client.Host)
 	req, _ = http.NewRequest(http.MethodPost, requestURL, nil)
 	req.Header = http.Header{
 		"Content-Type":  {"application/json"},
@@ -718,15 +711,13 @@ func CreateCommunity(community string, host string, apiKey string) (string, erro
 }
 
 // AddRecordToCommunity adds record to InvenioRDM community.
-func AddRecordToCommunity(record commonmeta.APIResponse, host string, apiKey string, communityID string) (commonmeta.APIResponse, error) {
+func AddRecordToCommunity(record commonmeta.APIResponse, client *InvenioRDMClient, apiKey string, communityID string) (commonmeta.APIResponse, error) {
 	type Response struct {
 		ID string `json:"id"`
 	}
 	var response Response
-	rl := rate.NewLimiter(rate.Every(30*time.Second), 50) // 50 request every 10 seconds
-	client := NewClient(rl, host)
 	var output = []byte(`{"communities":[{"id":"` + communityID + `"}]}`)
-	requestURL := fmt.Sprintf("https://%s/api/records/%s/communities", host, record.ID)
+	requestURL := fmt.Sprintf("https://%s/api/records/%s/communities", client.Host, record.ID)
 	req, _ := http.NewRequest(http.MethodPost, requestURL, bytes.NewReader(output))
 	req.Header = http.Header{
 		"Content-Type":  {"application/json"},
@@ -764,12 +755,14 @@ func (c *InvenioRDMClient) Do(req *http.Request) (*http.Response, error) {
 	return resp, nil
 }
 
+// NewClient returns a new InvenioRDMClient. It handles rate limiting and insecure connections on localhost.
 func NewClient(rl *rate.Limiter, host string) *InvenioRDMClient {
 	c := &InvenioRDMClient{
 		client:      http.DefaultClient,
 		Host:        host,
 		Ratelimiter: rl,
 	}
+	c.client.Timeout = time.Second * 10
 	if host == "localhost" {
 		// type assertion to check if client.Transport is of type *http.Transport
 		if tpt, ok := c.Transport.(*http.Transport); ok {
@@ -779,45 +772,3 @@ func NewClient(rl *rate.Limiter, host string) *InvenioRDMClient {
 	}
 	return c
 }
-
-// invenioRDMClient returns an HTTP client for InvenioRDM.
-// It handles rate limiting and insecure connections on localhost.
-// func invenioRDMClient(host string, limitPeriod time.Duration, requestCount int) *http.Client {
-// 	client := &http.Client{
-// 		Timeout:   30 * time.Second,
-// 		Transport: NewThrottledTransport(limitPeriod, requestCount, http.DefaultTransport),
-// 	}
-// 	if host == "localhost" {
-// 		// type assertion to check if client.Transport is of type *http.Transport
-// 		if tpt, ok := client.Transport.(*http.Transport); ok {
-// 			newTLSClientConfig := &tls.Config{InsecureSkipVerify: true}
-// 			tpt.TLSClientConfig = newTLSClientConfig
-// 		}
-// 	}
-// 	return client
-// }
-
-// // ThrottledTransport Rate Limited HTTP Client
-// type ThrottledTransport struct {
-// 	roundTripperWrap http.RoundTripper
-// 	ratelimiter      *rate.Limiter
-// }
-
-// func (c *ThrottledTransport) RoundTrip(r *http.Request) (*http.Response, error) {
-// 	err := c.ratelimiter.Wait(r.Context()) // This is a blocking call. Honors the rate limit
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	return c.roundTripperWrap.RoundTrip(r)
-// }
-
-// // NewThrottledTransport wraps transportWrap with a rate limitter
-// // examle usage:
-// // client := http.DefaultClient
-// // client.Transport = NewThrottledTransport(10*time.Second, 60, http.DefaultTransport) allows 60 requests every 10 seconds
-// func NewThrottledTransport(limitPeriod time.Duration, requestCount int, transportWrap http.RoundTripper) http.RoundTripper {
-// 	return &ThrottledTransport{
-// 		roundTripperWrap: transportWrap,
-// 		ratelimiter:      rate.NewLimiter(rate.Every(limitPeriod), requestCount),
-// 	}
-// }
