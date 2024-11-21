@@ -38,7 +38,7 @@ func NormalizeDOI(doi string) string {
 
 // ValidateDOI validates a DOI
 func ValidateDOI(doi string) (string, bool) {
-	r, err := regexp.Compile(`^(?:(http|https):/(/)?(dx\.)?(doi\.org|handle\.stage\.datacite\.org|handle\.test\.datacite\.org)/)?(doi:)?(10\.\d{4,5}/.+)$`)
+	r, err := regexp.Compile(`^(?:(http|https):/(/)?(dx\.)?(doi\.org|handle\.stage\.datacite\.org|handle\.test\.datacite\.org)/)?(doi:)?(10\.\d{4,5}/[^\s]+)$`)
 	if err != nil {
 		log.Printf("Error compiling regex: %v", err)
 		return "", false

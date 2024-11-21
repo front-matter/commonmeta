@@ -18,6 +18,7 @@ func TestValidateDOI(t *testing.T) {
 		{input: "https://doi.org/10.7554/elife.01567", want: "10.7554/elife.01567"},
 		{input: "https://doi.org/10.7554", want: ""},
 		{input: "10.7554", want: ""},
+		{input: "10.3201/eid1503.081203 10.1083/jcb.1843iti1", want: ""},
 		{input: "", want: ""},
 	}
 	for _, tc := range testCases {
