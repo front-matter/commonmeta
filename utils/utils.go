@@ -71,7 +71,7 @@ func NormalizeID(pid string) string {
 func NormalizeURL(str string, secure bool, lower bool) (string, error) {
 	u, err := url.Parse(str)
 	if err != nil {
-		return "", err
+		return "", nil
 	}
 	if u.Host == "" {
 		return "", nil
