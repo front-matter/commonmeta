@@ -304,6 +304,20 @@ func ExampleDecodeDOI() {
 	// 10.73731
 }
 
+func ExampleKebabCaseToCamelCase() {
+	s := utils.KebabCaseToCamelCase("earth-and-related-environmental-sciences")
+	fmt.Println(s)
+	// Output:
+	// earthAndRelatedEnvironmentalSciences
+}
+
+func ExampleKebabCaseToPascalCase() {
+	s := utils.KebabCaseToPascalCase("earth-and-related-environmental-sciences")
+	fmt.Println(s)
+	// Output:
+	// EarthAndRelatedEnvironmentalSciences
+}
+
 func ExampleGetLanguage() {
 	i := utils.GetLanguage("de", "iso639-3")
 	fmt.Println(i)

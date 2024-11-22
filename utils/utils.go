@@ -535,6 +535,20 @@ func CamelCaseString(str string) string {
 	return strings.ToLower(str[:1]) + str[1:]
 }
 
+// KebabCaseToCamelCase converts a kebab case string to camel case
+func KebabCaseToCamelCase(str string) string {
+	var matchCap = regexp.MustCompile("-([a-z])")
+	return matchCap.ReplaceAllStringFunc(str, func(s string) string {
+		return strings.ToUpper(s[1:])
+	})
+}
+
+// KebabCaseToPascalCase converts a kebab case string to pascal case
+func KebabCaseToPascalCase(str string) string {
+	s := KebabCaseToCamelCase(str)
+	return strings.ToUpper(s[:1]) + s[1:]
+}
+
 func GetLanguage(lang string, format string) string {
 	language := iso639_3.FromAnyCode(lang)
 	if language == nil {
