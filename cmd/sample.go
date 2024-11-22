@@ -37,6 +37,7 @@ var sampleCmd = &cobra.Command{
 		number, _ := cmd.Flags().GetInt("number")
 		from, _ := cmd.Flags().GetString("from")
 
+		client_, _ := cmd.Flags().GetString("client")
 		member, _ := cmd.Flags().GetString("member")
 		type_, _ := cmd.Flags().GetString("type")
 		hasORCID, _ := cmd.Flags().GetBool("has-orcid")
@@ -58,7 +59,7 @@ var sampleCmd = &cobra.Command{
 		if from == "crossref" {
 			data, err = crossref.FetchAll(number, member, type_, sample, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
 		} else if from == "datacite" {
-			data, err = datacite.FetchAll(number, sample)
+			data, err = datacite.FetchAll(number, client_, type_, sample)
 		}
 		if err != nil {
 			fmt.Println(err)

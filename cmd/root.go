@@ -37,7 +37,8 @@ func init() {
 	rootCmd.PersistentFlags().StringP("to", "t", "commonmeta", "the format to convert to")
 
 	rootCmd.PersistentFlags().IntP("number", "n", 10, "number of results")
-	rootCmd.PersistentFlags().StringP("member", "m", "", "Crossref member ID")
+	rootCmd.PersistentFlags().StringP("client", "", "", "DataCite client ID")
+	rootCmd.PersistentFlags().StringP("member", "", "", "Crossref member ID")
 	rootCmd.PersistentFlags().StringP("type", "", "", "work type")
 	rootCmd.PersistentFlags().BoolP("sample", "", false, "random sample")
 	rootCmd.PersistentFlags().BoolP("has-orcid", "", false, "has one or more ORCID IDs")

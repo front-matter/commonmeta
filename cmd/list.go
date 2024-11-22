@@ -34,7 +34,7 @@ var listCmd = &cobra.Command{
 	work type, and Crossref member id or DataCite client id. For example:
 
 	commonmeta list --number 10 --member 78 --type journal-article,
-	commonmeta list --number 10 --member cern.zenodo --type dataset`,
+	commonmeta list --number 10 --client cern.zenodo --type dataset -f datacite`,
 	Run: func(cmd *cobra.Command, args []string) {
 		var input string
 		var str string // a string, content loaded from a file
@@ -47,6 +47,7 @@ var listCmd = &cobra.Command{
 		number, _ := cmd.Flags().GetInt("number")
 		from, _ := cmd.Flags().GetString("from")
 
+		client_, _ := cmd.Flags().GetString("client")
 		member, _ := cmd.Flags().GetString("member")
 		type_, _ := cmd.Flags().GetString("type")
 		hasORCID, _ := cmd.Flags().GetBool("has-orcid")
@@ -57,7 +58,7 @@ var listCmd = &cobra.Command{
 		hasAward, _ := cmd.Flags().GetBool("has-award")
 		hasLicense, _ := cmd.Flags().GetBool("has-license")
 		hasArchive, _ := cmd.Flags().GetBool("has-archive")
-		sample := false
+		sample, _ := cmd.Flags().GetBool("sample")
 
 		depositor, _ := cmd.Flags().GetString("depositor")
 		email, _ := cmd.Flags().GetString("email")
@@ -90,7 +91,7 @@ var listCmd = &cobra.Command{
 		} else if from == "crossref" {
 			data, err = crossref.FetchAll(number, member, type_, sample, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
 		} else if from == "datacite" {
-			data, err = datacite.FetchAll(number, sample)
+			data, err = datacite.FetchAll(number, client_, type_, sample)
 		} else {
 			fmt.Println("Please provide a valid input format")
 			return
