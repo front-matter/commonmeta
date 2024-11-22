@@ -271,10 +271,10 @@ func Fetch(str string) (commonmeta.Data, error) {
 }
 
 // FetchAll gets the metadata for a list of works from the Crossref API and converts it to the Commonmeta format
-func FetchAll(number int, member string, _type string, sample bool, hasORCID bool, hasROR bool, hasReferences bool, hasRelation bool, hasAbstract bool, hasAward bool, hasLicense bool, hasArchive bool) ([]commonmeta.Data, error) {
+func FetchAll(number int, member string, type_ string, sample bool, hasORCID bool, hasROR bool, hasReferences bool, hasRelation bool, hasAbstract bool, hasAward bool, hasLicense bool, hasArchive bool) ([]commonmeta.Data, error) {
 
 	var data []commonmeta.Data
-	content, err := GetAll(number, member, _type, sample, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
+	content, err := GetAll(number, member, type_, sample, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
 	if err != nil {
 		return data, err
 	}
@@ -333,7 +333,7 @@ func Get(pid string) (Content, error) {
 }
 
 // GetAll gets the metadata for a list of works from the Crossref API
-func GetAll(number int, member string, _type string, sample bool, hasORCID bool, hasROR bool, hasReferences bool, hasRelation bool, hasAbstract bool, hasAward bool, hasLicense bool, hasArchive bool) ([]Content, error) {
+func GetAll(number int, member string, type_ string, sample bool, hasORCID bool, hasROR bool, hasReferences bool, hasRelation bool, hasAbstract bool, hasAward bool, hasLicense bool, hasArchive bool) ([]Content, error) {
 	// the envelope for the JSON response from the Crossref API
 	type Response struct {
 		Status         string `json:"status"`
@@ -351,7 +351,7 @@ func GetAll(number int, member string, _type string, sample bool, hasORCID bool,
 	client := &http.Client{
 		Timeout: 20 * time.Second,
 	}
-	url := QueryURL(number, member, _type, sample, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
+	url := QueryURL(number, member, type_, sample, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	v := "0.1"
 	u := "info@front-matter.io"
@@ -438,11 +438,6 @@ func LoadAll(filename string) ([]commonmeta.Data, error) {
 			Items []Content `json:"items"`
 		}
 		var response Response
-
-		extension := path.Ext(filename)
-		if extension != ".json" {
-			return data, errors.New("invalid file extension")
-		}
 		file, err := os.Open(filename)
 		if err != nil {
 			return data, errors.New("error reading file")
