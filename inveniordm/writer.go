@@ -5,6 +5,7 @@ import (
 	"crypto/tls"
 	"embed"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -14,7 +15,6 @@ import (
 	"time"
 
 	"github.com/front-matter/commonmeta/commonmeta"
-	"github.com/front-matter/commonmeta/crossrefxml"
 	"github.com/front-matter/commonmeta/dateutils"
 	"github.com/front-matter/commonmeta/doiutils"
 	"github.com/front-matter/commonmeta/roguescholar"
@@ -86,12 +86,16 @@ func Convert(data commonmeta.Data) (Inveniordm, error) {
 			}
 			var affiliations []Affiliation
 			for _, a := range v.Affiliations {
-				id, _ := utils.ValidateROR(a.ID)
+				// don't include ROR ID for now, as records may be rejected if not found in the InvenioRDM instance
+				// id, _ := utils.ValidateROR(a.ID)
 				affiliation := Affiliation{
-					ID:   id,
+					// ID:   id,
 					Name: a.Name,
 				}
-				affiliations = append(affiliations, affiliation)
+				// avoid duplicate affiliations
+				if !slices.Contains(affiliations, affiliation) {
+					affiliations = append(affiliations, affiliation)
+				}
 			}
 			if slices.Contains(v.ContributorRoles, "Author") {
 				personOrOrg := PersonOrOrg{
@@ -195,17 +199,18 @@ func Convert(data commonmeta.Data) (Inveniordm, error) {
 
 	if len(data.FundingReferences) > 0 {
 		for _, v := range data.FundingReferences {
-			id, identifierType := utils.ValidateID(v.FunderIdentifier)
+			// id, identifierType := utils.ValidateID(v.FunderIdentifier)
 
 			// convert Open Funder Registry DOI to ROR using mapping file
-			if identifierType == "Crossref Funder ID" {
-				id = crossrefxml.OFRToRORMappings[v.FunderIdentifier]
-			}
-			if id != "" {
-				id, _ = utils.ValidateROR(id)
-			}
+			// don't include ROR ID for now, as records may be rejected if not found in the InvenioRDM instance
+			// if identifierType == "Crossref Funder ID" {
+			// 	id = crossrefxml.OFRToRORMappings[v.FunderIdentifier]
+			// }
+			// if id != "" {
+			// 	id, _ = utils.ValidateROR(id)
+			// }
 			funder := Funder{
-				ID:   id,
+				// ID:   id,
 				Name: v.FunderName,
 			}
 			var award Award
@@ -459,7 +464,6 @@ func Upsert(record commonmeta.APIResponse, client *InvenioRDMClient, apiKey stri
 		if err != nil {
 			return record, err
 		}
-
 		// update draft record
 		record, err = UpdateDraftRecord(record, client, apiKey, inveniordm)
 		if err != nil {
@@ -549,10 +553,12 @@ func CreateDraftRecord(record commonmeta.APIResponse, client *InvenioRDMClient, 
 	if resp.StatusCode == 429 {
 		record.Status = "failed_rate_limited"
 		return record, fmt.Errorf("rate limited")
-	} else if resp.StatusCode != 201 {
-		return record, err
 	}
 	body, _ := io.ReadAll(resp.Body)
+	if resp.StatusCode != 201 {
+		record.Status = "failed_create_draft"
+		return record, errors.New("failed to create draft record:" + string(body))
+	}
 	err = json.Unmarshal(body, &response)
 	if err != nil {
 		return record, err
