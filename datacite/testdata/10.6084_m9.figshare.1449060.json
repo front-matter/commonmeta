@@ -1,67 +1,202 @@
 {
-  "id": "https://doi.org/10.6084/m9.figshare.1449060",
-  "type": "Dataset",
-  "contributors": [
-    {
-      "id": "https://orcid.org/0000-0002-2874-287X",
-      "type": "Person",
-      "contributorRoles": ["Author"],
-      "givenName": "Ian",
-      "familyName": "Dworkin"
+  "data": {
+    "id": "10.6084/m9.figshare.1449060",
+    "type": "dois",
+    "attributes": {
+      "doi": "10.6084/m9.figshare.1449060",
+      "prefix": "10.6084",
+      "suffix": "m9.figshare.1449060",
+      "identifiers": [],
+      "alternateIdentifiers": [],
+      "creators": [
+        {
+          "name": "Dworkin, Ian",
+          "nameType": "Personal",
+          "givenName": "Ian",
+          "familyName": "Dworkin",
+          "affiliation": [],
+          "nameIdentifiers": [
+            {
+              "schemeUri": "https://orcid.org",
+              "nameIdentifier": "https://orcid.org/0000-0002-2874-287X",
+              "nameIdentifierScheme": "ORCID"
+            }
+          ]
+        },
+        {
+          "name": "Pool, John",
+          "nameType": "Personal",
+          "givenName": "John",
+          "familyName": "Pool",
+          "affiliation": [],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "Pitchers, William",
+          "nameType": "Personal",
+          "givenName": "William",
+          "familyName": "Pitchers",
+          "affiliation": [],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "Pesevski, Maria",
+          "nameType": "Personal",
+          "givenName": "Maria",
+          "familyName": "Pesevski",
+          "affiliation": [],
+          "nameIdentifiers": []
+        }
+      ],
+      "titles": [
+        {
+          "title": "Drosophila melanogaster wing images from low and high altitude populations in Ethiopia and Zambia."
+        }
+      ],
+      "publisher": "figshare",
+      "container": {},
+      "publicationYear": 2020,
+      "subjects": [
+        {
+          "subject": "Evolutionary Biology"
+        },
+        {
+          "subject": "FOS: Biological sciences",
+          "schemeUri": "http://www.oecd.org/science/inno/38235147.pdf",
+          "subjectScheme": "Fields of Science and Technology (FOS)"
+        },
+        {
+          "subject": "FOS: Biological sciences",
+          "subjectScheme": "Fields of Science and Technology (FOS)"
+        },
+        {
+          "subject": "60412 Quantitative Genetics (incl. Disease and Trait Mapping Genetics)",
+          "subjectScheme": "FOR"
+        }
+      ],
+      "contributors": [],
+      "dates": [
+        {
+          "date": "2015-06-14",
+          "dateType": "Created"
+        },
+        {
+          "date": "2020-06-02",
+          "dateType": "Updated"
+        },
+        {
+          "date": "2020",
+          "dateType": "Issued"
+        }
+      ],
+      "language": null,
+      "types": {
+        "ris": "DATA",
+        "bibtex": "misc",
+        "citeproc": "dataset",
+        "schemaOrg": "Dataset",
+        "resourceType": "Dataset",
+        "resourceTypeGeneral": "Dataset"
+      },
+      "relatedIdentifiers": [],
+      "relatedItems": [],
+      "sizes": ["3009125660 Bytes"],
+      "formats": [],
+      "version": null,
+      "rightsList": [
+        {
+          "rights": "Creative Commons Attribution 4.0 International",
+          "rightsUri": "https://creativecommons.org/licenses/by/4.0/legalcode",
+          "schemeUri": "https://spdx.org/licenses/",
+          "rightsIdentifier": "cc-by-4.0",
+          "rightsIdentifierScheme": "SPDX"
+        }
+      ],
+      "descriptions": [
+        {
+          "description": "These are raw wing images from <i>Drosophila melanogaster</i> isofemale lines collected from Sub-Saharan Africa by John Pool. The progeny from these lines eclosed and then one wing was dissected from each individual (~20 males and females from each line). Imaged at 20X total magnification (2X objective) on an Olympus BX-51 microscope.<br>Please note. It looks like some images did not transfer successfully, but there is no easy way on figshare of getting a list of files, so I may need to re-upload all of them.<br><br>",
+          "descriptionType": "Abstract"
+        }
+      ],
+      "geoLocations": [],
+      "fundingReferences": [],
+      "xml": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHJlc291cmNlIHhtbG5zPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCIgeG1sbnM6eHNpPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYS1pbnN0YW5jZSIgeHNpOnNjaGVtYUxvY2F0aW9uPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCBodHRwOi8vc2NoZW1hLmRhdGFjaXRlLm9yZy9tZXRhL2tlcm5lbC00LjEvbWV0YWRhdGEueHNkIj4KICA8aWRlbnRpZmllciBpZGVudGlmaWVyVHlwZT0iRE9JIj4xMC42MDg0L005LkZJR1NIQVJFLjE0NDkwNjA8L2lkZW50aWZpZXI+CiAgPGNyZWF0b3JzPgogICAgPGNyZWF0b3I+CiAgICAgIDxjcmVhdG9yTmFtZT5JYW4gRHdvcmtpbjwvY3JlYXRvck5hbWU+CiAgICAgIDxuYW1lSWRlbnRpZmllciBuYW1lSWRlbnRpZmllclNjaGVtZT0iT1JDSUQiIHNjaGVtZVVSST0iaHR0cDovL29yY2lkLm9yZyI+MDAwMC0wMDAyLTI4NzQtMjg3WDwvbmFtZUlkZW50aWZpZXI+CiAgICA8L2NyZWF0b3I+CiAgICA8Y3JlYXRvcj4KICAgICAgPGNyZWF0b3JOYW1lPkpvaG4gUG9vbDwvY3JlYXRvck5hbWU+CiAgICA8L2NyZWF0b3I+CiAgICA8Y3JlYXRvcj4KICAgICAgPGNyZWF0b3JOYW1lPldpbGxpYW0gUGl0Y2hlcnM8L2NyZWF0b3JOYW1lPgogICAgPC9jcmVhdG9yPgogICAgPGNyZWF0b3I+CiAgICAgIDxjcmVhdG9yTmFtZT5NYXJpYSBQZXNldnNraTwvY3JlYXRvck5hbWU+CiAgICA8L2NyZWF0b3I+CiAgPC9jcmVhdG9ycz4KICA8dGl0bGVzPgogICAgPHRpdGxlPkRyb3NvcGhpbGEgbWVsYW5vZ2FzdGVyIHdpbmcgaW1hZ2VzIGZyb20gbG93IGFuZCBoaWdoIGFsdGl0dWRlIHBvcHVsYXRpb25zIGluIEV0aGlvcGlhIGFuZCBaYW1iaWEuPC90aXRsZT4KICA8L3RpdGxlcz4KICA8ZGVzY3JpcHRpb25zPgogICAgPGRlc2NyaXB0aW9uIGRlc2NyaXB0aW9uVHlwZT0iQWJzdHJhY3QiPiZsdDtwJmd0O1RoZXNlIGFyZSByYXcgd2luZyBpbWFnZXMgZnJvbSAmbHQ7aSZndDtEcm9zb3BoaWxhIG1lbGFub2dhc3RlciZsdDsvaSZndDsgaXNvZmVtYWxlIGxpbmVzIGNvbGxlY3RlZCBmcm9tIFN1Yi1TYWhhcmFuIEFmcmljYSBieSBKb2huIFBvb2wuIFRoZSBwcm9nZW55IGZyb20gdGhlc2UgbGluZXMgZWNsb3NlZCBhbmQgdGhlbiBvbmUgd2luZyB3YXMgZGlzc2VjdGVkIGZyb20gZWFjaCBpbmRpdmlkdWFsICh+MjAgbWFsZXMgYW5kIGZlbWFsZXMgZnJvbSBlYWNoIGxpbmUpLiBJbWFnZWQgYXQgMjBYIHRvdGFsIG1hZ25pZmljYXRpb24gKDJYIG9iamVjdGl2ZSkgb24gYW4gT2x5bXB1cyBCWC01MSBtaWNyb3Njb3BlLiZsdDsvcCZndDsmbHQ7cCZndDsmbHQ7YnImZ3Q7Jmx0Oy9wJmd0OyZsdDtwJmd0O1BsZWFzZSBub3RlLiBJdCBsb29rcyBsaWtlIHNvbWUgaW1hZ2VzIGRpZCBub3QgdHJhbnNmZXIgc3VjY2Vzc2Z1bGx5LCBidXQgdGhlcmUgaXMgbm8gZWFzeSB3YXkgb24gZmlnc2hhcmUgb2YgZ2V0dGluZyBhIGxpc3Qgb2YgZmlsZXMsIHNvIEkgbWF5IG5lZWQgdG8gcmUtdXBsb2FkIGFsbCBvZiB0aGVtLiZsdDsvcCZndDsmbHQ7cCZndDsmbHQ7YnImZ3Q7Jmx0Oy9wJmd0OyZsdDtwJmd0OyZsdDticiZndDsmbHQ7L3AmZ3Q7PC9kZXNjcmlwdGlvbj4KICA8L2Rlc2NyaXB0aW9ucz4KICA8c3ViamVjdHM+CiAgICA8c3ViamVjdD5Fdm9sdXRpb25hcnkgQmlvbG9neTwvc3ViamVjdD4KICAgIDxzdWJqZWN0IHNjaGVtZVVSST0iaHR0cDovL3d3dy5hYnMuZ292LmF1L2F1c3N0YXRzL2Fic0AubnNmLzAvNkJCNDI3QUI5Njk2QzIyNUNBMjU3NDE4MDAwNDQ2M0UiIHN1YmplY3RTY2hlbWU9IkZPUiI+NjA0MTIgUXVhbnRpdGF0aXZlIEdlbmV0aWNzIChpbmNsLiBEaXNlYXNlIGFuZCBUcmFpdCBNYXBwaW5nIEdlbmV0aWNzKTwvc3ViamVjdD4KICA8L3N1YmplY3RzPgogIDxwdWJsaXNoZXI+Zmlnc2hhcmU8L3B1Ymxpc2hlcj4KICA8cHVibGljYXRpb25ZZWFyPjIwMjA8L3B1YmxpY2F0aW9uWWVhcj4KICA8ZGF0ZXM+CiAgICA8ZGF0ZSBkYXRlVHlwZT0iQ3JlYXRlZCI+MjAxNS0wNi0xNDwvZGF0ZT4KICAgIDxkYXRlIGRhdGVUeXBlPSJVcGRhdGVkIj4yMDIwLTA2LTAyPC9kYXRlPgogIDwvZGF0ZXM+CiAgPHJlc291cmNlVHlwZSByZXNvdXJjZVR5cGVHZW5lcmFsPSJEYXRhc2V0Ij5EYXRhc2V0PC9yZXNvdXJjZVR5cGU+CiAgPHNpemVzPgogICAgPHNpemU+MzAwOTEyNTY2MCBCeXRlczwvc2l6ZT4KICA8L3NpemVzPgogIDxyaWdodHNMaXN0PgogICAgPHJpZ2h0cyByaWdodHNVUkk9Imh0dHBzOi8vY3JlYXRpdmVjb21tb25zLm9yZy9saWNlbnNlcy9ieS80LjAvIj5DQyBCWSA0LjA8L3JpZ2h0cz4KICA8L3JpZ2h0c0xpc3Q+CjwvcmVzb3VyY2U+",
+      "url": "https://figshare.com/articles/dataset/Drosophila_melanogaster_African_Wings/1449060/4",
+      "contentUrl": null,
+      "metadataVersion": 3,
+      "schemaVersion": "http://datacite.org/schema/kernel-4",
+      "source": "mds",
+      "isActive": true,
+      "state": "findable",
+      "reason": null,
+      "viewCount": 0,
+      "viewsOverTime": [],
+      "downloadCount": 0,
+      "downloadsOverTime": [],
+      "referenceCount": 1,
+      "citationCount": 1,
+      "citationsOverTime": [
+        {
+          "year": "2021",
+          "total": 1
+        }
+      ],
+      "partCount": 0,
+      "partOfCount": 0,
+      "versionCount": 0,
+      "versionOfCount": 0,
+      "created": "2015-06-15T04:17:37.000Z",
+      "registered": "2015-06-15T04:17:38.000Z",
+      "published": "2020",
+      "updated": "2024-04-03T15:08:19.000Z"
     },
-    {
-      "type": "Person",
-      "contributorRoles": ["Author"],
-      "givenName": "John",
-      "familyName": "Pool"
-    },
-    {
-      "type": "Person",
-      "contributorRoles": ["Author"],
-      "givenName": "William",
-      "familyName": "Pitchers"
-    },
-    {
-      "type": "Person",
-      "contributorRoles": ["Author"],
-      "givenName": "Maria",
-      "familyName": "Pesevski"
+    "relationships": {
+      "client": {
+        "data": {
+          "id": "figshare.ars",
+          "type": "clients"
+        }
+      },
+      "provider": {
+        "data": {
+          "id": "otjm",
+          "type": "providers"
+        }
+      },
+      "media": {
+        "data": {
+          "id": "10.6084/m9.figshare.1449060",
+          "type": "media"
+        }
+      },
+      "references": {
+        "data": [
+          {
+            "id": "10.5061/dryad.b8gtht79c",
+            "type": "dois"
+          }
+        ]
+      },
+      "citations": {
+        "data": [
+          {
+            "id": "10.5061/dryad.b8gtht79c",
+            "type": "dois"
+          }
+        ]
+      },
+      "parts": {
+        "data": []
+      },
+      "partOf": {
+        "data": []
+      },
+      "versions": {
+        "data": []
+      },
+      "versionOf": {
+        "data": []
+      }
     }
-  ],
-  "date": {
-    "created": "2015-06-14",
-    "published": "2020",
-    "updated": "2020-06-02"
-  },
-  "descriptions": [
-    {
-      "description": "These are raw wing images from <i>Drosophila melanogaster</i> isofemale lines collected from Sub-Saharan Africa by John Pool. The progeny from these lines eclosed and then one wing was dissected from each individual (~20 males and females from each line). Imaged at 20X total magnification (2X objective) on an Olympus BX-51 microscope.<br>Please note. It looks like some images did not transfer successfully, but there is no easy way on figshare of getting a list of files, so I may need to re-upload all of them.<br><br>",
-      "type": "Abstract"
-    }
-  ],
-  "identifiers": [
-    {
-      "identifier": "https://doi.org/10.6084/m9.figshare.1449060",
-      "identifierType": "DOI"
-    }
-  ],
-  "license": {
-    "id": "CC-BY-4.0",
-    "url": "https://creativecommons.org/licenses/by/4.0/legalcode"
-  },
-  "provider": "DataCite",
-  "publisher": { "name": "figshare" },
-  "subjects": [
-    { "subject": "Evolutionary Biology" },
-    { "subject": "FOS: Biological sciences" },
-    {
-      "subject": "60412 Quantitative Genetics (incl. Disease and Trait Mapping Genetics)"
-    }
-  ],
-  "titles": [
-    {
-      "title": "Drosophila melanogaster wing images from low and high altitude populations in Ethiopia and Zambia."
-    }
-  ],
-  "url": "https://figshare.com/articles/dataset/Drosophila_melanogaster_African_Wings/1449060/4"
+  }
 }

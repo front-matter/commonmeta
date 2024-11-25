@@ -30,8 +30,8 @@ var convertCmd = &cobra.Command{
 	Use:   "convert",
 	Short: "Convert scholarly metadata from one format to another",
 	Long: `Convert scholarly metadata between formats. Currently
-supported input formats are Crossref and DataCite DOIs, currently
-the only supported output format is Commonmeta. Example usage:
+supported input formats are Crossref (default) and DataCite DOIs, currently
+supported output format and Commonmeta (default). Example usage:
 
 commonmeta 10.5555/12345678`,
 
@@ -88,6 +88,8 @@ commonmeta 10.5555/12345678`,
 				data, err = crossrefxml.Fetch(id)
 			} else if from == "datacite" {
 				data, err = datacite.Fetch(id)
+			} else if from == "inveniordm" {
+				data, err = inveniordm.Fetch(id)
 			} else if from == "jsonfeed" {
 				data, err = jsonfeed.Fetch(id)
 			} else {
@@ -103,6 +105,8 @@ commonmeta 10.5555/12345678`,
 				data, err = crossrefxml.Load(str)
 			} else if from == "datacite" {
 				data, err = datacite.Load(str)
+			} else if from == "inveniordm" {
+				data, err = inveniordm.Load(str)
 			} else if from == "csl" {
 				data, err = csl.Load(str)
 			} else {

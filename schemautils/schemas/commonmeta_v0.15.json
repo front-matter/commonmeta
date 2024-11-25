@@ -558,6 +558,7 @@
         "Journal",
         "PeerReview",
         "PhysicalObject",
+        "Poster",
         "Presentation",
         "ProceedingsArticle",
         "ProceedingsSeries",

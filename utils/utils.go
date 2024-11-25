@@ -580,3 +580,15 @@ func DecodeDOI(doi string) int64 {
 	}
 	return number
 }
+
+// ParseString parses an interface into a string
+func ParseString(s interface{}) string {
+	var str string
+	switch v := s.(type) {
+	case string:
+		str = v
+	case float64:
+		str = fmt.Sprintf("%v", v)
+	}
+	return str
+}

@@ -16,6 +16,7 @@ import (
 	"time"
 
 	"github.com/front-matter/commonmeta/commonmeta"
+	"github.com/front-matter/commonmeta/dateutils"
 	"github.com/front-matter/commonmeta/doiutils"
 
 	"github.com/front-matter/commonmeta/utils"
@@ -51,12 +52,18 @@ type Datacite struct {
 // Content represents the DataCite metadata returned from DataCite. The type is more
 // flexible than the Datacite type, allowing for different formats of some metadata.
 // Affiliation can be string or struct, PublicationYear can be int or string. Publisher can be string or struct.
+// GeoLocationPoint can be float64 or string.
 type Content struct {
 	*Datacite
-	Creators        []ContentContributor `json:"creators"`
-	Contributors    []ContentContributor `json:"contributors"`
-	PublicationYear json.RawMessage      `json:"publicationYear"`
-	Publisher       json.RawMessage      `json:"publisher"`
+	Creators        []ContentContributor   `json:"creators"`
+	Contributors    []ContentContributor   `json:"contributors"`
+	PublicationYear interface{}            `json:"publicationYear"`
+	Publisher       json.RawMessage        `json:"publisher"`
+	GeoLocations    []GeoLocationInterface `json:"geoLocations,omitempty"`
+}
+
+type Data struct {
+	Attributes Content `json:"attributes"`
 }
 
 // ContentContributor represents a creator or contributor in the DataCite JSONAPI response.
@@ -118,6 +125,7 @@ type FundingReference struct {
 	FunderIdentifier     string `json:"funderIdentifier,omitempty"`
 	FunderIdentifierType string `json:"funderIdentifierType,omitempty"`
 	AwardNumber          string `json:"awardNumber,omitempty"`
+	AwardTitle           string `json:"awardTitle,omitempty"`
 	AwardURI             string `json:"awardUri,omitempty"`
 }
 
@@ -138,6 +146,26 @@ type GeoLocationPoint struct {
 	PointLongitude float64 `json:"pointLongitude,string,omitempty"`
 	PointLatitude  float64 `json:"pointLatitude,string,omitempty"`
 }
+
+type GeoLocationInterface struct {
+	GeoLocationPointInterface `json:"geoLocationPoint,omitempty"`
+	GeoLocationBoxInterface   `json:"geoLocationBox,omitempty"`
+	GeoLocationPlace          string `json:"geoLocationPlace,omitempty"`
+}
+
+type GeoLocationBoxInterface struct {
+	WestBoundLongitude interface{} `json:"westBoundLongitude,string,omitempty"`
+	EastBoundLongitude interface{} `json:"eastBoundLongitude,string,omitempty"`
+	SouthBoundLatitude interface{} `json:"southBoundLatitude,string,omitempty"`
+	NorthBoundLatitude interface{} `json:"northBoundLatitude,string,omitempty"`
+}
+
+type GeoLocationPointInterface struct {
+	PointLongitude interface{} `json:"pointLongitude,string,omitempty"`
+	PointLatitude  interface{} `json:"pointLatitude,string,omitempty"`
+}
+
+type GeoCoordinate float64
 
 type NameIdentifier struct {
 	NameIdentifier       string `json:"nameIdentifier,omitempty"`
@@ -210,7 +238,7 @@ var DCToCMMappings = map[string]string{
 	"OutputManagementPlan":  "OutputManagementPlan",
 	"PeerReview":            "PeerReview",
 	"PhysicalObject":        "PhysicalObject",
-	"Poster":                "Presentation",
+	"Poster":                "Poster",
 	"Preprint":              "Article",
 	"Report":                "Report",
 	"Service":               "Service",
@@ -245,6 +273,8 @@ var CMToDCMappings = map[string]string{
 	"Performance":           "Audiovisual",
 	"PersonalCommunication": "Text",
 	"Post":                  "Text",
+	"Poster":                "Poster",
+	"Presentation":          "Audiovisual",
 	"ProceedingsArticle":    "ConferencePaper",
 	"Proceedings":           "ConferenceProceeding",
 	"Report":                "Report",
@@ -275,9 +305,29 @@ func Fetch(str string) (commonmeta.Data, error) {
 }
 
 // FetchAll gets the metadata for a list of works from the DataCite API and returns Commonmeta metadata.
-func FetchAll(number int, sample bool) ([]commonmeta.Data, error) {
+func FetchAll(number int, client_ string, type_ string, sample bool, year string, language string, orcid string, ror string, hasORCID bool, hasROR bool, hasRelation bool, hasAbstract bool, hasAward bool, hasLicense bool) ([]commonmeta.Data, error) {
 	var data []commonmeta.Data
-	content, err := GetAll(number, sample)
+
+	// check format of client ID
+	// In lower case, with dots separating the provider and client
+	// example: "cern.zenodo"
+	if client_ != "" {
+		if !strings.Contains(client_, ".") {
+			client_ = ""
+		}
+		client_ = strings.ToLower(client_)
+	}
+
+	// check type_ against the list of supported DataCite resource-type-general
+	// in lower case, with the words in kebab-case
+	// example: "physical-object"
+	if type_ != "" {
+		if DCToCMMappings[utils.KebabCaseToPascalCase(type_)] == "" {
+			type_ = ""
+		}
+	}
+
+	content, err := GetAll(number, client_, type_, sample, year, language, orcid, ror, hasORCID, hasROR, hasRelation, hasAbstract, hasAward, hasLicense)
 	if err != nil {
 		return data, err
 	}
@@ -309,13 +359,24 @@ func Load(filename string) (commonmeta.Data, error) {
 // LoadAll loads a list of DataCite metadata from a JSON string and returns Commonmeta metadata.
 func LoadAll(filename string) ([]commonmeta.Data, error) {
 	var data []commonmeta.Data
+	var content []Content
+	var err error
 
-	response, err := ReadJSONLines(filename)
-	if err != nil {
-		return data, err
+	extension := path.Ext(filename)
+	if extension == ".jsonl" || extension == ".jsonlines" {
+		content, err = ReadJSONLines(filename)
+		if err != nil {
+			return data, err
+		}
+	} else if extension == ".json" {
+		content, err = ReadJSONList(filename)
+		if err != nil {
+			return data, err
+		}
+	} else {
+		return data, errors.New("unsupported file format")
 	}
-
-	data, err = ReadAll(response)
+	data, err = ReadAll(content)
 	if err != nil {
 		return data, err
 	}
@@ -326,10 +387,7 @@ func LoadAll(filename string) ([]commonmeta.Data, error) {
 func Get(id string) (Content, error) {
 	// the envelope for the JSON response from the DataCite API
 	type Response struct {
-		Data struct {
-			ID         string  `json:"id"`
-			Attributes Content `json:"attributes"`
-		} `json:"data"`
+		Data Data `json:"data"`
 	}
 
 	var response Response
@@ -419,40 +477,45 @@ func Read(content Content) (commonmeta.Data, error) {
 
 	for _, v := range content.Dates {
 		if v.DateType == "Accepted" {
-			data.Date.Accepted = v.Date
+			data.Date.Accepted = dateutils.ParseDateTime(v.Date)
 		}
 		if v.DateType == "Available" {
-			data.Date.Available = v.Date
+			data.Date.Available = dateutils.ParseDateTime(v.Date)
 		}
 		if v.DateType == "Collected" {
-			data.Date.Collected = v.Date
+			data.Date.Collected = dateutils.ParseDateTime(v.Date)
 		}
 		if v.DateType == "Created" {
-			data.Date.Created = v.Date
+			data.Date.Created = dateutils.ParseDateTime(v.Date)
 		}
 		if v.DateType == "Issued" {
-			data.Date.Published = v.Date
+			data.Date.Published = dateutils.ParseDateTime(v.Date)
 		} else if v.DateType == "Published" {
-			data.Date.Published = v.Date
+			data.Date.Published = dateutils.ParseDateTime(v.Date)
 		}
 		if v.DateType == "Submitted" {
-			data.Date.Submitted = v.Date
+			data.Date.Submitted = dateutils.ParseDateTime(v.Date)
 		}
 		if v.DateType == "Updated" {
-			data.Date.Updated = v.Date
+			data.Date.Updated = dateutils.ParseDateTime(v.Date)
 		}
 		if v.DateType == "Valid" {
 			data.Date.Valid = v.Date
 		}
 		if v.DateType == "Withdrawn" {
-			data.Date.Withdrawn = v.Date
+			data.Date.Withdrawn = dateutils.ParseDateTime(v.Date)
 		}
 		if v.DateType == "Other" {
-			data.Date.Other = v.Date
+			data.Date.Other = dateutils.ParseDateTime(v.Date)
 		}
 	}
-	if data.Date.Published == "" {
-		data.Date.Published = string(content.PublicationYear)
+	if data.Date.Published == "" && content.PublicationYear != nil {
+		switch v := content.PublicationYear.(type) {
+		case string:
+			data.Date.Published = v
+		case float64:
+			data.Date.Published = fmt.Sprintf("%v", v)
+		}
 	}
 
 	for _, v := range content.Descriptions {
@@ -479,21 +542,30 @@ func Read(content Content) (commonmeta.Data, error) {
 			FunderIdentifierType: v.FunderIdentifierType,
 			FunderName:           v.FunderName,
 			AwardNumber:          v.AwardNumber,
+			AwardTitle:           v.AwardTitle,
 			AwardURI:             v.AwardURI,
 		})
 	}
+
+	// GeoLocationPoint can be float64 or string
 	for _, v := range content.GeoLocations {
+		pointLongitude := ParseGeoCoordinate(v.GeoLocationPointInterface.PointLongitude)
+		pointLatitude := ParseGeoCoordinate(v.GeoLocationPointInterface.PointLatitude)
+		westBoundLongitude := ParseGeoCoordinate(v.GeoLocationBoxInterface.WestBoundLongitude)
+		eastBoundLongitude := ParseGeoCoordinate(v.GeoLocationBoxInterface.EastBoundLongitude)
+		southBoundLatitude := ParseGeoCoordinate(v.GeoLocationBoxInterface.SouthBoundLatitude)
+		northBoundLatitude := ParseGeoCoordinate(v.GeoLocationBoxInterface.NorthBoundLatitude)
 		geoLocation := commonmeta.GeoLocation{
 			GeoLocationPlace: v.GeoLocationPlace,
 			GeoLocationPoint: commonmeta.GeoLocationPoint{
-				PointLongitude: v.GeoLocationPoint.PointLongitude,
-				PointLatitude:  v.GeoLocationPoint.PointLatitude,
+				PointLongitude: pointLongitude,
+				PointLatitude:  pointLatitude,
 			},
 			GeoLocationBox: commonmeta.GeoLocationBox{
-				WestBoundLongitude: v.GeoLocationBox.WestBoundLongitude,
-				EastBoundLongitude: v.GeoLocationBox.EastBoundLongitude,
-				SouthBoundLatitude: v.GeoLocationBox.SouthBoundLatitude,
-				NorthBoundLatitude: v.GeoLocationBox.NorthBoundLatitude,
+				WestBoundLongitude: westBoundLongitude,
+				EastBoundLongitude: eastBoundLongitude,
+				SouthBoundLatitude: southBoundLatitude,
+				NorthBoundLatitude: northBoundLatitude,
 			},
 		}
 		data.GeoLocations = append(data.GeoLocations, geoLocation)
@@ -650,8 +722,6 @@ func GetContributor(v ContentContributor) commonmeta.Contributor {
 		} else if ni.NameIdentifierScheme == "ROR" {
 			id = ni.NameIdentifier
 			t = "Organization"
-		} else {
-			id = ni.NameIdentifier
 		}
 	}
 	name := v.Name
@@ -718,11 +788,13 @@ func GetContributor(v ContentContributor) commonmeta.Contributor {
 }
 
 // GetAll gets the metadata for a list of works from the DataCite API
-func GetAll(number int, sample bool) ([]Content, error) {
-	// the envelope for the JSON response from the DataCite API
+func GetAll(number int, client_ string, type_ string, sample bool, year string, language string, orcid string, ror string, hasORCID bool, hasROR bool, hasRelation bool, hasAbstract bool, hasAward bool, hasLicense bool) ([]Content, error) {
+	var content []Content
+
 	type Response struct {
-		Data []Content `json:"data"`
+		Data []Data `json:"data"`
 	}
+
 	if number > 100 {
 		number = 100
 	}
@@ -730,28 +802,31 @@ func GetAll(number int, sample bool) ([]Content, error) {
 	client := &http.Client{
 		Timeout: 30 * time.Second,
 	}
-	url := QueryURL(number, sample)
+	url := QueryURL(number, client_, type_, sample, year, language, orcid, ror, hasORCID, hasROR, hasRelation, hasAbstract, hasAward, hasLicense)
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
-		log.Fatalln(err)
+		return content, err
 	}
 	resp, err := client.Do(req)
 	if err != nil {
-		return nil, err
+		return content, err
 	}
 	if resp.StatusCode >= 400 {
-		return nil, errors.New(resp.Status)
+		return content, errors.New(resp.Status)
 	}
 	defer resp.Body.Close()
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return nil, err
+		return content, err
 	}
 	err = json.Unmarshal(body, &response)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
-	return response.Data, nil
+	for _, v := range response.Data {
+		content = append(content, v.Attributes)
+	}
+	return content, nil
 }
 
 // ReadAll reads a list of DataCite JSON responses and returns a list of works in Commonmeta format
@@ -768,17 +843,73 @@ func ReadAll(content []Content) ([]commonmeta.Data, error) {
 }
 
 // QueryURL returns the URL for the DataCite API query
-func QueryURL(number int, sample bool) string {
-	if sample {
+func QueryURL(number int, client_ string, type_ string, sample bool, year string, language string, orcid string, ror string, hasORCID bool, hasROR bool, hasRelation bool, hasAbstract bool, hasAward bool, hasLicense bool) string {
+	if sample && number == 0 {
 		number = 10
 	}
-	url := "https://api.datacite.org/dois?random=true&page[size]=" + strconv.Itoa(number)
+	url := "https://api.datacite.org/dois?page[size]=" + strconv.Itoa(number)
+	if sample {
+		url += "&random=true"
+	}
+	if client_ != "" {
+		url += "&client-id=" + client_
+	}
+	if type_ != "" {
+		url += "&resource-type-id=" + type_
+	}
+	if ror != "" {
+		r, _ := utils.ValidateROR(ror)
+		if r != "" {
+			url += "&affiliation-id=" + r
+		}
+	}
+	var query []string
+	if year != "" {
+		query = append(query, "publicationYear:"+year)
+	}
+	if language != "" {
+		query = append(query, "language:"+language)
+	}
+	if orcid != "" {
+		o, _ := utils.ValidateORCID(orcid)
+		if o != "" {
+			query = append(query, "creators.nameIdentifiers.nameIdentifier:"+o)
+		}
+	}
+	if hasORCID {
+		query = append(query, "creators.nameIdentifiers.nameIdentifierScheme:ORCID")
+	}
+	if hasROR {
+		query = append(query, "creators.affiliation.affiliationIdentifierScheme:ROR")
+	}
+	if hasRelation {
+		query = append(query, "relatedIdentifiers.relationType:*")
+	}
+	if hasAbstract {
+		query = append(query, "descriptions.descriptionType:Abstract:*")
+	}
+	if hasAward {
+		query = append(query, "fundingReferences.funderIdentifier:*")
+	}
+	if hasLicense {
+		query = append(query, "ightsList.rightsIdentifierScheme:SPDX")
+	}
+	if len(query) > 0 {
+		url += "&query=" + strings.Join(query, "%20AND%20")
+		if hasROR {
+			url += "&affiliation=true"
+		}
+	}
 	return url
 }
 
 // ReadJSON reads JSON from a file and unmarshals it
 func ReadJSON(filename string) (Content, error) {
+	type Response struct {
+		Data Data `json:"data"`
+	}
 	var content Content
+	var response Response
 
 	extension := path.Ext(filename)
 	if extension != ".json" {
@@ -791,9 +922,38 @@ func ReadJSON(filename string) (Content, error) {
 	defer file.Close()
 
 	decoder := json.NewDecoder(file)
-	err = decoder.Decode(&content)
+	err = decoder.Decode(&response)
 	if err != nil {
 		return content, err
+	}
+	content = response.Data.Attributes
+	return content, nil
+}
+
+// ReadJSONList reads JSON list from a file and unmarshals it
+func ReadJSONList(filename string) ([]Content, error) {
+	type Response struct {
+		Data []Data `json:"data"`
+	}
+	var response Response
+	var content []Content
+
+	extension := path.Ext(filename)
+	if extension != ".json" {
+		return content, errors.New("invalid file extension")
+	}
+	file, err := os.Open(filename)
+	if err != nil {
+		return content, errors.New("error reading file")
+	}
+	defer file.Close()
+	decoder := json.NewDecoder(file)
+	err = decoder.Decode(&response)
+	if err != nil {
+		return content, err
+	}
+	for _, v := range response.Data {
+		content = append(content, v.Attributes)
 	}
 	return content, nil
 }
@@ -824,4 +984,17 @@ func ReadJSONLines(filename string) ([]Content, error) {
 	}
 
 	return response, nil
+}
+
+func ParseGeoCoordinate(gc interface{}) float64 {
+	// type GeoCoordinate float64
+	// var geoCoordinate GeoCoordinate
+	// switch g := gc.(type) {
+	// case float64:
+	// 	geoCoordinate = g
+	// case string:
+	// 	geoCoordinate, _ = strconv.ParseFloat(g, 64)
+	// }
+	// return geoCoordinate
+	return 0
 }

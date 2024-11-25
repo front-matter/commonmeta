@@ -271,10 +271,10 @@ func Fetch(str string) (commonmeta.Data, error) {
 }
 
 // FetchAll gets the metadata for a list of works from the Crossref API and converts it to the Commonmeta format
-func FetchAll(number int, member string, type_ string, sample bool, hasORCID bool, hasROR bool, hasReferences bool, hasRelation bool, hasAbstract bool, hasAward bool, hasLicense bool, hasArchive bool) ([]commonmeta.Data, error) {
+func FetchAll(number int, member string, type_ string, sample bool, year string, ror string, orcid string, hasORCID bool, hasROR bool, hasReferences bool, hasRelation bool, hasAbstract bool, hasAward bool, hasLicense bool, hasArchive bool) ([]commonmeta.Data, error) {
 
 	var data []commonmeta.Data
-	content, err := GetAll(number, member, type_, sample, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
+	content, err := GetAll(number, member, type_, sample, year, ror, orcid, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
 	if err != nil {
 		return data, err
 	}
@@ -333,7 +333,7 @@ func Get(pid string) (Content, error) {
 }
 
 // GetAll gets the metadata for a list of works from the Crossref API
-func GetAll(number int, member string, type_ string, sample bool, hasORCID bool, hasROR bool, hasReferences bool, hasRelation bool, hasAbstract bool, hasAward bool, hasLicense bool, hasArchive bool) ([]Content, error) {
+func GetAll(number int, member string, type_ string, sample bool, year string, ror string, orcid string, hasORCID bool, hasROR bool, hasReferences bool, hasRelation bool, hasAbstract bool, hasAward bool, hasLicense bool, hasArchive bool) ([]Content, error) {
 	// the envelope for the JSON response from the Crossref API
 	type Response struct {
 		Status         string `json:"status"`
@@ -351,7 +351,7 @@ func GetAll(number int, member string, type_ string, sample bool, hasORCID bool,
 	client := &http.Client{
 		Timeout: 20 * time.Second,
 	}
-	url := QueryURL(number, member, type_, sample, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
+	url := QueryURL(number, member, type_, sample, year, ror, orcid, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	v := "0.1"
 	u := "info@front-matter.io"
@@ -774,7 +774,7 @@ func ReadAll(content []Content) ([]commonmeta.Data, error) {
 }
 
 // QueryURL returns the URL for the Crossref API query
-func QueryURL(number int, member string, _type string, sample bool, hasORCID bool, hasROR bool, hasReferences bool, hasRelation bool, hasAbstract bool, hasAward bool, hasLicense bool, hasArchive bool) string {
+func QueryURL(number int, member string, _type string, sample bool, year string, ror string, orcid string, hasORCID bool, hasROR bool, hasReferences bool, hasRelation bool, hasAbstract bool, hasAward bool, hasLicense bool, hasArchive bool) string {
 	types := []string{
 		"book",
 		"book-chapter",
@@ -826,6 +826,23 @@ func QueryURL(number int, member string, _type string, sample bool, hasORCID boo
 	if _type != "" && slices.Contains(types, _type) {
 		filters = append(filters, "type:"+_type)
 	}
+	if ror != "" {
+		r, _ := utils.ValidateROR(ror)
+		if r != "" {
+			filters = append(filters, "ror-id:"+r)
+		}
+	}
+	if orcid != "" {
+		o, _ := utils.ValidateORCID(orcid)
+		if o != "" {
+			filters = append(filters, "orcid:"+o)
+		}
+	}
+	if year != "" {
+		filters = append(filters, "from-pub-date:"+year+"-01-01")
+		filters = append(filters, "until-pub-date:"+year+"-12-31")
+	}
+
 	if hasORCID {
 		filters = append(filters, "has-orcid:true")
 	}

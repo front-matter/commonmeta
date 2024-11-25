@@ -40,6 +40,10 @@ var sampleCmd = &cobra.Command{
 		client_, _ := cmd.Flags().GetString("client")
 		member, _ := cmd.Flags().GetString("member")
 		type_, _ := cmd.Flags().GetString("type")
+		year, _ := cmd.Flags().GetString("year")
+		language, _ := cmd.Flags().GetString("language")
+		orcid, _ := cmd.Flags().GetString("orcid")
+		ror, _ := cmd.Flags().GetString("ror")
 		hasORCID, _ := cmd.Flags().GetBool("has-orcid")
 		hasROR, _ := cmd.Flags().GetBool("has-ror-id")
 		hasReferences, _ := cmd.Flags().GetBool("has-references")
@@ -57,9 +61,9 @@ var sampleCmd = &cobra.Command{
 		var err error
 		sample := true
 		if from == "crossref" {
-			data, err = crossref.FetchAll(number, member, type_, sample, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
+			data, err = crossref.FetchAll(number, member, type_, sample, year, ror, orcid, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
 		} else if from == "datacite" {
-			data, err = datacite.FetchAll(number, client_, type_, sample)
+			data, err = datacite.FetchAll(number, client_, type_, sample, year, language, orcid, ror, hasORCID, hasROR, hasRelation, hasAbstract, hasAward, hasLicense)
 		}
 		if err != nil {
 			fmt.Println(err)

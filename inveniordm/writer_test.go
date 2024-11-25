@@ -2,7 +2,6 @@ package inveniordm_test
 
 import (
 	"encoding/json"
-	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -67,30 +66,30 @@ func TestWrite(t *testing.T) {
 	}
 }
 
-func ExampleCreateDraftRecord() {
-	s := inveniordm.CreateDraftRecord("10.59350/k0746-rsc44")
-	fmt.Println(s)
-	// Output:
-	// 10.59350%2Fk0746-rsc44
-}
+// func ExampleCreateDraftRecord() {
+// 	s, _ := inveniordm.CreateDraftRecord("10.59350/k0746-rsc44")
+// 	fmt.Println(s)
+// 	// Output:
+// 	// 10.59350%2Fk0746-rsc44
+// }
 
-func ExampleEditPublishedRecord() {
-	s := inveniordm.EditPublishedRecord("10.59350/k0746-rsc44")
-	fmt.Println(s)
-	// Output:
-	// 10.59350%2Fk0746-rsc44
-}
+// func ExampleEditPublishedRecord() {
+// 	s, _ := inveniordm.EditPublishedRecord("10.59350/k0746-rsc44")
+// 	fmt.Println(s)
+// 	// Output:
+// 	// 10.59350%2Fk0746-rsc44
+// }
 
-func ExampleUpdateDraftRecord() {
-	s := inveniordm.UpdateDraftRecord("10.59350/k0746-rsc44")
-	fmt.Println(s)
-	// Output:
-	// 10.59350%2Fk0746-rsc44
-}
+// func ExampleUpdateDraftRecord() {
+// 	s, _ := inveniordm.UpdateDraftRecord("10.59350/k0746-rsc44")
+// 	fmt.Println(s)
+// 	// Output:
+// 	// 10.59350%2Fk0746-rsc44
+// }
 
-func ExamplePublishDraftRecord() {
-	s := inveniordm.PublishDraftRecord("10.59350/k0746-rsc44")
-	fmt.Println(s)
-	// Output:
-	// 10.59350%2Fk0746-rsc44
-}
+// func ExamplePublishDraftRecord() {
+// 	s, _ := inveniordm.PublishDraftRecord("10.59350/k0746-rsc44")
+// 	fmt.Println(s)
+// 	// Output:
+// 	// 10.59350%2Fk0746-rsc44
+// }

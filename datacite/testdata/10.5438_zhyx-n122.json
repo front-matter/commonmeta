@@ -1,56 +1,217 @@
 {
-  "id": "https://doi.org/10.5438/zhyx-n122",
-  "type": "Document",
-  "additionalType": "blog post",
-  "contributors": [
-    {
-      "type": "Person",
-      "contributorRoles": ["Author"],
-      "givenName": "Rorie",
-      "familyName": "Edmunds",
-      "affiliations": [{ "name": "DataCite" }]
+  "data": {
+    "id": "10.5438/zhyx-n122",
+    "type": "dois",
+    "attributes": {
+      "doi": "10.5438/zhyx-n122",
+      "prefix": "10.5438",
+      "suffix": "zhyx-n122",
+      "identifiers": [],
+      "alternateIdentifiers": [],
+      "creators": [
+        {
+          "name": "Edmunds, Rorie",
+          "nameType": "Personal",
+          "givenName": "Rorie",
+          "familyName": "Edmunds",
+          "affiliation": ["DataCite"],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "Vierkant, Paul",
+          "nameType": "Personal",
+          "givenName": "Paul",
+          "familyName": "Vierkant",
+          "affiliation": ["DataCite"],
+          "nameIdentifiers": [
+            {
+              "schemeUri": "https://orcid.org",
+              "nameIdentifier": "https://orcid.org/0000-0003-4448-3844",
+              "nameIdentifierScheme": "ORCID"
+            }
+          ]
+        }
+      ],
+      "titles": [
+        {
+          "lang": "en",
+          "title": "DataCite Member Survey 2022",
+          "titleType": null
+        }
+      ],
+      "publisher": "DataCite",
+      "container": {},
+      "publicationYear": 2023,
+      "subjects": [],
+      "contributors": [],
+      "dates": [],
+      "language": "en",
+      "types": {
+        "ris": "RPRT",
+        "bibtex": "article",
+        "citeproc": "article-journal",
+        "schemaOrg": "ScholarlyArticle",
+        "resourceType": "blog post",
+        "resourceTypeGeneral": "Text"
+      },
+      "relatedIdentifiers": [
+        {
+          "schemeUri": null,
+          "schemeType": null,
+          "relationType": "Cites",
+          "relatedIdentifier": "10.5438/K1GW-Y723",
+          "resourceTypeGeneral": "Text",
+          "relatedIdentifierType": "DOI",
+          "relatedMetadataScheme": null
+        },
+        {
+          "schemeUri": null,
+          "schemeType": null,
+          "relationType": "Cites",
+          "relatedIdentifier": "10.5438/1tek-7522",
+          "resourceTypeGeneral": "Text",
+          "relatedIdentifierType": "DOI",
+          "relatedMetadataScheme": null
+        },
+        {
+          "schemeUri": null,
+          "schemeType": null,
+          "relationType": "Cites",
+          "relatedIdentifier": "10.5438/cnsf-ec48",
+          "resourceTypeGeneral": "Text",
+          "relatedIdentifierType": "DOI",
+          "relatedMetadataScheme": null
+        },
+        {
+          "schemeUri": null,
+          "schemeType": null,
+          "relationType": "Cites",
+          "relatedIdentifier": "10.5438/q34f-c696",
+          "resourceTypeGeneral": "Text",
+          "relatedIdentifierType": "DOI",
+          "relatedMetadataScheme": null
+        },
+        {
+          "schemeUri": null,
+          "schemeType": null,
+          "relationType": "Cites",
+          "relatedIdentifier": "10.5438/vacd-ve62",
+          "resourceTypeGeneral": "Text",
+          "relatedIdentifierType": "DOI",
+          "relatedMetadataScheme": null
+        },
+        {
+          "schemeUri": null,
+          "schemeType": null,
+          "relationType": "Cites",
+          "relatedIdentifier": "10.5438/h7x6-qf64",
+          "resourceTypeGeneral": "Text",
+          "relatedIdentifierType": "DOI",
+          "relatedMetadataScheme": null
+        },
+        {
+          "schemeUri": null,
+          "schemeType": null,
+          "relationType": "Cites",
+          "relatedIdentifier": "10.5438/vjz9-kx84",
+          "resourceTypeGeneral": "Text",
+          "relatedIdentifierType": "DOI",
+          "relatedMetadataScheme": null
+        },
+        {
+          "schemeUri": null,
+          "schemeType": null,
+          "relationType": "Cites",
+          "relatedIdentifier": "10.5438/ptv6-vf36",
+          "resourceTypeGeneral": "Text",
+          "relatedIdentifierType": "DOI",
+          "relatedMetadataScheme": null
+        }
+      ],
+      "relatedItems": [],
+      "sizes": [],
+      "formats": [],
+      "version": "1.0",
+      "rightsList": [
+        {
+          "rights": "Creative Commons Attribution 4.0 International",
+          "rightsUri": "https://creativecommons.org/licenses/by/4.0/legalcode",
+          "schemeUri": "https://spdx.org/licenses/",
+          "rightsIdentifier": "cc-by-4.0",
+          "rightsIdentifierScheme": "SPDX"
+        }
+      ],
+      "descriptions": [
+        {
+          "lang": "en",
+          "description": "At the end of 2022, we conducted our annual member survey, asking our members about their experience being part of the DataCite community and how DataCite services might alleviate any challenges they are facing. We thank the many members who participated in the survey for sharing their valuable perspectives with us. After analyzing their insights, we are pleased to publish the following summary of the main outcomes.",
+          "descriptionType": "Abstract"
+        }
+      ],
+      "geoLocations": [],
+      "fundingReferences": [],
+      "xml": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHJlc291cmNlIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhtbG5zPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCIgeHNpOnNjaGVtYUxvY2F0aW9uPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCBodHRwOi8vc2NoZW1hLmRhdGFjaXRlLm9yZy9tZXRhL2tlcm5lbC00L21ldGFkYXRhLnhzZCI+CiAgPGlkZW50aWZpZXIgaWRlbnRpZmllclR5cGU9IkRPSSI+MTAuNTQzOC9aSFlYLU4xMjI8L2lkZW50aWZpZXI+CiAgPGNyZWF0b3JzPgogICAgPGNyZWF0b3I+CiAgICAgIDxjcmVhdG9yTmFtZSBuYW1lVHlwZT0iUGVyc29uYWwiPkVkbXVuZHMsIFJvcmllPC9jcmVhdG9yTmFtZT4KICAgICAgPGdpdmVuTmFtZT5Sb3JpZTwvZ2l2ZW5OYW1lPgogICAgICA8ZmFtaWx5TmFtZT5FZG11bmRzPC9mYW1pbHlOYW1lPgogICAgICA8YWZmaWxpYXRpb24gYWZmaWxpYXRpb25JZGVudGlmaWVyPSJodHRwczovL3Jvci5vcmcvMDR3eG5zajgxIiBhZmZpbGlhdGlvbklkZW50aWZpZXJTY2hlbWU9IlJPUiIgc2NoZW1lVVJJPSJodHRwczovL3Jvci5vcmciPkRhdGFDaXRlPC9hZmZpbGlhdGlvbj4KICAgIDwvY3JlYXRvcj4KICAgIDxjcmVhdG9yPgogICAgICA8Y3JlYXRvck5hbWUgbmFtZVR5cGU9IlBlcnNvbmFsIj5WaWVya2FudCwgUGF1bDwvY3JlYXRvck5hbWU+CiAgICAgIDxnaXZlbk5hbWU+UGF1bDwvZ2l2ZW5OYW1lPgogICAgICA8ZmFtaWx5TmFtZT5WaWVya2FudDwvZmFtaWx5TmFtZT4KICAgICAgPG5hbWVJZGVudGlmaWVyIG5hbWVJZGVudGlmaWVyU2NoZW1lPSJPUkNJRCIgc2NoZW1lVVJJPSJodHRwczovL29yY2lkLm9yZyI+aHR0cHM6Ly9vcmNpZC5vcmcvMDAwMC0wMDAzLTQ0NDgtMzg0NDwvbmFtZUlkZW50aWZpZXI+CiAgICAgIDxhZmZpbGlhdGlvbiBhZmZpbGlhdGlvbklkZW50aWZpZXI9Imh0dHBzOi8vcm9yLm9yZy8wNHd4bnNqODEiIGFmZmlsaWF0aW9uSWRlbnRpZmllclNjaGVtZT0iUk9SIiBzY2hlbWVVUkk9Imh0dHBzOi8vcm9yLm9yZyI+RGF0YUNpdGU8L2FmZmlsaWF0aW9uPgogICAgPC9jcmVhdG9yPgogIDwvY3JlYXRvcnM+CiAgPHRpdGxlcz4KICAgIDx0aXRsZSB4bWw6bGFuZz0iZW4iPkRhdGFDaXRlIE1lbWJlciBTdXJ2ZXkgMjAyMjwvdGl0bGU+CiAgPC90aXRsZXM+CiAgPHB1Ymxpc2hlcj5EYXRhQ2l0ZTwvcHVibGlzaGVyPgogIDxwdWJsaWNhdGlvblllYXI+MjAyMzwvcHVibGljYXRpb25ZZWFyPgogIDxyZXNvdXJjZVR5cGUgcmVzb3VyY2VUeXBlR2VuZXJhbD0iVGV4dCI+YmxvZyBwb3N0PC9yZXNvdXJjZVR5cGU+CiAgPGxhbmd1YWdlPmVuPC9sYW5ndWFnZT4KICA8cmVsYXRlZElkZW50aWZpZXJzPgogICAgPHJlbGF0ZWRJZGVudGlmaWVyIHJlbGF0ZWRJZGVudGlmaWVyVHlwZT0iRE9JIiByZWxhdGlvblR5cGU9IkNpdGVzIiByZXNvdXJjZVR5cGVHZW5lcmFsPSJUZXh0Ij4xMC41NDM4L0sxR1ctWTcyMzwvcmVsYXRlZElkZW50aWZpZXI+CiAgICA8cmVsYXRlZElkZW50aWZpZXIgcmVsYXRlZElkZW50aWZpZXJUeXBlPSJET0kiIHJlbGF0aW9uVHlwZT0iQ2l0ZXMiIHJlc291cmNlVHlwZUdlbmVyYWw9IlRleHQiPjEwLjU0MzgvMXRlay03NTIyPC9yZWxhdGVkSWRlbnRpZmllcj4KICAgIDxyZWxhdGVkSWRlbnRpZmllciByZWxhdGVkSWRlbnRpZmllclR5cGU9IkRPSSIgcmVsYXRpb25UeXBlPSJDaXRlcyIgcmVzb3VyY2VUeXBlR2VuZXJhbD0iVGV4dCI+MTAuNTQzOC9jbnNmLWVjNDg8L3JlbGF0ZWRJZGVudGlmaWVyPgogICAgPHJlbGF0ZWRJZGVudGlmaWVyIHJlbGF0ZWRJZGVudGlmaWVyVHlwZT0iRE9JIiByZWxhdGlvblR5cGU9IkNpdGVzIiByZXNvdXJjZVR5cGVHZW5lcmFsPSJUZXh0Ij4xMC41NDM4L3EzNGYtYzY5NjwvcmVsYXRlZElkZW50aWZpZXI+CiAgICA8cmVsYXRlZElkZW50aWZpZXIgcmVsYXRlZElkZW50aWZpZXJUeXBlPSJET0kiIHJlbGF0aW9uVHlwZT0iQ2l0ZXMiIHJlc291cmNlVHlwZUdlbmVyYWw9IlRleHQiPjEwLjU0MzgvdmFjZC12ZTYyPC9yZWxhdGVkSWRlbnRpZmllcj4KICAgIDxyZWxhdGVkSWRlbnRpZmllciByZWxhdGVkSWRlbnRpZmllclR5cGU9IkRPSSIgcmVsYXRpb25UeXBlPSJDaXRlcyIgcmVzb3VyY2VUeXBlR2VuZXJhbD0iVGV4dCI+MTAuNTQzOC9oN3g2LXFmNjQ8L3JlbGF0ZWRJZGVudGlmaWVyPgogICAgPHJlbGF0ZWRJZGVudGlmaWVyIHJlbGF0ZWRJZGVudGlmaWVyVHlwZT0iRE9JIiByZWxhdGlvblR5cGU9IkNpdGVzIiByZXNvdXJjZVR5cGVHZW5lcmFsPSJUZXh0Ij4xMC41NDM4L3Zqejkta3g4NDwvcmVsYXRlZElkZW50aWZpZXI+CiAgICA8cmVsYXRlZElkZW50aWZpZXIgcmVsYXRlZElkZW50aWZpZXJUeXBlPSJET0kiIHJlbGF0aW9uVHlwZT0iQ2l0ZXMiIHJlc291cmNlVHlwZUdlbmVyYWw9IlRleHQiPjEwLjU0MzgvcHR2Ni12ZjM2PC9yZWxhdGVkSWRlbnRpZmllcj4KICA8L3JlbGF0ZWRJZGVudGlmaWVycz4KICA8c2l6ZXMvPgogIDxmb3JtYXRzLz4KICA8dmVyc2lvbj4xLjA8L3ZlcnNpb24+CiAgPHJpZ2h0c0xpc3Q+CiAgICA8cmlnaHRzIHJpZ2h0c1VSST0iaHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LzQuMC9sZWdhbGNvZGUiPkNyZWF0aXZlIENvbW1vbnMgQXR0cmlidXRpb24gNC4wIEludGVybmF0aW9uYWw8L3JpZ2h0cz4KICA8L3JpZ2h0c0xpc3Q+CiAgPGRlc2NyaXB0aW9ucz4KICAgIDxkZXNjcmlwdGlvbiB4bWw6bGFuZz0iZW4iIGRlc2NyaXB0aW9uVHlwZT0iQWJzdHJhY3QiPkF0IHRoZSBlbmQgb2YgMjAyMiwgd2UgY29uZHVjdGVkIG91ciBhbm51YWwgbWVtYmVyIHN1cnZleSwgYXNraW5nIG91ciBtZW1iZXJzIGFib3V0IHRoZWlyIGV4cGVyaWVuY2UgYmVpbmcgcGFydCBvZiB0aGUgRGF0YUNpdGUgY29tbXVuaXR5IGFuZCBob3cgRGF0YUNpdGUgc2VydmljZXMgbWlnaHQgYWxsZXZpYXRlIGFueSBjaGFsbGVuZ2VzIHRoZXkgYXJlIGZhY2luZy4gV2UgdGhhbmsgdGhlIG1hbnkgbWVtYmVycyB3aG8gcGFydGljaXBhdGVkIGluIHRoZSBzdXJ2ZXkgZm9yIHNoYXJpbmcgdGhlaXIgdmFsdWFibGUgcGVyc3BlY3RpdmVzIHdpdGggdXMuIEFmdGVyIGFuYWx5emluZyB0aGVpciBpbnNpZ2h0cywgd2UgYXJlIHBsZWFzZWQgdG8gcHVibGlzaCB0aGUgZm9sbG93aW5nIHN1bW1hcnkgb2YgdGhlIG1haW4gb3V0Y29tZXMuPC9kZXNjcmlwdGlvbj4KICA8L2Rlc2NyaXB0aW9ucz4KPC9yZXNvdXJjZT4K",
+      "url": "https://datacite.org/blog/datacite-member-survey-2022/",
+      "contentUrl": null,
+      "metadataVersion": 4,
+      "schemaVersion": "http://datacite.org/schema/kernel-4",
+      "source": "fabricaForm",
+      "isActive": true,
+      "state": "findable",
+      "reason": null,
+      "viewCount": 0,
+      "viewsOverTime": [],
+      "downloadCount": 0,
+      "downloadsOverTime": [],
+      "referenceCount": 0,
+      "citationCount": 0,
+      "citationsOverTime": [],
+      "partCount": 0,
+      "partOfCount": 0,
+      "versionCount": 0,
+      "versionOfCount": 0,
+      "created": "2023-01-31T12:41:28.000Z",
+      "registered": "2023-01-31T12:41:28.000Z",
+      "published": "2023",
+      "updated": "2023-08-31T15:51:40.000Z"
     },
-    {
-      "id": "https://orcid.org/0000-0003-4448-3844",
-      "type": "Person",
-      "contributorRoles": ["Author"],
-      "givenName": "Paul",
-      "familyName": "Vierkant",
-      "affiliations": [{ "name": "DataCite" }]
+    "relationships": {
+      "client": {
+        "data": {
+          "id": "datacite.blog",
+          "type": "clients"
+        }
+      },
+      "provider": {
+        "data": {
+          "id": "datacite",
+          "type": "providers"
+        }
+      },
+      "media": {
+        "data": {
+          "id": "10.5438/zhyx-n122",
+          "type": "media"
+        }
+      },
+      "references": {
+        "data": []
+      },
+      "citations": {
+        "data": []
+      },
+      "parts": {
+        "data": []
+      },
+      "partOf": {
+        "data": []
+      },
+      "versions": {
+        "data": []
+      },
+      "versionOf": {
+        "data": []
+      }
     }
-  ],
-  "date": { "published": "2023" },
-  "descriptions": [
-    {
-      "description": "At the end of 2022, we conducted our annual member survey, asking our members about their experience being part of the DataCite community and how DataCite services might alleviate any challenges they are facing. We thank the many members who participated in the survey for sharing their valuable perspectives with us. After analyzing their insights, we are pleased to publish the following summary of the main outcomes.",
-      "type": "Abstract",
-      "language": "en"
-    }
-  ],
-  "identifiers": [
-    {
-      "identifier": "https://doi.org/10.5438/zhyx-n122",
-      "identifierType": "DOI"
-    }
-  ],
-  "language": "en",
-  "license": {
-    "id": "CC-BY-4.0",
-    "url": "https://creativecommons.org/licenses/by/4.0/legalcode"
-  },
-  "provider": "DataCite",
-  "publisher": { "name": "DataCite" },
-  "references": [
-    { "key": "ref1", "id": "https://doi.org/10.5438/k1gw-y723" },
-    { "key": "ref2", "id": "https://doi.org/10.5438/1tek-7522" },
-    { "key": "ref3", "id": "https://doi.org/10.5438/cnsf-ec48" },
-    { "key": "ref4", "id": "https://doi.org/10.5438/q34f-c696" },
-    { "key": "ref5", "id": "https://doi.org/10.5438/vacd-ve62" },
-    { "key": "ref6", "id": "https://doi.org/10.5438/h7x6-qf64" },
-    { "key": "ref7", "id": "https://doi.org/10.5438/vjz9-kx84" },
-    { "key": "ref8", "id": "https://doi.org/10.5438/ptv6-vf36" }
-  ],
-  "titles": [{ "title": "DataCite Member Survey 2022", "language": "en" }],
-  "url": "https://datacite.org/blog/datacite-member-survey-2022",
-  "version": "1.0"
+  }
 }

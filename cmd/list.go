@@ -50,6 +50,12 @@ var listCmd = &cobra.Command{
 		client_, _ := cmd.Flags().GetString("client")
 		member, _ := cmd.Flags().GetString("member")
 		type_, _ := cmd.Flags().GetString("type")
+		year, _ := cmd.Flags().GetString("year")
+		language, _ := cmd.Flags().GetString("language")
+		orcid, _ := cmd.Flags().GetString("orcid")
+		ror, _ := cmd.Flags().GetString("ror")
+		fromHost, _ := cmd.Flags().GetString("from-host")
+		community, _ := cmd.Flags().GetString("community")
 		hasORCID, _ := cmd.Flags().GetBool("has-orcid")
 		hasROR, _ := cmd.Flags().GetBool("has-ror-id")
 		hasReferences, _ := cmd.Flags().GetBool("has-references")
@@ -89,9 +95,11 @@ var listCmd = &cobra.Command{
 		} else if str != "" && from == "csl" {
 			data, err = csl.LoadAll(str)
 		} else if from == "crossref" {
-			data, err = crossref.FetchAll(number, member, type_, sample, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
+			data, err = crossref.FetchAll(number, member, type_, sample, year, ror, orcid, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
 		} else if from == "datacite" {
-			data, err = datacite.FetchAll(number, client_, type_, sample)
+			data, err = datacite.FetchAll(number, client_, type_, sample, year, language, orcid, ror, hasORCID, hasROR, hasRelation, hasAbstract, hasAward, hasLicense)
+		} else if from == "inveniordm" {
+			data, err = inveniordm.FetchAll(number, fromHost, community)
 		} else {
 			fmt.Println("Please provide a valid input format")
 			return

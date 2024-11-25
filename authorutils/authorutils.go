@@ -85,6 +85,14 @@ func ParseName(name string) (string, string, string) {
 		}
 	}
 
+	// check for comma separated names, e.g. "Doe, John"
+	comma := strings.Split(name, ", ")
+	if len(comma) > 1 {
+		givenName = comma[1]
+		familyName = comma[0]
+		return givenName, familyName, ""
+	}
+
 	// default to the last word as family name
 	words := strings.Split(name, " ")
 	if len(words) == 1 {

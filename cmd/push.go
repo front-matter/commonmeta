@@ -45,6 +45,12 @@ commonmeta push --sample -f crossref -t inveniordm -h rogue-scholar.org --token 
 		client_, _ := cmd.Flags().GetString("client")
 		member, _ := cmd.Flags().GetString("member")
 		type_, _ := cmd.Flags().GetString("type")
+		year, _ := cmd.Flags().GetString("year")
+		language, _ := cmd.Flags().GetString("language")
+		orcid, _ := cmd.Flags().GetString("orcid")
+		ror, _ := cmd.Flags().GetString("ror")
+		fromHost, _ := cmd.Flags().GetString("from-host")
+		community, _ := cmd.Flags().GetString("community")
 		hasORCID, _ := cmd.Flags().GetBool("has-orcid")
 		hasROR, _ := cmd.Flags().GetBool("has-ror-id")
 		hasReferences, _ := cmd.Flags().GetBool("has-references")
@@ -78,9 +84,11 @@ commonmeta push --sample -f crossref -t inveniordm -h rogue-scholar.org --token 
 		}
 
 		if sample && from == "crossref" {
-			data, err = crossref.FetchAll(number, member, type_, sample, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
+			data, err = crossref.FetchAll(number, member, type_, sample, year, ror, orcid, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
 		} else if sample && from == "datacite" {
-			data, err = datacite.FetchAll(number, client_, type_, sample)
+			data, err = datacite.FetchAll(number, client_, type_, sample, year, language, orcid, ror, hasORCID, hasROR, hasRelation, hasAbstract, hasAward, hasLicense)
+		} else if from == "inveniordm" {
+			data, err = inveniordm.FetchAll(number, fromHost, community)
 		} else if str != "" && from == "commonmeta" {
 			data, err = commonmeta.LoadAll(str)
 		} else if str != "" && from == "crossref" {
@@ -89,6 +97,8 @@ commonmeta push --sample -f crossref -t inveniordm -h rogue-scholar.org --token 
 			data, err = crossrefxml.LoadAll(str)
 		} else if str != "" && from == "datacite" {
 			data, err = datacite.LoadAll(str)
+		} else if str != "" && from == "inveniordm" {
+			data, err = inveniordm.LoadAll(str)
 		} else if str != "" && from == "jsonfeed" {
 			data, err = jsonfeed.LoadAll(str)
 		} else if str != "" && from == "csl" {

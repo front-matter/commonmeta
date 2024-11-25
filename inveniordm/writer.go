@@ -212,18 +212,13 @@ func Convert(data commonmeta.Data) (Inveniordm, error) {
 			// first check if award number is in the awards vocabulary
 			for _, a := range awardsVocabulary {
 				if a.ID == v.AwardNumber {
-					if a.Title.En != "" {
-						award = Award{
-							Number: v.AwardNumber,
-							// Title: AwardTitle{
-							// 	En: a.Title.En,
-							// },
-						}
-					} else {
-						award = Award{
-							Number: v.AwardNumber,
-						}
+					award = Award{
+						Number: v.AwardNumber,
+						Title: AwardTitle{
+							En: a.Title.En,
+						},
 					}
+
 					// if a.Identifiers.Identifier != "" {
 					// 	id, identifierType := utils.ValidateID(a.AwardURI)
 					// 	if id == "" {
@@ -241,11 +236,15 @@ func Convert(data commonmeta.Data) (Inveniordm, error) {
 				award = Award{
 					Number: v.AwardNumber,
 				}
-				// if v.AwardTitle != "" {
-				// 	award.Title = AwardTitle{
-				// 		En: v.AwardTitle,
-				// 	}
-				// }
+				if v.AwardTitle != "" {
+					award.Title = AwardTitle{
+						En: v.AwardTitle,
+					}
+				} else {
+					award.Title = AwardTitle{
+						En: "No title",
+					}
+				}
 				if v.AwardURI != "" {
 					id, identifierType := utils.ValidateID(v.AwardURI)
 					if id == "" {

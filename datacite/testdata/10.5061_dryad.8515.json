@@ -1,120 +1,655 @@
 {
-  "id": "https://doi.org/10.5061/dryad.8515",
-  "type": "Dataset",
-  "contributors": [
-    {
-      "type": "Person",
-      "contributorRoles": ["Author"],
-      "givenName": "Benjamin",
-      "familyName": "Ollomo",
-      "affiliations": [
+  "data": {
+    "id": "10.5061/dryad.8515",
+    "type": "dois",
+    "attributes": {
+      "doi": "10.5061/dryad.8515",
+      "prefix": "10.5061",
+      "suffix": "dryad.8515",
+      "identifiers": [],
+      "alternateIdentifiers": [],
+      "creators": [
         {
-          "name": "Centre International de Recherches Médicales de Franceville"
-        }
-      ]
-    },
-    {
-      "type": "Person",
-      "contributorRoles": ["Author"],
-      "givenName": "Patrick",
-      "familyName": "Durand",
-      "affiliations": [
-        { "name": "French National Centre for Scientific Research" }
-      ]
-    },
-    {
-      "type": "Person",
-      "contributorRoles": ["Author"],
-      "givenName": "Franck",
-      "familyName": "Prugnolle",
-      "affiliations": [
-        { "name": "French National Centre for Scientific Research" }
-      ]
-    },
-    {
-      "type": "Person",
-      "contributorRoles": ["Author"],
-      "givenName": "Emmanuel J. P.",
-      "familyName": "Douzery"
-    },
-    {
-      "type": "Person",
-      "contributorRoles": ["Author"],
-      "givenName": "Céline",
-      "familyName": "Arnathau",
-      "affiliations": [
-        { "name": "French National Centre for Scientific Research" }
-      ]
-    },
-    {
-      "type": "Person",
-      "contributorRoles": ["Author"],
-      "givenName": "Dieudonné",
-      "familyName": "Nkoghe",
-      "affiliations": [
+          "name": "Ollomo, Benjamin",
+          "nameType": "Personal",
+          "givenName": "Benjamin",
+          "familyName": "Ollomo",
+          "affiliation": [
+            "Centre International de Recherches Médicales de Franceville"
+          ],
+          "nameIdentifiers": []
+        },
         {
-          "name": "Centre International de Recherches Médicales de Franceville"
-        }
-      ]
-    },
-    {
-      "type": "Person",
-      "contributorRoles": ["Author"],
-      "givenName": "Eric",
-      "familyName": "Leroy",
-      "affiliations": [
+          "name": "Durand, Patrick",
+          "nameType": "Personal",
+          "givenName": "Patrick",
+          "familyName": "Durand",
+          "affiliation": ["French National Centre for Scientific Research"],
+          "nameIdentifiers": []
+        },
         {
-          "name": "Centre International de Recherches Médicales de Franceville"
+          "name": "Prugnolle, Franck",
+          "nameType": "Personal",
+          "givenName": "Franck",
+          "familyName": "Prugnolle",
+          "affiliation": ["French National Centre for Scientific Research"],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "Douzery, Emmanuel J. P.",
+          "nameType": "Personal",
+          "givenName": "Emmanuel J. P.",
+          "familyName": "Douzery",
+          "affiliation": [],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "Arnathau, Céline",
+          "nameType": "Personal",
+          "givenName": "Céline",
+          "familyName": "Arnathau",
+          "affiliation": ["French National Centre for Scientific Research"],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "Nkoghe, Dieudonné",
+          "nameType": "Personal",
+          "givenName": "Dieudonné",
+          "familyName": "Nkoghe",
+          "affiliation": [
+            "Centre International de Recherches Médicales de Franceville"
+          ],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "Leroy, Eric",
+          "nameType": "Personal",
+          "givenName": "Eric",
+          "familyName": "Leroy",
+          "affiliation": [
+            "Centre International de Recherches Médicales de Franceville"
+          ],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "Renaud, François",
+          "nameType": "Personal",
+          "givenName": "François",
+          "familyName": "Renaud",
+          "affiliation": ["French National Centre for Scientific Research"],
+          "nameIdentifiers": []
         }
-      ]
+      ],
+      "titles": [
+        {
+          "title": "Data from: A new malaria agent in African hominids."
+        }
+      ],
+      "publisher": "Dryad",
+      "container": {},
+      "publicationYear": 2011,
+      "subjects": [
+        {
+          "subject": "Plasmodium",
+          "schemeUri": "https://github.com/PLOS/plos-thesaurus",
+          "subjectScheme": "PLOS Subject Area Thesaurus"
+        },
+        {
+          "subject": "Malaria",
+          "schemeUri": "https://github.com/PLOS/plos-thesaurus",
+          "subjectScheme": "PLOS Subject Area Thesaurus"
+        },
+        {
+          "subject": "mitochondrial genome"
+        },
+        {
+          "subject": "Parasites"
+        }
+      ],
+      "contributors": [],
+      "dates": [
+        {
+          "date": "2011-02-01T17:22:41Z",
+          "dateType": "Issued"
+        },
+        {
+          "date": "2011-02-01T17:22:41Z",
+          "dateType": "Available"
+        }
+      ],
+      "language": "en",
+      "types": {
+        "ris": "DATA",
+        "bibtex": "misc",
+        "citeproc": "dataset",
+        "schemaOrg": "Dataset",
+        "resourceType": "dataset",
+        "resourceTypeGeneral": "Dataset"
+      },
+      "relatedIdentifiers": [
+        {
+          "relationType": "IsCitedBy",
+          "relatedIdentifier": "10.1371/journal.ppat.1000446",
+          "relatedIdentifierType": "DOI"
+        }
+      ],
+      "relatedItems": [],
+      "sizes": ["128717 bytes"],
+      "formats": [],
+      "version": "1",
+      "rightsList": [
+        {
+          "rights": "Creative Commons Zero v1.0 Universal",
+          "rightsUri": "https://creativecommons.org/publicdomain/zero/1.0/legalcode",
+          "schemeUri": "https://spdx.org/licenses/",
+          "rightsIdentifier": "cc0-1.0",
+          "rightsIdentifierScheme": "SPDX"
+        }
+      ],
+      "descriptions": [
+        {
+          "description": "Plasmodium falciparum is the major human malaria agent responsible for 200\n to 300 million infections and one to three million deaths annually, mainly\n among African infants. The origin and evolution of this pathogen within\n the human lineage is still unresolved. A single species, P. reichenowi,\n which infects chimpanzees, is known to be a close sister lineage of P.\n falciparum. Here we report the discovery of a new Plasmodium species\n infecting Hominids. This new species has been isolated in two chimpanzees\n (Pan troglodytes) kept as pets by villagers in Gabon (Africa). Analysis of\n its complete mitochondrial genome (5529 nucleotides including Cyt b, Cox I\n and Cox III genes) reveals an older divergence of this lineage from the\n clade that includes P. falciparum and P. reichenowi (approximately 21+/-9\n Myrs ago using Bayesian methods and considering that the divergence\n between P. falciparum and P. reichenowi occurred 4 to 7 million years ago\n as generally considered in the literature). This time frame would be\n congruent with the radiation of hominoids, suggesting that this Plasmodium\n lineage might have been present in early hominoids and that they may both\n have experienced a simultaneous diversification. Investigation of the\n nuclear genome of this new species will further the understanding of the\n genetic adaptations of P. falciparum to humans. The risk of transfer and\n emergence of this new species in humans must be now seriously considered\n given that it was found in two chimpanzees living in contact with humans\n and its close relatedness to the most virulent agent of malaria.",
+          "descriptionType": "Abstract"
+        },
+        {
+          "description": "Ollomo_PLoSPathog_2009Nucleotide alignment concatenation of 4\n mitochondrial genes for 17 Plasmodium species and one\n outgroup.Ollomo_PLoSPathog_2009_PHYMLMaximum likelihood tree inferred from\n the 4-gene concatenation using PHYML.",
+          "descriptionType": "Other"
+        }
+      ],
+      "geoLocations": [
+        {
+          "geoLocationPlace": "Africa"
+        }
+      ],
+      "fundingReferences": [],
+      "xml": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHJlc291cmNlIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhtbG5zPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCIgeHNpOnNjaGVtYUxvY2F0aW9uPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCBodHRwOi8vc2NoZW1hLmRhdGFjaXRlLm9yZy9tZXRhL2tlcm5lbC00L21ldGFkYXRhLnhzZCI+CiAgPGlkZW50aWZpZXIgaWRlbnRpZmllclR5cGU9IkRPSSI+MTAuNTA2MS9EUllBRC44NTE1PC9pZGVudGlmaWVyPgogIDxjcmVhdG9ycz4KICAgIDxjcmVhdG9yPgogICAgICA8Y3JlYXRvck5hbWU+T2xsb21vLCBCZW5qYW1pbjwvY3JlYXRvck5hbWU+CiAgICAgIDxhZmZpbGlhdGlvbiBhZmZpbGlhdGlvbklkZW50aWZpZXI9Imh0dHBzOi8vcm9yLm9yZy8wMXd5cWI5OTciIGFmZmlsaWF0aW9uSWRlbnRpZmllclNjaGVtZT0iUk9SIiBzY2hlbWVVUkk9Imh0dHBzOi8vcm9yLm9yZyI+Q2VudHJlIEludGVybmF0aW9uYWwgZGUgUmVjaGVyY2hlcyBNw6lkaWNhbGVzIGRlIEZyYW5jZXZpbGxlPC9hZmZpbGlhdGlvbj4KICAgIDwvY3JlYXRvcj4KICAgIDxjcmVhdG9yPgogICAgICA8Y3JlYXRvck5hbWU+RHVyYW5kLCBQYXRyaWNrPC9jcmVhdG9yTmFtZT4KICAgICAgPGFmZmlsaWF0aW9uIGFmZmlsaWF0aW9uSWRlbnRpZmllcj0iaHR0cHM6Ly9yb3Iub3JnLzAyZmVhaHc3MyIgYWZmaWxpYXRpb25JZGVudGlmaWVyU2NoZW1lPSJST1IiIHNjaGVtZVVSST0iaHR0cHM6Ly9yb3Iub3JnIj5GcmVuY2ggTmF0aW9uYWwgQ2VudHJlIGZvciBTY2llbnRpZmljIFJlc2VhcmNoPC9hZmZpbGlhdGlvbj4KICAgIDwvY3JlYXRvcj4KICAgIDxjcmVhdG9yPgogICAgICA8Y3JlYXRvck5hbWU+UHJ1Z25vbGxlLCBGcmFuY2s8L2NyZWF0b3JOYW1lPgogICAgICA8YWZmaWxpYXRpb24gYWZmaWxpYXRpb25JZGVudGlmaWVyPSJodHRwczovL3Jvci5vcmcvMDJmZWFodzczIiBhZmZpbGlhdGlvbklkZW50aWZpZXJTY2hlbWU9IlJPUiIgc2NoZW1lVVJJPSJodHRwczovL3Jvci5vcmciPkZyZW5jaCBOYXRpb25hbCBDZW50cmUgZm9yIFNjaWVudGlmaWMgUmVzZWFyY2g8L2FmZmlsaWF0aW9uPgogICAgPC9jcmVhdG9yPgogICAgPGNyZWF0b3I+CiAgICAgIDxjcmVhdG9yTmFtZT5Eb3V6ZXJ5LCBFbW1hbnVlbCBKLiBQLjwvY3JlYXRvck5hbWU+CiAgICA8L2NyZWF0b3I+CiAgICA8Y3JlYXRvcj4KICAgICAgPGNyZWF0b3JOYW1lPkFybmF0aGF1LCBDw6lsaW5lPC9jcmVhdG9yTmFtZT4KICAgICAgPGFmZmlsaWF0aW9uIGFmZmlsaWF0aW9uSWRlbnRpZmllcj0iaHR0cHM6Ly9yb3Iub3JnLzAyZmVhaHc3MyIgYWZmaWxpYXRpb25JZGVudGlmaWVyU2NoZW1lPSJST1IiIHNjaGVtZVVSST0iaHR0cHM6Ly9yb3Iub3JnIj5GcmVuY2ggTmF0aW9uYWwgQ2VudHJlIGZvciBTY2llbnRpZmljIFJlc2VhcmNoPC9hZmZpbGlhdGlvbj4KICAgIDwvY3JlYXRvcj4KICAgIDxjcmVhdG9yPgogICAgICA8Y3JlYXRvck5hbWU+TmtvZ2hlLCBEaWV1ZG9ubsOpPC9jcmVhdG9yTmFtZT4KICAgICAgPGFmZmlsaWF0aW9uIGFmZmlsaWF0aW9uSWRlbnRpZmllcj0iaHR0cHM6Ly9yb3Iub3JnLzAxd3lxYjk5NyIgYWZmaWxpYXRpb25JZGVudGlmaWVyU2NoZW1lPSJST1IiIHNjaGVtZVVSST0iaHR0cHM6Ly9yb3Iub3JnIj5DZW50cmUgSW50ZXJuYXRpb25hbCBkZSBSZWNoZXJjaGVzIE3DqWRpY2FsZXMgZGUgRnJhbmNldmlsbGU8L2FmZmlsaWF0aW9uPgogICAgPC9jcmVhdG9yPgogICAgPGNyZWF0b3I+CiAgICAgIDxjcmVhdG9yTmFtZT5MZXJveSwgRXJpYzwvY3JlYXRvck5hbWU+CiAgICAgIDxhZmZpbGlhdGlvbiBhZmZpbGlhdGlvbklkZW50aWZpZXI9Imh0dHBzOi8vcm9yLm9yZy8wMXd5cWI5OTciIGFmZmlsaWF0aW9uSWRlbnRpZmllclNjaGVtZT0iUk9SIiBzY2hlbWVVUkk9Imh0dHBzOi8vcm9yLm9yZyI+Q2VudHJlIEludGVybmF0aW9uYWwgZGUgUmVjaGVyY2hlcyBNw6lkaWNhbGVzIGRlIEZyYW5jZXZpbGxlPC9hZmZpbGlhdGlvbj4KICAgIDwvY3JlYXRvcj4KICAgIDxjcmVhdG9yPgogICAgICA8Y3JlYXRvck5hbWU+UmVuYXVkLCBGcmFuw6dvaXM8L2NyZWF0b3JOYW1lPgogICAgICA8YWZmaWxpYXRpb24gYWZmaWxpYXRpb25JZGVudGlmaWVyPSJodHRwczovL3Jvci5vcmcvMDJmZWFodzczIiBhZmZpbGlhdGlvbklkZW50aWZpZXJTY2hlbWU9IlJPUiIgc2NoZW1lVVJJPSJodHRwczovL3Jvci5vcmciPkZyZW5jaCBOYXRpb25hbCBDZW50cmUgZm9yIFNjaWVudGlmaWMgUmVzZWFyY2g8L2FmZmlsaWF0aW9uPgogICAgPC9jcmVhdG9yPgogIDwvY3JlYXRvcnM+CiAgPHRpdGxlcz4KICAgIDx0aXRsZT5EYXRhIGZyb206IEEgbmV3IG1hbGFyaWEgYWdlbnQgaW4gQWZyaWNhbiBob21pbmlkcy48L3RpdGxlPgogIDwvdGl0bGVzPgogIDxwdWJsaXNoZXIgcHVibGlzaGVySWRlbnRpZmllcj0iaHR0cHM6Ly9yb3Iub3JnLzAweDZoNW45NSIgcHVibGlzaGVySWRlbnRpZmllclNjaGVtZT0iUk9SIiBzY2hlbWVVUkk9Imh0dHBzOi8vcm9yLm9yZy8iPkRyeWFkPC9wdWJsaXNoZXI+CiAgPHJlc291cmNlVHlwZSByZXNvdXJjZVR5cGVHZW5lcmFsPSJEYXRhc2V0Ij5kYXRhc2V0PC9yZXNvdXJjZVR5cGU+CiAgPHB1YmxpY2F0aW9uWWVhcj4yMDExPC9wdWJsaWNhdGlvblllYXI+CiAgPHN1YmplY3RzPgogICAgPHN1YmplY3Qgc3ViamVjdFNjaGVtZT0iUExPUyBTdWJqZWN0IEFyZWEgVGhlc2F1cnVzIiBzY2hlbWVVUkk9Imh0dHBzOi8vZ2l0aHViLmNvbS9QTE9TL3Bsb3MtdGhlc2F1cnVzIj5QbGFzbW9kaXVtPC9zdWJqZWN0PgogICAgPHN1YmplY3Qgc3ViamVjdFNjaGVtZT0iUExPUyBTdWJqZWN0IEFyZWEgVGhlc2F1cnVzIiBzY2hlbWVVUkk9Imh0dHBzOi8vZ2l0aHViLmNvbS9QTE9TL3Bsb3MtdGhlc2F1cnVzIj5NYWxhcmlhPC9zdWJqZWN0PgogICAgPHN1YmplY3Q+bWl0b2Nob25kcmlhbCBnZW5vbWU8L3N1YmplY3Q+CiAgICA8c3ViamVjdD5QYXJhc2l0ZXM8L3N1YmplY3Q+CiAgPC9zdWJqZWN0cz4KICA8ZGF0ZXM+CiAgICA8ZGF0ZSBkYXRlVHlwZT0iSXNzdWVkIj4yMDExLTAyLTAxVDE3OjIyOjQxWjwvZGF0ZT4KICAgIDxkYXRlIGRhdGVUeXBlPSJBdmFpbGFibGUiPjIwMTEtMDItMDFUMTc6MjI6NDFaPC9kYXRlPgogIDwvZGF0ZXM+CiAgPGxhbmd1YWdlPmVuPC9sYW5ndWFnZT4KICA8cmVsYXRlZElkZW50aWZpZXJzPgogICAgPHJlbGF0ZWRJZGVudGlmaWVyIHJlbGF0aW9uVHlwZT0iSXNDaXRlZEJ5IiByZWxhdGVkSWRlbnRpZmllclR5cGU9IkRPSSI+aHR0cHM6Ly9kb2kub3JnLzEwLjEzNzEvam91cm5hbC5wcGF0LjEwMDA0NDY8L3JlbGF0ZWRJZGVudGlmaWVyPgogIDwvcmVsYXRlZElkZW50aWZpZXJzPgogIDxzaXplcz4KICAgIDxzaXplPjEyODcxNyBieXRlczwvc2l6ZT4KICA8L3NpemVzPgogIDx2ZXJzaW9uPjE8L3ZlcnNpb24+CiAgPHJpZ2h0c0xpc3Q+CiAgICA8cmlnaHRzIHJpZ2h0c1VSST0iaHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL3B1YmxpY2RvbWFpbi96ZXJvLzEuMC8iPkNDMCAxLjAgVW5pdmVyc2FsIChDQzAgMS4wKSBQdWJsaWMgRG9tYWluIERlZGljYXRpb248L3JpZ2h0cz4KICA8L3JpZ2h0c0xpc3Q+CiAgPGRlc2NyaXB0aW9ucz4KICAgIDxkZXNjcmlwdGlvbiBkZXNjcmlwdGlvblR5cGU9IkFic3RyYWN0Ij4KICAgICAgUGxhc21vZGl1bSBmYWxjaXBhcnVtIGlzIHRoZSBtYWpvciBodW1hbiBtYWxhcmlhIGFnZW50IHJlc3BvbnNpYmxlIGZvciAyMDAKICAgICAgdG8gMzAwIG1pbGxpb24gaW5mZWN0aW9ucyBhbmQgb25lIHRvIHRocmVlIG1pbGxpb24gZGVhdGhzIGFubnVhbGx5LCBtYWlubHkKICAgICAgYW1vbmcgQWZyaWNhbiBpbmZhbnRzLiBUaGUgb3JpZ2luIGFuZCBldm9sdXRpb24gb2YgdGhpcyBwYXRob2dlbiB3aXRoaW4KICAgICAgdGhlIGh1bWFuIGxpbmVhZ2UgaXMgc3RpbGwgdW5yZXNvbHZlZC4gQSBzaW5nbGUgc3BlY2llcywgUC4gcmVpY2hlbm93aSwKICAgICAgd2hpY2ggaW5mZWN0cyBjaGltcGFuemVlcywgaXMga25vd24gdG8gYmUgYSBjbG9zZSBzaXN0ZXIgbGluZWFnZSBvZiBQLgogICAgICBmYWxjaXBhcnVtLiBIZXJlIHdlIHJlcG9ydCB0aGUgZGlzY292ZXJ5IG9mIGEgbmV3IFBsYXNtb2RpdW0gc3BlY2llcwogICAgICBpbmZlY3RpbmcgSG9taW5pZHMuIFRoaXMgbmV3IHNwZWNpZXMgaGFzIGJlZW4gaXNvbGF0ZWQgaW4gdHdvIGNoaW1wYW56ZWVzCiAgICAgIChQYW4gdHJvZ2xvZHl0ZXMpIGtlcHQgYXMgcGV0cyBieSB2aWxsYWdlcnMgaW4gR2Fib24gKEFmcmljYSkuIEFuYWx5c2lzIG9mCiAgICAgIGl0cyBjb21wbGV0ZSBtaXRvY2hvbmRyaWFsIGdlbm9tZSAoNTUyOSBudWNsZW90aWRlcyBpbmNsdWRpbmcgQ3l0IGIsIENveCBJCiAgICAgIGFuZCBDb3ggSUlJIGdlbmVzKSByZXZlYWxzIGFuIG9sZGVyIGRpdmVyZ2VuY2Ugb2YgdGhpcyBsaW5lYWdlIGZyb20gdGhlCiAgICAgIGNsYWRlIHRoYXQgaW5jbHVkZXMgUC4gZmFsY2lwYXJ1bSBhbmQgUC4gcmVpY2hlbm93aSAoYXBwcm94aW1hdGVseSAyMSsvLTkKICAgICAgTXlycyBhZ28gdXNpbmcgQmF5ZXNpYW4gbWV0aG9kcyBhbmQgY29uc2lkZXJpbmcgdGhhdCB0aGUgZGl2ZXJnZW5jZQogICAgICBiZXR3ZWVuIFAuIGZhbGNpcGFydW0gYW5kIFAuIHJlaWNoZW5vd2kgb2NjdXJyZWQgNCB0byA3IG1pbGxpb24geWVhcnMgYWdvCiAgICAgIGFzIGdlbmVyYWxseSBjb25zaWRlcmVkIGluIHRoZSBsaXRlcmF0dXJlKS4gVGhpcyB0aW1lIGZyYW1lIHdvdWxkIGJlCiAgICAgIGNvbmdydWVudCB3aXRoIHRoZSByYWRpYXRpb24gb2YgaG9taW5vaWRzLCBzdWdnZXN0aW5nIHRoYXQgdGhpcyBQbGFzbW9kaXVtCiAgICAgIGxpbmVhZ2UgbWlnaHQgaGF2ZSBiZWVuIHByZXNlbnQgaW4gZWFybHkgaG9taW5vaWRzIGFuZCB0aGF0IHRoZXkgbWF5IGJvdGgKICAgICAgaGF2ZSBleHBlcmllbmNlZCBhIHNpbXVsdGFuZW91cyBkaXZlcnNpZmljYXRpb24uIEludmVzdGlnYXRpb24gb2YgdGhlCiAgICAgIG51Y2xlYXIgZ2Vub21lIG9mIHRoaXMgbmV3IHNwZWNpZXMgd2lsbCBmdXJ0aGVyIHRoZSB1bmRlcnN0YW5kaW5nIG9mIHRoZQogICAgICBnZW5ldGljIGFkYXB0YXRpb25zIG9mIFAuIGZhbGNpcGFydW0gdG8gaHVtYW5zLiBUaGUgcmlzayBvZiB0cmFuc2ZlciBhbmQKICAgICAgZW1lcmdlbmNlIG9mIHRoaXMgbmV3IHNwZWNpZXMgaW4gaHVtYW5zIG11c3QgYmUgbm93IHNlcmlvdXNseSBjb25zaWRlcmVkCiAgICAgIGdpdmVuIHRoYXQgaXQgd2FzIGZvdW5kIGluIHR3byBjaGltcGFuemVlcyBsaXZpbmcgaW4gY29udGFjdCB3aXRoIGh1bWFucwogICAgICBhbmQgaXRzIGNsb3NlIHJlbGF0ZWRuZXNzIHRvIHRoZSBtb3N0IHZpcnVsZW50IGFnZW50IG9mIG1hbGFyaWEuCiAgICA8L2Rlc2NyaXB0aW9uPgogICAgPGRlc2NyaXB0aW9uIGRlc2NyaXB0aW9uVHlwZT0iT3RoZXIiPgogICAgICBPbGxvbW9fUExvU1BhdGhvZ18yMDA5TnVjbGVvdGlkZSBhbGlnbm1lbnQgY29uY2F0ZW5hdGlvbiBvZiA0CiAgICAgIG1pdG9jaG9uZHJpYWwgZ2VuZXMgZm9yIDE3IFBsYXNtb2RpdW0gc3BlY2llcyBhbmQgb25lCiAgICAgIG91dGdyb3VwLk9sbG9tb19QTG9TUGF0aG9nXzIwMDlfUEhZTUxNYXhpbXVtIGxpa2VsaWhvb2QgdHJlZSBpbmZlcnJlZCBmcm9tCiAgICAgIHRoZSA0LWdlbmUgY29uY2F0ZW5hdGlvbiB1c2luZyBQSFlNTC4KICAgIDwvZGVzY3JpcHRpb24+CiAgPC9kZXNjcmlwdGlvbnM+CiAgPGdlb0xvY2F0aW9ucz4KICAgIDxnZW9Mb2NhdGlvbj4KICAgICAgPGdlb0xvY2F0aW9uUGxhY2U+QWZyaWNhPC9nZW9Mb2NhdGlvblBsYWNlPgogICAgPC9nZW9Mb2NhdGlvbj4KICA8L2dlb0xvY2F0aW9ucz4KPC9yZXNvdXJjZT4=",
+      "url": "https://datadryad.org/stash/dataset/doi:10.5061/dryad.8515",
+      "contentUrl": null,
+      "metadataVersion": 25,
+      "schemaVersion": "http://datacite.org/schema/kernel-4",
+      "source": "mds",
+      "isActive": true,
+      "state": "findable",
+      "reason": null,
+      "viewCount": 394,
+      "viewsOverTime": [
+        {
+          "yearMonth": "2014-11",
+          "total": 1
+        },
+        {
+          "yearMonth": "2015-03",
+          "total": 4
+        },
+        {
+          "yearMonth": "2015-04",
+          "total": 4
+        },
+        {
+          "yearMonth": "2015-05",
+          "total": 3
+        },
+        {
+          "yearMonth": "2015-08",
+          "total": 8
+        },
+        {
+          "yearMonth": "2015-09",
+          "total": 4
+        },
+        {
+          "yearMonth": "2015-11",
+          "total": 1
+        },
+        {
+          "yearMonth": "2016-01",
+          "total": 2
+        },
+        {
+          "yearMonth": "2016-04",
+          "total": 2
+        },
+        {
+          "yearMonth": "2016-08",
+          "total": 1
+        },
+        {
+          "yearMonth": "2017-01",
+          "total": 19
+        },
+        {
+          "yearMonth": "2017-02",
+          "total": 26
+        },
+        {
+          "yearMonth": "2017-03",
+          "total": 13
+        },
+        {
+          "yearMonth": "2017-04",
+          "total": 8
+        },
+        {
+          "yearMonth": "2017-05",
+          "total": 8
+        },
+        {
+          "yearMonth": "2017-06",
+          "total": 5
+        },
+        {
+          "yearMonth": "2017-08",
+          "total": 2
+        },
+        {
+          "yearMonth": "2017-09",
+          "total": 5
+        },
+        {
+          "yearMonth": "2018-01",
+          "total": 4
+        },
+        {
+          "yearMonth": "2018-02",
+          "total": 1
+        },
+        {
+          "yearMonth": "2018-04",
+          "total": 1
+        },
+        {
+          "yearMonth": "2018-10",
+          "total": 2
+        },
+        {
+          "yearMonth": "2018-12",
+          "total": 1
+        },
+        {
+          "yearMonth": "2019-01",
+          "total": 2
+        },
+        {
+          "yearMonth": "2019-02",
+          "total": 1
+        },
+        {
+          "yearMonth": "2019-04",
+          "total": 5
+        },
+        {
+          "yearMonth": "2019-05",
+          "total": 1
+        },
+        {
+          "yearMonth": "2019-06",
+          "total": 2
+        },
+        {
+          "yearMonth": "2019-07",
+          "total": 2
+        },
+        {
+          "yearMonth": "2019-08",
+          "total": 1
+        },
+        {
+          "yearMonth": "2019-10",
+          "total": 4
+        },
+        {
+          "yearMonth": "2019-12",
+          "total": 3
+        },
+        {
+          "yearMonth": "2020-01",
+          "total": 3
+        },
+        {
+          "yearMonth": "2020-02",
+          "total": 4
+        },
+        {
+          "yearMonth": "2020-03",
+          "total": 1
+        },
+        {
+          "yearMonth": "2020-04",
+          "total": 4
+        },
+        {
+          "yearMonth": "2020-05",
+          "total": 6
+        },
+        {
+          "yearMonth": "2020-07",
+          "total": 6
+        },
+        {
+          "yearMonth": "2020-08",
+          "total": 1
+        },
+        {
+          "yearMonth": "2020-09",
+          "total": 2
+        },
+        {
+          "yearMonth": "2020-10",
+          "total": 4
+        },
+        {
+          "yearMonth": "2020-11",
+          "total": 4
+        },
+        {
+          "yearMonth": "2020-12",
+          "total": 2
+        },
+        {
+          "yearMonth": "2021-01",
+          "total": 11
+        },
+        {
+          "yearMonth": "2021-02",
+          "total": 1
+        },
+        {
+          "yearMonth": "2021-03",
+          "total": 2
+        },
+        {
+          "yearMonth": "2021-04",
+          "total": 6
+        },
+        {
+          "yearMonth": "2021-06",
+          "total": 6
+        },
+        {
+          "yearMonth": "2021-07",
+          "total": 3
+        },
+        {
+          "yearMonth": "2021-08",
+          "total": 3
+        },
+        {
+          "yearMonth": "2021-09",
+          "total": 1
+        },
+        {
+          "yearMonth": "2021-10",
+          "total": 7
+        },
+        {
+          "yearMonth": "2021-11",
+          "total": 3
+        },
+        {
+          "yearMonth": "2022-01",
+          "total": 1
+        },
+        {
+          "yearMonth": "2022-02",
+          "total": 4
+        },
+        {
+          "yearMonth": "2022-03",
+          "total": 8
+        },
+        {
+          "yearMonth": "2022-04",
+          "total": 2
+        },
+        {
+          "yearMonth": "2022-07",
+          "total": 1
+        },
+        {
+          "yearMonth": "2022-09",
+          "total": 2
+        },
+        {
+          "yearMonth": "2022-10",
+          "total": 3
+        },
+        {
+          "yearMonth": "2022-11",
+          "total": 3
+        },
+        {
+          "yearMonth": "2022-12",
+          "total": 8
+        },
+        {
+          "yearMonth": "2023-01",
+          "total": 11
+        },
+        {
+          "yearMonth": "2023-03",
+          "total": 1
+        },
+        {
+          "yearMonth": "2023-04",
+          "total": 2
+        },
+        {
+          "yearMonth": "2023-05",
+          "total": 5
+        },
+        {
+          "yearMonth": "2023-06",
+          "total": 2
+        },
+        {
+          "yearMonth": "2023-07",
+          "total": 3
+        },
+        {
+          "yearMonth": "2023-08",
+          "total": 42
+        },
+        {
+          "yearMonth": "2023-09",
+          "total": 48
+        },
+        {
+          "yearMonth": "2023-10",
+          "total": 9
+        },
+        {
+          "yearMonth": "2023-11",
+          "total": 5
+        },
+        {
+          "yearMonth": "2023-12",
+          "total": 5
+        },
+        {
+          "yearMonth": "2024-06",
+          "total": 1
+        },
+        {
+          "yearMonth": "2024-08",
+          "total": 1
+        },
+        {
+          "yearMonth": "2024-10",
+          "total": 1
+        }
+      ],
+      "downloadCount": 31,
+      "downloadsOverTime": [
+        {
+          "yearMonth": "2014-11",
+          "total": 1
+        },
+        {
+          "yearMonth": "2015-03",
+          "total": 1
+        },
+        {
+          "yearMonth": "2015-04",
+          "total": 2
+        },
+        {
+          "yearMonth": "2015-08",
+          "total": 2
+        },
+        {
+          "yearMonth": "2015-09",
+          "total": 2
+        },
+        {
+          "yearMonth": "2017-02",
+          "total": 2
+        },
+        {
+          "yearMonth": "2017-04",
+          "total": 2
+        },
+        {
+          "yearMonth": "2017-05",
+          "total": 2
+        },
+        {
+          "yearMonth": "2017-06",
+          "total": 1
+        },
+        {
+          "yearMonth": "2019-10",
+          "total": 1
+        },
+        {
+          "yearMonth": "2020-02",
+          "total": 1
+        },
+        {
+          "yearMonth": "2020-05",
+          "total": 1
+        },
+        {
+          "yearMonth": "2020-11",
+          "total": 1
+        },
+        {
+          "yearMonth": "2021-01",
+          "total": 5
+        },
+        {
+          "yearMonth": "2021-02",
+          "total": 1
+        },
+        {
+          "yearMonth": "2022-10",
+          "total": 1
+        },
+        {
+          "yearMonth": "2022-12",
+          "total": 1
+        },
+        {
+          "yearMonth": "2023-01",
+          "total": 1
+        },
+        {
+          "yearMonth": "2023-03",
+          "total": 1
+        },
+        {
+          "yearMonth": "2023-11",
+          "total": 1
+        },
+        {
+          "yearMonth": "2023-12",
+          "total": 1
+        },
+        {
+          "yearMonth": "2024-06",
+          "total": 0
+        },
+        {
+          "yearMonth": "2024-08",
+          "total": 0
+        },
+        {
+          "yearMonth": "2024-10",
+          "total": 0
+        }
+      ],
+      "referenceCount": 1,
+      "citationCount": 1,
+      "citationsOverTime": [
+        {
+          "year": "2019",
+          "total": 1
+        }
+      ],
+      "partCount": 2,
+      "partOfCount": 0,
+      "versionCount": 0,
+      "versionOfCount": 0,
+      "created": "2011-11-22T18:34:51.000Z",
+      "registered": "2011-02-01T17:32:02.000Z",
+      "published": "2011",
+      "updated": "2024-11-01T01:06:00.000Z"
     },
-    {
-      "type": "Person",
-      "contributorRoles": ["Author"],
-      "givenName": "François",
-      "familyName": "Renaud",
-      "affiliations": [
-        { "name": "French National Centre for Scientific Research" }
-      ]
+    "relationships": {
+      "client": {
+        "data": {
+          "id": "dryad.dryad",
+          "type": "clients"
+        }
+      },
+      "provider": {
+        "data": {
+          "id": "dryad",
+          "type": "providers"
+        }
+      },
+      "media": {
+        "data": {
+          "id": "10.5061/dryad.8515",
+          "type": "media"
+        }
+      },
+      "references": {
+        "data": [
+          {
+            "id": "10.1371/journal.ppat.1000446",
+            "type": "dois"
+          }
+        ]
+      },
+      "citations": {
+        "data": [
+          {
+            "id": "10.1371/journal.ppat.1000446",
+            "type": "dois"
+          }
+        ]
+      },
+      "parts": {
+        "data": [
+          {
+            "id": "10.5061/dryad.8515/1",
+            "type": "dois"
+          },
+          {
+            "id": "10.5061/dryad.8515/2",
+            "type": "dois"
+          }
+        ]
+      },
+      "partOf": {
+        "data": []
+      },
+      "versions": {
+        "data": []
+      },
+      "versionOf": {
+        "data": []
+      }
     }
-  ],
-  "date": {
-    "published": "2011-02-01T17:22:41Z",
-    "available": "2011-02-01T17:22:41Z"
-  },
-  "descriptions": [
-    {
-      "description": "Plasmodium falciparum is the major human malaria agent responsible for 200\n to 300 million infections and one to three million deaths annually, mainly\n among African infants. The origin and evolution of this pathogen within\n the human lineage is still unresolved. A single species, P. reichenowi,\n which infects chimpanzees, is known to be a close sister lineage of P.\n falciparum. Here we report the discovery of a new Plasmodium species\n infecting Hominids. This new species has been isolated in two chimpanzees\n (Pan troglodytes) kept as pets by villagers in Gabon (Africa). Analysis of\n its complete mitochondrial genome (5529 nucleotides including Cyt b, Cox I\n and Cox III genes) reveals an older divergence of this lineage from the\n clade that includes P. falciparum and P. reichenowi (approximately 21+/-9\n Myrs ago using Bayesian methods and considering that the divergence\n between P. falciparum and P. reichenowi occurred 4 to 7 million years ago\n as generally considered in the literature). This time frame would be\n congruent with the radiation of hominoids, suggesting that this Plasmodium\n lineage might have been present in early hominoids and that they may both\n have experienced a simultaneous diversification. Investigation of the\n nuclear genome of this new species will further the understanding of the\n genetic adaptations of P. falciparum to humans. The risk of transfer and\n emergence of this new species in humans must be now seriously considered\n given that it was found in two chimpanzees living in contact with humans\n and its close relatedness to the most virulent agent of malaria.",
-      "type": "Abstract"
-    },
-    {
-      "description": "Ollomo_PLoSPathog_2009Nucleotide alignment concatenation of 4\n mitochondrial genes for 17 Plasmodium species and one\n outgroup.Ollomo_PLoSPathog_2009_PHYMLMaximum likelihood tree inferred from\n the 4-gene concatenation using PHYML.",
-      "type": "Other"
-    }
-  ],
-  "geoLocations": [{ "geoLocationPlace": "Africa" }],
-  "identifiers": [
-    {
-      "identifier": "https://doi.org/10.5061/dryad.8515",
-      "identifierType": "DOI"
-    }
-  ],
-  "language": "en",
-  "license": {
-    "id": "CC0-1.0",
-    "url": "https://creativecommons.org/publicdomain/zero/1.0/legalcode"
-  },
-  "provider": "DataCite",
-  "publisher": { "name": "Dryad" },
-  "subjects": [
-    { "subject": "Plasmodium" },
-    { "subject": "Malaria" },
-    { "subject": "mitochondrial genome" },
-    { "subject": "Parasites" }
-  ],
-  "titles": [
-    { "title": "Data from: A new malaria agent in African hominids." }
-  ],
-  "url": "https://datadryad.org/stash/dataset/doi:10.5061/dryad.8515",
-  "version": "1"
+  }
 }

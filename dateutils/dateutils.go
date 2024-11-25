@@ -2,6 +2,7 @@
 package dateutils
 
 import (
+	"errors"
 	"fmt"
 	"strconv"
 	"strings"
@@ -31,6 +32,9 @@ const Iso8601DateTimeFormat = "2006-01-02T15:04:05Z"
 // CrossrefDateTimeFormat is the Crossref date format with time, used in XML for content registration.
 const CrossrefDateTimeFormat = "20060102150405"
 
+// DateTimeWithSpacesFormat is the date time format with spaces and no timezone information.
+const DateTimeWithSpacesFormat = "2006-01-02 15:04:05"
+
 // ParseDate parses date strings in various formats and returns a date string in ISO 8601 format.
 func ParseDate(iso8601Time string) string {
 	date := GetDateStruct(iso8601Time)
@@ -45,6 +49,30 @@ func ParseDate(iso8601Time string) string {
 		dateStr += "-" + fmt.Sprintf("%02d", date.Day)
 	}
 	return dateStr
+}
+
+// ParseDateTime parses datetime strings in various formats and returns a datetime string in ISO 8601 format.
+func ParseDateTime(input string) string {
+	time, err := ParseTime(input)
+	if err != nil {
+		return ""
+	}
+	if time.Hour() == 0 && time.Minute() == 0 && time.Second() == 0 {
+		return ParseDate(input)
+	}
+	return time.Format(Iso8601DateTimeFormat)
+}
+
+// ParseTime parses datetime strings in various formats and returns a go time, which can then be formatted to an iso8601 string using ParseDateTime.
+func ParseTime(input string) (time.Time, error) {
+	formats := []string{Iso8601DateTimeFormat, Iso8601DateFormat, Iso8601DateMonthFormat, Iso8601DateYearFormat, DateTimeWithSpacesFormat, CrossrefDateTimeFormat}
+	for _, format := range formats {
+		datetime, err := time.Parse(format, input)
+		if err == nil {
+			return datetime, nil
+		}
+	}
+	return time.Time{}, errors.New("unrecognized time format")
 }
 
 // GetDateParts return date parts from an ISO 8601 date string

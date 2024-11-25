@@ -108,3 +108,10 @@ func ExampleParseDate() {
 	// Output:
 	// 2021-01
 }
+
+func ExampleParseDateTime() {
+	s := dateutils.ParseDateTime("2015-12-22 17:35:18")
+	fmt.Println(s)
+	// Output:
+	// 2015-12-22T17:35:18Z
+}

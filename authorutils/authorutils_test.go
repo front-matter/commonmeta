@@ -38,7 +38,9 @@ func TestParseName(t *testing.T) {
 	}
 	testCases := []testCase{
 		{input: "John Doe", givenName: "John", familyName: "Doe", name: ""},
+		{input: "Doe, John", givenName: "John", familyName: "Doe", name: ""},
 		{input: "Rainer Maria Rilke", givenName: "Rainer Maria", familyName: "Rilke", name: ""},
+		{input: "Rilke, Rainer Maria", givenName: "Rainer Maria", familyName: "Rilke", name: ""},
 		{input: "Harvard University", givenName: "", familyName: "", name: "Harvard University"},
 		{input: "LiberateScience", givenName: "", familyName: "", name: "LiberateScience"},
 		{input: "Jane Smith, MD", givenName: "Jane", familyName: "Smith", name: ""},
