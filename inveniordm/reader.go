@@ -8,6 +8,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 	"path"
 	"slices"
@@ -489,9 +490,9 @@ func Fetch(str string) (commonmeta.Data, error) {
 }
 
 // FetchAll gets the metadata for a list of records from a InvenioRDM community and returns Commonmeta metadata.
-func FetchAll(number int, host string, community string) ([]commonmeta.Data, error) {
+func FetchAll(number int, page int, host string, community string, type_ string, year string, language string, orcid string, ror string, hasORCID bool, hasROR bool) ([]commonmeta.Data, error) {
 	var data []commonmeta.Data
-	content, err := GetAll(number, host, community)
+	content, err := GetAll(number, page, host, community, type_, year, language, orcid, ror, hasORCID, hasROR)
 	if err != nil {
 		return data, err
 	}
@@ -567,7 +568,7 @@ func Get(id string) (Content, error) {
 }
 
 // GetAll retrieves InvenioRDM metadata for all records in a community.
-func GetAll(number int, host string, community string) ([]Content, error) {
+func GetAll(number int, page int, host string, community string, type_ string, year string, language string, orcid string, ror string, hasORCID bool, hasROR bool) ([]Content, error) {
 	var response Query
 	var content []Content
 
@@ -577,8 +578,12 @@ func GetAll(number int, host string, community string) ([]Content, error) {
 	client := &http.Client{
 		Timeout: time.Second * 30,
 	}
-	requestURL := fmt.Sprintf("https://%s/api/communities/%s/records?q=&l=list&p=1&s=%v&sort=newest", host, community, number)
-	resp, err := client.Get(requestURL)
+	url := QueryURL(number, page, host, community, type_, year, language, orcid, ror, hasORCID, hasROR)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		return content, err
+	}
+	resp, err := client.Do(req)
 	if err != nil {
 		return content, err
 	}
@@ -598,11 +603,84 @@ func GetAll(number int, host string, community string) ([]Content, error) {
 	return content, err
 }
 
+// QueryURL returns the URL for the InvenioRDM API query
+func QueryURL(number int, page int, host string, community string, type_ string, year string, language string, orcid string, ror string, hasORCID bool, hasROR bool) string {
+	var requestURL string
+	var q string
+	if community != "" {
+		requestURL = fmt.Sprintf("https://%s/api/communities/%s/records?", host, community)
+	} else {
+		requestURL = fmt.Sprintf("https://%s/api/records?", host)
+	}
+	values := url.Values{}
+	if type_ != "" {
+		if q != "" {
+			q += " AND "
+		}
+		values.Set("q", q+"metadata.resource_type.id:"+type_)
+	}
+	if year != "" {
+		q := values.Get("q")
+		if q != "" {
+			q += " AND "
+		}
+		values.Set("q", q+"metadata.publication_date:["+year+"-01-01 TO "+year+"-12-31]")
+	}
+	if orcid != "" {
+		o, _ := utils.ValidateORCID(orcid)
+		if o != "" {
+			q := values.Get("q")
+			if q != "" {
+				q += " AND "
+			}
+			values.Set("q", q+"metadata.creators.person_or_org.identifiers.identifier:"+o)
+		}
+	}
+	if ror != "" {
+		r, _ := utils.ValidateROR(ror)
+		if r != "" {
+			q := values.Get("q")
+			if q != "" {
+				q += " AND "
+			}
+			values.Set("q", q+"metadata.creators.affiliations.id:"+r)
+		}
+	}
+	if hasORCID {
+		q := values.Get("q")
+		if q != "" {
+			q += " AND "
+		}
+		values.Set("q", q+"metadata.creators.person_or_org.identifiers.scheme:orcid")
+	}
+	if hasROR {
+		q := values.Get("q")
+		if q != "" {
+			q += " AND "
+		}
+		values.Set("q", q+"metadata.creators.affiliations.id:*")
+	}
+	if language != "" {
+		q := values.Get("q")
+		if q != "" {
+			q += " AND "
+		}
+		l := utils.GetLanguage(language, "iso639-3")
+		values.Set("q", q+"metadata.languages.id:"+l)
+	}
+	values.Add("l", "list")
+	values.Add("page", strconv.Itoa(page))
+	values.Add("size", strconv.Itoa(number))
+	values.Add("sort", "newest")
+
+	return requestURL + values.Encode()
+}
+
 // SearchByDOI searches InvenioRDM records by external DOI.
 func SearchByDOI(doi string, client *InvenioRDMClient) (string, error) {
 	var query Query
 	doistr := doiutils.EscapeDOI(doi)
-	requestURL := fmt.Sprintf("https://%s/api/records?q=doi:%s", client.Host, doistr)
+	requestURL := fmt.Sprintf("https://%s/api/records?q=pids.doi.identifier:%s", client.Host, doistr)
 	req, _ := http.NewRequest(http.MethodGet, requestURL, nil)
 	req.Header = http.Header{
 		"Content-Type": {"application/json"},

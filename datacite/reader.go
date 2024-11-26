@@ -305,7 +305,7 @@ func Fetch(str string) (commonmeta.Data, error) {
 }
 
 // FetchAll gets the metadata for a list of works from the DataCite API and returns Commonmeta metadata.
-func FetchAll(number int, client_ string, type_ string, sample bool, year string, language string, orcid string, ror string, hasORCID bool, hasROR bool, hasRelation bool, hasAbstract bool, hasAward bool, hasLicense bool) ([]commonmeta.Data, error) {
+func FetchAll(number int, page int, client_ string, type_ string, sample bool, year string, language string, orcid string, ror string, hasORCID bool, hasROR bool, hasRelation bool, hasAbstract bool, hasAward bool, hasLicense bool) ([]commonmeta.Data, error) {
 	var data []commonmeta.Data
 
 	// check format of client ID
@@ -327,7 +327,7 @@ func FetchAll(number int, client_ string, type_ string, sample bool, year string
 		}
 	}
 
-	content, err := GetAll(number, client_, type_, sample, year, language, orcid, ror, hasORCID, hasROR, hasRelation, hasAbstract, hasAward, hasLicense)
+	content, err := GetAll(number, page, client_, type_, sample, year, language, orcid, ror, hasORCID, hasROR, hasRelation, hasAbstract, hasAward, hasLicense)
 	if err != nil {
 		return data, err
 	}
@@ -788,7 +788,7 @@ func GetContributor(v ContentContributor) commonmeta.Contributor {
 }
 
 // GetAll gets the metadata for a list of works from the DataCite API
-func GetAll(number int, client_ string, type_ string, sample bool, year string, language string, orcid string, ror string, hasORCID bool, hasROR bool, hasRelation bool, hasAbstract bool, hasAward bool, hasLicense bool) ([]Content, error) {
+func GetAll(number int, page int, client_ string, type_ string, sample bool, year string, language string, orcid string, ror string, hasORCID bool, hasROR bool, hasRelation bool, hasAbstract bool, hasAward bool, hasLicense bool) ([]Content, error) {
 	var content []Content
 
 	type Response struct {
@@ -802,7 +802,7 @@ func GetAll(number int, client_ string, type_ string, sample bool, year string, 
 	client := &http.Client{
 		Timeout: 30 * time.Second,
 	}
-	url := QueryURL(number, client_, type_, sample, year, language, orcid, ror, hasORCID, hasROR, hasRelation, hasAbstract, hasAward, hasLicense)
+	url := QueryURL(number, page, client_, type_, sample, year, language, orcid, ror, hasORCID, hasROR, hasRelation, hasAbstract, hasAward, hasLicense)
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		return content, err
@@ -843,12 +843,14 @@ func ReadAll(content []Content) ([]commonmeta.Data, error) {
 }
 
 // QueryURL returns the URL for the DataCite API query
-func QueryURL(number int, client_ string, type_ string, sample bool, year string, language string, orcid string, ror string, hasORCID bool, hasROR bool, hasRelation bool, hasAbstract bool, hasAward bool, hasLicense bool) string {
+func QueryURL(number int, page int, client_ string, type_ string, sample bool, year string, language string, orcid string, ror string, hasORCID bool, hasROR bool, hasRelation bool, hasAbstract bool, hasAward bool, hasLicense bool) string {
 	if sample && number == 0 {
 		number = 10
 	}
 	url := "https://api.datacite.org/dois?page[size]=" + strconv.Itoa(number)
-	if sample {
+	if page > 0 {
+		url += "&page[number]=" + strconv.Itoa(page)
+	} else if sample {
 		url += "&random=true"
 	}
 	if client_ != "" {
@@ -896,7 +898,7 @@ func QueryURL(number int, client_ string, type_ string, sample bool, year string
 	}
 	if len(query) > 0 {
 		url += "&query=" + strings.Join(query, "%20AND%20")
-		if hasROR {
+		if hasROR || ror != "" {
 			url += "&affiliation=true"
 		}
 	}

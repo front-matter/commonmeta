@@ -37,6 +37,7 @@ func init() {
 	rootCmd.PersistentFlags().StringP("to", "t", "commonmeta", "the format to convert to")
 
 	rootCmd.PersistentFlags().IntP("number", "n", 10, "number of results")
+	rootCmd.PersistentFlags().IntP("page", "", 1, "page number")
 	rootCmd.PersistentFlags().StringP("client", "", "", "DataCite client ID")
 	rootCmd.PersistentFlags().StringP("member", "", "", "Crossref member ID")
 	rootCmd.PersistentFlags().StringP("type", "", "", "work type")

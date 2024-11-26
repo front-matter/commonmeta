@@ -45,6 +45,7 @@ var listCmd = &cobra.Command{
 			input = args[0]
 		}
 		number, _ := cmd.Flags().GetInt("number")
+		page, _ := cmd.Flags().GetInt("page")
 		from, _ := cmd.Flags().GetString("from")
 
 		client_, _ := cmd.Flags().GetString("client")
@@ -95,11 +96,11 @@ var listCmd = &cobra.Command{
 		} else if str != "" && from == "csl" {
 			data, err = csl.LoadAll(str)
 		} else if from == "crossref" {
-			data, err = crossref.FetchAll(number, member, type_, sample, year, ror, orcid, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
+			data, err = crossref.FetchAll(number, page, member, type_, sample, year, ror, orcid, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
 		} else if from == "datacite" {
-			data, err = datacite.FetchAll(number, client_, type_, sample, year, language, orcid, ror, hasORCID, hasROR, hasRelation, hasAbstract, hasAward, hasLicense)
+			data, err = datacite.FetchAll(number, page, client_, type_, sample, year, language, orcid, ror, hasORCID, hasROR, hasRelation, hasAbstract, hasAward, hasLicense)
 		} else if from == "inveniordm" {
-			data, err = inveniordm.FetchAll(number, fromHost, community)
+			data, err = inveniordm.FetchAll(number, page, fromHost, community, type_, year, language, orcid, ror, hasORCID, hasROR)
 		} else {
 			fmt.Println("Please provide a valid input format")
 			return

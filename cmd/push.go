@@ -40,6 +40,7 @@ commonmeta push --sample -f crossref -t inveniordm -h rogue-scholar.org --token 
 			input = args[0]
 		}
 		number, _ := cmd.Flags().GetInt("number")
+		page, _ := cmd.Flags().GetInt("page")
 		from, _ := cmd.Flags().GetString("from")
 
 		client_, _ := cmd.Flags().GetString("client")
@@ -88,7 +89,7 @@ commonmeta push --sample -f crossref -t inveniordm -h rogue-scholar.org --token 
 		} else if sample && from == "datacite" {
 			data, err = datacite.FetchAll(number, client_, type_, sample, year, language, orcid, ror, hasORCID, hasROR, hasRelation, hasAbstract, hasAward, hasLicense)
 		} else if from == "inveniordm" {
-			data, err = inveniordm.FetchAll(number, fromHost, community)
+			data, err = inveniordm.FetchAll(number, page, fromHost, community, type_, year, language, orcid, ror, hasORCID, hasROR)
 		} else if str != "" && from == "commonmeta" {
 			data, err = commonmeta.LoadAll(str)
 		} else if str != "" && from == "crossref" {
