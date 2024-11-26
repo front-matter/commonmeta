@@ -85,9 +85,9 @@ commonmeta push --sample -f crossref -t inveniordm -h rogue-scholar.org --token 
 		}
 
 		if sample && from == "crossref" {
-			data, err = crossref.FetchAll(number, member, type_, sample, year, ror, orcid, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
+			data, err = crossref.FetchAll(number, page, member, type_, sample, year, ror, orcid, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
 		} else if sample && from == "datacite" {
-			data, err = datacite.FetchAll(number, client_, type_, sample, year, language, orcid, ror, hasORCID, hasROR, hasRelation, hasAbstract, hasAward, hasLicense)
+			data, err = datacite.FetchAll(number, page, client_, type_, sample, year, language, orcid, ror, hasORCID, hasROR, hasRelation, hasAbstract, hasAward, hasLicense)
 		} else if from == "inveniordm" {
 			data, err = inveniordm.FetchAll(number, page, fromHost, community, type_, year, language, orcid, ror, hasORCID, hasROR)
 		} else if str != "" && from == "commonmeta" {

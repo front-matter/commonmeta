@@ -35,6 +35,7 @@ var sampleCmd = &cobra.Command{
 
 	Run: func(cmd *cobra.Command, args []string) {
 		number, _ := cmd.Flags().GetInt("number")
+		page, _ := cmd.Flags().GetInt("page")
 		from, _ := cmd.Flags().GetString("from")
 
 		client_, _ := cmd.Flags().GetString("client")
@@ -61,9 +62,9 @@ var sampleCmd = &cobra.Command{
 		var err error
 		sample := true
 		if from == "crossref" {
-			data, err = crossref.FetchAll(number, member, type_, sample, year, ror, orcid, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
+			data, err = crossref.FetchAll(number, page, member, type_, sample, year, ror, orcid, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
 		} else if from == "datacite" {
-			data, err = datacite.FetchAll(number, client_, type_, sample, year, language, orcid, ror, hasORCID, hasROR, hasRelation, hasAbstract, hasAward, hasLicense)
+			data, err = datacite.FetchAll(number, page, client_, type_, sample, year, language, orcid, ror, hasORCID, hasROR, hasRelation, hasAbstract, hasAward, hasLicense)
 		}
 		if err != nil {
 			fmt.Println(err)
