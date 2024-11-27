@@ -82,6 +82,7 @@ type Metadata struct {
 	License            License             `json:"license,omitempty"`
 	Publisher          string              `json:"publisher,omitempty"`
 	PublicationDate    string              `json:"publication_date"`
+	References         []Reference         `json:"references,omitempty"`
 	RelatedIdentifiers []RelatedIdentifier `json:"related_identifiers,omitempty"`
 	Rights             []Right             `json:"rights,omitempty"`
 	Subjects           []Subject           `json:"subjects,omitempty"`
@@ -167,6 +168,12 @@ type PersonOrOrg struct {
 	GivenName   string       `json:"given_name,omitempty"`
 	FamilyName  string       `json:"family_name,omitempty"`
 	Identifiers []Identifier `json:"identifiers,omitempty"`
+}
+
+type Reference struct {
+	Reference  string `json:"reference"`
+	Scheme     string `json:"scheme"`
+	Identifier string `json:"identifier"`
 }
 
 type RelatedIdentifier struct {
@@ -680,7 +687,7 @@ func QueryURL(number int, page int, host string, community string, type_ string,
 func SearchByDOI(doi string, client *InvenioRDMClient) (string, error) {
 	var query Query
 	doistr := doiutils.EscapeDOI(doi)
-	requestURL := fmt.Sprintf("https://%s/api/records?q=pids.doi.identifier:%s", client.Host, doistr)
+	requestURL := fmt.Sprintf("https://%s/api/records?q=doi:%s", client.Host, doistr)
 	req, _ := http.NewRequest(http.MethodGet, requestURL, nil)
 	req.Header = http.Header{
 		"Content-Type": {"application/json"},

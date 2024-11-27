@@ -848,11 +848,12 @@ func QueryURL(number int, page int, client_ string, type_ string, sample bool, y
 		number = 10
 	}
 	url := "https://api.datacite.org/dois?page[size]=" + strconv.Itoa(number)
-	if page > 0 {
-		url += "&page[number]=" + strconv.Itoa(page)
-	} else if sample {
+	if sample {
 		url += "&random=true"
+	} else if page > 0 {
+		url += "&page[number]=" + strconv.Itoa(page)
 	}
+
 	if client_ != "" {
 		url += "&client-id=" + client_
 	}
@@ -902,6 +903,7 @@ func QueryURL(number int, page int, client_ string, type_ string, sample bool, y
 			url += "&affiliation=true"
 		}
 	}
+	url += "&sort=-published"
 	return url
 }
 

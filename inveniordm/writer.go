@@ -297,13 +297,13 @@ func Convert(data commonmeta.Data) (Inveniordm, error) {
 	}
 	if len(data.Subjects) > 0 {
 		for _, v := range data.Subjects {
-			ID := FOSMappings[v.Subject]
+			// ID := FOSMappings[v.Subject]
 			// ID := ""
-			var scheme string
-			if ID != "" {
-				scheme = "FOS"
-			}
-			subject := Subject{Subject: v.Subject, ID: ID, Scheme: scheme}
+			// var scheme string
+			// if ID != "" {
+			// 	scheme = "FOS"
+			// }
+			subject := Subject{Subject: v.Subject}
 			inveniordm.Metadata.Subjects = append(inveniordm.Metadata.Subjects, subject)
 		}
 	}
@@ -325,15 +325,30 @@ func Convert(data commonmeta.Data) (Inveniordm, error) {
 		for _, v := range data.References {
 			id, identifierType := utils.ValidateID(v.ID)
 			scheme := CMToInvenioIdentifierMappings[identifierType]
-			relationType := Type{ID: "references"}
-			if id != "" && scheme != "" {
-				RelatedIdentifier := RelatedIdentifier{
-					Identifier:   id,
-					Scheme:       scheme,
-					RelationType: relationType,
+			unstructured := v.Unstructured
+			if unstructured == "" {
+				// use title as unstructured reference
+				if v.Title != "" {
+					unstructured = v.Title
+				} else {
+					unstructured = "Unknown title"
 				}
-				inveniordm.Metadata.RelatedIdentifiers = append(inveniordm.Metadata.RelatedIdentifiers, RelatedIdentifier)
+			} else {
+				// remove duplicate ID from unstructured reference
+				unstructured = strings.Replace(unstructured, v.ID, "", 1)
+				// remove optional trailing period
+				unstructured = strings.TrimSuffix(unstructured, " .")
 			}
+			if v.PublicationYear != "" {
+				unstructured += " (" + v.PublicationYear + ")."
+			}
+
+			reference := Reference{
+				Reference:  unstructured,
+				Scheme:     scheme,
+				Identifier: id,
+			}
+			inveniordm.Metadata.References = append(inveniordm.Metadata.References, reference)
 		}
 	}
 
