@@ -334,8 +334,10 @@ func Convert(data commonmeta.Data) (Inveniordm, error) {
 					unstructured = "Unknown title"
 				}
 			} else {
-				// remove duplicate ID from unstructured reference
-				unstructured = strings.Replace(unstructured, v.ID, "", 1)
+				if v.ID != "" {
+					// remove duplicate ID from unstructured reference
+					unstructured = strings.Replace(unstructured, v.ID, "", 1)
+				}
 				// remove optional trailing period
 				unstructured = strings.TrimSuffix(unstructured, " .")
 			}
@@ -676,6 +678,7 @@ func PublishDraftRecord(record commonmeta.APIResponse, client *InvenioRDMClient,
 	defer resp.Body.Close()
 	body, _ := io.ReadAll(resp.Body)
 	if resp.StatusCode != 202 {
+		fmt.Println(string(body), record)
 		return record, err
 	}
 	err = json.Unmarshal(body, &response)

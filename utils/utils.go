@@ -506,6 +506,14 @@ func ValidateURL(str string) string {
 	if err != nil {
 		return ""
 	}
+	// don't allow URLs with certain fragments, e.g. from Software Heritage
+	// TODO: testing with more URLs
+	disallowedFragments := []string{";origin=", ";jsessionid="}
+	for _, f := range disallowedFragments {
+		if strings.Contains(u.String(), f) {
+			return ""
+		}
+	}
 	if u.Scheme == "http" || u.Scheme == "https" {
 		return "URL"
 	}
