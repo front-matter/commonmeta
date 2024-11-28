@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/front-matter/commonmeta/commonmeta"
 	"github.com/front-matter/commonmeta/crossrefxml"
@@ -75,7 +76,7 @@ commonmeta push --sample -f crossref -t inveniordm -h rogue-scholar.org --token 
 		cmd.SetOut(os.Stdout)
 		cmd.SetErr(os.Stderr)
 
-		if input != "" {
+		if input != "" && strings.HasPrefix(input, "--") {
 			_, err = os.Stat(input)
 			if err != nil {
 				cmd.PrintErrf("File not found: %s", input)
@@ -87,7 +88,7 @@ commonmeta push --sample -f crossref -t inveniordm -h rogue-scholar.org --token 
 		if from == "crossref" {
 			data, err = crossref.FetchAll(number, page, member, type_, sample, year, ror, orcid, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
 		} else if from == "datacite" {
-			data, err = datacite.FetchAll(number, page, client_, type_, sample, year, language, orcid, ror, hasORCID, hasROR, hasRelation, hasAbstract, hasAward, hasLicense)
+			data, err = datacite.FetchAll(number, page, client_, type_, sample, year, language, orcid, ror, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense)
 		} else if from == "inveniordm" {
 			data, err = inveniordm.FetchAll(number, page, fromHost, community, type_, year, language, orcid, ror, hasORCID, hasROR)
 		} else if str != "" && from == "commonmeta" {
