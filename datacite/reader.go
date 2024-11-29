@@ -305,7 +305,7 @@ func Fetch(str string) (commonmeta.Data, error) {
 }
 
 // FetchAll gets the metadata for a list of works from the DataCite API and returns Commonmeta metadata.
-func FetchAll(number int, page int, client_ string, type_ string, sample bool, year string, language string, orcid string, ror string, hasORCID bool, hasROR bool, hasRelation bool, hasAbstract bool, hasAward bool, hasLicense bool) ([]commonmeta.Data, error) {
+func FetchAll(number int, page int, client_ string, type_ string, sample bool, year string, language string, orcid string, ror string, hasORCID bool, hasROR bool, hasReferences bool, hasRelation bool, hasAbstract bool, hasAward bool, hasLicense bool) ([]commonmeta.Data, error) {
 	var data []commonmeta.Data
 
 	// check format of client ID
@@ -327,7 +327,7 @@ func FetchAll(number int, page int, client_ string, type_ string, sample bool, y
 		}
 	}
 
-	content, err := GetAll(number, page, client_, type_, sample, year, language, orcid, ror, hasORCID, hasROR, hasRelation, hasAbstract, hasAward, hasLicense)
+	content, err := GetAll(number, page, client_, type_, sample, year, language, orcid, ror, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense)
 	if err != nil {
 		return data, err
 	}
@@ -788,7 +788,7 @@ func GetContributor(v ContentContributor) commonmeta.Contributor {
 }
 
 // GetAll gets the metadata for a list of works from the DataCite API
-func GetAll(number int, page int, client_ string, type_ string, sample bool, year string, language string, orcid string, ror string, hasORCID bool, hasROR bool, hasRelation bool, hasAbstract bool, hasAward bool, hasLicense bool) ([]Content, error) {
+func GetAll(number int, page int, client_ string, type_ string, sample bool, year string, language string, orcid string, ror string, hasORCID bool, hasROR bool, hasReferences bool, hasRelation bool, hasAbstract bool, hasAward bool, hasLicense bool) ([]Content, error) {
 	var content []Content
 
 	type Response struct {
@@ -802,7 +802,7 @@ func GetAll(number int, page int, client_ string, type_ string, sample bool, yea
 	client := &http.Client{
 		Timeout: 30 * time.Second,
 	}
-	url := QueryURL(number, page, client_, type_, sample, year, language, orcid, ror, hasORCID, hasROR, hasRelation, hasAbstract, hasAward, hasLicense)
+	url := QueryURL(number, page, client_, type_, sample, year, language, orcid, ror, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense)
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		return content, err
@@ -843,15 +843,19 @@ func ReadAll(content []Content) ([]commonmeta.Data, error) {
 }
 
 // QueryURL returns the URL for the DataCite API query
-func QueryURL(number int, page int, client_ string, type_ string, sample bool, year string, language string, orcid string, ror string, hasORCID bool, hasROR bool, hasRelation bool, hasAbstract bool, hasAward bool, hasLicense bool) string {
-	if sample && number == 0 {
+func QueryURL(number int, page int, client_ string, type_ string, sample bool, year string, language string, orcid string, ror string, hasORCID bool, hasROR bool, hasReferences bool, hasRelation bool, hasAbstract bool, hasAward bool, hasLicense bool) string {
+	if number <= 0 {
 		number = 10
+	}
+	if page <= 0 {
+		page = 1
 	}
 	url := "https://api.datacite.org/dois?page[size]=" + strconv.Itoa(number)
 	if sample {
 		url += "&random=true"
-	} else if page > 0 {
+	} else {
 		url += "&page[number]=" + strconv.Itoa(page)
+		url += "&sort=-published"
 	}
 
 	if client_ != "" {
@@ -874,7 +878,9 @@ func QueryURL(number int, page int, client_ string, type_ string, sample bool, y
 		query = append(query, "language:"+language)
 	}
 	if orcid != "" {
+		fmt.Println(orcid)
 		o, _ := utils.ValidateORCID(orcid)
+		fmt.Println(o)
 		if o != "" {
 			query = append(query, "creators.nameIdentifiers.nameIdentifier:"+o)
 		}
@@ -885,17 +891,20 @@ func QueryURL(number int, page int, client_ string, type_ string, sample bool, y
 	if hasROR {
 		query = append(query, "creators.affiliation.affiliationIdentifierScheme:ROR")
 	}
+	if hasReferences {
+		query = append(query, "relatedIdentifiers.relationType:Cites")
+	}
 	if hasRelation {
 		query = append(query, "relatedIdentifiers.relationType:*")
 	}
 	if hasAbstract {
-		query = append(query, "descriptions.descriptionType:Abstract:*")
+		query = append(query, "descriptions.descriptionType:Abstract")
 	}
 	if hasAward {
 		query = append(query, "fundingReferences.funderIdentifier:*")
 	}
 	if hasLicense {
-		query = append(query, "ightsList.rightsIdentifierScheme:SPDX")
+		query = append(query, "rightsList.rightsIdentifierScheme:SPDX")
 	}
 	if len(query) > 0 {
 		url += "&query=" + strings.Join(query, "%20AND%20")
@@ -903,7 +912,6 @@ func QueryURL(number int, page int, client_ string, type_ string, sample bool, y
 			url += "&affiliation=true"
 		}
 	}
-	url += "&sort=-published"
 	return url
 }
 

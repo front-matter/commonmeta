@@ -91,6 +91,55 @@ func TestFetch(t *testing.T) {
 	}
 }
 
+func TestQueryURL(t *testing.T) {
+	t.Parallel()
+
+	type testCase struct {
+		number        int
+		page          int
+		client        string
+		type_         string
+		sample        bool
+		year          string
+		language      string
+		orcid         string
+		ror           string
+		hasORCID      bool
+		hasROR        bool
+		hasReferences bool
+		hasRelation   bool
+		hasAbstract   bool
+		hasAward      bool
+		hasLicense    bool
+		want          string
+	}
+
+	testCases := []testCase{
+		{want: "https://api.datacite.org/dois?page[size]=10&page[number]=1&sort=-published"},
+		{sample: true, want: "https://api.datacite.org/dois?page[size]=10&random=true"},
+		{number: 100, want: "https://api.datacite.org/dois?page[size]=100&page[number]=1&sort=-published"},
+		{number: 10, page: 3, want: "https://api.datacite.org/dois?page[size]=10&page[number]=3&sort=-published"},
+		{sample: true, client: "cern.zenodo", want: "https://api.datacite.org/dois?page[size]=10&random=true&client-id=cern.zenodo"},
+		{sample: true, year: "2022", want: "https://api.datacite.org/dois?page[size]=10&random=true&query=publicationYear:2022"},
+		{sample: true, language: "es", want: "https://api.datacite.org/dois?page[size]=10&random=true&query=language:es"},
+		{sample: true, orcid: "0000-0002-8635-8390", want: "https://api.datacite.org/dois?page[size]=10&random=true&query=creators.nameIdentifiers.nameIdentifier:0000-0002-8635-8390"},
+		{sample: true, ror: "039kas258", want: "https://api.datacite.org/dois?page[size]=10&random=true&affiliation-id=039kas258"},
+		{sample: true, hasORCID: true, want: "https://api.datacite.org/dois?page[size]=10&random=true&query=creators.nameIdentifiers.nameIdentifierScheme:ORCID"},
+		{sample: true, hasROR: true, want: "https://api.datacite.org/dois?page[size]=10&random=true&query=creators.affiliation.affiliationIdentifierScheme:ROR&affiliation=true"},
+		{sample: true, hasReferences: true, want: "https://api.datacite.org/dois?page[size]=10&random=true&query=relatedIdentifiers.relationType:Cites"},
+		{sample: true, hasRelation: true, want: "https://api.datacite.org/dois?page[size]=10&random=true&query=relatedIdentifiers.relationType:*"},
+		{sample: true, hasAbstract: true, want: "https://api.datacite.org/dois?page[size]=10&random=true&query=descriptions.descriptionType:Abstract"},
+		{sample: true, hasAward: true, want: "https://api.datacite.org/dois?page[size]=10&random=true&query=fundingReferences.funderIdentifier:*"},
+		{sample: true, hasLicense: true, want: "https://api.datacite.org/dois?page[size]=10&random=true&query=rightsList.rightsIdentifierScheme:SPDX"},
+	}
+	for _, tc := range testCases {
+		got := datacite.QueryURL(tc.number, tc.page, tc.client, tc.type_, tc.sample, tc.year, tc.language, tc.orcid, tc.ror, tc.hasORCID, tc.hasROR, tc.hasReferences, tc.hasRelation, tc.hasAbstract, tc.hasAward, tc.hasLicense)
+		if diff := cmp.Diff(tc.want, got); diff != "" {
+			t.Errorf("DataciteApiQueryUrl mismatch (-want +got):\n%s", diff)
+		}
+	}
+}
+
 // func TestGetDataciteSample(t *testing.T) {
 // 	t.Parallel()
 
