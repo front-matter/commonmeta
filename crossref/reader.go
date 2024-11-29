@@ -774,7 +774,7 @@ func ReadAll(content []Content) ([]commonmeta.Data, error) {
 }
 
 // QueryURL returns the URL for the Crossref API query
-func QueryURL(number int, page int, member string, _type string, sample bool, year string, ror string, orcid string, hasORCID bool, hasROR bool, hasReferences bool, hasRelation bool, hasAbstract bool, hasAward bool, hasLicense bool, hasArchive bool) string {
+func QueryURL(number int, page int, member string, type_ string, sample bool, year string, orcid string, ror string, hasORCID bool, hasROR bool, hasReferences bool, hasRelation bool, hasAbstract bool, hasAward bool, hasLicense bool, hasArchive bool) string {
 	types := []string{
 		"book",
 		"book-chapter",
@@ -810,11 +810,20 @@ func QueryURL(number int, page int, member string, _type string, sample bool, ye
 
 	u, _ := url.Parse("https://api.crossref.org/works")
 	values := u.Query()
+	if number <= 0 {
+		number = 10
+	}
+	if number > 100 {
+		number = 100
+	}
+	if page <= 0 {
+		page = 1
+	}
 	if sample {
 		values.Add("sample", strconv.Itoa(number))
 	} else {
 		values.Add("rows", strconv.Itoa(number))
-		values.Add("offset", strconv.Itoa(page*number))
+		values.Add("offset", strconv.Itoa((page-1)*number))
 	}
 
 	// sort results by published date in descending order
@@ -824,8 +833,8 @@ func QueryURL(number int, page int, member string, _type string, sample bool, ye
 	if member != "" {
 		filters = append(filters, "member:"+member)
 	}
-	if _type != "" && slices.Contains(types, _type) {
-		filters = append(filters, "type:"+_type)
+	if type_ != "" && slices.Contains(types, type_) {
+		filters = append(filters, "type:"+type_)
 	}
 	if ror != "" {
 		r, _ := utils.ValidateROR(ror)

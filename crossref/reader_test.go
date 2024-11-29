@@ -99,51 +99,79 @@ func TestQueryURL(t *testing.T) {
 	t.Parallel()
 
 	type testCase struct {
-		number int
-		member string
-		_type  string
-		sample bool
-		want   string
+		number        int
+		page          int
+		member        string
+		type_         string
+		sample        bool
+		year          string
+		orcid         string
+		ror           string
+		hasORCID      bool
+		hasROR        bool
+		hasReferences bool
+		hasRelation   bool
+		hasAbstract   bool
+		hasAward      bool
+		hasLicense    bool
+		hasArchive    bool
+		want          string
 	}
 
 	testCases := []testCase{
-		{number: 10, member: "340", _type: "journal-article", sample: false, want: "https://api.crossref.org/works?filter=member%3A340%2Ctype%3Ajournal-article&order=desc&rows=10&sort=published"},
-		{number: 1, member: "", _type: "posted-content", sample: true, want: "https://api.crossref.org/works?filter=type%3Aposted-content&order=desc&sample=1&sort=published"},
-		{number: 20, member: "78", _type: "", sample: true, want: "https://api.crossref.org/works?filter=member%3A78&order=desc&sample=20&sort=published"},
-		{number: 120, member: "", _type: "", sample: true, want: "https://api.crossref.org/works?order=desc&sample=120&sort=published"},
+		{want: "https://api.crossref.org/works?offset=0&order=desc&rows=10&sort=published"},
+		{number: 100, page: 3, want: "https://api.crossref.org/works?offset=200&order=desc&rows=100&sort=published"},
+		{sample: true, want: "https://api.crossref.org/works?order=desc&sample=10&sort=published"},
+		{sample: true, number: 120, want: "https://api.crossref.org/works?order=desc&sample=100&sort=published"},
+		{sample: true, member: "340", want: "https://api.crossref.org/works?filter=member%3A340&order=desc&sample=10&sort=published"},
+		{sample: true, year: "2022", want: "https://api.crossref.org/works?filter=from-pub-date%3A2022-01-01%2Cuntil-pub-date%3A2022-12-31&order=desc&sample=10&sort=published"},
+		{sample: true, orcid: "0000-0002-8635-8390", want: "https://api.crossref.org/works?filter=orcid%3A0000-0002-8635-8390&order=desc&sample=10&sort=published"},
+		{sample: true, ror: "041kmwe10", want: "https://api.crossref.org/works?filter=ror-id%3A041kmwe10&order=desc&sample=10&sort=published"},
+		{sample: true, hasORCID: true, want: "https://api.crossref.org/works?filter=has-orcid%3Atrue&order=desc&sample=10&sort=published"},
+		{sample: true, hasROR: true, want: "https://api.crossref.org/works?filter=has-ror-id%3Atrue&order=desc&sample=10&sort=published"},
+		{sample: true, hasReferences: true, want: "https://api.crossref.org/works?filter=has-references%3Atrue&order=desc&sample=10&sort=published"},
+		{sample: true, hasRelation: true, want: "https://api.crossref.org/works?filter=has-relation%3Atrue&order=desc&sample=10&sort=published"},
+		{sample: true, hasAbstract: true, want: "https://api.crossref.org/works?filter=has-abstract%3Atrue&order=desc&sample=10&sort=published"},
+		{sample: true, hasAward: true, want: "https://api.crossref.org/works?filter=has-award%3Atrue&order=desc&sample=10&sort=published"},
+		{sample: true, hasLicense: true, want: "https://api.crossref.org/works?filter=has-license%3Atrue&order=desc&sample=10&sort=published"},
 	}
 	for _, tc := range testCases {
-		got := crossref.QueryURL(tc.number, tc.member, tc._type, tc.sample, false, false, false, false, false, false, false, false)
+		got := crossref.QueryURL(tc.number, tc.page, tc.member, tc.type_, tc.sample, tc.year, tc.orcid, tc.ror, tc.hasORCID, tc.hasROR, tc.hasReferences, tc.hasRelation, tc.hasAbstract, tc.hasAward, tc.hasLicense, tc.hasArchive)
 		if diff := cmp.Diff(tc.want, got); diff != "" {
 			t.Errorf("CrossrefQueryUrl mismatch (-want +got):\n%s", diff)
 		}
 	}
 }
 
-func ExampleQueryURL() {
-	s := crossref.QueryURL(10, "340", "journal-article", false, false, false, false, false, false, false, false, false)
-	println(s)
-	// Output:
-	// https://api.crossref.org/works?filter=member%3A340%2Ctype%3Ajournal-article&order=desc&rows=10&sort=published
-}
-
 func TestGetAll(t *testing.T) {
 	t.Parallel()
 
 	type testCase struct {
-		number int
-		member string
-		_type  string
-		sample bool
+		number        int
+		page          int
+		member        string
+		type_         string
+		sample        bool
+		year          string
+		ror           string
+		orcid         string
+		hasORCID      bool
+		hasROR        bool
+		hasReferences bool
+		hasRelation   bool
+		hasAbstract   bool
+		hasAward      bool
+		hasLicense    bool
+		hasArchive    bool
 	}
 
 	testCases := []testCase{
-		{number: 3, member: "340", _type: "journal-article", sample: false},
-		{number: 1, member: "", _type: "posted-content", sample: true},
-		{number: 2, member: "", _type: "", sample: true},
+		{number: 3, member: "340", type_: "journal-article"},
+		{number: 1, type_: "posted-content", sample: true},
+		{number: 2, type_: "", sample: true},
 	}
 	for _, tc := range testCases {
-		got, err := crossref.GetAll(tc.number, tc.member, tc._type, true, false, false, false, false, false, false, false, false)
+		got, err := crossref.GetAll(tc.number, tc.page, tc.member, tc.type_, tc.sample, tc.year, tc.ror, tc.orcid, tc.hasORCID, tc.hasROR, tc.hasReferences, tc.hasRelation, tc.hasAbstract, tc.hasAward, tc.hasLicense, tc.hasArchive)
 		if err != nil {
 			t.Errorf("GetAll (%v): error %v", tc.number, err)
 		}
