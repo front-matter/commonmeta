@@ -31,16 +31,37 @@ archives:
       - goos: windows
         format: zip
 
-brews:
-  - github:
-      owner: front-matter
-      name: homebrew-commonmeta
-    folder: Formula
-    homepage: https://github.com/front-matter/commonmeta
-
 changelog:
   sort: asc
   filters:
     exclude:
       - "^docs:"
       - "^test:"
+
+brews:
+  - name: commonmeta
+    alternative_names:
+      - "commonmeta@{{ .Major }}.{{ .Minor }}"
+
+    # Git author used to commit to the repository.
+    commit_author:
+      name: goreleaserbot
+      email: bot@goreleaser.com
+
+    # Repository to push the generated files to.
+    repository:
+      # Repository owner.
+      #
+      # Templates: allowed.
+      owner: front-matter
+
+      # Repository name.
+      #
+      # Templates: allowed.
+      name: homebrew-commonmeta
+
+      # Optionally a token can be provided, if it differs from the token
+      # provided to GoReleaser
+      #
+      # Templates: allowed.
+      token: "{{ .Env.GHCR_TOKEN }}"
