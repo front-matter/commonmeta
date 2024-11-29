@@ -31,3 +31,10 @@ jobs:
           args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+brews:
+  - github:
+      owner: front-matter
+      name: homebrew-commonmeta
+    folder: Formula
+    homepage: https://github.com/front-matter/commonmeta
