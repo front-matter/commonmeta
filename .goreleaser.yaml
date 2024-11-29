@@ -57,9 +57,3 @@ brews:
       #
       # Templates: allowed.
       name: homebrew-commonmeta
-
-      # Optionally a token can be provided, if it differs from the token
-      # provided to GoReleaser
-      #
-      # Templates: allowed.
-      token: "{{ .Env.GHCR_TOKEN }}"

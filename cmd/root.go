@@ -13,7 +13,7 @@ import (
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:     "commonmeta",
-	Version: "v0.6.17",
+	Version: "v0.6.18",
 	Short:   "Convert scholarly metadata from one format to another",
 	Long: `Convert scholarly metadata between formats. Currently
 supported input formats are Crossref and DataCite DOIs, currently
