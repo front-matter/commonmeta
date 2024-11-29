@@ -31,6 +31,13 @@ archives:
       - goos: windows
         format: zip
 
+brews:
+  - github:
+      owner: front-matter
+      name: homebrew-commonmeta
+    folder: Formula
+    homepage: https://github.com/front-matter/commonmeta
+
 changelog:
   sort: asc
   filters:
