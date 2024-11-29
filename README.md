@@ -49,6 +49,14 @@ brew tap front-matter/commonmeta
 brew install commonmeta
 ```
 
+### Go
+
+To install commonmeta using Go, run:
+
+```bash
+go install github.com/front-matter/commonmeta@latest
+```
+
 ## Meta
 
 Please note that this project is released with a [Contributor Code of Conduct](https://github.com/front-matter/commonmeta/blob/main/CODE_OF_CONDUCT.md). By participating in this project you agree to abide by its terms.  
