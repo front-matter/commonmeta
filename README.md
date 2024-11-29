@@ -36,6 +36,19 @@ _commonmeta_: the Commonmeta format is the native format for the library and use
 _Planned_: we plan to implement this format for the v1.0 public release.  
 _Later_: we plan to implement this format in a later release.
 
+## Installation
+
+Commonmeta is a single Go binary, available for download from the [releases page](https://github.com/front-matter/commonmeta/releases). Download the binary for your platform (Linux, Mac, Windows; X86 or ARM architecture), and place it in your PATH.
+
+### Homebrew
+
+To install commonmeta on macOS using [Homebrew](https://brew.sh/), run:
+
+```bash
+brew tap front-matter/commonmeta
+brew install commonmeta
+```
+
 ## Meta
 
 Please note that this project is released with a [Contributor Code of Conduct](https://github.com/front-matter/commonmeta/blob/main/CODE_OF_CONDUCT.md). By participating in this project you agree to abide by its terms.  

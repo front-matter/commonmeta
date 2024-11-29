@@ -34,7 +34,7 @@ var listCmd = &cobra.Command{
 	the Crossref and DataCite provider. Options include numnber of works, 
 	work type, and Crossref member id or DataCite client id. For example:
 
-	commonmeta list --number 10 --member 78 --type journal-article,
+	commonmeta list --number 10 --member 78 --type journal-article - f crossref,
 	commonmeta list --number 10 --client cern.zenodo --type dataset -f datacite`,
 	Run: func(cmd *cobra.Command, args []string) {
 		var input string
