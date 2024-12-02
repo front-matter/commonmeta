@@ -77,7 +77,7 @@ commonmeta push --sample -f crossref -t inveniordm -h rogue-scholar.org --token 
 		cmd.SetOut(os.Stdout)
 		cmd.SetErr(os.Stderr)
 
-		if input != "" && strings.HasPrefix(input, "--") {
+		if input != "" && !strings.HasPrefix(input, "--") {
 			_, err = os.Stat(input)
 			if err != nil {
 				cmd.PrintErrf("File not found: %s", input)
