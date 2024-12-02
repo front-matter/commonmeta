@@ -24,8 +24,8 @@ import (
 
 // Datacite represents the DataCite metadata.
 type Datacite struct {
-	ID                   string                `json:"id"`
 	DOI                  string                `json:"doi"`
+	Identifiers          []Identifier          `json:"identifiers,omitempty"`
 	AlternateIdentifiers []AlternateIdentifier `json:"alternateIdentifiers,omitempty"`
 	Creators             []Contributor         `json:"creators"`
 	Publisher            Publisher             `json:"publisher"`
@@ -46,7 +46,7 @@ type Datacite struct {
 	Descriptions         []Description         `json:"descriptions,omitempty"`
 	GeoLocations         []GeoLocation         `json:"geoLocations,omitempty"`
 	FundingReferences    []FundingReference    `json:"fundingReferences,omitempty"`
-	SchemaVersion        string                `json:"schemaVersion"`
+	SchemaVersion        string                `json:"schemaVersion,omitempty"`
 }
 
 // Content represents the DataCite metadata returned from DataCite. The type is more
@@ -166,6 +166,11 @@ type GeoLocationPointInterface struct {
 }
 
 type GeoCoordinate float64
+
+type Identifier struct {
+	Identifier     string `json:"identifier,omitempty"`
+	IdentifierType string `json:"identifierType,omitempty"`
+}
 
 type NameIdentifier struct {
 	NameIdentifier       string `json:"nameIdentifier,omitempty"`

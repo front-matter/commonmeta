@@ -87,10 +87,30 @@ func DOIResolver(doi string, sandbox bool) string {
 
 // GetDOIRA returns the DOI registration agency for a given DOI or prefix
 func GetDOIRA(doi string) (string, bool) {
+	var knownCrossrefPrefixes = []string{
+		"10.53731",
+		"10.54900",
+		"10.59348",
+		"10.59349",
+		"10.59350",
+	}
+	var knownDatacitePrefixes = []string{
+		"10.34732",
+		"10.57689",
+		"10.83132",
+	}
 	prefix, ok := ValidatePrefix(doi)
 	if !ok {
 		return "", false
 	}
+
+	// check for known prefixes, e.g. regularly used by Rogue Scholar
+	if slices.Contains(knownCrossrefPrefixes, prefix) {
+		return "Crossref", true
+	} else if slices.Contains(knownDatacitePrefixes, prefix) {
+		return "DataCite", true
+	}
+
 	type Response []struct {
 		DOI string `json:"DOI"`
 		RA  string `json:"RA"`
@@ -116,19 +136,32 @@ func GetDOIRA(doi string) (string, bool) {
 }
 
 // IsRogueScholarDOI checks if a DOI is from Rogue Scholar
-func IsRogueScholarDOI(doi string) bool {
-	var rogueScholarPrefixes = []string{
-		"10.34732",
+func IsRogueScholarDOI(doi string, ra string) bool {
+	var rogueScholarCrossrefPrefixes = []string{
 		"10.53731",
 		"10.54900",
 		"10.57689",
 		"10.59348",
 		"10.59349",
 		"10.59350",
+
+		"10.83132",
+	}
+	var rogueScholarDatacitePrefixes = []string{
+		"10.34732",
+		"10.57689",
+		"10.83132",
 	}
 	prefix, ok := ValidatePrefix(doi)
 	if !ok {
 		return false
 	}
-	return slices.Contains(rogueScholarPrefixes, prefix)
+	isCrossref := slices.Contains(rogueScholarCrossrefPrefixes, prefix)
+	isDatacite := slices.Contains(rogueScholarDatacitePrefixes, prefix)
+	if ra == "crossref" {
+		return isCrossref
+	} else if ra == "datacite" {
+		return isDatacite
+	}
+	return isCrossref || isDatacite
 }

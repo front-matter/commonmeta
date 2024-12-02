@@ -1,10 +1,16 @@
 package datacite
 
 import (
+	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
+	"io"
+	"net/http"
 	"slices"
 	"strconv"
+	"strings"
+	"time"
 
 	"github.com/front-matter/commonmeta/bibtex"
 	"github.com/front-matter/commonmeta/commonmeta"
@@ -13,15 +19,22 @@ import (
 	"github.com/front-matter/commonmeta/ris"
 	"github.com/front-matter/commonmeta/schemaorg"
 	"github.com/front-matter/commonmeta/schemautils"
+	"github.com/front-matter/commonmeta/utils"
 	"github.com/xeipuuv/gojsonschema"
 )
+
+type Account struct {
+	Client      string
+	Password    string
+	Development bool
+}
 
 // Convert converts Commonmeta metadata to DataCite metadata
 func Convert(data commonmeta.Data) (Datacite, error) {
 	var datacite Datacite
 
 	// required properties
-	datacite.ID = data.ID
+	// datacite.ID = data.ID
 	datacite.DOI, _ = doiutils.ValidateDOI(data.ID)
 	datacite.Types.ResourceTypeGeneral = CMToDCMappings[data.Type]
 	datacite.Types.SchemaOrg = schemaorg.CMToSOMappings[data.Type]
@@ -52,6 +65,12 @@ func Convert(data commonmeta.Data) (Datacite, error) {
 
 	if len(data.Contributors) > 0 {
 		for _, v := range data.Contributors {
+			var name string
+			if v.Name != "" {
+				name = v.Name
+			} else {
+				name = strings.Join([]string{v.GivenName, v.FamilyName}, ", ")
+			}
 			var nameIdentifiers []NameIdentifier
 			if v.ID != "" {
 				nameIdentifier := NameIdentifier{
@@ -68,7 +87,7 @@ func Convert(data commonmeta.Data) (Datacite, error) {
 			}
 			if slices.Contains(v.ContributorRoles, "Author") {
 				contributor := Contributor{
-					Name:            v.Name,
+					Name:            name,
 					GivenName:       v.GivenName,
 					FamilyName:      v.FamilyName,
 					NameType:        v.Type + "al",
@@ -79,7 +98,7 @@ func Convert(data commonmeta.Data) (Datacite, error) {
 			} else {
 				contributorType := v.ContributorRoles[0]
 				contributor := Contributor{
-					Name:            v.Name,
+					Name:            name,
 					GivenName:       v.GivenName,
 					FamilyName:      v.FamilyName,
 					NameType:        v.Type + "al",
@@ -96,29 +115,29 @@ func Convert(data commonmeta.Data) (Datacite, error) {
 		Name: data.Publisher.Name,
 	}
 	datacite.URL = data.URL
-	datacite.SchemaVersion = "http://datacite.org/schema/kernel-4"
+	// datacite.SchemaVersion = "http://datacite.org/schema/kernel-4"
 
 	// optional properties
 
 	datacite.Container = Container{
-		Type:           data.Container.Type,
-		Identifier:     data.Container.Identifier,
-		IdentifierType: data.Container.IdentifierType,
-		Title:          data.Container.Title,
-		Volume:         data.Container.Volume,
-		Issue:          data.Container.Issue,
-		FirstPage:      data.Container.FirstPage,
-		LastPage:       data.Container.LastPage,
+		// Type:           data.Container.Type,
+		// Identifier:     data.Container.Identifier,
+		// IdentifierType: data.Container.IdentifierType,
+		Title: data.Container.Title,
+		// Volume:         data.Container.Volume,
+		// Issue:          data.Container.Issue,
+		// FirstPage:      data.Container.FirstPage,
+		//LastPage:       data.Container.LastPage,
 	}
 
 	if len(data.Identifiers) > 0 {
 		for _, v := range data.Identifiers {
 			if v.Identifier != data.ID {
-				AlternateIdentifier := AlternateIdentifier{
-					AlternateIdentifier:     v.Identifier,
-					AlternateIdentifierType: v.IdentifierType,
+				Identifier := Identifier{
+					Identifier:     v.Identifier,
+					IdentifierType: v.IdentifierType,
 				}
-				datacite.AlternateIdentifiers = append(datacite.AlternateIdentifiers, AlternateIdentifier)
+				datacite.Identifiers = append(datacite.Identifiers, Identifier)
 			}
 		}
 	}
@@ -229,9 +248,13 @@ func Convert(data commonmeta.Data) (Datacite, error) {
 		}
 	}
 	if data.License.URL != "" {
+		var rightsIdentifier string
+		if data.License.ID != "" {
+			rightsIdentifier = strings.ToLower(data.License.ID)
+		}
 		rights := Rights{
 			RightsURI:              data.License.URL,
-			RightsIdentifier:       data.License.ID,
+			RightsIdentifier:       rightsIdentifier,
 			RightsIdentifierScheme: "SPDX",
 			SchemeURI:              "https://spdx.org/licenses/",
 		}
@@ -239,14 +262,10 @@ func Convert(data commonmeta.Data) (Datacite, error) {
 	}
 	if len(data.Relations) > 0 {
 		for _, v := range data.Relations {
-			id := doiutils.NormalizeDOI(v.ID)
-			relatedIdentifierType := "DOI"
-			if id == "" {
-				relatedIdentifierType = "URL"
-			}
+			identifier, identifierType := utils.ValidateID(v.ID)
 			RelatedIdentifier := RelatedIdentifier{
-				RelatedIdentifier:     id,
-				RelatedIdentifierType: relatedIdentifierType,
+				RelatedIdentifier:     identifier,
+				RelatedIdentifierType: identifierType,
 				RelationType:          v.Type,
 			}
 			datacite.RelatedIdentifiers = append(datacite.RelatedIdentifiers, RelatedIdentifier)
@@ -255,26 +274,11 @@ func Convert(data commonmeta.Data) (Datacite, error) {
 
 	if len(data.References) > 0 {
 		for _, v := range data.References {
-			id := doiutils.NormalizeDOI(v.ID)
-			relatedIdentifierType := "DOI"
-			if id == "" {
-				relatedIdentifierType = "URL"
-			}
+			identifier, identifierType := utils.ValidateID(v.ID)
 			RelatedIdentifier := RelatedIdentifier{
-				RelatedIdentifier:     id,
-				RelatedIdentifierType: relatedIdentifierType,
+				RelatedIdentifier:     identifier,
+				RelatedIdentifierType: identifierType,
 				RelationType:          "References",
-			}
-			datacite.RelatedIdentifiers = append(datacite.RelatedIdentifiers, RelatedIdentifier)
-		}
-	}
-
-	if len(data.Relations) > 0 {
-		for _, v := range data.Relations {
-			RelatedIdentifier := RelatedIdentifier{
-				RelatedIdentifier:     v.ID,
-				RelatedIdentifierType: "DOI",
-				RelationType:          v.Type,
 			}
 			datacite.RelatedIdentifiers = append(datacite.RelatedIdentifiers, RelatedIdentifier)
 		}
@@ -323,4 +327,91 @@ func WriteAll(list []commonmeta.Data) ([]byte, []gojsonschema.ResultError) {
 	}
 
 	return output, nil
+}
+
+// Upsert updates or creates Crossrefxml metadata.
+func Upsert(record commonmeta.APIResponse, account Account, data commonmeta.Data) (commonmeta.APIResponse, error) {
+	isDatacite, ok := doiutils.GetDOIRA(data.ID)
+	if !ok {
+		return record, errors.New("DOI is not a valid DOI: " + data.ID)
+	} else if isDatacite != "DataCite" {
+		return record, errors.New("DOI is not a DataCite DOI: " + data.ID)
+	}
+
+	datacite, jsErr := Write(data)
+	if jsErr != nil {
+		return record, errors.New("JSON schema validation failed")
+	}
+	type Response struct {
+		*Datacite
+	}
+	var response Response
+
+	var requestURL string
+	var req *http.Request
+	var resp *http.Response
+	client := &http.Client{
+		Timeout: 10 * time.Second,
+	}
+	if account.Development {
+		requestURL = "https://api.test.datacite.org/dois"
+	} else {
+		requestURL = "https://api.datacite.org/dois"
+	}
+	var output = []byte(`{"data":{"type":"dois","attributes":` + string(datacite) + `}}`)
+	fmt.Println(string(output))
+	req, _ = http.NewRequest(http.MethodPost, requestURL, bytes.NewReader(output))
+	req.Header.Add("Content-Type", "application/vnd.api+json")
+	req.SetBasicAuth(account.Client, account.Password)
+	fmt.Println(req.Header.Get("Authorization"))
+	resp, err := client.Do(req)
+	if err != nil {
+		return record, err
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != 200 {
+		fmt.Println(resp.StatusCode)
+		// return record, fmt.Errorf("status code error: %d %s", resp.StatusCode, resp.Status)
+	}
+	body, err := io.ReadAll(resp.Body)
+	fmt.Println(string(body))
+	if err != nil {
+		return record, err
+	}
+	err = json.Unmarshal(body, &response)
+	if err != nil {
+		return record, err
+	}
+	fmt.Println(response)
+	// doi, ok := doiutils.ValidateDOI(data.ID)
+	// if !ok {
+	// 	record.Status = "failed"
+	// 	return record, fmt.Errorf("missing or invalid DOI")
+	// }
+
+	// record.DOI = doi
+	record.Status = "submitted"
+
+	return record, nil
+}
+
+// UpsertAll updates or creates a list of DataCite metadata.
+func UpsertAll(list []commonmeta.Data, account Account) ([]commonmeta.APIResponse, error) {
+	var records []commonmeta.APIResponse
+	for _, data := range list {
+		isDatacite, ok := doiutils.GetDOIRA(data.ID)
+		if !ok {
+			fmt.Println("DOI is not a valid DOI:", data.ID)
+			continue
+		} else if isDatacite != "DataCite" {
+			fmt.Println("DOI is not a DataCite DOI:", data.ID)
+			continue
+		}
+		record := commonmeta.APIResponse{
+			DOI: data.ID,
+		}
+		records = append(records, record)
+	}
+
+	return records, nil
 }

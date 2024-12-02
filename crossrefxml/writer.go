@@ -499,6 +499,14 @@ func Write(data commonmeta.Data, account Account) ([]byte, []gojsonschema.Result
 func WriteAll(list []commonmeta.Data, account Account) ([]byte, []gojsonschema.ResultError) {
 	var body Body
 	for _, data := range list {
+		ifCrossref, ok := doiutils.GetDOIRA(data.ID)
+		if !ok {
+			fmt.Println("DOI is not a valid DOI:", data.ID)
+			continue
+		} else if ifCrossref != "Crossref" {
+			fmt.Println("DOI is not a Crossref DOI:", data.ID)
+			continue
+		}
 		crossref, err := Convert(data)
 		if err != nil {
 			fmt.Println(err)
@@ -543,8 +551,15 @@ func WriteAll(list []commonmeta.Data, account Account) ([]byte, []gojsonschema.R
 
 // Upsert updates or creates Crossrefxml metadata.
 func Upsert(record commonmeta.APIResponse, account Account, legacyKey string, data commonmeta.Data) (commonmeta.APIResponse, error) {
+	isCrossref, ok := doiutils.GetDOIRA(data.ID)
+	if !ok {
+		return record, errors.New("DOI is not a valid DOI")
+	} else if isCrossref != "Crossref" {
+		return record, errors.New("DOI is not a Crossref DOI")
+	}
+
 	record.DOI = data.ID
-	if doiutils.IsRogueScholarDOI(data.ID) {
+	if doiutils.IsRogueScholarDOI(data.ID, "crossref") {
 		for _, identifier := range data.Identifiers {
 			if identifier.IdentifierType == "UUID" {
 				record.UUID = identifier.Identifier
@@ -613,7 +628,7 @@ func Upsert(record commonmeta.APIResponse, account Account, legacyKey string, da
 	record.Status = "submitted"
 
 	// update rogue-scholar legacy record if legacy key is provided
-	if doiutils.IsRogueScholarDOI(data.ID) && legacyKey != "" {
+	if doiutils.IsRogueScholarDOI(data.ID, "crossref") && legacyKey != "" {
 		record, err = roguescholar.UpdateLegacyRecord(record, legacyKey, "doi")
 		if err != nil {
 			return record, err
@@ -628,10 +643,19 @@ func Upsert(record commonmeta.APIResponse, account Account, legacyKey string, da
 func UpsertAll(list []commonmeta.Data, account Account, legacyKey string) ([]commonmeta.APIResponse, error) {
 	var records []commonmeta.APIResponse
 	for _, data := range list {
+		isCrossref, ok := doiutils.GetDOIRA(data.ID)
+		if !ok {
+			fmt.Println("DOI is not a valid DOI:", data.ID)
+			continue
+		} else if isCrossref != "Crossref" {
+			fmt.Println("DOI is not a Crossref DOI:", data.ID)
+			continue
+		}
+
 		record := commonmeta.APIResponse{
 			DOI: data.ID,
 		}
-		if doiutils.IsRogueScholarDOI(data.ID) {
+		if doiutils.IsRogueScholarDOI(data.ID, "crossref") {
 			for _, identifier := range data.Identifiers {
 				if identifier.IdentifierType == "UUID" {
 					record.UUID = identifier.Identifier
@@ -703,7 +727,7 @@ func UpsertAll(list []commonmeta.Data, account Account, legacyKey string) ([]com
 	// update rogue-scholar legacy record with doi if legacy key is provided
 	for i := range records {
 		records[i].Status = "submitted"
-		if doiutils.IsRogueScholarDOI(records[i].DOI) && legacyKey != "" {
+		if doiutils.IsRogueScholarDOI(records[i].DOI, "crossref") && legacyKey != "" {
 			records[i], err = roguescholar.UpdateLegacyRecord(records[i], legacyKey, "doi")
 			if err != nil {
 				return records, err

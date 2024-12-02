@@ -50,6 +50,9 @@ commonmeta put 10.5555/12345678 -f crossref -t inveniordm -h rogue-scholar.org -
 		host, _ := cmd.Flags().GetString("host")
 		token, _ := cmd.Flags().GetString("token")
 		legacyKey, _ := cmd.Flags().GetString("legacyKey")
+		client_, _ := cmd.Flags().GetString("client")
+		password, _ := cmd.Flags().GetString("password")
+		development, _ := cmd.Flags().GetBool("development")
 
 		cmd.SetOut(os.Stdout)
 		cmd.SetErr(os.Stderr)
@@ -129,6 +132,13 @@ commonmeta put 10.5555/12345678 -f crossref -t inveniordm -h rogue-scholar.org -
 				LoginPasswd: loginPasswd,
 			}
 			record, err = crossrefxml.Upsert(record, account, legacyKey, data)
+		} else if to == "datacite" {
+			account := datacite.Account{
+				Client:      client_,
+				Password:    password,
+				Development: development,
+			}
+			record, err = datacite.Upsert(record, account, data)
 		} else if to == "inveniordm" {
 			if host == "" || token == "" {
 				fmt.Println("Please provide an inveniordm host and token")

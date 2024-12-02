@@ -85,6 +85,7 @@ func TestGetDOIRA(t *testing.T) {
 		{input: "https://doi.org/10.5061/dryad.8515", want: "DataCite"},
 		{input: "10.9999", want: ""},
 		{input: "10.7554", want: "Crossref"},
+		{input: "10.83132", want: "DataCite"},
 		{input: "", want: ""},
 	}
 	for _, tc := range testCases {
@@ -100,16 +101,17 @@ func TestIsRogueScholarDOI(t *testing.T) {
 	t.Parallel()
 	type testCase struct {
 		input string
+		ra    string
 		want  bool
 	}
 	testCases := []testCase{
-		{input: "https://doi.org/10.59350/dybzk-cs537", want: true},
-		{input: "10.59350/dybzk-cs537", want: true},
+		{input: "https://doi.org/10.59350/dybzk-cs537", ra: "crossref", want: true},
+		{input: "10.59350/dybzk-cs537", ra: "crossref", want: true},
 		{input: "https://doi.org/10.1101/097196", want: false},
 		{input: "123456", want: false},
 	}
 	for _, tc := range testCases {
-		got := doiutils.IsRogueScholarDOI(tc.input)
+		got := doiutils.IsRogueScholarDOI(tc.input, tc.ra)
 		if tc.want != got {
 			t.Errorf("Is Rogue Scholar Prefix(%v): want %v, got %v",
 				tc.input, tc.want, got)

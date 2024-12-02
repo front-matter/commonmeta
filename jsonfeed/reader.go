@@ -315,7 +315,7 @@ func Read(content Content) (commonmeta.Data, error) {
 		{Description: utils.Sanitize(description), Type: "Abstract"},
 	}
 
-	if doiutils.IsRogueScholarDOI(data.ID) {
+	if doiutils.IsRogueScholarDOI(data.ID, "") {
 		doi, _ := doiutils.ValidateDOI(data.ID)
 		data.Files = append(data.Files, commonmeta.File{
 			URL:      fmt.Sprintf("https://api.rogue-scholar.org/posts/%s.md", doi),

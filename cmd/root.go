@@ -13,7 +13,7 @@ import (
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:     "commonmeta",
-	Version: "v0.6.18",
+	Version: "v0.6.19",
 	Short:   "Convert scholarly metadata from one format to another",
 	Long: `Convert scholarly metadata between formats. Currently
 supported input formats are Crossref and DataCite DOIs, currently
@@ -60,6 +60,7 @@ func init() {
 
 	// needed for DOI registration
 	rootCmd.PersistentFlags().StringP("prefix", "", "", "DOI prefix")
+	rootCmd.PersistentFlags().BoolP("development", "", false, "Development mode")
 
 	rootCmd.PersistentFlags().StringP("login_id", "", "", "Crossref account login")
 	rootCmd.PersistentFlags().StringP("login_passwd", "", "", "Crossref account password")
@@ -68,5 +69,6 @@ func init() {
 	rootCmd.PersistentFlags().StringP("registrant", "", "", "Crossref account registrant")
 	rootCmd.PersistentFlags().StringP("host", "", "", "InvenioRDM host")
 	rootCmd.PersistentFlags().StringP("token", "", "", "API token")
+	rootCmd.PersistentFlags().StringP("password", "", "", "DataCite client password")
 	rootCmd.PersistentFlags().StringP("legacyKey", "", "", "Legacy API token")
 }
