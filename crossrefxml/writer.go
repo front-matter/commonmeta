@@ -663,6 +663,11 @@ func UpsertAll(list []commonmeta.Data, account Account, legacyKey string) ([]com
 		records = append(records, record)
 	}
 
+	// if no metadata to write, return empty list
+	if len(records) == 0 {
+		return records, nil
+	}
+
 	type HTML struct {
 		Head struct {
 			Title string `xml:"title"`
