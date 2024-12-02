@@ -29,6 +29,12 @@ type Account struct {
 	Development bool
 }
 
+// trigger creation of findable or registered DOI
+type DataciteWithEvent struct {
+	Datacite
+	Event string `json:"event"`
+}
+
 // Convert converts Commonmeta metadata to DataCite metadata
 func Convert(data commonmeta.Data) (Datacite, error) {
 	var datacite Datacite
@@ -292,10 +298,14 @@ func Convert(data commonmeta.Data) (Datacite, error) {
 // Write writes commonmeta metadata.
 func Write(data commonmeta.Data) ([]byte, []gojsonschema.ResultError) {
 	datacite, err := Convert(data)
+	dataciteWithEvent := DataciteWithEvent{
+		Datacite: datacite,
+		Event:    "publish",
+	}
 	if err != nil {
 		fmt.Println(err)
 	}
-	output, err := json.Marshal(datacite)
+	output, err := json.Marshal(dataciteWithEvent)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -309,13 +319,18 @@ func Write(data commonmeta.Data) ([]byte, []gojsonschema.ResultError) {
 
 // WriteAll writes a list of commonmeta metadata.
 func WriteAll(list []commonmeta.Data) ([]byte, []gojsonschema.ResultError) {
-	var dataciteList []Datacite
+	var dataciteList []DataciteWithEvent
 	for _, data := range list {
 		datacite, err := Convert(data)
 		if err != nil {
 			fmt.Println(err)
 		}
-		dataciteList = append(dataciteList, datacite)
+
+		dataciteWithEvent := DataciteWithEvent{
+			Datacite: datacite,
+			Event:    "publish",
+		}
+		dataciteList = append(dataciteList, dataciteWithEvent)
 	}
 	output, err := json.Marshal(dataciteList)
 	if err != nil {
@@ -342,6 +357,7 @@ func Upsert(record commonmeta.APIResponse, account Account, data commonmeta.Data
 	if jsErr != nil {
 		return record, errors.New("JSON schema validation failed")
 	}
+
 	type Response struct {
 		*Datacite
 	}
