@@ -375,22 +375,19 @@ func Upsert(record commonmeta.APIResponse, account Account, data commonmeta.Data
 		requestURL = "https://api.datacite.org/dois"
 	}
 	var output = []byte(`{"data":{"type":"dois","attributes":` + string(datacite) + `}}`)
-	fmt.Println(string(output))
 	req, _ = http.NewRequest(http.MethodPost, requestURL, bytes.NewReader(output))
 	req.Header.Add("Content-Type", "application/vnd.api+json")
 	req.SetBasicAuth(account.Client, account.Password)
-	fmt.Println(req.Header.Get("Authorization"))
 	resp, err := client.Do(req)
 	if err != nil {
 		return record, err
 	}
 	defer resp.Body.Close()
-	if resp.StatusCode != 200 {
+	if resp.StatusCode >= 400 {
 		fmt.Println(resp.StatusCode)
 		// return record, fmt.Errorf("status code error: %d %s", resp.StatusCode, resp.Status)
 	}
 	body, err := io.ReadAll(resp.Body)
-	fmt.Println(string(body))
 	if err != nil {
 		return record, err
 	}
@@ -398,14 +395,6 @@ func Upsert(record commonmeta.APIResponse, account Account, data commonmeta.Data
 	if err != nil {
 		return record, err
 	}
-	fmt.Println(response)
-	// doi, ok := doiutils.ValidateDOI(data.ID)
-	// if !ok {
-	// 	record.Status = "failed"
-	// 	return record, fmt.Errorf("missing or invalid DOI")
-	// }
-
-	// record.DOI = doi
 	record.Status = "submitted"
 
 	return record, nil
@@ -425,6 +414,10 @@ func UpsertAll(list []commonmeta.Data, account Account) ([]commonmeta.APIRespons
 		}
 		record := commonmeta.APIResponse{
 			DOI: data.ID,
+		}
+		record, err := Upsert(record, account, data)
+		if err != nil {
+			fmt.Println(err)
 		}
 		records = append(records, record)
 	}
