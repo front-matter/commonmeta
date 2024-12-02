@@ -504,7 +504,6 @@ func WriteAll(list []commonmeta.Data, account Account) ([]byte, []gojsonschema.R
 			fmt.Println("DOI is not a valid DOI:", data.ID)
 			continue
 		} else if ifCrossref != "Crossref" {
-			fmt.Println("DOI is not a Crossref DOI:", data.ID)
 			continue
 		}
 		crossref, err := Convert(data)
@@ -555,7 +554,7 @@ func Upsert(record commonmeta.APIResponse, account Account, legacyKey string, da
 	if !ok {
 		return record, errors.New("DOI is not a valid DOI")
 	} else if isCrossref != "Crossref" {
-		return record, errors.New("DOI is not a Crossref DOI")
+		return record, nil
 	}
 
 	record.DOI = data.ID
@@ -648,7 +647,6 @@ func UpsertAll(list []commonmeta.Data, account Account, legacyKey string) ([]com
 			fmt.Println("DOI is not a valid DOI:", data.ID)
 			continue
 		} else if isCrossref != "Crossref" {
-			fmt.Println("DOI is not a Crossref DOI:", data.ID)
 			continue
 		}
 

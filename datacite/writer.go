@@ -344,13 +344,13 @@ func WriteAll(list []commonmeta.Data) ([]byte, []gojsonschema.ResultError) {
 	return output, nil
 }
 
-// Upsert updates or creates Crossrefxml metadata.
+// Upsert updates or creates datacite metadata.
 func Upsert(record commonmeta.APIResponse, account Account, data commonmeta.Data) (commonmeta.APIResponse, error) {
 	isDatacite, ok := doiutils.GetDOIRA(data.ID)
 	if !ok {
 		return record, errors.New("DOI is not a valid DOI: " + data.ID)
 	} else if isDatacite != "DataCite" {
-		return record, errors.New("DOI is not a DataCite DOI: " + data.ID)
+		return record, nil
 	}
 
 	datacite, jsErr := Write(data)
@@ -409,7 +409,6 @@ func UpsertAll(list []commonmeta.Data, account Account) ([]commonmeta.APIRespons
 			fmt.Println("DOI is not a valid DOI:", data.ID)
 			continue
 		} else if isDatacite != "DataCite" {
-			fmt.Println("DOI is not a DataCite DOI:", data.ID)
 			continue
 		}
 		record := commonmeta.APIResponse{

@@ -144,13 +144,11 @@ func IsRogueScholarDOI(doi string, ra string) bool {
 		"10.59348",
 		"10.59349",
 		"10.59350",
-
-		"10.83132",
 	}
 	var rogueScholarDatacitePrefixes = []string{
 		"10.34732",
 		"10.57689",
-		"10.83132",
+		// "10.83132",
 	}
 	prefix, ok := ValidatePrefix(doi)
 	if !ok {

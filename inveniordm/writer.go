@@ -422,6 +422,11 @@ func WriteAll(list []commonmeta.Data) ([]byte, []gojsonschema.ResultError) {
 
 // Upsert updates or creates a record in InvenioRDM.
 func Upsert(record commonmeta.APIResponse, client *InvenioRDMClient, apiKey string, legacyKey string, data commonmeta.Data) (commonmeta.APIResponse, error) {
+	if !doiutils.IsRogueScholarDOI(data.ID, "") {
+		record.Status = "failed_not_rogue_scholar_doi"
+		return record, nil
+	}
+
 	inveniordm, err := Convert(data)
 	if err != nil {
 		return record, err
@@ -529,6 +534,8 @@ func UpsertAll(list []commonmeta.Data, host string, apiKey string, legacyKey str
 		doi, ok := doiutils.ValidateDOI(data.ID)
 		if !ok && doi == "" {
 			record.Status = "failed_missing_doi"
+		} else if !doiutils.IsRogueScholarDOI(data.ID, "") {
+			record.Status = "failed_not_rogue_scholar_doi"
 		} else {
 			record, _ = Upsert(record, client, apiKey, legacyKey, data)
 		}
