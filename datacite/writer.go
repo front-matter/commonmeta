@@ -348,8 +348,10 @@ func WriteAll(list []commonmeta.Data) ([]byte, []gojsonschema.ResultError) {
 func Upsert(record commonmeta.APIResponse, account Account, data commonmeta.Data) (commonmeta.APIResponse, error) {
 	isDatacite, ok := doiutils.GetDOIRA(data.ID)
 	if !ok {
-		return record, errors.New("DOI is not a valid DOI: " + data.ID)
+		record.Status = "failed_missing_doi"
+		return record, nil
 	} else if isDatacite != "DataCite" {
+		record.Status = "failed_not_datacite_doi"
 		return record, nil
 	}
 
@@ -404,13 +406,6 @@ func Upsert(record commonmeta.APIResponse, account Account, data commonmeta.Data
 func UpsertAll(list []commonmeta.Data, account Account) ([]commonmeta.APIResponse, error) {
 	var records []commonmeta.APIResponse
 	for _, data := range list {
-		isDatacite, ok := doiutils.GetDOIRA(data.ID)
-		if !ok {
-			fmt.Println("DOI is not a valid DOI:", data.ID)
-			continue
-		} else if isDatacite != "DataCite" {
-			continue
-		}
 		record := commonmeta.APIResponse{
 			DOI: data.ID,
 		}

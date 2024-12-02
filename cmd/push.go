@@ -73,6 +73,7 @@ commonmeta push --sample -f crossref -t inveniordm -h rogue-scholar.org --token 
 		token, _ := cmd.Flags().GetString("token")
 		legacyKey, _ := cmd.Flags().GetString("legacyKey")
 		password, _ := cmd.Flags().GetString("password")
+		development, _ := cmd.Flags().GetBool("development")
 
 		cmd.SetOut(os.Stdout)
 		cmd.SetErr(os.Stderr)
@@ -127,8 +128,9 @@ commonmeta push --sample -f crossref -t inveniordm -h rogue-scholar.org --token 
 			records, err = crossrefxml.UpsertAll(data, account, legacyKey)
 		} else if to == "datacite" {
 			account := datacite.Account{
-				Client:   client_,
-				Password: password,
+				Client:      client_,
+				Password:    password,
+				Development: development,
 			}
 			records, err = datacite.UpsertAll(data, account)
 		} else if to == "inveniordm" {
