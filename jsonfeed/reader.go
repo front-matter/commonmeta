@@ -135,6 +135,7 @@ var FOSKeyMappings = map[string]string{
 	"agriculturalBiotechnology":                "Agricultural biotechnology",
 	"otherAgriculturalSciences":                "Other agricultural sciences",
 	"socialScience":                            "Social science",
+	"socialSciences":                           "Social science",
 	"psychology":                               "Psychology",
 	"economicsAndBusiness":                     "Economics and business",
 	"educationalSciences":                      "Educational sciences",
