@@ -422,7 +422,7 @@ func Read(content Content) (commonmeta.Data, error) {
 	}
 
 	url, err := utils.NormalizeURL(content.URL, true, false)
-	if content.Blog.Status == "archived" {
+	if content.Blog.Status == "archived" && content.ArchiveURL != "" {
 		url, err = utils.NormalizeURL(content.ArchiveURL, true, false)
 	}
 	if err != nil {
