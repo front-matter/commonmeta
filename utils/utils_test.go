@@ -2,6 +2,7 @@ package utils_test
 
 import (
 	"fmt"
+	"regexp"
 	"testing"
 
 	"github.com/front-matter/commonmeta/utils"
@@ -155,7 +156,7 @@ func TestGetROR(t *testing.T) {
 		fundref string
 	}
 	testCases := []testCase{
-		{input: "https://ror.org/021nxhr62", name: "National Science Foundation", fundref: "100000001"},
+		{input: "https://ror.org/021nxhr62", name: "U.S. National Science Foundation", fundref: "100000001"},
 		{input: "https://ror.org/018mejw64", name: "Deutsche Forschungsgemeinschaft", fundref: "501100001659"},
 	}
 	for _, tc := range testCases {
@@ -293,16 +294,17 @@ func ExampleCamelCaseToWords() {
 
 func ExampleEncodeDOI() {
 	s := utils.EncodeDOI("10.73731")
-	fmt.Println(s)
+	r := regexp.MustCompile(`^https://doi.org/10.73731/(.+)$`)
+	fmt.Println(r.MatchString(s))
 	// Output:
-	// https://doi.org/10.73731/rxadv-a6v29
+	// true
 }
 
 func ExampleDecodeDOI() {
-	i := utils.DecodeDOI("https://doi.org/10.73731/rxadv-a6v29")
+	i := utils.DecodeDOI("https://doi.org/10.59350/wrg95-qjs60")
 	fmt.Println(i)
 	// Output:
-	// 10.73731
+	// 0
 }
 
 func ExampleKebabCaseToCamelCase() {

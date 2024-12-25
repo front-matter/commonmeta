@@ -10,7 +10,6 @@ import (
 	"github.com/front-matter/commonmeta/dateutils"
 	"github.com/front-matter/commonmeta/doiutils"
 	"github.com/front-matter/commonmeta/schemautils"
-	"github.com/xeipuuv/gojsonschema"
 )
 
 var CMToCSLMappings = map[string]string{
@@ -113,7 +112,7 @@ func Convert(data commonmeta.Data) (CSL, error) {
 }
 
 // Write writes CSL metadata.
-func Write(data commonmeta.Data) ([]byte, []gojsonschema.ResultError) {
+func Write(data commonmeta.Data) ([]byte, error) {
 	csl, err := Convert(data)
 	if err != nil {
 		fmt.Println(err)
@@ -122,16 +121,16 @@ func Write(data commonmeta.Data) ([]byte, []gojsonschema.ResultError) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	validation := schemautils.JSONSchemaErrors(output, "csl-data")
-	if !validation.Valid() {
-		return nil, validation.Errors()
+	err = schemautils.SchemaErrors(output, "csl-data")
+	if err != nil {
+		return nil, err
 	}
 
 	return output, nil
 }
 
 // WriteAll writes a list of CSL metadata.
-func WriteAll(list []commonmeta.Data) ([]byte, []gojsonschema.ResultError) {
+func WriteAll(list []commonmeta.Data) ([]byte, error) {
 	var cslList []CSL
 	for _, data := range list {
 		csl, err := Convert(data)
@@ -144,10 +143,6 @@ func WriteAll(list []commonmeta.Data) ([]byte, []gojsonschema.ResultError) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	validation := schemautils.JSONSchemaErrors(output, "csl-data")
-	if !validation.Valid() {
-		return nil, validation.Errors()
-	}
-
-	return output, nil
+	err = schemautils.SchemaErrors(output, "csl-data")
+	return output, err
 }

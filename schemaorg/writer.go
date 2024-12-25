@@ -9,7 +9,6 @@ import (
 	"strings"
 
 	"github.com/front-matter/commonmeta/commonmeta"
-	"github.com/xeipuuv/gojsonschema"
 )
 
 // SchemaOrg represents the Schema.org metadata.
@@ -307,21 +306,17 @@ func Convert(data commonmeta.Data) (SchemaOrg, error) {
 }
 
 // Write writes schemaorg metadata.
-func Write(data commonmeta.Data) ([]byte, []gojsonschema.ResultError) {
+func Write(data commonmeta.Data) ([]byte, error) {
 	schemaorg, err := Convert(data)
 	if err != nil {
 		fmt.Println(err)
 	}
 	output, err := json.Marshal(schemaorg)
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	return output, nil
+	return output, err
 }
 
 // WriteAll writes a list of schemaorg metadata.
-func WriteAll(list []commonmeta.Data) ([]byte, []gojsonschema.ResultError) {
+func WriteAll(list []commonmeta.Data) ([]byte, error) {
 	var schemaorgList []SchemaOrg
 	for _, data := range list {
 		csl, err := Convert(data)
@@ -331,9 +326,5 @@ func WriteAll(list []commonmeta.Data) ([]byte, []gojsonschema.ResultError) {
 		schemaorgList = append(schemaorgList, csl)
 	}
 	output, err := json.Marshal(schemaorgList)
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	return output, nil
+	return output, err
 }

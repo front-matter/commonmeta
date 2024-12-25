@@ -20,7 +20,6 @@ import (
 	"github.com/front-matter/commonmeta/roguescholar"
 	"github.com/front-matter/commonmeta/schemautils"
 	"github.com/front-matter/commonmeta/utils"
-	"github.com/xeipuuv/gojsonschema"
 	"golang.org/x/time/rate"
 	"gopkg.in/yaml.v3"
 )
@@ -381,7 +380,7 @@ func Convert(data commonmeta.Data) (Inveniordm, error) {
 }
 
 // Write writes inveniordm metadata.
-func Write(data commonmeta.Data) ([]byte, []gojsonschema.ResultError) {
+func Write(data commonmeta.Data) ([]byte, error) {
 	inveniordm, err := Convert(data)
 	if err != nil {
 		fmt.Println(err)
@@ -390,16 +389,12 @@ func Write(data commonmeta.Data) ([]byte, []gojsonschema.ResultError) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	validation := schemautils.JSONSchemaErrors(output, "invenio-rdm-v0.1")
-	if !validation.Valid() {
-		return nil, validation.Errors()
-	}
-
-	return output, nil
+	err = schemautils.SchemaErrors(output, "invenio-rdm-v0.1")
+	return output, err
 }
 
 // WriteAll writes a list of inveniordm metadata.
-func WriteAll(list []commonmeta.Data) ([]byte, []gojsonschema.ResultError) {
+func WriteAll(list []commonmeta.Data) ([]byte, error) {
 	var inveniordmList []Inveniordm
 	for _, data := range list {
 		inveniordm, err := Convert(data)
@@ -412,12 +407,8 @@ func WriteAll(list []commonmeta.Data) ([]byte, []gojsonschema.ResultError) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	validation := schemautils.JSONSchemaErrors(output, "invenio-rdm-v0.1")
-	if !validation.Valid() {
-		return nil, validation.Errors()
-	}
-
-	return output, nil
+	err = schemautils.SchemaErrors(output, "invenio-rdm-v0.1")
+	return output, err
 }
 
 // Upsert updates or creates a record in InvenioRDM.

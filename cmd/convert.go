@@ -19,7 +19,6 @@ import (
 	"github.com/front-matter/commonmeta/jsonfeed"
 	"github.com/front-matter/commonmeta/schemaorg"
 	"github.com/front-matter/commonmeta/utils"
-	"github.com/xeipuuv/gojsonschema"
 
 	"github.com/front-matter/commonmeta/crossref"
 
@@ -116,16 +115,15 @@ commonmeta 10.5555/12345678`,
 		}
 
 		var output []byte
-		var jsErr []gojsonschema.ResultError
 		to, _ := cmd.Flags().GetString("to")
 		if to == "commonmeta" {
-			output, jsErr = commonmeta.Write(data)
+			output, err = commonmeta.Write(data)
 		} else if to == "csl" {
-			output, jsErr = csl.Write(data)
+			output, err = csl.Write(data)
 		} else if to == "datacite" {
-			output, jsErr = datacite.Write(data)
+			output, err = datacite.Write(data)
 		} else if to == "schemaorg" {
-			output, jsErr = schemaorg.Write(data)
+			output, err = schemaorg.Write(data)
 		} else if to == "crossrefxml" {
 			account := crossrefxml.Account{
 				Depositor:  depositor,

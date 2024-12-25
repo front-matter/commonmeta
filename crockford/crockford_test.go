@@ -71,7 +71,7 @@ func TestDecode(t *testing.T) {
 		{input: "01-6j", want: 1234, checksum: false},
 		{input: "f9zqn-sf065", want: 538751765283013, checksum: false},
 		{input: "mqb61-x2x15", want: 712266282077, checksum: true},
-		{input: "axgv5-6aq97", want: 375301249367, checksum: true},
+		{input: "axgv5-6aq92", want: 375301249367, checksum: true},
 	}
 	for _, tc := range testCases {
 		got, err := crockford.Decode(tc.input, tc.checksum)

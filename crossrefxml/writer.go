@@ -19,7 +19,6 @@ import (
 	"github.com/front-matter/commonmeta/roguescholar"
 	"github.com/front-matter/commonmeta/utils"
 	"github.com/google/uuid"
-	"github.com/xeipuuv/gojsonschema"
 )
 
 type StringMap map[string]string
@@ -462,7 +461,7 @@ func Convert(data commonmeta.Data) (Body, error) {
 }
 
 // Write writes Crossrefxml metadata.
-func Write(data commonmeta.Data, account Account) ([]byte, []gojsonschema.ResultError) {
+func Write(data commonmeta.Data, account Account) ([]byte, error) {
 	body, err := Convert(data)
 	if err != nil {
 		fmt.Println(err)
@@ -496,7 +495,7 @@ func Write(data commonmeta.Data, account Account) ([]byte, []gojsonschema.Result
 }
 
 // WriteAll writes a list of commonmeta metadata.
-func WriteAll(list []commonmeta.Data, account Account) ([]byte, []gojsonschema.ResultError) {
+func WriteAll(list []commonmeta.Data, account Account) ([]byte, error) {
 	var body Body
 	for _, data := range list {
 		ifCrossref, ok := doiutils.GetDOIRA(data.ID)

@@ -22,11 +22,11 @@ func TestGet(t *testing.T) {
 	}
 
 	ghostPost := jsonfeed.Content{
-		ID:    "5adbb6d4-1fe2-4da2-8cf4-c897f88a02d9",
+		ID:    "https://api.rogue-scholar.org/posts/5adbb6d4-1fe2-4da2-8cf4-c897f88a02d9",
 		Title: "INFORMATE: Where Are the Data?",
 	}
 	wordpressPost := jsonfeed.Content{
-		ID:    "4e4bf150-751f-4245-b4ca-fe69e3c3bb24",
+		ID:    "https://api.rogue-scholar.org/posts/4e4bf150-751f-4245-b4ca-fe69e3c3bb24",
 		Title: "New paper: Curtice et al. (2023) on the first <i>Haplocanthosaurus</i> from Dry Mesa",
 	}
 

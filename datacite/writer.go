@@ -20,7 +20,6 @@ import (
 	"github.com/front-matter/commonmeta/schemaorg"
 	"github.com/front-matter/commonmeta/schemautils"
 	"github.com/front-matter/commonmeta/utils"
-	"github.com/xeipuuv/gojsonschema"
 )
 
 type Account struct {
@@ -296,7 +295,7 @@ func Convert(data commonmeta.Data) (Datacite, error) {
 }
 
 // Write writes commonmeta metadata.
-func Write(data commonmeta.Data) ([]byte, []gojsonschema.ResultError) {
+func Write(data commonmeta.Data) ([]byte, error) {
 	datacite, err := Convert(data)
 	dataciteWithEvent := DataciteWithEvent{
 		Datacite: datacite,
@@ -309,16 +308,12 @@ func Write(data commonmeta.Data) ([]byte, []gojsonschema.ResultError) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	validation := schemautils.JSONSchemaErrors(output, "datacite-v4.5")
-	if !validation.Valid() {
-		return nil, validation.Errors()
-	}
-
-	return output, nil
+	err = schemautils.SchemaErrors(output, "datacite-v4.5")
+	return output, err
 }
 
 // WriteAll writes a list of commonmeta metadata.
-func WriteAll(list []commonmeta.Data) ([]byte, []gojsonschema.ResultError) {
+func WriteAll(list []commonmeta.Data) ([]byte, error) {
 	var dataciteList []DataciteWithEvent
 	for _, data := range list {
 		datacite, err := Convert(data)
@@ -336,12 +331,8 @@ func WriteAll(list []commonmeta.Data) ([]byte, []gojsonschema.ResultError) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	validation := schemautils.JSONSchemaErrors(output, "datacite-v4.5")
-	if !validation.Valid() {
-		return nil, validation.Errors()
-	}
-
-	return output, nil
+	err = schemautils.SchemaErrors(output, "datacite-v4.5")
+	return output, err
 }
 
 // Upsert updates or creates datacite metadata.
