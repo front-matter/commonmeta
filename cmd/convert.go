@@ -69,12 +69,12 @@ commonmeta 10.5555/12345678`,
 			var ok bool
 			doi, ok := doiutils.ValidateDOI(input)
 			if !ok {
-				cmd.PrintErr("Please provide a valid DOI from Crossref or Datacite")
+				fmt.Println("Please provide a valid input")
 				return
 			}
 			from, ok = doiutils.GetDOIRA(doi)
 			if !ok {
-				cmd.PrintErr("Please provide a valid DOI from Crossref or Datacite")
+				cmd.PrintErr("Please provide a valid input")
 				return
 			}
 			from = strings.ToLower(from)
@@ -130,9 +130,9 @@ commonmeta 10.5555/12345678`,
 				Email:      email,
 				Registrant: registrant,
 			}
-			output, jsErr = crossrefxml.Write(data, account)
+			output, err = crossrefxml.Write(data, account)
 		} else if to == "inveniordm" {
-			output, jsErr = inveniordm.Write(data)
+			output, err = inveniordm.Write(data)
 		}
 
 		if err != nil {
@@ -147,8 +147,8 @@ commonmeta 10.5555/12345678`,
 			cmd.Println(out.String())
 		}
 
-		if jsErr != nil {
-			cmd.PrintErr(jsErr)
+		if err != nil {
+			cmd.PrintErr(err)
 		}
 	},
 }
