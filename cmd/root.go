@@ -34,7 +34,7 @@ func Execute() {
 }
 
 func init() {
-	rootCmd.PersistentFlags().StringP("from", "f", "commonmeta", "the format to convert from")
+	rootCmd.PersistentFlags().StringP("from", "f", "crossref", "the format to convert from")
 	rootCmd.PersistentFlags().StringP("to", "t", "commonmeta", "the format to convert to")
 
 	rootCmd.PersistentFlags().IntP("number", "n", 10, "number of results")
