@@ -199,10 +199,3 @@ func TestGetMember(t *testing.T) {
 		}
 	}
 }
-
-func ExampleGetMember() {
-	s, _ := crossref.GetMember("340")
-	println(s)
-	// Output:
-	// Public Library of Science (PLoS)
-}
