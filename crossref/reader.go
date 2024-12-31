@@ -911,5 +911,5 @@ func GetMember(memberId string) (string, bool) {
 	if err != nil {
 		return "", false
 	}
-	return result.Message.PrimaryName, true
+	return string(result.Message.PrimaryName), true
 }
