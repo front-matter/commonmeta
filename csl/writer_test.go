@@ -39,9 +39,9 @@ func TestWrite(t *testing.T) {
 		if err != nil {
 			t.Errorf("Crossref Fetch (%v): error %v", tc.id, err)
 		}
-		got, jsErr := csl.Write(data)
-		if jsErr != nil {
-			t.Errorf("CSL Write (%v): error %v", tc.id, jsErr)
+		got, err := csl.Write(data)
+		if err != nil {
+			t.Errorf("CSL Write (%v): error %v", tc.id, err)
 		}
 		// read json file from testdata folder and convert to CSL struct
 		doi, ok := doiutils.ValidateDOI(tc.id)

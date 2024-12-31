@@ -39,9 +39,9 @@ func TestWrite(t *testing.T) {
 		if err != nil {
 			t.Errorf("Crossref Fetch (%v): error %v", tc.id, err)
 		}
-		got, jsErr := inveniordm.Write(data)
-		if jsErr != nil {
-			t.Errorf("InvenioRDM Write (%v): error %v", tc.id, jsErr)
+		got, err := inveniordm.Write(data)
+		if err != nil {
+			t.Errorf("InvenioRDM Write (%v): error %v", tc.id, err)
 		}
 		// read json file from testdata folder and convert to InvenioRDM struct
 		doi, ok := doiutils.ValidateDOI(tc.id)

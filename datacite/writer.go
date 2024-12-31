@@ -346,8 +346,8 @@ func Upsert(record commonmeta.APIResponse, account Account, data commonmeta.Data
 		return record, nil
 	}
 
-	datacite, jsErr := Write(data)
-	if jsErr != nil {
+	datacite, err := Write(data)
+	if err != nil {
 		return record, errors.New("JSON schema validation failed")
 	}
 

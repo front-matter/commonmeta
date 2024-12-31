@@ -579,8 +579,8 @@ func Upsert(record commonmeta.APIResponse, account Account, legacyKey string, da
 	type Response HTML
 	var response Response
 
-	crossrefxml, jsErr := Write(data, account)
-	if jsErr != nil {
+	crossrefxml, err := Write(data, account)
+	if err != nil {
 		return record, errors.New("JSON schema validation failed")
 	}
 	// the filename displayed in the Crossref admin interface, using the current UNIX timestamp
@@ -681,8 +681,8 @@ func UpsertAll(list []commonmeta.Data, account Account, legacyKey string) ([]com
 	type Response HTML
 	var response Response
 
-	crossrefxml, jsErr := WriteAll(list, account)
-	if jsErr != nil {
+	crossrefxml, err := WriteAll(list, account)
+	if err != nil {
 		return records, errors.New("JSON schema validation failed")
 	}
 	// the filename displayed in the Crossref admin interface, using the current UNIX timestamp

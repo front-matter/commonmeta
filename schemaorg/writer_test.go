@@ -42,9 +42,9 @@ func TestWrite(t *testing.T) {
 			t.Errorf("Crossref Fetch (%v): error %v", tc.id, err)
 		}
 
-		got, jsErr := schemaorg.Write(data)
-		if jsErr != nil {
-			t.Errorf("Schemaorg Write (%v): error %v", tc.id, jsErr)
+		got, err := schemaorg.Write(data)
+		if err != nil {
+			t.Errorf("Schemaorg Write (%v): error %v", tc.id, err)
 		}
 		// read json file from testdata folder and convert to CSL struct
 		doi, ok := doiutils.ValidateDOI(tc.id)
