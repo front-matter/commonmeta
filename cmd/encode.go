@@ -7,7 +7,6 @@ import (
 	"fmt"
 
 	"github.com/front-matter/commonmeta/doiutils"
-	"github.com/front-matter/commonmeta/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -27,7 +26,7 @@ var encodeCmd = &cobra.Command{
 			cmd.PrintErr("Invalid prefix")
 			return
 		}
-		doi := utils.EncodeDOI(prefix)
+		doi := doiutils.EncodeDOI(prefix)
 		cmd.Println(doi)
 	},
 }
