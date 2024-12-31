@@ -156,8 +156,12 @@ var FOSKeyMappings = map[string]string{
 // Fetch fetches JSON Feed metadata and returns Commonmeta metadata.
 func Fetch(str string) (commonmeta.Data, error) {
 	var data commonmeta.Data
-	id, _ := utils.ValidateID(str)
-	content, err := Get(id)
+	UUID := strings.Split(str, "/")[4]
+	_, IdentifierType := utils.ValidateID(UUID)
+	if IdentifierType != "UUID" {
+		return data, errors.New("invalid UUID")
+	}
+	content, err := Get(str)
 	if err != nil {
 		return data, err
 	}
@@ -267,8 +271,8 @@ func Read(content Content) (commonmeta.Data, error) {
 	if content.DOI != "" {
 		data.ID = doiutils.NormalizeDOI(content.DOI)
 	} else if content.Blog.Prefix != "" {
-		// optionally generate a DOI if missing but a DOI prefix is provided
-		data.ID = utils.EncodeDOI(content.Blog.Prefix)
+		// optionally generate a DOI string if missing but a DOI prefix is provided
+		data.ID = doiutils.EncodeDOI(content.Blog.Prefix)
 	} else {
 		data.ID = content.URL
 	}

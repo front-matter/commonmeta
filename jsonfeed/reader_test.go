@@ -56,7 +56,7 @@ func TestFetch(t *testing.T) {
 		{name: "url with uppercase characters", id: "3d02cf64-c600-4eb1-91b4-02f5bade5691"},
 	}
 	for _, tc := range testCases {
-		got, err := jsonfeed.Fetch(tc.id)
+		got, err := jsonfeed.Fetch("https://api.rogue-scholar.org/posts/" + tc.id)
 		if err != nil {
 			t.Errorf("JSON Feed Metadata(%v): error %v", tc.id, err)
 		}

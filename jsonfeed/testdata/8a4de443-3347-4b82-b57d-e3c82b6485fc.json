@@ -1,90 +1,92 @@
 {
-  "id": "https://doi.org/10.53731/r79v4e1-97aq74v-ag578",
-  "type": "Article",
-  "container": {
-    "type": "Periodical",
+  "abstract": null,
+  "archive_url": "https://wayback.archive-it.org/22096/20231101172748/https://blog.front-matter.io/posts/differences-between-orcid-and-datacite-metadata",
+  "authors": [
+    {
+      "affiliation": [
+        {
+          "id": "https://ror.org/04wxnsj81",
+          "name": "DataCite"
+        }
+      ],
+      "name": "Martin Fenner",
+      "url": "https://orcid.org/0000-0003-1419-2405"
+    }
+  ],
+  "blog": {
+    "archive_prefix": "https://wayback.archive-it.org/22096/20231101172748/",
+    "authors": [
+      {
+        "name": "Martin Fenner",
+        "url": "https://orcid.org/0000-0003-1419-2405"
+      }
+    ],
+    "canonical_url": null,
+    "category": "computerAndInformationSciences",
+    "community_id": "91dd2c24-5248-4510-9c2b-30b772bf8b60",
+    "created_at": 1672561153,
+    "current_feed_url": "https://blog.front-matter.io/atom/",
+    "description": "The Front Matter Blog covers the intersection of science and technology since 2007.",
+    "favicon": "https://blog.front-matter.io/favicon.png",
+    "feed_format": "application/atom+xml",
+    "feed_url": "https://blog.front-matter.io/atom",
+    "filter": null,
+    "funding": null,
+    "generator": "Ghost",
+    "generator_raw": "Ghost 5.52",
+    "home_page_url": "https://blog.front-matter.io",
+    "id": "74659bc5-e36e-4a27-901f-f0c8d5769cb8",
+    "indexed": null,
+    "issn": "2749-9952",
+    "language": "en",
+    "license": "https://creativecommons.org/licenses/by/4.0/legalcode",
+    "mastodon": "https://mozilla.social/@martin",
+    "prefix": "10.53731",
+    "registered_at": 1729685319,
+    "relative_url": null,
+    "ror": null,
+    "secure": true,
+    "slug": "front_matter",
+    "status": "active",
     "title": "Front Matter",
-    "identifier": "2749-9952",
-    "identifierType": "ISSN"
+    "updated_at": 1734945086,
+    "use_api": true,
+    "use_mastodon": true,
+    "user_id": "8498eaf6-8c58-4b58-bc15-27eda292b1aa"
   },
-  "contributors": [
-    {
-      "id": "https://orcid.org/0000-0003-1419-2405",
-      "type": "Person",
-      "contributorRoles": ["Author"],
-      "givenName": "Martin",
-      "familyName": "Fenner",
-      "affiliations": [
-        { "id": "https://ror.org/04wxnsj81", "name": "DataCite" }
-      ]
-    }
-  ],
-  "date": {
-    "published": "2015-09-18T02:00:00Z",
-    "updated": "2023-09-07T10:14:45Z"
-  },
-  "descriptions": [
-    {
-      "description": "One of the first tasks for DataCite in the European Commission-funded THOR project, which started in June, was to contribute to a comparison of the ORCID and DataCite metadata standards.",
-      "type": "Abstract"
-    }
-  ],
-  "files": [
-    {
-      "mimeType": "text/markdown",
-      "url": "https://api.rogue-scholar.org/posts/10.53731/r79v4e1-97aq74v-ag578.md"
-    },
-    {
-      "mimeType": "application/pdf",
-      "url": "https://api.rogue-scholar.org/posts/10.53731/r79v4e1-97aq74v-ag578.pdf"
-    },
-    {
-      "mimeType": "application/epub+zip",
-      "url": "https://api.rogue-scholar.org/posts/10.53731/r79v4e1-97aq74v-ag578.epub"
-    },
-    {
-      "mimeType": "application/xml",
-      "url": "https://api.rogue-scholar.org/posts/10.53731/r79v4e1-97aq74v-ag578.xml"
-    }
-  ],
-  "fundingReferences": [
-    {
-      "funderName": "European Commission",
-      "funderIdentifier": "https://doi.org/10.13039/501100000780",
-      "funderIdentifierType": "Crossref Funder ID",
-      "awardURI": "https://doi.org/10.3030/654039",
-      "awardNumber": "654039"
-    }
-  ],
-  "identifiers": [
-    {
-      "identifier": "8a4de443-3347-4b82-b57d-e3c82b6485fc",
-      "identifierType": "UUID"
-    }
-  ],
+  "blog_name": "Front Matter",
+  "blog_slug": "front_matter",
+  "content_text": "One of the first tasks for DataCite in the European Commission-funded\n[THOR project](http://project-thor.eu/), which started in June, was to\ncontribute to a comparison of the ORCID and DataCite metadata standards.\nTogether with ORCID, CERN, the British Library and Dryad we looked at\nhow contributors, organizations and artefacts - and the relations\nbetween them - are described in the respective metadata schemata, and\nhow they are implemented in two example data repositories, [Archaeology\nData Service](http://archaeologydataservice.ac.uk/) and [Dryad Digital\nRepository](https://www.datadryad.org/).\n\nThe focus of our work was on identifying major gaps. Our report was\nfinished and made publicly available last week (Fenner et al.,\n[2015](https://blog.datacite.org/differences-between-orcid-and-datacite-metadata/#ref-https://doi.org/10.5281/ZENODO.30799)).\nThe key findings are summarized below:\n\n- Common Approach to Personal Names\n- Standardized Contributor Roles\n- Standardized Relation Types\n- Metadata for Organisations\n- Persistent Identifiers for Projects\n- Harmonization of ORCID and DataCite Metadata\n\n### Common Approach to Personal Names\n\nWhile a single input field for contributor names is common, separate\nfields for given and family names are required for [proper formatting of\ncitations](http://docs.citationstyles.org/en/stable/specification.html#names).\nAs long as citations to scholarly content rely on properly formatted\ntext rather than persistent identifiers, services holding bibliographic\ninformation have to support these separate fields. Further work is\nneeded to help with the transition to separate input fields for given\nand famliy names, and to handle contributors that are organizations or\ngroups of people.\n\n### Standardized Contributor Roles\n\nThe currently existing vocabularies for **contributor type** (DataCite)\nand **contributor role** (ORCID) provide a high-level description, but\nfall short when trying to describe the author/creator contribution in\nmore detail. [Project CRediT](http://docs.casrai.org/CRediT) is a\nmulti-stakeholder initiative that has developed a common vocabulary with\n14 different contributor roles, and this vocabulary can be used to\nprovide this detail, e.g. who provided resources such as reagents or\nsamples, who did the statistical analysis, or who contributed to the\nmethodology of a study.\n\nCRediT is complementary to existing contributor role vocabularies such\nas those by ORCID and DataCite. For contributor roles it is particularly\nimportant that the same vocabulary is used across stakeholders, so that\nthe roles described in the data center can be forwarded first to\nDataCite, then to ORCID, and then also to other places such as\ninstitutional repositories.\n\n### Standardized Relation Types\n\nCapturing relations between scholarly works such as datasets in a\nstandardized way is important, as these relations are used for citations\nand thus the basis for many indicators of scholarly impact. Currently\nused vocabularies for relation types between scholarly works, e.g. by\nCrossRef and DataCite, only partly overlap. In addition we see\ndifferences in community practices, e.g. some scholars but not others\nreserve the term citation for links between two scholarly articles. The\nterm data citation is sometimes used for all links from scholarly works\nto datasets, but other times reserved for formal citations appearing in\nreference lists.\n\n### Metadata for Organisations\n\nBoth ORCID and DataCite not only provide persistent identifiers for\npeople and data, but they also collect metadata around these persistent\nidentifiers, in particular links to other identifiers. The use of\npersistent identifiers for organizations lags behind the use of\npersistent identifiers for research outputs and people, and more work is\nneeded.\n\n### Persistent Identifiers for Projects\n\nResearch projects are collaborative activities among contributors that\nmay change over time. Projects have a start and end date and are often\nfunded by a grant. The existing persistent identifier (PID)\ninfrastructure does support artefacts, contributors and organisations,\nbut there is no first-class PID support for projects. This creates a\nmajor gap that becomes obvious when we try to describe the relationships\nbetween funders, contributors and research outputs.\n\nBoth the ORCID and DataCite metadata support funding information, but\nonly as direct links to contributors or research outputs, respectively.\nThis not only makes it difficult to exchange funding information between\nDataCite and ORCID, but also fails to adequately model the sometimes\ncomplex relationships, e.g. when multiple funders and grants were\ninvolved in supporting a research output. We therefore not only need\npersistent identifiers for projects, but also infrastructure for\ncollecting and aggregating links to contributors and artefacts.\n\n### Harmonization of ORCID and DataCite Metadata\n\nWe identified significant differences between the ORCID and DataCite\nmetadata schema, and these differences hinder the flow of information\nbetween the two services. Several different approaches to overcome these\ndifferences are conceivable:\n\n1.  only use a common subset, relying on linked persistent identifiers\n    to get the full metadata\n2.  harmonize the ORCID and DataCite metadata schemata\n3.  common API exchange formats for metadata\n\nThe first approach is the linked open data approach, and was designed\nspecifically for scenarios like this. One limitation is that it requires\npersistent identifiers for all relevant attributes (e.g. for every\ncreator/contributor in the DataCite metadata). One major objective for\nTHOR is therefore to increase the use of persistent identifiers, both by\nTHOR partners, and by the community at large.\n\nA common metadata schema between ORCID and DataCite is neither feasible\nnor necessarily needed. In addition, we have to also consider\ninteroperability with other metadata standards (e.g. CASRAI, OpenAIRE,\nCOAR), and with other artifacts, such as those having CrossRef DOIs.\nWhat is more realistic is harmonization across a limited set essential\nmetadata.\n\nThe third approach to improve interoperability uses a common API format\nthat includes all the metadata that need to be exchanged, but doesn't\nrequire the metadata schema itself to change. This approach was [taken\nby DataCite and CrossRef a few years\nago](https://www.crossref.org/blog/crossref-and-datacite-unify-support-for-http-content-negotiation/)\nto provide metadata for DOIs in a consistent way despite significant\ndifferences in the CrossRef and DataCite metadata schema. Using HTTP\ncontent negotiation, metadata are provided in a variety of formats.\n\n## Acknowledgments\n\nThis blog post was [originally\npublished](https://doi.org/10.5438/bc11-cqw1) on the DataCite Blog. This\nwork was funded by the European Union's Horizon 2020 research and\ninnovation programme under [grant agreement\nNo. 654039](https://doi.org/10.3030/654039){rel=\"noreferrer\"}.\n\n## References\n\nFenner M, Demeranville T, Kotarski R, et al. *D2.1: Artefact,\nContributor, And Organisation Relationship Data Schema*. Zenodo; 2015.\ndoi:[10.5281/ZENODO.30799](https://doi.org/10.5281/ZENODO.30799)\n",
+  "doi": "https://doi.org/10.53731/r79v4e1-97aq74v-ag578",
+  "guid": "62d42bbd41e317003df48efb",
+  "id": "8a4de443-3347-4b82-b57d-e3c82b6485fc",
+  "image": "https://blog.front-matter.io/content/images/2023/09/cat_and_dog-1.png",
+  "indexed_at": 1731078596,
   "language": "en",
-  "license": {
-    "id": "CC-BY-4.0",
-    "url": "https://creativecommons.org/licenses/by/4.0/legalcode"
-  },
-  "provider": "Crossref",
-  "publisher": { "name": "Front Matter" },
-  "references": [
+  "published_at": 1442534400,
+  "reference": [
     {
       "id": "https://doi.org/10.5281/zenodo.30799",
-      "title": "D2.1: Artefact, Contributor, And Organisation Relationship Data Schema",
+      "key": "ref1",
       "publicationYear": "2015",
-      "key": "ref1"
+      "title": "D2.1: Artefact, Contributor, And Organisation Relationship Data Schema"
     }
   ],
-  "relations": [
-    { "id": "https://doi.org/10.5438/bc11-cqw1", "type": "IsIdenticalTo" },
+  "registered_at": 0,
+  "relationships": [
     {
-      "id": "https://portal.issn.org/resource/ISSN/2749-9952",
-      "type": "IsPartOf"
+      "type": "IsIdenticalTo",
+      "urls": ["https://doi.org/10.5438/bc11-cqw1"]
+    },
+    {
+      "type": "HasAward",
+      "urls": ["https://doi.org/10.3030/654039"]
     }
   ],
-  "subjects": [{ "subject": "Computer and information sciences" }],
-  "titles": [{ "title": "Differences between ORCID and DataCite Metadata" }],
+  "rid": "trhz1-s0336",
+  "summary": "One of the first tasks for DataCite in the European Commission-funded THOR project, which started in June, was to contribute to a comparison of the ORCID and DataCite metadata standards.",
+  "tags": ["Feature"],
+  "title": "Differences between ORCID and DataCite Metadata",
+  "updated_at": 1694074485,
   "url": "https://blog.front-matter.io/posts/differences-between-orcid-and-datacite-metadata"
 }
