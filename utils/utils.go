@@ -13,7 +13,6 @@ import (
 	"time"
 
 	iso639_3 "github.com/barbashov/iso639-3"
-	"github.com/front-matter/commonmeta/crockford"
 	"github.com/front-matter/commonmeta/doiutils"
 	"github.com/microcosm-cc/bluemonday"
 )
@@ -568,25 +567,6 @@ func GetLanguage(lang string, format string) string {
 	} else {
 		return language.Part1
 	}
-}
-
-func EncodeDOI(prefix string) string {
-	suffix := crockford.Generate(10, 5, true)
-	return fmt.Sprintf("https://doi.org/%s/%s", prefix, suffix)
-}
-
-func DecodeDOI(doi string) int64 {
-	d, ok := doiutils.ValidateDOI(doi)
-	if !ok {
-		return 0
-	}
-	suffix := strings.Split(d, "/")[1]
-	number, err := crockford.Decode(suffix, true)
-	if err != nil {
-		fmt.Println(err)
-		return 0
-	}
-	return number
 }
 
 // ParseString parses an interface into a string

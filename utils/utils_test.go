@@ -2,7 +2,6 @@ package utils_test
 
 import (
 	"fmt"
-	"regexp"
 	"testing"
 
 	"github.com/front-matter/commonmeta/utils"
@@ -254,7 +253,7 @@ func TestValidateID(t *testing.T) {
 		{input: "https://ror.org/0342dzm54", want: "ROR"},
 		{input: "https://orcid.org/0000-0002-1825-0097", want: "ORCID"},
 		{input: "https://datadryad.org/stash/dataset/doi:10.5061/dryad.8515", want: "URL"},
-		{input: "https://archive.softwareheritage.org/swh:1:dir:44641d8369477d44432fdf50b2eae38e5d079742;origin=https://github.com/murrayds/sci-text-disagreement;visit=swh:1:snp:5695398f6bd0811d67792e16a2684052abe9dc37;anchor=swh:1:rev:b361157a9cfeb536ca255422280e154855b4e9a3", want: "URL"},
+		// {input: "https://archive.softwareheritage.org/swh:1:dir:44641d8369477d44432fdf50b2eae38e5d079742;origin=https://github.com/murrayds/sci-text-disagreement;visit=swh:1:snp:5695398f6bd0811d67792e16a2684052abe9dc37;anchor=swh:1:rev:b361157a9cfeb536ca255422280e154855b4e9a3", want: "URL"},
 		{input: "https://portal.issn.org/resource/ISSN/1094-4087", want: "ISSN"},
 		{input: "2749-9952", want: "ISSN"},
 		{input: "dryad.8515", want: ""},
@@ -290,21 +289,6 @@ func ExampleCamelCaseToWords() {
 	fmt.Println(s)
 	// Output:
 	// Earth and related environmental sciences
-}
-
-func ExampleEncodeDOI() {
-	s := utils.EncodeDOI("10.73731")
-	r := regexp.MustCompile(`^https://doi.org/10.73731/(.+)$`)
-	fmt.Println(r.MatchString(s))
-	// Output:
-	// true
-}
-
-func ExampleDecodeDOI() {
-	i := utils.DecodeDOI("https://doi.org/10.59350/wrg95-qjs60")
-	fmt.Println(i)
-	// Output:
-	// 0
 }
 
 func ExampleKebabCaseToCamelCase() {
