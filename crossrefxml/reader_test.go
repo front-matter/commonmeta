@@ -6,13 +6,12 @@ import (
 	"github.com/front-matter/commonmeta/crossrefxml"
 )
 
-func TestGet(t *testing.T) {
+func TestResource(t *testing.T) {
 	t.Parallel()
 
 	type testCase struct {
 		id   string
 		want string
-		err  error
 	}
 
 	journalArticle := crossrefxml.DOIData{
@@ -25,23 +24,23 @@ func TestGet(t *testing.T) {
 	}
 
 	testCases := []testCase{
-		{id: journalArticle.DOI, want: journalArticle.Resource, err: nil},
-		{id: postedContent.DOI, want: postedContent.Resource, err: nil},
+		{id: journalArticle.DOI, want: journalArticle.Resource},
+		{id: postedContent.DOI, want: postedContent.Resource},
 	}
 	for _, tc := range testCases {
-		got, err := crossrefxml.Get(tc.id)
+		content, err := crossrefxml.Get(tc.id)
 		if err != nil {
 			t.Errorf("Get (%v): error %v", tc.id, err)
 		}
-		var resource string
-		if got.DOI.Type == "journal-article" {
-			resource = got.DOIRecord.Crossref.Journal.JournalArticle.DOIData.Resource
-		} else if got.DOI.Type == "posted-content" {
-			resource = got.DOIRecord.Crossref.PostedContent.DOIData.Resource
+		var got string
+		if content.DOI.Type == "journal_article" {
+			got = content.DOIRecord.Crossref.Journal.JournalArticle.DOIData.Resource
+		} else if content.DOI.Type == "posted_content" {
+			got = content.DOIRecord.Crossref.PostedContent.DOIData.Resource
 		}
-		if tc.want != resource {
-			t.Errorf("Get (%v): want %v, got %v, error %v",
-				tc.id, tc.want, got, err)
+		if tc.want != got {
+			t.Errorf("Get (%v): want %v, got %v",
+				tc.id, tc.want, got)
 		}
 	}
 }
