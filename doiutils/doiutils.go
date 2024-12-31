@@ -11,6 +11,9 @@ import (
 	"regexp"
 	"slices"
 	"strings"
+	"time"
+
+	"github.com/front-matter/commonmeta/crockford"
 )
 
 // PrefixFromUrl extracts DOI prefix from URL
@@ -57,6 +60,50 @@ func EscapeDOI(doi string) string {
 		return ""
 	}
 	return strings.ReplaceAll(doistr, "/", "%2F")
+}
+
+func EncodeDOI(prefix string) string {
+	suffix := crockford.Generate(10, 5, true)
+	doi := fmt.Sprintf("https://doi.org/%s/%s", prefix, suffix)
+	if IsRegisteredDOI(doi) {
+		return EncodeDOI(prefix)
+	}
+	return doi
+}
+
+func DecodeDOI(doi string) int64 {
+	d, ok := ValidateDOI(doi)
+	if !ok {
+		return 0
+	}
+	suffix := strings.Split(d, "/")[1]
+	number, err := crockford.Decode(suffix, true)
+	if err != nil {
+		fmt.Println(err)
+		return 0
+	}
+	return number
+}
+
+// IsRegisteredDOI checks if a DOI resolves (i.e. redirects) via the DOI handle servers
+func IsRegisteredDOI(doi string) bool {
+	url := NormalizeDOI(doi)
+	if url == "" {
+		return false
+	}
+	client := &http.Client{
+		Timeout: 10 * time.Second,
+	}
+	req, err := http.NewRequest(http.MethodHead, url, nil)
+	if err != nil {
+		return false
+	}
+	resp, err := client.Do(req)
+	if err != nil {
+		return false
+	}
+	defer resp.Body.Close()
+	return resp.StatusCode <= 308
 }
 
 // ValidatePrefix validates a DOI prefix for a given DOI

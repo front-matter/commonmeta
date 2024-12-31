@@ -2,6 +2,7 @@ package doiutils_test
 
 import (
 	"fmt"
+	"regexp"
 	"testing"
 
 	"github.com/front-matter/commonmeta/doiutils"
@@ -119,9 +120,46 @@ func TestIsRogueScholarDOI(t *testing.T) {
 	}
 }
 
+func TestIsRegisteredDOI(t *testing.T) {
+	t.Parallel()
+	type testCase struct {
+		input string
+		want  bool
+	}
+	testCases := []testCase{
+		{input: "https://doi.org/10.59350/dybzk-cs537", want: true},
+		{input: "10.59350/dybzk-cs537", want: true},
+		{input: "10.59350/999", want: false},
+		{input: "10.59350", want: false},
+		{input: "123456", want: false},
+	}
+	for _, tc := range testCases {
+		got := doiutils.IsRegisteredDOI(tc.input)
+		if tc.want != got {
+			t.Errorf("Is Rogue Scholar Prefix(%v): want %v, got %v",
+				tc.input, tc.want, got)
+		}
+	}
+}
+
 func ExampleEscapeDOI() {
 	s := doiutils.EscapeDOI("10.59350/k0746-rsc44")
 	fmt.Println(s)
 	// Output:
 	// 10.59350%2Fk0746-rsc44
+}
+
+func ExampleEncodeDOI() {
+	s := doiutils.EncodeDOI("10.73731")
+	r := regexp.MustCompile(`^https://doi.org/10.73731/(.+)$`)
+	fmt.Println(r.MatchString(s))
+	// Output:
+	// true
+}
+
+func ExampleDecodeDOI() {
+	i := doiutils.DecodeDOI("https://doi.org/10.59350/v2gec-5xt36")
+	fmt.Println(i)
+	// Output:
+	// 930412369850
 }
