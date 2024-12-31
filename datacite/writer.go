@@ -371,7 +371,7 @@ func Upsert(record commonmeta.APIResponse, account Account, data commonmeta.Data
 	req, _ = http.NewRequest(http.MethodPost, requestURL, bytes.NewReader(output))
 	req.Header.Add("Content-Type", "application/vnd.api+json")
 	req.SetBasicAuth(account.Client, account.Password)
-	resp, err := client.Do(req)
+	resp, err = client.Do(req)
 	if err != nil {
 		return record, err
 	}

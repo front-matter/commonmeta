@@ -593,7 +593,7 @@ func Upsert(record commonmeta.APIResponse, account Account, legacyKey string, da
 	var b bytes.Buffer
 	w := multipart.NewWriter(&b)
 	part, _ := w.CreateFormFile("fname", filename)
-	_, err := part.Write(crossrefxml)
+	_, err = part.Write(crossrefxml)
 	if err != nil {
 		return record, err
 	}
@@ -695,7 +695,7 @@ func UpsertAll(list []commonmeta.Data, account Account, legacyKey string) ([]com
 	var b bytes.Buffer
 	w := multipart.NewWriter(&b)
 	part, _ := w.CreateFormFile("fname", filename)
-	_, err := part.Write(crossrefxml)
+	_, err = part.Write(crossrefxml)
 	if err != nil {
 		return records, err
 	}
