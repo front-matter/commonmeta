@@ -557,6 +557,8 @@ func Upsert(record commonmeta.APIResponse, account Account, legacyKey string, da
 	}
 
 	record.DOI = data.ID
+
+	// provide and check UUID for Rogue Scholar DOIs
 	if doiutils.IsRogueScholarDOI(data.ID, "crossref") {
 		for _, identifier := range data.Identifiers {
 			if identifier.IdentifierType == "UUID" {
