@@ -2,16 +2,13 @@
 package schemautils
 
 import (
+	"bytes"
 	"embed"
-	"fmt"
 	"log"
 	"path/filepath"
 	"slices"
 
-	"cuelang.org/go/cue"
-	"cuelang.org/go/cue/cuecontext"
-	"cuelang.org/go/encoding/json"
-	"cuelang.org/go/encoding/jsonschema"
+	"github.com/santhosh-tekuri/jsonschema/v6"
 )
 
 // Schemas is the embedded JSON Schema files.
@@ -21,7 +18,7 @@ var Schemas embed.FS
 
 const schemaVersion = "commonmeta_v0.15"
 
-// SchemaErrors validates a JSON document against a JSON Schema using Cue.
+// SchemaErrors validates a JSON document against a JSON Schema.
 func SchemaErrors(document []byte, schema ...string) error {
 
 	// If no schema is provided, default to const schema_version
@@ -37,42 +34,17 @@ func SchemaErrors(document []byte, schema ...string) error {
 	}
 	dir := "schemas"
 	schemaPath := filepath.Join(dir, s+".json")
-	schemaFile, err := Schemas.ReadFile(schemaPath)
+
+	c := jsonschema.NewCompiler()
+	sch, err := c.Compile(schemaPath)
 	if err != nil {
-		fmt.Print(err)
+		return err
 	}
 
-	ctx := cuecontext.New()
-	schemaJsonAst, err := json.Extract(schemaPath, schemaFile)
+	// Load the document to validate
+	inst, err := jsonschema.UnmarshalJSON(bytes.NewReader(document))
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
-	schemaJson := ctx.BuildExpr(schemaJsonAst)
-
-	// Extract JSON Schema from the JSON
-	schemaAst, err := jsonschema.Extract(schemaJson, &jsonschema.Config{
-		Strict: false,
-	})
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	// Build a cue.Value of the schema
-	cueSchema := ctx.BuildFile(schemaAst)
-
-	// Load the data JSON
-	dataAst, err := json.Extract(".", document)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	// Build a cue.Value of the data
-	cueData := ctx.BuildExpr(dataAst)
-
-	// Unify the schema and data
-	res := cueSchema.Unify(cueData)
-
-	// Validate whether the combined (unified) result has errors or not.
-	err = res.Validate(cue.Concrete(true))
-	return err
+	return sch.Validate(inst)
 }
