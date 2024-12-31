@@ -21,7 +21,7 @@ func TestEncode(t *testing.T) {
 		{input: 1234, want: "16-j", splitEvery: 2, length: 0, checksum: false},
 		{input: 1234, want: "01-6j", splitEvery: 2, length: 4, checksum: false},
 		{input: 538751765283013, want: "f9zqn-sf065", splitEvery: 5, length: 10, checksum: false},
-		{input: 712266282077, want: "mqb61-x2x15", splitEvery: 5, length: 10, checksum: true},
+		{input: 123456789012, want: "3jz9j-6gm44", splitEvery: 5, length: 10, checksum: true},
 	}
 	for _, tc := range testCases {
 		got := crockford.Encode(tc.input, tc.splitEvery, tc.length, tc.checksum)
@@ -70,7 +70,7 @@ func TestDecode(t *testing.T) {
 		{input: "16-j", want: 1234, checksum: false},
 		{input: "01-6j", want: 1234, checksum: false},
 		{input: "f9zqn-sf065", want: 538751765283013, checksum: false},
-		{input: "mqb61-x2x15", want: 712266282077, checksum: true},
+		{input: "v2gec-5xt36", want: 930412369850, checksum: true},
 		{input: "axgv5-6aq92", want: 375301249367, checksum: true},
 	}
 	for _, tc := range testCases {
