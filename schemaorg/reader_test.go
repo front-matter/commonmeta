@@ -23,11 +23,11 @@ func TestGet(t *testing.T) {
 	}
 
 	testCases := []testCase{
-		//{id: "https://blog.front-matter.io/posts/eating-your-own-dog-food", want: "https://doi.org/10.53731/r79vxn1-97aq74v-ag58n"},
+		{id: "https://blog.front-matter.io/posts/eating-your-own-dog-food", want: "https://doi.org/10.53731/r79vxn1-97aq74v-ag58n"},
 		//{id: "https://www.zenodo.org/records/1196821", want: "https://doi.org/10.5281/zenodo.1196821"},
-		{id: "https://doi.pangaea.de/10.1594/PANGAEA.836178", want: "https://doi.org/10.1594/PANGAEA.836178"},
+		//{id: "https://doi.pangaea.de/10.1594/PANGAEA.836178", want: "https://doi.org/10.1594/PANGAEA.836178"},
 		//{id: "https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/NJ7XSO", want: "Harvard Dataverse"},
-		//{id: "https://datadryad.org/stash/dataset/doi:10.5061/dryad.8515", want: "https://doi.org/10.5061/dryad.8515"},
+		{id: "https://datadryad.org/stash/dataset/doi:10.5061/dryad.8515", want: "https://doi.org/10.5061/dryad.8515"},
 	}
 	for _, tc := range testCases {
 		content, err := schemaorg.Get(tc.id)

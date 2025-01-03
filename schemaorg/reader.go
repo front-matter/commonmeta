@@ -10,6 +10,7 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/front-matter/commonmeta/commonmeta"
+	"github.com/front-matter/commonmeta/dateutils"
 	"github.com/front-matter/commonmeta/doiutils"
 	"github.com/front-matter/commonmeta/utils"
 	"github.com/samber/lo"
@@ -220,13 +221,48 @@ func Get(url string) (Content, error) {
 	jsonLD := doc.FindMatcher(goquery.Single("script[type='application/ld+json']"))
 	json.Unmarshal([]byte(jsonLD.Text()), &content)
 
-	fmt.Println(doc.Text())
-	// Extract metadata from the HTML meta tags
-	content, err = GetHTMLMetadata(doc, content)
-	if err != nil {
-		return content, err
+	// Find ID
+	if content.ID == "" {
+		var ids []*goquery.Selection
+		ids = append(ids, doc.FindMatcher(goquery.Single("meta[name='citation_doi']")))
+		ids = append(ids, doc.FindMatcher(goquery.Single("meta[name='dc.identifier']")))
+		ids = append(ids, doc.FindMatcher(goquery.Single("meta[name='DC.identifier']")))
+		ids = append(ids, doc.FindMatcher(goquery.Single("meta[name='bepress_citation_doi']")))
+		ids = lo.Compact(ids)
+		content.ID, _ = ids[0].Attr("content")
 	}
-	fmt.Println(content)
+
+	if content.Type == "" {
+		var types []*goquery.Selection
+		types = append(types, doc.FindMatcher(goquery.Single("meta[property='og:type']")))
+		types = append(types, doc.FindMatcher(goquery.Single("meta[name='dc.type']")))
+		types = append(types, doc.FindMatcher(goquery.Single("meta[name='DC.type']")))
+		types = lo.Compact(types)
+		content.Type, _ = types[0].Attr("content")
+	}
+
+	// Find date published
+	if content.DatePublished == "" {
+		var datePublished []*goquery.Selection
+		datePublished = append(datePublished, doc.FindMatcher(goquery.Single("meta[name='citation_publication_date']")))
+		datePublished = append(datePublished, doc.FindMatcher(goquery.Single("meta[name='dc.date']")))
+		datePublished = append(datePublished, doc.FindMatcher(goquery.Single("meta[property='article:published_time']")))
+		datePublished = lo.Compact(datePublished)
+		dp, _ := datePublished[0].Attr("content")
+		fmt.Println(dp)
+		content.DatePublished = dateutils.StripMilliseconds(dp)
+	}
+
+	// Find date modified
+	if content.DateModified == "" {
+		var dateModified []*goquery.Selection
+		dateModified = append(dateModified, doc.FindMatcher(goquery.Single("meta[name='og:updated_time']")))
+		dateModified = append(dateModified, doc.FindMatcher(goquery.Single("meta[name='article:modified_time']")))
+		dateModified = lo.Compact(dateModified)
+		dm, _ := dateModified[0].Attr("content")
+		fmt.Println(dm)
+		content.DateModified = dateutils.StripMilliseconds(dm)
+	}
 
 	// author and creator are synonyms
 	if len(content.Author) == 0 && len(content.Creator) > 0 {
@@ -259,6 +295,7 @@ func Read(content Content) (commonmeta.Data, error) {
 	}
 
 	if content.DatePublished != "" {
+		fmt.Println(content.DatePublished)
 		data.Date.Published = content.DatePublished
 	}
 	if content.DateModified != "" {
@@ -368,83 +405,50 @@ func Read(content Content) (commonmeta.Data, error) {
 }
 
 // GetHTMLMetadata gets metadata from HTML meta tags, merge into commonmeta data extracted from Schema.org JSON-LD.
-func GetHTMLMetadata(doc *goquery.Document, content Content) (Content, error) {
-	// Find ID
-	if content.ID == "" {
-		var ids []*goquery.Selection
-		ids = append(ids, doc.FindMatcher(goquery.Single("meta[name='citation_doi']")))
-		ids = append(ids, doc.FindMatcher(goquery.Single("meta[name='dc.identifier']")))
-		ids = append(ids, doc.FindMatcher(goquery.Single("meta[name='DC.identifier']")))
-		ids = append(ids, doc.FindMatcher(goquery.Single("meta[name='bepress_citation_doi']")))
-		content.ID = lo.Compact(ids)[0].Text()
-	}
+// func GetHTMLMetadata(doc *goquery.Document) (Content, error) {
 
-	// Find type
-	if content.Type == "" {
-		var types []*goquery.Selection
-		types = append(types, doc.FindMatcher(goquery.Single("meta[property='og:type']")))
-		types = append(types, doc.FindMatcher(goquery.Single("meta[name='dc.type']")))
-		types = append(types, doc.FindMatcher(goquery.Single("meta[name='DC.type']")))
-		content.Type = lo.Compact(types)[0].Text()
-	}
+// 	// Find type
 
-	// Find name
-	if content.Name == "" {
-		var names []*goquery.Selection
-		names = append(names, doc.FindMatcher(goquery.Single("meta[name='citation_title']")))
-		names = append(names, doc.FindMatcher(goquery.Single("meta[name='dc.title']")))
-		names = append(names, doc.FindMatcher(goquery.Single("meta[name='DC.title']")))
-		names = append(names, doc.FindMatcher(goquery.Single("meta[property='og:title']")))
-		names = append(names, doc.FindMatcher(goquery.Single("meta[name='twitter:title']")))
-		content.Name = lo.Compact(names)[0].Text()
-	}
+// 	// Find name
+// 	if content.Name == "" {
+// 		var names []*goquery.Selection
+// 		names = append(names, doc.FindMatcher(goquery.Single("meta[name='citation_title']")))
+// 		names = append(names, doc.FindMatcher(goquery.Single("meta[name='dc.title']")))
+// 		names = append(names, doc.FindMatcher(goquery.Single("meta[name='DC.title']")))
+// 		names = append(names, doc.FindMatcher(goquery.Single("meta[property='og:title']")))
+// 		names = append(names, doc.FindMatcher(goquery.Single("meta[name='twitter:title']")))
+// 		content.Name = lo.Compact(names)[0].Text()
+// 	}
 
-	// Find description
-	if len(content.Description) == 0 {
-		var descriptions []*goquery.Selection
-		descriptions = append(descriptions, doc.FindMatcher(goquery.Single("meta[name='citation_abstract']")))
-		descriptions = append(descriptions, doc.FindMatcher(goquery.Single("meta[name='dc.description']")))
-		descriptions = append(descriptions, doc.FindMatcher(goquery.Single("meta[property='og:description']")))
-		descriptions = append(descriptions, doc.FindMatcher(goquery.Single("meta[name='twitter:description']")))
-		content.Description = append(content.Description, lo.Compact(descriptions)[0].Text())
-	}
-	// // Find the description
-	// find keywords
-	// if len(content.Keywords) == 0 {
-	// 	keywords := doc.FindMatcher(goquery.Single("meta[name='citation_keywords']")).Text()
-	// 	content.Keywords = strings.Split(keywords, ";")
-	// }
+// 	// Find description
+// 	if len(content.Description) == 0 {
+// 		var descriptions []*goquery.Selection
+// 		descriptions = append(descriptions, doc.FindMatcher(goquery.Single("meta[name='citation_abstract']")))
+// 		descriptions = append(descriptions, doc.FindMatcher(goquery.Single("meta[name='dc.description']")))
+// 		descriptions = append(descriptions, doc.FindMatcher(goquery.Single("meta[property='og:description']")))
+// 		descriptions = append(descriptions, doc.FindMatcher(goquery.Single("meta[name='twitter:description']")))
+// 		content.Description = append(content.Description, lo.Compact(descriptions)[0].Text())
+// 	}
+// 	// // Find the description
+// 	// find keywords
+// 	// if len(content.Keywords) == 0 {
+// 	// 	keywords := doc.FindMatcher(goquery.Single("meta[name='citation_keywords']")).Text()
+// 	// 	content.Keywords = strings.Split(keywords, ";")
+// 	// }
 
-	// find date published
-	if content.DatePublished == "" {
-		var datePublished []*goquery.Selection
-		datePublished = append(datePublished, doc.FindMatcher(goquery.Single("meta[name='citation_publication_date']")))
-		datePublished = append(datePublished, doc.FindMatcher(goquery.Single("meta[name='dc.date']")))
-		datePublished = append(datePublished, doc.FindMatcher(goquery.Single("meta[property='article:published_time']")))
-		content.DatePublished = lo.Compact(datePublished)[0].Text()
-	}
+// 	// Find language
+// 	if content.InLanguage == "" {
+// 		content.InLanguage = doc.FindMatcher(goquery.Single("html")).AttrOr("lang", "")
+// 	}
 
-	// Find date modified
-	if content.DateModified == "" {
-		var dateModified []*goquery.Selection
-		dateModified = append(dateModified, doc.FindMatcher(goquery.Single("meta[name='og:updated_time']")))
-		dateModified = append(dateModified, doc.FindMatcher(goquery.Single("meta[name='article:modified_time']")))
-		content.DateModified = lo.Compact(dateModified)[0].Text()
-	}
+// 	// Find license
+// 	if content.License == "" {
+// 		license := doc.FindMatcher(goquery.Single("link[rel='license']"))
+// 		content.License = license.AttrOr("href", "")
+// 	}
 
-	// Find language
-	if content.InLanguage == "" {
-		content.InLanguage = doc.FindMatcher(goquery.Single("html")).AttrOr("lang", "")
-	}
-
-	// Find license
-	if content.License == "" {
-		license := doc.FindMatcher(goquery.Single("link[rel='license']"))
-		content.License = license.AttrOr("href", "")
-	}
-
-	return content, nil
-}
+// 	return content, nil
+// }
 
 // GetContributor converts Schemaorg contributor metadata into the Commonmeta format
 func GetContributor(v Contributor) commonmeta.Contributor {
