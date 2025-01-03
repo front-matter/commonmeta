@@ -1,0 +1,196 @@
+{
+  "@context": "http://schema.org/",
+  "@id": "https://doi.org/10.1594/PANGAEA.836178",
+  "@type": "Dataset",
+  "identifier": "https://doi.org/10.1594/PANGAEA.836178",
+  "url": "https://doi.pangaea.de/10.1594/PANGAEA.836178",
+  "creator": [
+    {
+      "@type": "Person",
+      "name": "Emma Johansson",
+      "familyName": "Johansson",
+      "givenName": "Emma",
+      "email": "emma.johansson@skb.se"
+    },
+    {
+      "@type": "Person",
+      "name": "Sten Berglund",
+      "familyName": "Berglund",
+      "givenName": "Sten"
+    },
+    {
+      "@type": "Person",
+      "name": "Tobias Lindborg",
+      "familyName": "Lindborg",
+      "givenName": "Tobias",
+      "email": "tobias.lindborg@skb.se"
+    },
+    {
+      "@type": "Person",
+      "name": "Johannes Petrone",
+      "familyName": "Petrone",
+      "givenName": "Johannes",
+      "email": "johannes.petrone@skb.se"
+    },
+    {
+      "@id": "https://orcid.org/0000-0002-6553-8982",
+      "@type": "Person",
+      "name": "Dirk van As",
+      "familyName": "van As",
+      "givenName": "Dirk",
+      "identifier": "https://orcid.org/0000-0002-6553-8982",
+      "email": "dva@geus.dk"
+    },
+    {
+      "@type": "Person",
+      "name": "Lars-Göran Gustafsson",
+      "familyName": "Gustafsson",
+      "givenName": "Lars-Göran"
+    },
+    {
+      "@type": "Person",
+      "name": "Jens-Ove Näslund",
+      "familyName": "Näslund",
+      "givenName": "Jens-Ove"
+    },
+    {
+      "@id": "https://orcid.org/0000-0001-6058-1466",
+      "@type": "Person",
+      "name": "Hjalmar Laudon",
+      "familyName": "Laudon",
+      "givenName": "Hjalmar",
+      "identifier": "https://orcid.org/0000-0001-6058-1466"
+    }
+  ],
+  "name": "Hydrological and meteorological investigations in a lake near Kangerlussuaq, west Greenland",
+  "publisher": {
+    "@type": "Organization",
+    "name": "PANGAEA",
+    "disambiguatingDescription": "Data Publisher for Earth & Environmental Science",
+    "url": "https://www.pangaea.de/"
+  },
+  "includedInDataCatalog": {
+    "@type": "DataCatalog",
+    "name": "PANGAEA",
+    "disambiguatingDescription": "Data Publisher for Earth & Environmental Science",
+    "url": "https://www.pangaea.de/"
+  },
+  "datePublished": "2014-09-25",
+  "@reverse": {
+    "isBasedOn": {
+      "@id": "https://doi.org/10.5194/essd-7-93-2015",
+      "@type": ["CreativeWork", "ScholarlyArticle"],
+      "identifier": "https://doi.org/10.5194/essd-7-93-2015",
+      "url": "https://doi.org/10.5194/essd-7-93-2015",
+      "creator": [
+        {
+          "@type": "Person",
+          "name": "Emma Johansson",
+          "familyName": "Johansson",
+          "givenName": "Emma",
+          "email": "emma.johansson@skb.se"
+        },
+        {
+          "@type": "Person",
+          "name": "Sten Berglund",
+          "familyName": "Berglund",
+          "givenName": "Sten"
+        },
+        {
+          "@type": "Person",
+          "name": "Tobias Lindborg",
+          "familyName": "Lindborg",
+          "givenName": "Tobias",
+          "email": "tobias.lindborg@skb.se"
+        },
+        {
+          "@type": "Person",
+          "name": "Johannes Petrone",
+          "familyName": "Petrone",
+          "givenName": "Johannes",
+          "email": "johannes.petrone@skb.se"
+        },
+        {
+          "@id": "https://orcid.org/0000-0002-6553-8982",
+          "@type": "Person",
+          "name": "Dirk van As",
+          "familyName": "van As",
+          "givenName": "Dirk",
+          "identifier": "https://orcid.org/0000-0002-6553-8982",
+          "email": "dva@geus.dk"
+        },
+        {
+          "@type": "Person",
+          "name": "Lars-Göran Gustafsson",
+          "familyName": "Gustafsson",
+          "givenName": "Lars-Göran"
+        },
+        {
+          "@type": "Person",
+          "name": "Jens-Ove Näslund",
+          "familyName": "Näslund",
+          "givenName": "Jens-Ove"
+        },
+        {
+          "@id": "https://orcid.org/0000-0001-6058-1466",
+          "@type": "Person",
+          "name": "Hjalmar Laudon",
+          "familyName": "Laudon",
+          "givenName": "Hjalmar",
+          "identifier": "https://orcid.org/0000-0001-6058-1466"
+        }
+      ],
+      "name": "Hydrological and meteorological investigations in a periglacial lake catchment near Kangerlussuaq, west Greenland – presentation of a new multi-parameter data set",
+      "datePublished": "2015",
+      "pagination": "93-108",
+      "isPartOf": {
+        "@type": ["Periodical", "PublicationVolume"],
+        "volumeNumber": "7(1)",
+        "name": "Earth System Science Data"
+      },
+      "additionalType": "journal article"
+    }
+  },
+  "additionalType": "dataset",
+  "description": "Few hydrological studies have been made in Greenland, other than on glacial hydrology associated with the ice sheet. Understanding permafrost hydrology and hydroclimatic change and variability, however, provides key information for understanding climate change effects and feedbacks in the Arctic landscape. This paper presents a new extensive and detailed hydrological and meteorological open access dataset, with high temporal resolution from a 1.56 km**2 permafrost catchment with a lake underlain by a through talik close to the ice sheet in the Kangerlussuaq region, western Greenland. The paper describes the hydrological site investigations and utilized equipment, as well as the data collection and processing. The investigations were performed between 2010 and 2013. The high spatial resolution, within the investigated area, of the dataset makes it highly suitable for various detailed hydrological and ecological studies on catchment scale.",
+  "abstract": "Few hydrological studies have been made in Greenland, other than on glacial hydrology associated with the ice sheet. Understanding permafrost hydrology and hydroclimatic change and variability, however, provides key information for understanding climate change effects and feedbacks in the Arctic landscape. This paper presents a new extensive and detailed hydrological and meteorological open access dataset, with high temporal resolution from a 1.56 km**2 permafrost catchment with a lake underlain by a through talik close to the ice sheet in the Kangerlussuaq region, western Greenland. The paper describes the hydrological site investigations and utilized equipment, as well as the data collection and processing. The investigations were performed between 2010 and 2013. The high spatial resolution, within the investigated area, of the dataset makes it highly suitable for various detailed hydrological and ecological studies on catchment scale.",
+  "citation": [
+    {
+      "@id": "https://store.pangaea.de/Publications/JohanssonE_et_al_2014/twoboatlake_greenland.jpg",
+      "@type": ["CreativeWork", "WebPage"],
+      "identifier": "https://store.pangaea.de/Publications/JohanssonE_et_al_2014/twoboatlake_greenland.jpg",
+      "url": "https://store.pangaea.de/Publications/JohanssonE_et_al_2014/twoboatlake_greenland.jpg",
+      "name": "Map of Two Boat Lake in Greenland (jpg 13 MB) with position of sampling sites"
+    },
+    {
+      "@id": "https://store.pangaea.de/Publications/JohanssonE_et_al_2014/Timelapse_TBL.zip",
+      "@type": ["CreativeWork", "WebPage"],
+      "identifier": "https://store.pangaea.de/Publications/JohanssonE_et_al_2014/Timelapse_TBL.zip",
+      "url": "https://store.pangaea.de/Publications/JohanssonE_et_al_2014/Timelapse_TBL.zip",
+      "name": "Time laps photos of lake 2012-09-05 to 2013-08-14 (mov file, zipped 205 MB)"
+    }
+  ],
+  "spatialCoverage": {
+    "@type": "Place",
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": 67.12594,
+      "longitude": -50.18037
+    }
+  },
+  "size": {
+    "@type": "QuantitativeValue",
+    "value": 5.5,
+    "unitText": "MBytes"
+  },
+  "comment": "The dataset contains hydrological and meteorological data from a lake catchment in the Kangerlussuaq region, Western Greenland. The investigations were performed during 2010-2013 and the following parameters are included: Soil moisture, Soil temperature, Hydraulic properties of the active layer, meteorological parameters from a local weather station within the catchment, water levels and discharge, sublimation and evaportation measurments, snow depth and snow water content data and time lapse photos.",
+  "license": "https://creativecommons.org/licenses/by/3.0/",
+  "conditionsOfAccess": "unrestricted",
+  "isAccessibleForFree": true,
+  "inLanguage": "en",
+  "distribution": {
+    "@type": "DataDownload",
+    "encodingFormat": "application/zip",
+    "contentUrl": "https://store.pangaea.de/Publications/JohanssonE_et_al_2014/johansson_etal-2014.zip"
+  }
+}

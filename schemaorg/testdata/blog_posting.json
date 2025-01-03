@@ -1,0 +1,40 @@
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Front Matter",
+    "url": "https://blog.front-matter.io/",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://blog.front-matter.io/content/images/2022/12/logo.png",
+      "width": 200,
+      "height": 31
+    }
+  },
+  "author": {
+    "@type": "Person",
+    "name": "Martin Fenner",
+    "image": {
+      "@type": "ImageObject",
+      "url": "https://www.gravatar.com/avatar/8adea77ad740876f5cb832f92d49f08d?s=250&r=x&d=mp",
+      "width": 250,
+      "height": 250
+    },
+    "url": "https://blog.front-matter.io/author/martin/",
+    "sameAs": ["https://orcid.org/0000-0003-1419-2405"]
+  },
+  "headline": "Eating your own Dog Food",
+  "url": "https://blog.front-matter.io/posts/eating-your-own-dog-food/",
+  "datePublished": "2016-12-20T00:00:00.000Z",
+  "dateModified": "2023-09-07T08:34:41.000Z",
+  "image": {
+    "@type": "ImageObject",
+    "url": "https://blog.front-matter.io/content/images/size/w1200/2022/08/230785.jpeg",
+    "width": 1200,
+    "height": 823
+  },
+  "keywords": "Feature",
+  "description": "Eating your own dog food is a slang term to describe that an organization should itself use the products and services it provides. For DataCite this means that we should use DOIs with appropriate metadata and strategies for long-term preservation for the scholarly outputs we produce. For the most part this is not research data, but rather technical documents such as the DataCite Schema and its documentation (2016).\n\n\nThese outputs also include the posts on this blog, where we discuss topics rele",
+  "mainEntityOfPage": "https://blog.front-matter.io/posts/eating-your-own-dog-food/"
+}

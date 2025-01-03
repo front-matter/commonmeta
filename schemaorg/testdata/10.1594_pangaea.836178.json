@@ -1,0 +1,105 @@
+{
+  "id": "https://doi.org/10.1594/pangaea.836178",
+  "type": "Dataset",
+  "additionalType": "dataset",
+  "container": {},
+  "contributors": [
+    {
+      "type": "Person",
+      "givenName": "Emma",
+      "familyName": "Johansson",
+      "contributorRoles": ["Author"]
+    },
+    {
+      "type": "Person",
+      "givenName": "Sten",
+      "familyName": "Berglund",
+      "contributorRoles": ["Author"]
+    },
+    {
+      "type": "Person",
+      "givenName": "Tobias",
+      "familyName": "Lindborg",
+      "contributorRoles": ["Author"]
+    },
+    {
+      "type": "Person",
+      "givenName": "Johannes",
+      "familyName": "Petrone",
+      "contributorRoles": ["Author"]
+    },
+    {
+      "id": "https://orcid.org/0000-0002-6553-8982",
+      "type": "Person",
+      "givenName": "Dirk",
+      "familyName": "van As",
+      "contributorRoles": ["Author"]
+    },
+    {
+      "type": "Person",
+      "givenName": "Lars-Göran",
+      "familyName": "Gustafsson",
+      "contributorRoles": ["Author"]
+    },
+    {
+      "type": "Person",
+      "givenName": "Jens-Ove",
+      "familyName": "Näslund",
+      "contributorRoles": ["Author"]
+    },
+    {
+      "id": "https://orcid.org/0000-0001-6058-1466",
+      "type": "Person",
+      "givenName": "Hjalmar",
+      "familyName": "Laudon",
+      "contributorRoles": ["Author"]
+    }
+  ],
+  "date": {
+    "published": "2014-09-25"
+  },
+  "descriptions": [
+    {
+      "description": "Few hydrological studies have been made in Greenland, other than on glacial hydrology associated with the ice sheet. Understanding permafrost hydrology and hydroclimatic change and variability, however, provides key information for understanding climate change effects and feedbacks in the Arctic landscape. This paper presents a new extensive and detailed hydrological and meteorological open access dataset, with high temporal resolution from a 1.56 km**2 permafrost catchment with a lake underlain by a through talik close to the ice sheet in the Kangerlussuaq region, western Greenland. The paper describes the hydrological site investigations and utilized equipment, as well as the data collection and processing. The investigations were performed between 2010 and 2013. The high spatial resolution, within the investigated area, of the dataset makes it highly suitable for various detailed hydrological and ecological studies on catchment scale.",
+      "type": "Abstract"
+    }
+  ],
+  "geoLocations": [
+    {
+      "geoLocationPoint": {},
+      "geoLocationBox": {}
+    },
+    {
+      "geoLocationPlace": "Two Boat Lake, Kangerlussuaq, Greenland",
+      "geoLocationPoint": {},
+      "geoLocationBox": {}
+    }
+  ],
+  "identifiers": [
+    {
+      "identifier": "https://doi.org/10.1594/pangaea.836178",
+      "identifierType": "DOI"
+    }
+  ],
+  "language": "en",
+  "license": {
+    "id": "CC-BY-3.0",
+    "url": "https://creativecommons.org/licenses/by/3.0/legalcode"
+  },
+  "provider": "DataCite",
+  "publisher": {
+    "name": "PANGAEA"
+  },
+  "relations": [
+    {
+      "id": "https://doi.org/10.5194/essd-7-93-2015",
+      "type": "IsSupplementTo"
+    }
+  ],
+  "titles": [
+    {
+      "title": "Hydrological and meteorological investigations in a lake near Kangerlussuaq, west Greenland"
+    }
+  ],
+  "url": "https://doi.pangaea.de/10.1594/PANGAEA.836178"
+}

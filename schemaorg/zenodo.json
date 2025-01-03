@@ -1,0 +1,226 @@
+{
+  "@context": "http://schema.org",
+  "@id": "https://doi.org/10.5281/zenodo.1196821",
+  "@type": "https://schema.org/Dataset",
+  "author": [
+    {
+      "@id": "https://orcid.org/0000-0001-9688-838X",
+      "@type": "Person",
+      "affiliation": [
+        {
+          "@type": "Organization",
+          "name": "University of Zurich, Zurich, Switzerland"
+        }
+      ],
+      "familyName": "Staib",
+      "givenName": "Matthias",
+      "name": "Staib, Matthias"
+    },
+    {
+      "@type": "Person",
+      "affiliation": [
+        {
+          "@type": "Organization",
+          "name": "University of Zurich, Zurich, Switzerland"
+        }
+      ],
+      "familyName": "Castegnetti",
+      "givenName": "Giuseppe",
+      "name": "Castegnetti, Giuseppe"
+    },
+    {
+      "@id": "https://orcid.org/0000-0002-7588-1418",
+      "@type": "Person",
+      "affiliation": [
+        {
+          "@type": "Organization",
+          "name": "University of Zurich, Zurich, Switzerland"
+        }
+      ],
+      "familyName": "Tzovara",
+      "givenName": "Athina",
+      "name": "Tzovara, Athina"
+    },
+    {
+      "@id": "https://orcid.org/0000-0001-8090-3266",
+      "@type": "Person",
+      "affiliation": [
+        {
+          "@type": "Organization",
+          "name": "University of Zurich, Zurich, Switzerland"
+        }
+      ],
+      "familyName": "Paulus",
+      "givenName": "Philipp C.",
+      "name": "Paulus, Philipp C."
+    },
+    {
+      "@type": "Person",
+      "affiliation": [
+        {
+          "@type": "Organization",
+          "name": "University of Zurich, Zurich, Switzerland"
+        }
+      ],
+      "familyName": "Hofer",
+      "givenName": "Nicolas",
+      "name": "Hofer, Nicolas"
+    },
+    {
+      "@id": "https://orcid.org/0000-0003-3717-2036",
+      "@type": "Person",
+      "affiliation": [
+        {
+          "@type": "Organization",
+          "name": "University of Zurich, Zurich, Switzerland"
+        }
+      ],
+      "familyName": "Bach",
+      "givenName": "Dominik R.",
+      "name": "Bach, Dominik R."
+    }
+  ],
+  "contentSize": "453.12 MB",
+  "creator": [
+    {
+      "@id": "https://orcid.org/0000-0001-9688-838X",
+      "@type": "Person",
+      "affiliation": [
+        {
+          "@type": "Organization",
+          "name": "University of Zurich, Zurich, Switzerland"
+        }
+      ],
+      "familyName": "Staib",
+      "givenName": "Matthias",
+      "name": "Staib, Matthias"
+    },
+    {
+      "@type": "Person",
+      "affiliation": [
+        {
+          "@type": "Organization",
+          "name": "University of Zurich, Zurich, Switzerland"
+        }
+      ],
+      "familyName": "Castegnetti",
+      "givenName": "Giuseppe",
+      "name": "Castegnetti, Giuseppe"
+    },
+    {
+      "@id": "https://orcid.org/0000-0002-7588-1418",
+      "@type": "Person",
+      "affiliation": [
+        {
+          "@type": "Organization",
+          "name": "University of Zurich, Zurich, Switzerland"
+        }
+      ],
+      "familyName": "Tzovara",
+      "givenName": "Athina",
+      "name": "Tzovara, Athina"
+    },
+    {
+      "@id": "https://orcid.org/0000-0001-8090-3266",
+      "@type": "Person",
+      "affiliation": [
+        {
+          "@type": "Organization",
+          "name": "University of Zurich, Zurich, Switzerland"
+        }
+      ],
+      "familyName": "Paulus",
+      "givenName": "Philipp C.",
+      "name": "Paulus, Philipp C."
+    },
+    {
+      "@type": "Person",
+      "affiliation": [
+        {
+          "@type": "Organization",
+          "name": "University of Zurich, Zurich, Switzerland"
+        }
+      ],
+      "familyName": "Hofer",
+      "givenName": "Nicolas",
+      "name": "Hofer, Nicolas"
+    },
+    {
+      "@id": "https://orcid.org/0000-0003-3717-2036",
+      "@type": "Person",
+      "affiliation": [
+        {
+          "@type": "Organization",
+          "name": "University of Zurich, Zurich, Switzerland"
+        }
+      ],
+      "familyName": "Bach",
+      "givenName": "Dominik R.",
+      "name": "Bach, Dominik R."
+    }
+  ],
+  "dateCreated": "2018-03-14T09:49:11.018669+00:00",
+  "dateModified": "2021-11-06T14:48:15.804313+00:00",
+  "datePublished": "2018-03-14",
+  "description": "<p>This dataset includes pupil size response (PSR), skin conductance response (SCR), electrocardiogram (ECG), electromyogram (EMG) and respiration measurements. Also included are CS and US information, keypress responses, keypress response times, key correctness and shock ratings for each of 21 healthy unmedicated participants (10 males and 11 females aged 22.9+/-3.0 years; discrepancies to published studies are due to misprints and exclusion of a subject with incomplete data, which was excluded in all conducted studies as well as here) participating in a classical (Pavlovian) discriminant delay fear conditioning task. Two pairs of CS+ and CS-, either complex or simple, were delivered with headphones (HD518, Sennheiser, Wedemark-Wennebostel, Germany) at about 68 dB. Complex stimuli were a sequence of four rising (400 to 800 Hz) or falling (800 to 400 Hz) sounds lasting 1 s each. Simple stimuli were tones with constant frequency (400 or 800 Hz) presented for 4 s. US consisted of square electric pulses with 0.2-ms duration and 10 Hz frequency, resulting in a total US duration of 0.5 s. SOA betwen the CS and US was 3.5 s. The ITI was randomly determined on each trial to be 7, 9, or 11 s.</p>",
+  "distribution": [
+    {
+      "@type": "DataDownload",
+      "contentUrl": "https://zenodo.org/api/records/1196821/files/excludes.txt/content",
+      "encodingFormat": "text/plain"
+    },
+    {
+      "@type": "DataDownload",
+      "contentUrl": "https://zenodo.org/api/records/1196821/files/README.txt/content",
+      "encodingFormat": "text/plain"
+    },
+    {
+      "@type": "DataDownload",
+      "contentUrl": "https://zenodo.org/api/records/1196821/files/Data.zip/content",
+      "encodingFormat": "application/zip"
+    }
+  ],
+  "editor": [
+    {
+      "@id": "https://orcid.org/0000-0001-6507-739X",
+      "@type": "Person",
+      "affiliation": [
+        {
+          "@type": "Organization",
+          "name": "University of Zurich, Zurich, Switzerland"
+        }
+      ],
+      "familyName": "Moser",
+      "givenName": "Tobias",
+      "name": "Moser, Tobias"
+    },
+    {
+      "@type": "Person",
+      "affiliation": [
+        {
+          "@type": "Organization",
+          "name": "University of Zurich, Zurich, Switzerland"
+        }
+      ],
+      "familyName": "Gerster",
+      "givenName": "Samuel",
+      "name": "Gerster, Samuel"
+    }
+  ],
+  "identifier": "https://doi.org/10.5281/zenodo.1196821",
+  "inLanguage": {
+    "@type": "Language",
+    "alternateName": "eng",
+    "name": "English"
+  },
+  "keywords": "Pupil Size Response, Skin Conductance Response, Electrocardiogram, Electromyogram, Electrodermal Activity, Galvanic Skin Response, PSR, SCR, ECG, EMG, EDA, GSR",
+  "license": "https://creativecommons.org/licenses/by-sa/4.0/legalcode",
+  "name": "PsPM-SC4B: SCR, ECG, EMG, PSR and respiration measurements in a delay fear conditioning task with auditory CS and electrical US",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Zenodo"
+  },
+  "size": "453.12 MB",
+  "url": "https://zenodo.org/records/1196821",
+  "version": "1.0.2"
+}

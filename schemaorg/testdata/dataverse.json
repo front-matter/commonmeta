@@ -1,0 +1,116 @@
+{
+  "@context": {
+    "@language": "en",
+    "@vocab": "https://schema.org/",
+    "citeAs": "cr:citeAs",
+    "column": "cr:column",
+    "conformsTo": "dct:conformsTo",
+    "cr": "http://mlcommons.org/croissant/",
+    "rai": "http://mlcommons.org/croissant/RAI/",
+    "data": {
+      "@id": "cr:data",
+      "@type": "@json"
+    },
+    "dataType": {
+      "@id": "cr:dataType",
+      "@type": "@vocab"
+    },
+    "dct": "http://purl.org/dc/terms/",
+    "examples": {
+      "@id": "cr:examples",
+      "@type": "@json"
+    },
+    "extract": "cr:extract",
+    "field": "cr:field",
+    "fileProperty": "cr:fileProperty",
+    "fileObject": "cr:fileObject",
+    "fileSet": "cr:fileSet",
+    "format": "cr:format",
+    "includes": "cr:includes",
+    "isLiveDataset": "cr:isLiveDataset",
+    "jsonPath": "cr:jsonPath",
+    "key": "cr:key",
+    "md5": "cr:md5",
+    "parentField": "cr:parentField",
+    "path": "cr:path",
+    "recordSet": "cr:recordSet",
+    "references": "cr:references",
+    "regex": "cr:regex",
+    "repeated": "cr:repeated",
+    "replace": "cr:replace",
+    "sc": "https://schema.org/",
+    "separator": "cr:separator",
+    "source": "cr:source",
+    "subField": "cr:subField",
+    "transform": "cr:transform",
+    "wd": "https://www.wikidata.org/wiki/"
+  },
+  "@type": "sc:Dataset",
+  "conformsTo": "http://mlcommons.org/croissant/1.0",
+  "name": " Summary data ankylosing spondylitis GWAS",
+  "url": "https://doi.org/10.7910/DVN/NJ7XSO",
+  "creator": [
+    {
+      "@type": "Organization",
+      "name": "International Genetics of Ankylosing Spondylitis Consortium (IGAS)"
+    }
+  ],
+  "description": "Summary of association tests for Nature Genetics publication \"Identification of multiple risk variants for ankylosing spondylitis through high-density genotyping of immune-related loci\".",
+  "keywords": [
+    "Medicine, Health and Life Sciences",
+    " Genome-Wide Association Studies",
+    "Ankylosing spondylitis"
+  ],
+  "license": "http://creativecommons.org/publicdomain/zero/1.0",
+  "datePublished": "2017-09-30",
+  "dateModified": "2017-09-30",
+  "includedInDataCatalog": {
+    "@type": "DataCatalog",
+    "name": "Harvard Dataverse",
+    "url": "https://dataverse.harvard.edu"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Harvard Dataverse"
+  },
+  "version": "1.0",
+  "citeAs": "@data{DVN/NJ7XSO_2017,author = {International Genetics of Ankylosing Spondylitis Consortium (IGAS)},publisher = {Harvard Dataverse},title = {Summary data ankylosing spondylitis GWAS},year = {2017},url = {https://doi.org/10.7910/DVN/NJ7XSO}}",
+  "citation": [
+    {
+      "@type": "CreativeWork",
+      "name": "10.1038/ng.2667"
+    }
+  ],
+  "distribution": [
+    {
+      "@type": "cr:FileObject",
+      "@id": "Asian_Case_Control_Results.txt",
+      "name": "Asian_Case_Control_Results.txt",
+      "encodingFormat": "text/plain",
+      "md5": "bcc06aebf96c9540995192c89c91fb23",
+      "contentSize": "11572412",
+      "description": "Summary data for Asian cohort",
+      "contentUrl": "https://dataverse.harvard.edu/api/access/datafile/:persistentId?persistentId=doi:10.7910/DVN/NJ7XSO/K3NRMO"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "European_Asian_Case_Control_Results.txt",
+      "name": "European_Asian_Case_Control_Results.txt",
+      "encodingFormat": "text/plain",
+      "md5": "0ae7b4639626ebad6ab77f54bfcfdd6d",
+      "contentSize": "11245496",
+      "description": "Summary data for combined cohort",
+      "contentUrl": "https://dataverse.harvard.edu/api/access/datafile/:persistentId?persistentId=doi:10.7910/DVN/NJ7XSO/HA2SVR"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "European_Case_Control_Results.txt",
+      "name": "European_Case_Control_Results.txt",
+      "encodingFormat": "text/plain",
+      "md5": "876bb3b600460fdbfabc01eb08c41497",
+      "contentSize": "13337183",
+      "description": "Summary data for European cohort",
+      "contentUrl": "https://dataverse.harvard.edu/api/access/datafile/:persistentId?persistentId=doi:10.7910/DVN/NJ7XSO/IN45GZ"
+    }
+  ]
+}
