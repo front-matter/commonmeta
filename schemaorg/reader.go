@@ -10,6 +10,8 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/front-matter/commonmeta/commonmeta"
+	"github.com/front-matter/commonmeta/crossref"
+	"github.com/front-matter/commonmeta/datacite"
 	"github.com/front-matter/commonmeta/dateutils"
 	"github.com/front-matter/commonmeta/doiutils"
 	"github.com/front-matter/commonmeta/utils"
@@ -55,10 +57,14 @@ type SchemaOrg struct {
 // flexible than the SchemaOrg type, allowing for different formats of some metadata.
 // Identifier can be string or []string.
 type Content struct {
-	*SchemaOrg
-	Identifier json.RawMessage `json:"identifier"`
-	Keywords   json.RawMessage `json:"keywords"`
-	Version    interface{}     `json:"version,omitempty"`
+	SchemaOrg
+	Author      json.RawMessage `json:"author,omitempty"`
+	Creator     json.RawMessage `json:"creator,omitempty"`
+	Contributor json.RawMessage `json:"contributor,omitempty"`
+	Editor      json.RawMessage `json:"editor,omitempty"`
+	Identifier  json.RawMessage `json:"identifier,omitempty"`
+	Keywords    json.RawMessage `json:"keywords,omitempty"`
+	Version     interface{}     `json:"version,omitempty"`
 }
 
 // Citation represents a citation or reference to another creative work, such as another publication, web page, scholarly article, etc.
@@ -89,7 +95,6 @@ type DataCatalog struct {
 	Name string `json:"name,omitempty"`
 }
 
-// Editor represents
 type Editor struct {
 	ID          string       `json:"@id,omitempty"`
 	Type        string       `json:"@type,omitempty"`
@@ -162,27 +167,6 @@ var SOToCMMappings = map[string]string{
 	"SoftwareSourceCode": "Software",
 }
 
-// CMToSOMappings maps Commonmeta types to Schema.org types.
-var CMToSOMappings = map[string]string{
-	"Article":        "Article",
-	"Audiovisual":    "CreativeWork",
-	"Book":           "Book",
-	"BookChapter":    "BookChapter",
-	"Collection":     "CreativeWork",
-	"Dataset":        "Dataset",
-	"Dissertation":   "Dissertation",
-	"Document":       "CreativeWork",
-	"Entry":          "CreativeWork",
-	"Event":          "CreativeWork",
-	"Figure":         "CreativeWork",
-	"Image":          "CreativeWork",
-	"Instrument":     "Instrument",
-	"JournalArticle": "ScholarlyArticle",
-	"LegalDocument":  "Legislation",
-	"Software":       "SoftwareSourceCode",
-	"Presentation":   "PresentationDigitalDocument",
-}
-
 // Fetch fetches Schemaorg metadata for a given URL and returns Commonmeta metadata.
 func Fetch(url string) (commonmeta.Data, error) {
 	var data commonmeta.Data
@@ -191,7 +175,14 @@ func Fetch(url string) (commonmeta.Data, error) {
 	if err != nil {
 		return data, err
 	}
-	data, err = Read(content)
+	// if url represents (Crossref or DataCite) DOI, fetch metadata from Crossref or DataCite API
+	if content.Provider.Name == "Crossref" {
+		data, err = crossref.Fetch(content.ID)
+	} else if content.Provider.Name == "DataCite" {
+		data, err = datacite.Fetch(content.ID)
+	} else {
+		data, err = Read(content)
+	}
 	return data, err
 }
 
@@ -209,7 +200,7 @@ func Get(url string) (Content, error) {
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != 200 {
-		return content, fmt.Errorf("HTTP response code %d", resp.StatusCode)
+		return content, fmt.Errorf("HTTP status code: %d", resp.StatusCode)
 	}
 
 	// Load the HTML document
@@ -217,9 +208,12 @@ func Get(url string) (Content, error) {
 	if err != nil {
 		return content, err
 	}
+
 	// Find the Schema.org JSON-LD script
 	jsonLD := doc.FindMatcher(goquery.Single("script[type='application/ld+json']"))
-	json.Unmarshal([]byte(jsonLD.Text()), &content)
+	if len(jsonLD.Nodes) > 0 {
+		json.Unmarshal([]byte(jsonLD.Text()), &content)
+	}
 
 	// Find ID
 	if content.ID == "" {
@@ -229,7 +223,30 @@ func Get(url string) (Content, error) {
 		ids = append(ids, doc.FindMatcher(goquery.Single("meta[name='DC.identifier']")))
 		ids = append(ids, doc.FindMatcher(goquery.Single("meta[name='bepress_citation_doi']")))
 		ids = lo.Compact(ids)
-		content.ID, _ = ids[0].Attr("content")
+		if len(ids) > 0 {
+			content.ID, _ = ids[0].Attr("content")
+		}
+	}
+
+	// if id represents a DOI, get metadata from Crossref or DataCite
+	doi, ok := doiutils.ValidateDOI(content.ID)
+	if ok {
+		ra, ok := doiutils.GetDOIRA(doi)
+		if ok {
+			if ra == "Crossref" {
+				content.Provider = Provider{
+					Type: "Organization",
+					Name: "Crossref",
+				}
+				return content, nil
+			} else if ra == "DataCite" {
+				content.Provider = Provider{
+					Type: "Organization",
+					Name: "DataCite",
+				}
+				return content, nil
+			}
+		}
 	}
 
 	if content.Type == "" {
@@ -238,19 +255,48 @@ func Get(url string) (Content, error) {
 		types = append(types, doc.FindMatcher(goquery.Single("meta[name='dc.type']")))
 		types = append(types, doc.FindMatcher(goquery.Single("meta[name='DC.type']")))
 		types = lo.Compact(types)
-		content.Type, _ = types[0].Attr("content")
+		if len(types) > 0 {
+			content.Type, _ = types[0].Attr("content")
+		}
+	}
+
+	// Find name
+	if content.Name == "" {
+		var names []*goquery.Selection
+		names = append(names, doc.FindMatcher(goquery.Single("meta[name='citation_title']")))
+		names = append(names, doc.FindMatcher(goquery.Single("meta[name='dc.title']")))
+		names = append(names, doc.FindMatcher(goquery.Single("meta[name='DC.title']")))
+		names = append(names, doc.FindMatcher(goquery.Single("meta[property='og:title']")))
+		names = append(names, doc.FindMatcher(goquery.Single("meta[name='twitter:title']")))
+		if len(names) > 0 {
+			content.Name = lo.Compact(names)[0].Text()
+		}
+	}
+
+	// Find description// 	// Find description
+	if len(content.Description) == 0 {
+		var descriptions []*goquery.Selection
+		descriptions = append(descriptions, doc.FindMatcher(goquery.Single("meta[name='citation_abstract']")))
+		descriptions = append(descriptions, doc.FindMatcher(goquery.Single("meta[name='dc.description']")))
+		descriptions = append(descriptions, doc.FindMatcher(goquery.Single("meta[property='og:description']")))
+		descriptions = append(descriptions, doc.FindMatcher(goquery.Single("meta[name='twitter:description']")))
+		if len(descriptions) == 0 {
+			content.Description = append(content.Description, lo.Compact(descriptions)[0].Text())
+		}
 	}
 
 	// Find date published
 	if content.DatePublished == "" {
 		var datePublished []*goquery.Selection
 		datePublished = append(datePublished, doc.FindMatcher(goquery.Single("meta[name='citation_publication_date']")))
+		datePublished = append(datePublished, doc.FindMatcher(goquery.Single("meta[name='citation_date']")))
 		datePublished = append(datePublished, doc.FindMatcher(goquery.Single("meta[name='dc.date']")))
 		datePublished = append(datePublished, doc.FindMatcher(goquery.Single("meta[property='article:published_time']")))
 		datePublished = lo.Compact(datePublished)
-		dp, _ := datePublished[0].Attr("content")
-		fmt.Println(dp)
-		content.DatePublished = dateutils.StripMilliseconds(dp)
+		if len(datePublished) == 0 {
+			dp, _ := datePublished[0].Attr("content")
+			content.DatePublished = dateutils.StripMilliseconds(dp)
+		}
 	}
 
 	// Find date modified
@@ -259,9 +305,23 @@ func Get(url string) (Content, error) {
 		dateModified = append(dateModified, doc.FindMatcher(goquery.Single("meta[name='og:updated_time']")))
 		dateModified = append(dateModified, doc.FindMatcher(goquery.Single("meta[name='article:modified_time']")))
 		dateModified = lo.Compact(dateModified)
-		dm, _ := dateModified[0].Attr("content")
-		fmt.Println(dm)
-		content.DateModified = dateutils.StripMilliseconds(dm)
+		if len(dateModified) == 0 {
+			dm, _ := dateModified[0].Attr("content")
+			content.DateModified = dateutils.StripMilliseconds(dm)
+		}
+	}
+
+	// 	Find language
+	if content.InLanguage == "" {
+		content.InLanguage = doc.FindMatcher(goquery.Single("html")).AttrOr("lang", "")
+	}
+
+	// 	Find license
+	if content.License == "" {
+		license := doc.FindMatcher(goquery.Single("link[rel='license']"))
+		if len(license.Nodes) > 0 {
+			content.License = license.AttrOr("href", "")
+		}
 	}
 
 	// author and creator are synonyms
@@ -282,7 +342,16 @@ func Read(content Content) (commonmeta.Data, error) {
 	}
 	data.AdditionalType = content.AdditionalType
 
-	for _, v := range content.Author {
+	var contributor Contributor
+	var contributors []Contributor
+	err := json.Unmarshal(content.Author, &contributor)
+	if err != nil {
+		_ = json.Unmarshal(content.Author, &contributors)
+	}
+	if len(contributors) == 0 {
+		contributors = append(contributors, contributor)
+	}
+	for _, v := range contributors {
 		if v.Name != "" || v.GivenName != "" || v.FamilyName != "" {
 			contributor := GetContributor(v)
 			containsID := slices.ContainsFunc(data.Contributors, func(e commonmeta.Contributor) bool {
@@ -295,7 +364,6 @@ func Read(content Content) (commonmeta.Data, error) {
 	}
 
 	if content.DatePublished != "" {
-		fmt.Println(content.DatePublished)
 		data.Date.Published = content.DatePublished
 	}
 	if content.DateModified != "" {
@@ -316,7 +384,7 @@ func Read(content Content) (commonmeta.Data, error) {
 
 	var identifier string
 	var identifiers []string
-	err := json.Unmarshal(content.Identifier, &identifier)
+	err = json.Unmarshal(content.Identifier, &identifier)
 	if err != nil {
 		_ = json.Unmarshal(content.Identifier, &identifiers)
 	}
@@ -389,7 +457,7 @@ func Read(content Content) (commonmeta.Data, error) {
 		})
 	}
 
-	data.URL, _ = utils.NormalizeURL(content.URL, true, true)
+	data.URL, _ = utils.NormalizeURL(content.URL, true, false)
 
 	// version can be a string or a number
 	if content.Version != nil {
@@ -403,52 +471,6 @@ func Read(content Content) (commonmeta.Data, error) {
 
 	return data, nil
 }
-
-// GetHTMLMetadata gets metadata from HTML meta tags, merge into commonmeta data extracted from Schema.org JSON-LD.
-// func GetHTMLMetadata(doc *goquery.Document) (Content, error) {
-
-// 	// Find type
-
-// 	// Find name
-// 	if content.Name == "" {
-// 		var names []*goquery.Selection
-// 		names = append(names, doc.FindMatcher(goquery.Single("meta[name='citation_title']")))
-// 		names = append(names, doc.FindMatcher(goquery.Single("meta[name='dc.title']")))
-// 		names = append(names, doc.FindMatcher(goquery.Single("meta[name='DC.title']")))
-// 		names = append(names, doc.FindMatcher(goquery.Single("meta[property='og:title']")))
-// 		names = append(names, doc.FindMatcher(goquery.Single("meta[name='twitter:title']")))
-// 		content.Name = lo.Compact(names)[0].Text()
-// 	}
-
-// 	// Find description
-// 	if len(content.Description) == 0 {
-// 		var descriptions []*goquery.Selection
-// 		descriptions = append(descriptions, doc.FindMatcher(goquery.Single("meta[name='citation_abstract']")))
-// 		descriptions = append(descriptions, doc.FindMatcher(goquery.Single("meta[name='dc.description']")))
-// 		descriptions = append(descriptions, doc.FindMatcher(goquery.Single("meta[property='og:description']")))
-// 		descriptions = append(descriptions, doc.FindMatcher(goquery.Single("meta[name='twitter:description']")))
-// 		content.Description = append(content.Description, lo.Compact(descriptions)[0].Text())
-// 	}
-// 	// // Find the description
-// 	// find keywords
-// 	// if len(content.Keywords) == 0 {
-// 	// 	keywords := doc.FindMatcher(goquery.Single("meta[name='citation_keywords']")).Text()
-// 	// 	content.Keywords = strings.Split(keywords, ";")
-// 	// }
-
-// 	// Find language
-// 	if content.InLanguage == "" {
-// 		content.InLanguage = doc.FindMatcher(goquery.Single("html")).AttrOr("lang", "")
-// 	}
-
-// 	// Find license
-// 	if content.License == "" {
-// 		license := doc.FindMatcher(goquery.Single("link[rel='license']"))
-// 		content.License = license.AttrOr("href", "")
-// 	}
-
-// 	return content, nil
-// }
 
 // GetContributor converts Schemaorg contributor metadata into the Commonmeta format
 func GetContributor(v Contributor) commonmeta.Contributor {
@@ -477,9 +499,17 @@ func GetContributor(v Contributor) commonmeta.Contributor {
 	if t == "Person" && name != "" {
 		// split name for type Person into given/family name if not already provided
 		names := strings.Split(name, ",")
-		if len(names) == 2 {
+		l := len(names)
+		if l == 2 {
 			givenName = strings.TrimSpace(names[1])
 			familyName = names[0]
+		} else if l == 1 {
+			names = strings.Split(name, " ")
+			l = len(names)
+			givenName = names[0]
+			if l > 1 {
+				familyName = strings.Join(names[1:l], " ")
+			}
 		}
 		name = ""
 	}

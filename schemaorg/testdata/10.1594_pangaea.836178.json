@@ -1,7 +1,7 @@
 {
   "id": "https://doi.org/10.1594/pangaea.836178",
   "type": "Dataset",
-  "additionalType": "dataset",
+  "additionalType": "Supplementary Dataset",
   "container": {},
   "contributors": [
     {
@@ -56,12 +56,20 @@
     }
   ],
   "date": {
-    "published": "2014-09-25"
+    "published": "2014"
   },
   "descriptions": [
     {
       "description": "Few hydrological studies have been made in Greenland, other than on glacial hydrology associated with the ice sheet. Understanding permafrost hydrology and hydroclimatic change and variability, however, provides key information for understanding climate change effects and feedbacks in the Arctic landscape. This paper presents a new extensive and detailed hydrological and meteorological open access dataset, with high temporal resolution from a 1.56 km**2 permafrost catchment with a lake underlain by a through talik close to the ice sheet in the Kangerlussuaq region, western Greenland. The paper describes the hydrological site investigations and utilized equipment, as well as the data collection and processing. The investigations were performed between 2010 and 2013. The high spatial resolution, within the investigated area, of the dataset makes it highly suitable for various detailed hydrological and ecological studies on catchment scale.",
       "type": "Abstract"
+    },
+    {
+      "description": "The dataset contains hydrological and meteorological data from a lake catchment in the Kangerlussuaq region, Western Greenland. The investigations were performed during 2010-2013 and the following parameters are included: Soil moisture, Soil temperature, Hydraulic properties of the active layer, meteorological parameters from a local weather station within the catchment, water levels and discharge, sublimation and evaportation measurments, snow depth and snow water content data and time lapse photos.",
+      "type": "TechnicalInfo"
+    },
+    {
+      "description": "Supplement to: Johansson, Emma; Berglund, Sten; Lindborg, Tobias; Petrone, Johannes; van As, Dirk; Gustafsson, Lars-Göran; Näslund, Jens-Ove; Laudon, Hjalmar (2015): Hydrological and meteorological investigations in a periglacial lake catchment near Kangerlussuaq, west Greenland – presentation of a new multi-parameter data set. Earth System Science Data, 7(1), 93-108",
+      "type": "Other"
     }
   ],
   "geoLocations": [
@@ -94,6 +102,11 @@
     {
       "id": "https://doi.org/10.5194/essd-7-93-2015",
       "type": "IsSupplementTo"
+    }
+  ],
+  "subjects": [
+    {
+      "subject": "GReenland Analogue Surface Project (GRASP)"
     }
   ],
   "titles": [

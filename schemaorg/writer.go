@@ -16,7 +16,7 @@ func Convert(data commonmeta.Data) (SchemaOrg, error) {
 	var schemaorg SchemaOrg
 	schemaorg.Context = "http://schema.org"
 	schemaorg.ID = data.ID
-	schemaorg.Type = CMToSOMappings[data.Type]
+	schemaorg.Type = commonmeta.CMToSOMappings[data.Type]
 
 	schemaorg.AdditionalType = data.AdditionalType
 	if len(data.Contributors) > 0 {

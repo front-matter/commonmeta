@@ -1,0 +1,455 @@
+{
+  "id": "https://doi.org/10.7554/elife.93170.2",
+  "type": "Article",
+  "container": {
+    "type": "Periodical"
+  },
+  "contributors": [
+    {
+      "id": "https://orcid.org/0000-0002-1446-7184",
+      "type": "Person",
+      "givenName": "Huanhuan Joyce",
+      "familyName": "Chen",
+      "affiliations": [
+        {
+          "id": "https://ror.org/02r109517",
+          "name": "Meyer Cancer Center, Weill Cornell Medicine"
+        },
+        {
+          "id": "https://ror.org/024mw5h28",
+          "name": "The Pritzker School of Molecular Engineering, The University of Chicago"
+        },
+        {
+          "id": "https://ror.org/024mw5h28",
+          "name": "The Ben May Department for Cancer Research, The University of Chicago"
+        }
+      ],
+      "contributorRoles": ["Author"]
+    },
+    {
+      "id": "https://orcid.org/0000-0002-1552-2675",
+      "type": "Person",
+      "givenName": "Eric E",
+      "familyName": "Gardner",
+      "affiliations": [
+        {
+          "id": "https://ror.org/02r109517",
+          "name": "Meyer Cancer Center, Weill Cornell Medicine"
+        }
+      ],
+      "contributorRoles": ["Author"]
+    },
+    {
+      "id": "https://orcid.org/0000-0002-9692-4878",
+      "type": "Person",
+      "givenName": "Yajas",
+      "familyName": "Shah",
+      "affiliations": [
+        {
+          "id": "https://ror.org/02r109517",
+          "name": "Caryl and Israel Englander Institute for Precision Medicine, Weill Cornell Medicine"
+        }
+      ],
+      "contributorRoles": ["Author"]
+    },
+    {
+      "id": "https://orcid.org/0000-0001-9618-610X",
+      "type": "Person",
+      "givenName": "Kui",
+      "familyName": "Zhang",
+      "affiliations": [
+        {
+          "id": "https://ror.org/024mw5h28",
+          "name": "The Pritzker School of Molecular Engineering, The University of Chicago"
+        },
+        {
+          "id": "https://ror.org/024mw5h28",
+          "name": "The Ben May Department for Cancer Research, The University of Chicago"
+        }
+      ],
+      "contributorRoles": ["Author"]
+    },
+    {
+      "id": "https://orcid.org/0000-0002-0846-0998",
+      "type": "Person",
+      "givenName": "Abhimanyu",
+      "familyName": "Thakur",
+      "affiliations": [
+        {
+          "id": "https://ror.org/024mw5h28",
+          "name": "The Pritzker School of Molecular Engineering, The University of Chicago"
+        },
+        {
+          "id": "https://ror.org/024mw5h28",
+          "name": "The Ben May Department for Cancer Research, The University of Chicago"
+        }
+      ],
+      "contributorRoles": ["Author"]
+    },
+    {
+      "type": "Person",
+      "givenName": "Chen",
+      "familyName": "Zhang",
+      "affiliations": [
+        {
+          "id": "https://ror.org/02r109517",
+          "name": "Department of Pathology and Laboratory Medicine, Weill Cornell Medicine"
+        }
+      ],
+      "contributorRoles": ["Author"]
+    },
+    {
+      "id": "https://orcid.org/0000-0002-8061-9617",
+      "type": "Person",
+      "givenName": "Olivier",
+      "familyName": "Elemento",
+      "affiliations": [
+        {
+          "id": "https://ror.org/02r109517",
+          "name": "Caryl and Israel Englander Institute for Precision Medicine, Weill Cornell Medicine"
+        }
+      ],
+      "contributorRoles": ["Author"]
+    },
+    {
+      "id": "https://orcid.org/0000-0002-6444-1943",
+      "type": "Person",
+      "givenName": "Harold",
+      "familyName": "Varmus",
+      "affiliations": [
+        {
+          "id": "https://ror.org/02r109517",
+          "name": "Meyer Cancer Center, Weill Cornell Medicine"
+        }
+      ],
+      "contributorRoles": ["Author"]
+    }
+  ],
+  "date": {
+    "published": "2025-01-03"
+  },
+  "descriptions": [
+    {
+      "description": "We recently described our initial efforts to develop a model for small cell lung cancer (SCLC) derived from human embryonic stem cells (hESCs) that were differentiated to form pulmonary neuroendocrine cells (PNECs), a putative cell of origin for neuroendocrine-positive SCLC. Although reduced expression of the tumor suppressor genes \nTP53\n and \nRB1\n allowed the induced PNECs to form subcutaneous growths in immune-deficient mice, the tumors did not display the aggressive characteristics of SCLC seen in human patients. Here we report that the additional, doxycycline-regulated expression of a transgene encoding wild-type or mutant cMYC protein promotes rapid growth, invasion, and metastasis of these hESC-derived cells after injection into the renal capsule. Similar to others, we find that the addition of cMYC encourages the formation of the SCLC-N subtype, marked by high levels of \nNEUROD1\n RNA. Using paired primary and metastatic samples for RNA sequencing, we observe that the subtype of SCLC does not change upon metastatic spread and that production of NEUROD1 is maintained. We also describe histological features of these malignant, SCLC-like tumors derived from hESCs and discuss potential uses of this model in efforts to control and better understand this recalcitrant neoplasm.",
+      "type": "Abstract"
+    }
+  ],
+  "identifiers": [
+    {
+      "identifier": "https://doi.org/10.7554/elife.93170.2",
+      "identifierType": "DOI"
+    }
+  ],
+  "license": {
+    "id": "CC-BY-4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/legalcode"
+  },
+  "provider": "Crossref",
+  "publisher": {
+    "id": "https://api.crossref.org/members/4374",
+    "name": "eLife Sciences Publications, Ltd"
+  },
+  "references": [
+    {
+      "key": "c1",
+      "publicationYear": "1993"
+    },
+    {
+      "key": "c2",
+      "id": "https://doi.org/10.1126/science.1253799",
+      "title": "Use of human embryonic stem cells to model pediatric gliomas with H3.3K27M histone mutation",
+      "publicationYear": "2014"
+    },
+    {
+      "key": "c3",
+      "id": "https://doi.org/10.1038/nprot.2015.023",
+      "title": "The in vitro generation of lung and airway progenitor cells from human pluripotent stem cells",
+      "publicationYear": "2015"
+    },
+    {
+      "key": "c4",
+      "id": "https://doi.org/10.1038/nbt.2754",
+      "title": "Efficient generation of lung and airway epithelial cells from human pluripotent stem cells",
+      "publicationYear": "2014"
+    },
+    {
+      "key": "c5",
+      "id": "https://doi.org/10.1084/jem.20181155",
+      "title": "Generation of pulmonary neuroendocrine cells and SCLC-like tumors from human embryonic stem cells",
+      "publicationYear": "2019"
+    },
+    {
+      "key": "c6",
+      "id": "https://doi.org/10.18632/oncotarget.2677",
+      "title": "The landscape of metastatic progression patterns across major human cancers",
+      "publicationYear": "2015"
+    },
+    {
+      "key": "c7",
+      "id": "https://doi.org/10.1016/j.ccell.2020.05.001",
+      "title": "MYC Drives Temporal Evolution of Small Cell Lung Cancer Subtypes by Reprogramming Neuroendocrine Fate",
+      "publicationYear": "2020"
+    },
+    {
+      "key": "c8",
+      "id": "https://doi.org/10.1016/j.ccell.2016.12.005",
+      "title": "MYC Drives Progression of Small Cell Lung Cancer to a Variant Neuroendocrine Subtype with Vulnerability to Aurora Kinase Inhibition",
+      "publicationYear": "2017"
+    },
+    {
+      "key": "c9",
+      "id": "https://doi.org/10.1038/ncomms2254",
+      "title": "The RB family is required for the self-renewal and survival of human embryonic stem cells",
+      "publicationYear": "2012"
+    },
+    {
+      "key": "c10",
+      "id": "https://doi.org/10.1038/nbt.3239",
+      "title": "Comprehensive models of human primary and metastatic colorectal tumors in immunodeficient and immunocompetent mice by chemokine targeting",
+      "publicationYear": "2015"
+    },
+    {
+      "key": "c11",
+      "id": "https://doi.org/10.1172/jci62110",
+      "title": "Chemokine 25-induced signaling suppresses colon cancer invasion and metastasis",
+      "publicationYear": "2012"
+    },
+    {
+      "key": "c12",
+      "id": "https://doi.org/10.1101/2023.03.28.534653",
+      "title": "simpleaf: A simple, flexible, and scalable framework for single-cell transcriptomics data processing using alevin-fry",
+      "publicationYear": "2023"
+    },
+    {
+      "key": "c13",
+      "id": "https://doi.org/10.1016/j.cell.2021.04.048",
+      "title": "Integrated analysis of multimodal single-cell data",
+      "publicationYear": "2021"
+    },
+    {
+      "key": "c14",
+      "id": "https://doi.org/10.1093/bioinformatics/btz698",
+      "title": "scds: computational annotation of doublets in single-cell RNA sequencing data",
+      "publicationYear": "2020"
+    },
+    {
+      "key": "c15",
+      "id": "https://doi.org/10.1038/s41592-019-0619-0",
+      "title": "Fast, sensitive and accurate integration of single-cell data with Harmony",
+      "publicationYear": "2019"
+    },
+    {
+      "key": "c16",
+      "id": "https://doi.org/10.1186/1471-2105-14-128",
+      "title": "Enrichr: interactive and collaborative HTML5 gene list enrichment analysis tool",
+      "publicationYear": "2013"
+    },
+    {
+      "key": "c17",
+      "id": "https://doi.org/10.1164/rccm.201911-2199oc",
+      "title": "A Single-Cell Atlas of the Human Healthy Airways",
+      "publicationYear": "2020"
+    },
+    {
+      "key": "c18",
+      "id": "https://doi.org/10.1038/s41467-020-16239-z",
+      "title": "Dissecting the cellular specificity of smoking effects and reconstructing lineages in the human airway epithelium",
+      "publicationYear": "2020"
+    },
+    {
+      "key": "c19",
+      "id": "https://doi.org/10.1126/sciadv.aba1972",
+      "title": "Single-cell RNA sequencing reveals profibrotic roles of distinct epithelial and mesenchymal lineages in pulmonary fibrosis",
+      "publicationYear": "2020"
+    },
+    {
+      "key": "c20",
+      "id": "https://doi.org/10.1186/s13059-019-1906-x",
+      "title": "scRNA-seq assessment of the human lung, spleen, and esophagus tissue stability after cold preservation",
+      "publicationYear": "2019"
+    },
+    {
+      "key": "c21",
+      "title": "Proliferating SPP1/MERTK-expressing macrophages in idiopathic pulmonary fibrosis",
+      "publicationYear": "2019"
+    },
+    {
+      "key": "c22",
+      "id": "https://doi.org/10.1161/circulationaha.120.052318",
+      "title": "Integrated Single-Cell Atlas of Endothelial Cells of the Human Lung",
+      "publicationYear": "2021"
+    },
+    {
+      "key": "c23",
+      "id": "https://doi.org/10.1038/s41586-020-2922-4",
+      "title": "A molecular cell atlas of the human lung from single-cell RNA sequencing",
+      "publicationYear": "2020"
+    },
+    {
+      "key": "c24",
+      "id": "https://doi.org/10.1038/s41591-019-0468-5",
+      "title": "A cellular census of human lungs identifies novel cell states in health and in asthma",
+      "publicationYear": "2019"
+    },
+    {
+      "key": "c25",
+      "id": "https://doi.org/10.1093/bioinformatics/bty560",
+      "title": "fastp: an ultra-fast all-in-one FASTQ preprocessor",
+      "publicationYear": "2018"
+    },
+    {
+      "key": "c26",
+      "id": "https://doi.org/10.1038/nmeth.4197",
+      "title": "Salmon provides fast and bias-aware quantification of transcript expression",
+      "publicationYear": "2017"
+    },
+    {
+      "key": "c27",
+      "id": "https://doi.org/10.1186/s13059-015-0844-5",
+      "title": "MAST: a flexible statistical framework for assessing transcriptional changes and characterizing heterogeneity in single-cell RNA sequencing data",
+      "publicationYear": "2015"
+    },
+    {
+      "key": "c28",
+      "id": "https://doi.org/10.1016/j.cels.2015.12.004",
+      "title": "The Molecular Signatures Database (MSigDB) hallmark gene set collection",
+      "publicationYear": "2015"
+    },
+    {
+      "key": "c29",
+      "title": "clusterProfiler 4.0: A universal enrichment tool for interpreting omics data",
+      "publicationYear": "2021"
+    },
+    {
+      "key": "c30",
+      "id": "https://doi.org/10.1016/j.ccell.2021.09.008",
+      "title": "Signatures of plasticity, metastasis, and immunosuppression in an atlas of human small cell lung cancer",
+      "publicationYear": "2021"
+    },
+    {
+      "key": "c31",
+      "id": "https://doi.org/10.1038/s41568-019-0133-9",
+      "title": "Molecular subtypes of small cell lung cancer: a synthesis of human and mouse model data",
+      "publicationYear": "2019"
+    },
+    {
+      "key": "c32",
+      "id": "https://doi.org/10.1038/s43018-022-00356-3",
+      "title": "Cell type and gene expression deconvolution with BayesPrism enables Bayesian integrative analysis across bulk and single-cell RNA sequencing in oncology",
+      "publicationYear": "2022"
+    },
+    {
+      "key": "c33",
+      "id": "https://doi.org/10.1038/nbt.3586",
+      "title": "A recellularized human colon model identifies cancer driver genes",
+      "publicationYear": "2016"
+    },
+    {
+      "key": "c34",
+      "id": "https://doi.org/10.7554/elife.06907",
+      "title": "Evidence that synthetic lethality underlies the mutual exclusivity of oncogenic KRAS and EGFR mutations in lung adenocarcinoma",
+      "publicationYear": "2015"
+    },
+    {
+      "key": "c35",
+      "title": "Growth of human tumor xenografts implanted under the renal capsule of normal immunocompetent mice",
+      "publicationYear": "1979"
+    },
+    {
+      "key": "c36",
+      "id": "https://doi.org/10.1016/j.tranon.2020.100745",
+      "title": "Choosing The Right Animal Model for Renal Cancer Research",
+      "publicationYear": "2020"
+    },
+    {
+      "key": "c37",
+      "id": "https://doi.org/10.1038/ncb3510",
+      "title": "A three-dimensional model of human lung development and disease from pluripotent stem cells",
+      "publicationYear": "2017"
+    },
+    {
+      "key": "c38",
+      "id": "https://doi.org/10.7554/elife.05098",
+      "title": "In vitro generation of human pluripotent stem cell derived lung organoids",
+      "publicationYear": "2015"
+    },
+    {
+      "key": "c39",
+      "id": "https://doi.org/10.1038/s41596-020-00476-z",
+      "title": "The in vitro multilineage differentiation and maturation of lung and airway cells from human pluripotent stem cell-derived lung progenitors in 3D",
+      "publicationYear": "2021"
+    },
+    {
+      "key": "c40",
+      "id": "https://doi.org/10.1038/nature14664",
+      "title": "Comprehensive genomic profiles of small cell lung cancer",
+      "publicationYear": "2015"
+    },
+    {
+      "key": "c41",
+      "id": "https://doi.org/10.1002/emmm.201303297",
+      "title": "Rapid target gene validation in complex cancer mouse models using re-derived embryonic stem cells",
+      "publicationYear": "2014"
+    },
+    {
+      "key": "c42",
+      "id": "https://doi.org/10.1158/2159-8290.cd-21-0441",
+      "title": "Rlf-Mycl Gene Fusion Drives Tumorigenesis and Metastasis in a Mouse Model of Small Cell Lung Cancer",
+      "publicationYear": "2021"
+    },
+    {
+      "key": "c43",
+      "id": "https://doi.org/10.1101/gad.279307.116",
+      "title": "Genetic requirement for Mycl and efficacy of RNA Pol I inhibition in mouse models of small cell lung cancer",
+      "publicationYear": "2016"
+    },
+    {
+      "key": "c44",
+      "id": "https://doi.org/10.1101/2023.06.21.545980",
+      "title": "Lineage-specific intolerance to oncogenic drivers restricts histological transformation",
+      "publicationYear": "2023"
+    },
+    {
+      "key": "c45",
+      "id": "https://doi.org/10.1016/j.ccell.2020.12.014",
+      "title": "Patterns of transcription factor programs and immune pathway activation define four major subtypes of SCLC with distinct therapeutic vulnerabilities",
+      "publicationYear": "2021"
+    },
+    {
+      "key": "c46",
+      "id": "https://doi.org/10.1101/2023.06.23.546278",
+      "title": "Acquired Cross-resistance in Small Cell Lung Cancer due to Extrachromosomal DNA Amplification of \u003cem\u003eMYC\u003c/em\u003e paralogs",
+      "publicationYear": "2023"
+    },
+    {
+      "key": "c47",
+      "id": "https://doi.org/10.1158/2159-8290.cd-22-0796",
+      "title": "Extrachromosomal DNA Amplification Contributes to Small Cell Lung Cancer Heterogeneity and Is Associated with Worse Outcomes",
+      "publicationYear": "2023"
+    }
+  ],
+  "relations": [
+    {
+      "id": "https://doi.org/10.7554/elife.93170.2.sa3",
+      "type": "HasReview"
+    },
+    {
+      "id": "https://doi.org/10.7554/elife.93170.2.sa2",
+      "type": "HasReview"
+    },
+    {
+      "id": "https://doi.org/10.7554/elife.93170.2.sa1",
+      "type": "HasReview"
+    },
+    {
+      "id": "https://doi.org/10.7554/elife.93170.2.sa0",
+      "type": "HasReview"
+    }
+  ],
+  "titles": [
+    {
+      "title": "Formation of malignant, metastatic small cell lung cancers through overproduction of cMYC protein in TP53 and RB1 depleted pulmonary neuroendocrine cells derived from human embryonic stem cells"
+    }
+  ],
+  "url": "https://elifesciences.org/reviewed-preprints/93170v2"
+}

@@ -1,0 +1,101 @@
+{
+  "id": "https://doi.org/10.5281/zenodo.1196821",
+  "type": "Dataset",
+  "contributors": [
+    {
+      "id": "https://orcid.org/0000-0001-9688-838X",
+      "type": "Person",
+      "contributorRoles": ["Author"],
+      "givenName": "Matthias",
+      "familyName": "Staib",
+      "affiliations": [{ "name": "University of Zurich, Zurich, Switzerland" }]
+    },
+    {
+      "type": "Person",
+      "contributorRoles": ["Author"],
+      "givenName": "Giuseppe",
+      "familyName": "Castegnetti",
+      "affiliations": [{ "name": "University of Zurich, Zurich, Switzerland" }]
+    },
+    {
+      "id": "https://orcid.org/0000-0002-7588-1418",
+      "type": "Person",
+      "contributorRoles": ["Author"],
+      "givenName": "Athina",
+      "familyName": "Tzovara",
+      "affiliations": [{ "name": "University of Zurich, Zurich, Switzerland" }]
+    },
+    {
+      "id": "https://orcid.org/0000-0001-8090-3266",
+      "type": "Person",
+      "contributorRoles": ["Author"],
+      "givenName": "Philipp C.",
+      "familyName": "Paulus",
+      "affiliations": [{ "name": "University of Zurich, Zurich, Switzerland" }]
+    },
+    {
+      "type": "Person",
+      "contributorRoles": ["Author"],
+      "givenName": "Nicolas",
+      "familyName": "Hofer",
+      "affiliations": [{ "name": "University of Zurich, Zurich, Switzerland" }]
+    },
+    {
+      "id": "https://orcid.org/0000-0003-3717-2036",
+      "type": "Person",
+      "contributorRoles": ["Author"],
+      "givenName": "Dominik R.",
+      "familyName": "Bach",
+      "affiliations": [{ "name": "University of Zurich, Zurich, Switzerland" }]
+    }
+  ],
+  "date": { "published": "2018-03-14" },
+  "descriptions": [
+    {
+      "description": "This dataset includes pupil size response (PSR), skin conductance response (SCR), electrocardiogram (ECG), electromyogram (EMG) and respiration measurements. Also included are CS and US information, keypress responses, keypress response times, key correctness and shock ratings for each of 21 healthy unmedicated participants (10 males and 11 females aged 22.9+/-3.0 years; discrepancies to published studies are due to misprints and exclusion of a subject with incomplete data, which was excluded in all conducted studies as well as here) participating in a classical (Pavlovian) discriminant delay fear conditioning task. Two pairs of CS+ and CS-, either complex or simple, were delivered with headphones (HD518, Sennheiser, Wedemark-Wennebostel, Germany) at about 68 dB. Complex stimuli were a sequence of four rising (400 to 800 Hz) or falling (800 to 400 Hz) sounds lasting 1 s each. Simple stimuli were tones with constant frequency (400 or 800 Hz) presented for 4 s. US consisted of square electric pulses with 0.2-ms duration and 10 Hz frequency, resulting in a total US duration of 0.5 s. SOA betwen the CS and US was 3.5 s. The ITI was randomly determined on each trial to be 7, 9, or 11 s.",
+      "type": "Abstract"
+    },
+    {
+      "description": "See the readme file for more detail. \nData are stored as .mat files for use with MATLAB (The MathWorks Inc., Natick, USA) in a format readable by the PsPM toolbox (pspm.sourceforge.net). All matlab files are saved in MATLAB 9.2 (R2017a) format.\nThis research was supported by Wellcome Trust grant 091593/Z/10/Z, and Swiss National Science Foundation grant 320030_1449586/1.\nChangelog:\nV1.0.2 : Additional information added to gaze channel.",
+      "type": "Other"
+    }
+  ],
+  "identifiers": [
+    {
+      "identifier": "https://doi.org/10.5281/zenodo.1196821",
+      "identifierType": "DOI"
+    }
+  ],
+  "language": "en",
+  "license": {
+    "id": "CC-BY-SA-4.0",
+    "url": "https://creativecommons.org/licenses/by-sa/4.0/legalcode"
+  },
+  "provider": "DataCite",
+  "publisher": { "name": "Zenodo" },
+  "relations": [
+    { "id": "https://doi.org/10.1111/psyp.12637", "type": "IsSupplementTo" },
+    { "id": "https://doi.org/10.1111/psyp.12801", "type": "IsSupplementTo" },
+    { "id": "https://doi.org/10.5281/zenodo.1039580", "type": "IsVersionOf" }
+  ],
+  "subjects": [
+    { "subject": "Pupil Size Response" },
+    { "subject": "Skin Conductance Response" },
+    { "subject": "Electrocardiogram" },
+    { "subject": "Electromyogram" },
+    { "subject": "Electrodermal Activity" },
+    { "subject": "Galvanic Skin Response" },
+    { "subject": "PSR" },
+    { "subject": "SCR" },
+    { "subject": "ECG" },
+    { "subject": "EMG" },
+    { "subject": "EDA" },
+    { "subject": "GSR" }
+  ],
+  "titles": [
+    {
+      "title": "Pspm-Sc4B: Scr, Ecg, Emg, Psr And Respiration Measurements In A Delay Fear Conditioning Task With Auditory Cs And Electrical Us"
+    }
+  ],
+  "url": "https://zenodo.org/record/1196821"
+}

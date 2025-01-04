@@ -17,7 +17,6 @@ import (
 	"github.com/front-matter/commonmeta/csl"
 	"github.com/front-matter/commonmeta/doiutils"
 	"github.com/front-matter/commonmeta/ris"
-	"github.com/front-matter/commonmeta/schemaorg"
 	"github.com/front-matter/commonmeta/schemautils"
 	"github.com/front-matter/commonmeta/utils"
 )
@@ -42,7 +41,7 @@ func Convert(data commonmeta.Data) (Datacite, error) {
 	// datacite.ID = data.ID
 	datacite.DOI, _ = doiutils.ValidateDOI(data.ID)
 	datacite.Types.ResourceTypeGeneral = CMToDCMappings[data.Type]
-	datacite.Types.SchemaOrg = schemaorg.CMToSOMappings[data.Type]
+	datacite.Types.SchemaOrg = commonmeta.CMToSOMappings[data.Type]
 	datacite.Types.Citeproc = csl.CMToCSLMappings[data.Type]
 	datacite.Types.Bibtex = bibtex.CMToBibMappings[data.Type]
 	datacite.Types.Ris = ris.CMToRISMappings[data.Type]

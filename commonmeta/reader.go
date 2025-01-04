@@ -288,6 +288,27 @@ type APIResponse struct {
 	Status     string `json:"status,omitempty"`
 }
 
+// CMToSOMappings maps Commonmeta types to Schema.org types.
+var CMToSOMappings = map[string]string{
+	"Article":        "Article",
+	"Audiovisual":    "CreativeWork",
+	"Book":           "Book",
+	"BookChapter":    "BookChapter",
+	"Collection":     "CreativeWork",
+	"Dataset":        "Dataset",
+	"Dissertation":   "Dissertation",
+	"Document":       "CreativeWork",
+	"Entry":          "CreativeWork",
+	"Event":          "CreativeWork",
+	"Figure":         "CreativeWork",
+	"Image":          "CreativeWork",
+	"Instrument":     "Instrument",
+	"JournalArticle": "ScholarlyArticle",
+	"LegalDocument":  "Legislation",
+	"Software":       "SoftwareSourceCode",
+	"Presentation":   "PresentationDigitalDocument",
+}
+
 // Load loads the metadata for a single work from a JSON file
 func Load(filename string) (Data, error) {
 	var data Data

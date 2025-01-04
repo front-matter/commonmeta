@@ -1,7 +1,6 @@
 {
   "id": "https://doi.org/10.5061/dryad.8515",
   "type": "Dataset",
-  "additionalType": "dataset",
   "contributors": [
     {
       "type": "Person",
@@ -10,7 +9,6 @@
       "familyName": "Ollomo",
       "affiliations": [
         {
-          "id": "https://ror.org/01wyqb997",
           "name": "Centre International de Recherches Médicales de Franceville"
         }
       ]
@@ -22,8 +20,7 @@
       "familyName": "Durand",
       "affiliations": [
         {
-          "id": "https://ror.org/02feahw73",
-          "name": "Centre National de la Recherche Scientifique"
+          "name": "French National Centre for Scientific Research"
         }
       ]
     },
@@ -34,8 +31,7 @@
       "familyName": "Prugnolle",
       "affiliations": [
         {
-          "id": "https://ror.org/02feahw73",
-          "name": "Centre National de la Recherche Scientifique"
+          "name": "French National Centre for Scientific Research"
         }
       ]
     },
@@ -52,8 +48,7 @@
       "familyName": "Arnathau",
       "affiliations": [
         {
-          "id": "https://ror.org/02feahw73",
-          "name": "Centre National de la Recherche Scientifique"
+          "name": "French National Centre for Scientific Research"
         }
       ]
     },
@@ -64,7 +59,6 @@
       "familyName": "Nkoghe",
       "affiliations": [
         {
-          "id": "https://ror.org/01wyqb997",
           "name": "Centre International de Recherches Médicales de Franceville"
         }
       ]
@@ -76,7 +70,6 @@
       "familyName": "Leroy",
       "affiliations": [
         {
-          "id": "https://ror.org/01wyqb997",
           "name": "Centre International de Recherches Médicales de Franceville"
         }
       ]
@@ -88,8 +81,7 @@
       "familyName": "Renaud",
       "affiliations": [
         {
-          "id": "https://ror.org/02feahw73",
-          "name": "Centre National de la Recherche Scientifique"
+          "name": "French National Centre for Scientific Research"
         }
       ]
     }
