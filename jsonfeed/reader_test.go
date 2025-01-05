@@ -72,7 +72,7 @@ func TestFetch(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		want := commonmeta.Data{}
+		var want commonmeta.Data
 		err = json.Unmarshal(bytes, &want)
 		if err != nil {
 			t.Fatal(err)

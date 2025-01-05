@@ -1,4 +1,4 @@
-package schemaorg_test
+package datacite_test
 
 import (
 	"encoding/json"
@@ -12,7 +12,6 @@ import (
 	"github.com/front-matter/commonmeta/crossref"
 	"github.com/front-matter/commonmeta/datacite"
 	"github.com/front-matter/commonmeta/doiutils"
-	"github.com/front-matter/commonmeta/schemaorg"
 	"github.com/google/go-cmp/cmp"
 )
 
@@ -43,9 +42,9 @@ func TestWrite(t *testing.T) {
 			t.Errorf("Crossref Fetch (%v): error %v", tc.id, err)
 		}
 
-		got, err := schemaorg.Write(data)
+		got, err := datacite.Write(data)
 		if err != nil {
-			t.Errorf("Schemaorg Write (%v): error %v", tc.id, err)
+			t.Errorf("Datacite Write (%v): error %v", tc.id, err)
 		}
 		// read json file from testdata folder and convert to Data struct
 		doi, ok := doiutils.ValidateDOI(tc.id)
@@ -58,7 +57,7 @@ func TestWrite(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		var want schemaorg.Schemaorg
+		var want datacite.Datacite
 		err = json.Unmarshal(content, &want)
 		if err != nil {
 			t.Fatal(err)

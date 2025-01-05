@@ -376,7 +376,10 @@ func Read(content Content) (commonmeta.Data, error) {
 	var contributors []Contributor
 	err := json.Unmarshal(content.Author, &contributor)
 	if err != nil {
-		_ = json.Unmarshal(content.Author, &contributors)
+		err = json.Unmarshal(content.Author, &contributors)
+		if err != nil {
+			fmt.Println(err)
+		}
 	}
 	if len(contributors) == 0 {
 		contributors = append(contributors, contributor)
@@ -414,7 +417,10 @@ func Read(content Content) (commonmeta.Data, error) {
 	var identifiers []string
 	err = json.Unmarshal(content.Identifier, &identifier)
 	if err != nil {
-		_ = json.Unmarshal(content.Identifier, &identifiers)
+		err = json.Unmarshal(content.Identifier, &identifiers)
+		if err != nil {
+			fmt.Println(err)
+		}
 	}
 	if identifier != "" {
 		identifiers = append(identifiers, identifier)

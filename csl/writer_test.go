@@ -55,7 +55,7 @@ func TestWrite(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		want := csl.CSL{}
+		var want csl.CSL
 		err = json.Unmarshal(bytes, &want)
 		if err != nil {
 			t.Fatal(err)

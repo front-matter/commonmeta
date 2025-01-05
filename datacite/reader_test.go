@@ -80,11 +80,11 @@ func TestFetch(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		want := commonmeta.Data{}
-		_ = json.Unmarshal(content, &want)
-		// if err != nil {
-		// 	t.Fatal(err)
-		// }
+		var want commonmeta.Data
+		err = json.Unmarshal(content, &want)
+		if err != nil {
+			t.Fatal(err)
+		}
 		if diff := cmp.Diff(want, got); diff != "" {
 			t.Errorf("FetchDatacite(%s) mismatch (-want +got):\n%s", tc.id, diff)
 		}

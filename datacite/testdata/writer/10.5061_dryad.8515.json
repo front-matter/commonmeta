@@ -1,0 +1,130 @@
+{
+  "doi": "10.5061/dryad.8515",
+  "creators": [
+    {
+      "name": "Benjamin, Ollomo",
+      "givenName": "Benjamin",
+      "familyName": "Ollomo",
+      "nameType": "Personal",
+      "affiliation": [
+        "Centre International de Recherches Médicales de Franceville"
+      ]
+    },
+    {
+      "name": "Patrick, Durand",
+      "givenName": "Patrick",
+      "familyName": "Durand",
+      "nameType": "Personal",
+      "affiliation": ["French National Centre for Scientific Research"]
+    },
+    {
+      "name": "Franck, Prugnolle",
+      "givenName": "Franck",
+      "familyName": "Prugnolle",
+      "nameType": "Personal",
+      "affiliation": ["French National Centre for Scientific Research"]
+    },
+    {
+      "name": "Emmanuel J. P., Douzery",
+      "givenName": "Emmanuel J. P.",
+      "familyName": "Douzery",
+      "nameType": "Personal"
+    },
+    {
+      "name": "Céline, Arnathau",
+      "givenName": "Céline",
+      "familyName": "Arnathau",
+      "nameType": "Personal",
+      "affiliation": ["French National Centre for Scientific Research"]
+    },
+    {
+      "name": "Dieudonné, Nkoghe",
+      "givenName": "Dieudonné",
+      "familyName": "Nkoghe",
+      "nameType": "Personal",
+      "affiliation": [
+        "Centre International de Recherches Médicales de Franceville"
+      ]
+    },
+    {
+      "name": "Eric, Leroy",
+      "givenName": "Eric",
+      "familyName": "Leroy",
+      "nameType": "Personal",
+      "affiliation": [
+        "Centre International de Recherches Médicales de Franceville"
+      ]
+    },
+    {
+      "name": "François, Renaud",
+      "givenName": "François",
+      "familyName": "Renaud",
+      "nameType": "Personal",
+      "affiliation": ["French National Centre for Scientific Research"]
+    }
+  ],
+  "publisher": {
+    "name": "Dryad"
+  },
+  "container": {},
+  "publicationYear": 2011,
+  "titles": [
+    {
+      "title": "Data from: A new malaria agent in African hominids."
+    }
+  ],
+  "url": "https://datadryad.org/stash/dataset/doi:10.5061/dryad.8515",
+  "subjects": [
+    {
+      "subject": "Plasmodium"
+    },
+    {
+      "subject": "Malaria"
+    },
+    {
+      "subject": "mitochondrial genome"
+    },
+    {
+      "subject": "Parasites"
+    }
+  ],
+  "dates": [
+    {
+      "date": "2011-02-01T17:22:41Z",
+      "dateType": "Issued"
+    }
+  ],
+  "language": "en",
+  "types": {
+    "resourceTypeGeneral": "Dataset",
+    "ris": "DATA",
+    "citeproc": "dataset",
+    "schemaOrg": "Dataset"
+  },
+  "version": "1",
+  "rightsList": [
+    {
+      "rightsUri": "https://creativecommons.org/publicdomain/zero/1.0/legalcode",
+      "schemeUri": "https://spdx.org/licenses/",
+      "rightsIdentifier": "cc0-1.0",
+      "rightsIdentifierScheme": "SPDX"
+    }
+  ],
+  "descriptions": [
+    {
+      "description": "Plasmodium falciparum is the major human malaria agent responsible for 200\n to 300 million infections and one to three million deaths annually, mainly\n among African infants. The origin and evolution of this pathogen within\n the human lineage is still unresolved. A single species, P. reichenowi,\n which infects chimpanzees, is known to be a close sister lineage of P.\n falciparum. Here we report the discovery of a new Plasmodium species\n infecting Hominids. This new species has been isolated in two chimpanzees\n (Pan troglodytes) kept as pets by villagers in Gabon (Africa). Analysis of\n its complete mitochondrial genome (5529 nucleotides including Cyt b, Cox I\n and Cox III genes) reveals an older divergence of this lineage from the\n clade that includes P. falciparum and P. reichenowi (approximately 21+/-9\n Myrs ago using Bayesian methods and considering that the divergence\n between P. falciparum and P. reichenowi occurred 4 to 7 million years ago\n as generally considered in the literature). This time frame would be\n congruent with the radiation of hominoids, suggesting that this Plasmodium\n lineage might have been present in early hominoids and that they may both\n have experienced a simultaneous diversification. Investigation of the\n nuclear genome of this new species will further the understanding of the\n genetic adaptations of P. falciparum to humans. The risk of transfer and\n emergence of this new species in humans must be now seriously considered\n given that it was found in two chimpanzees living in contact with humans\n and its close relatedness to the most virulent agent of malaria.",
+      "descriptionType": "Abstract"
+    },
+    {
+      "description": "Ollomo_PLoSPathog_2009Nucleotide alignment concatenation of 4\n mitochondrial genes for 17 Plasmodium species and one\n outgroup.Ollomo_PLoSPathog_2009_PHYMLMaximum likelihood tree inferred from\n the 4-gene concatenation using PHYML.",
+      "descriptionType": "Other"
+    }
+  ],
+  "geoLocations": [
+    {
+      "geoLocationPoint": {},
+      "geoLocationBox": {},
+      "geoLocationPlace": "Africa"
+    }
+  ]
+}

@@ -55,7 +55,7 @@ func TestWrite(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		want := inveniordm.Inveniordm{}
+		var want inveniordm.Inveniordm
 		err = json.Unmarshal(bytes, &want)
 		if err != nil {
 			t.Fatal(err)

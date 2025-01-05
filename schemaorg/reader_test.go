@@ -77,7 +77,10 @@ func TestFetch(t *testing.T) {
 			t.Fatal(err)
 		}
 		var want commonmeta.Data
-		_ = json.Unmarshal(content, &want)
+		err = json.Unmarshal(content, &want)
+		if err != nil {
+			t.Fatal(err)
+		}
 		if diff := cmp.Diff(want, got); diff != "" {
 			t.Errorf("Schemaorg Fetch (%v): -want +got %s", tc.id, diff)
 		}
