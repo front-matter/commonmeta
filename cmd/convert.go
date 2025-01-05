@@ -91,6 +91,8 @@ commonmeta 10.5555/12345678`,
 				data, err = inveniordm.Fetch(id)
 			} else if from == "jsonfeed" {
 				data, err = jsonfeed.Fetch(id)
+			} else if from == "schemaorg" {
+				data, err = schemaorg.Fetch(id)
 			} else {
 				fmt.Println("Please provide a valid input")
 				return
@@ -108,6 +110,8 @@ commonmeta 10.5555/12345678`,
 				data, err = inveniordm.Load(str)
 			} else if from == "csl" {
 				data, err = csl.Load(str)
+			} else if from == "schemaorg" {
+				data, err = schemaorg.Load(str)
 			} else {
 				cmd.PrintErr("Please provide a valid input format")
 				return

@@ -14,6 +14,7 @@ import (
 // Convert converts commonmeta metadata to Schema.org metadata.
 func Convert(data commonmeta.Data) (SchemaOrg, error) {
 	var schemaorg SchemaOrg
+
 	schemaorg.Context = "http://schema.org"
 	schemaorg.ID = data.ID
 	schemaorg.Type = commonmeta.CMToSOMappings[data.Type]
@@ -110,9 +111,7 @@ func Convert(data commonmeta.Data) (SchemaOrg, error) {
 	schemaorg.DatePublished = data.Date.Published
 	schemaorg.DateModified = data.Date.Updated
 	if len(data.Descriptions) > 0 {
-		for _, description := range data.Descriptions {
-			schemaorg.Description = append(schemaorg.Description, description.Description)
-		}
+		schemaorg.Description = data.Descriptions[0].Description
 	}
 	var mediaObjects []MediaObject
 	if len(data.Files) > 0 {
@@ -138,7 +137,6 @@ func Convert(data commonmeta.Data) (SchemaOrg, error) {
 	}
 
 	if len(data.Identifiers) > 0 {
-		schemaorg.Identifier = []string{}
 		for _, identifier := range data.Identifiers {
 			schemaorg.Identifier = append(schemaorg.Identifier, identifier.Identifier)
 		}

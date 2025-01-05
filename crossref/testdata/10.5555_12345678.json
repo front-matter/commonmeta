@@ -31,6 +31,7 @@
       "type": "Abstract"
     }
   ],
+  "files": [],
   "fundingReferences": [
     {
       "funderName": "National Science Foundation",
@@ -54,8 +55,61 @@
   "language": "en",
   "license": { "url": "https://psychoceramicsproprietrylicenseV1.com" },
   "provider": "Crossref",
-  "publisher": { "name": "Test accounts" },
-  "references": [{ "key": "ref0", "id": "https://doi.org/10.37717/220020589" }],
+  "publisher": {
+    "id": "https://api.crossref.org/members/7822",
+    "name": "Test accounts"
+  },
+  "references": [
+    {
+      "key": "ref0",
+      "id": "https://doi.org/10.1183/09031936.03.00057003",
+      "title": "New concepts of the pathogenesis of cystic fibrosis lung disease",
+      "publicationYear": "2004",
+      "unstructured": "1. Boucher RC (2004) New concepts of the pathogenesis of cystic fibrosis lung disease. Eur Resp J 23: 146-158."
+    },
+    {
+      "key": "ref1",
+      "id": "https://doi.org/10.1172/jci0215217",
+      "title": "Mucus clearance as a primary innate defense mechanism for mammalian airways",
+      "publicationYear": "2002",
+      "unstructured": "2. Knowles MR, Boucher RC (2002) Mucus clearance as a primary innate defense mechanism for mammalian airways. J Clin Investig 109: 571-577."
+    },
+    {
+      "key": "ref2",
+      "id": "https://doi.org/10.1097/aci.0b013e3280114eef",
+      "title": "Mucociliary clearance - a critical upper airway host defense mechanism and methods of assessment",
+      "publicationYear": "2007",
+      "unstructured": "3. Antunes MB, Cohen NA (2007) Mucociliary clearance - a critical upper airway host defense mechanism and methods of assessment. Curr Opin Allergy Clin Immunol 7: 5-10."
+    },
+    {
+      "key": "ref3",
+      "id": "https://doi.org/10.1126/science.2475911",
+      "title": "Identification of the Cystic-Fibrosis Gene - Cloning and Characterization of Complementary-Dna",
+      "publicationYear": "1989",
+      "unstructured": "4. Riordan JR, Rommens JM, Kerem BS, Alon N, Rozmahel R, et al. (1989) Identification of the Cystic-Fibrosis Gene - Cloning and Characterization of Complementary-Dna. Science 245: 1066-1072."
+    },
+    {
+      "key": "ref4",
+      "id": "https://doi.org/10.1126/science.2772657",
+      "title": "Identification of the Cystic-Fibrosis Gene - Chromosome Walking and Jumping",
+      "publicationYear": "1989",
+      "unstructured": "5. Rommens JM, Iannuzzi MC, Kerem BS, Drumm ML, Melmer G, et al. (1989) Identification of the Cystic-Fibrosis Gene - Chromosome Walking and Jumping. Science 245: 1059-1065."
+    },
+    {
+      "key": "ref5",
+      "id": "https://doi.org/10.1002/humu.10041",
+      "title": "Cystic fibrosis: A worldwide analysis of CFTR mutations - Correlation with incidence data and application to screening",
+      "publicationYear": "2002",
+      "unstructured": "6. Bobadilla JL, Macek M, Fine JP, Farrell PM (2002) Cystic fibrosis: A worldwide analysis of CFTR mutations - Correlation with incidence data and application to screening. Human Mutation 19: 575-606."
+    },
+    {
+      "key": "ref6",
+      "id": "https://doi.org/10.1074/jbc.271.13.7261",
+      "title": "Alteration of the cystic fibrosis transmembrane conductance regulator folding pathway - Effects of the Delta F508 mutation on the thermodynamic stability and folding yield of NBD1",
+      "publicationYear": "1996",
+      "unstructured": "7. Qu BH, Thomas PJ (1996) Alteration of the cystic fibrosis transmembrane conductance regulator folding pathway - Effects of the Delta F508 mutation on the thermodynamic stability and folding yield of NBD1. J Biol Chem 271: 7261-7264."
+    }
+  ],
   "relations": [
     {
       "id": "https://portal.issn.org/resource/ISSN/0264-3561",

@@ -15,7 +15,7 @@ import (
 	"sigs.k8s.io/yaml"
 )
 
-func TestSchemaErrors(t *testing.T) {
+func TestJSONSchemaErrors(t *testing.T) {
 	t.Parallel()
 	type testCase struct {
 		meta commonmeta.Data
@@ -48,30 +48,29 @@ func TestSchemaErrors(t *testing.T) {
 		if err != nil {
 			log.Fatal(err)
 		}
-		err = schemautils.SchemaErrors(documentJSON)
-		if tc.want != err {
-			t.Errorf("want %d, got %d", tc.want, err)
+		got := schemautils.JSONSchemaErrors(documentJSON)
+		if tc.want != got {
+			t.Errorf("want %d, got %d", tc.want, got)
 			fmt.Printf("The document %s is not valid. see errors :\n", tc.meta.ID)
-			fmt.Printf("%v", err)
 		}
 	}
 }
 
-func TestSchemaErrorsTestdata(t *testing.T) {
+func TestJSONSchemaErrorsTestdata(t *testing.T) {
 	t.Parallel()
 	type testCase struct {
 		meta   string
 		schema string
-		err    error
+		want   error
 	}
 
 	testCases := []testCase{
-		{meta: "journal_article.commonmeta.json", schema: "commonmeta_v0.15", err: nil},
-		{meta: "citeproc.json", schema: "csl-data", err: nil},
-		{meta: "datacite.json", schema: "datacite-v4.5", err: nil},
-		{meta: "datacite-instrument.json", schema: "datacite-v4.5", err: nil},
-		{meta: "datacite_software_version.json", schema: "datacite-v4.5", err: nil},
-		{meta: "inveniordm.json", schema: "invenio-rdm-v0.1", err: nil},
+		{meta: "journal_article.commonmeta.json", schema: "commonmeta_v0.15", want: nil},
+		{meta: "citeproc.json", schema: "csl-data", want: nil},
+		{meta: "datacite.json", schema: "datacite-v4.5", want: nil},
+		{meta: "datacite-instrument.json", schema: "datacite-v4.5", want: nil},
+		{meta: "datacite_software_version.json", schema: "datacite-v4.5", want: nil},
+		{meta: "inveniordm.json", schema: "invenio-rdm-v0.1", want: nil},
 	}
 	for _, tc := range testCases {
 		filepath := filepath.Join("testdata", tc.meta)
@@ -79,23 +78,23 @@ func TestSchemaErrorsTestdata(t *testing.T) {
 		if err != nil {
 			fmt.Print(err)
 		}
-		err = schemautils.SchemaErrors(data, tc.schema)
-		if tc.err != err {
-			t.Errorf("want %v, got %d", tc.meta, err)
+		got := schemautils.JSONSchemaErrors(data, tc.schema)
+		if tc.want != got {
+			t.Errorf("want %v %d, got %d", tc.meta, tc.want, got)
 		}
 	}
 }
 
-func TestSchemaErrorsTestdataYAML(t *testing.T) {
+func TestJSONSchemaErrorsTestdataYAML(t *testing.T) {
 	t.Parallel()
 	type testCase struct {
 		meta   string
 		schema string
-		err    error
+		want   error
 	}
 
 	testCases := []testCase{
-		{meta: "CITATION.cff", schema: "cff_v1.2.0", err: nil},
+		{meta: "CITATION.cff", schema: "cff_v1.2.0", want: nil},
 	}
 	for _, tc := range testCases {
 		filepath := filepath.Join("testdata", tc.meta)
@@ -107,9 +106,9 @@ func TestSchemaErrorsTestdataYAML(t *testing.T) {
 		if err != nil {
 			fmt.Print(err)
 		}
-		got := schemautils.SchemaErrors(YAMLdata, tc.schema)
-		if tc.err != got {
-			t.Errorf("want %d, got %d", tc.err, got)
+		got := schemautils.JSONSchemaErrors(YAMLdata, tc.schema)
+		if tc.want != got {
+			t.Errorf("want %d, got %d", tc.want, got)
 		}
 	}
 }

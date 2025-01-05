@@ -115,7 +115,10 @@
     "url": "https://creativecommons.org/licenses/by/3.0/legalcode"
   },
   "provider": "Crossref",
-  "publisher": { "name": "eLife Sciences Publications, Ltd" },
+  "publisher": {
+    "id": "https://api.crossref.org/members/4374",
+    "name": "eLife Sciences Publications, Ltd"
+  },
   "references": [
     {
       "key": "bib1",

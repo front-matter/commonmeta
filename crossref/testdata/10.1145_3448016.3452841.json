@@ -3,7 +3,9 @@
   "type": "ProceedingsArticle",
   "container": {
     "type": "Proceedings",
-    "title": "Proceedings of the 2021 International Conference on Management of Data"
+    "title": "Proceedings of the 2021 International Conference on Management of Data",
+    "firstPage": "1386",
+    "lastPage": "1399"
   },
   "contributors": [
     {
@@ -86,7 +88,7 @@
     "url": "https://www.acm.org/publications/policies/copyright_policy#Background"
   },
   "provider": "Crossref",
-  "publisher": { "name": "ACM" },
+  "publisher": { "id": "https://api.crossref.org/members/320", "name": "ACM" },
   "references": [
     { "key": "e_1_3_2_2_1_1", "id": "https://doi.org/10.5555/1224252.1224501" },
     {
@@ -121,6 +123,7 @@
     },
     {
       "key": "e_1_3_2_2_12_1",
+      "id": "https://github.com/",
       "contributor": "Breslow Alex D",
       "publicationYear": "2020",
       "unstructured": "Alex D Breslow . 2018. Morton Filter source code in C++. https://github.com/ AMDComputeLibraries/morton_filter. [Online ; accessed 19- July - 2020 ]. Alex D Breslow. 2018. Morton Filter source code in C++. https://github.com/ AMDComputeLibraries/morton_filter. [Online; accessed 19-July-2020]."
@@ -183,6 +186,7 @@
     },
     {
       "key": "e_1_3_2_2_27_1",
+      "id": "https://doi.org/10.1007/978--3--642-02652--2_6",
       "contributor": "Peter",
       "unstructured": "Peter C. Dillinger and Panagiotis (Pete) Manolios. 2009. Fast, All-Purpose State Storage . In Proceedings of the 16th International SPIN Workshop on Model Checking Software. Springer-Verlag , Berlin, Heidelberg, 12--31. https://doi.org/10.1007/978--3--642-02652--2_6 10.1007/978--3--642-02652--2_6 Peter C. Dillinger and Panagiotis (Pete) Manolios. 2009. Fast, All-Purpose State Storage. In Proceedings of the 16th International SPIN Workshop on Model Checking Software. Springer-Verlag, Berlin, Heidelberg, 12--31. https://doi.org/10.1007/978--3--642-02652--2_6"
     },
@@ -197,6 +201,7 @@
     },
     {
       "key": "e_1_3_2_2_30_1",
+      "id": "https://github.com/efficient/",
       "contributor": "Fan Bin",
       "publicationYear": "2014",
       "unstructured": "Bin Fan . 2014. Cuckoo Filter source code in C++. https://github.com/efficient/ cuckoofilter. [Online ; accessed 19- July - 2014 ]. Bin Fan. 2014. Cuckoo Filter source code in C++. https://github.com/efficient/ cuckoofilter. [Online; accessed 19-July-2014]."
@@ -289,6 +294,7 @@
     },
     {
       "key": "e_1_3_2_2_51_1",
+      "id": "https://rocksdb.org/",
       "contributor": "DB",
       "publicationYear": "2018",
       "unstructured": "Rocks DB [n. d.]. RocksDB. https://rocksdb.org/ , Last Accessed Sep. 26, 2018 . RocksDB [n. d.]. RocksDB. https://rocksdb.org/, Last Accessed Sep. 26, 2018."
@@ -311,6 +317,7 @@
     },
     {
       "key": "e_1_3_2_2_55_1",
+      "id": "https://rocksdb.org/blog/2017/",
       "unstructured": "Maysam Yabandeh. 2017. Partitioned Index/Filters. https://rocksdb.org/blog/2017/ 05/12/partitioned-index-filter.html.  Maysam Yabandeh. 2017. Partitioned Index/Filters. https://rocksdb.org/blog/2017/ 05/12/partitioned-index-filter.html."
     },
     { "key": "e_1_3_2_2_56_1", "id": "https://doi.org/10.5555/1364813.1364831" }
@@ -319,7 +326,7 @@
     { "title": "Vector Quotient Filters" },
     {
       "title": "Overcoming the Time/Space Trade-Off in Filter Design",
-      "titleType": "Subtitle"
+      "Type": "Subtitle"
     }
   ],
   "url": "https://dl.acm.org/doi/10.1145/3448016.3452841"

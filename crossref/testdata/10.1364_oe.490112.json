@@ -86,7 +86,10 @@
   "language": "en",
   "license": { "url": "https://doi.org/10.1364/OA_License_v2#VOR-OA" },
   "provider": "Crossref",
-  "publisher": { "name": "Optica Publishing Group" },
+  "publisher": {
+    "id": "https://api.crossref.org/members/285",
+    "name": "Optica Publishing Group"
+  },
   "references": [
     {
       "key": "oe-31-12-20440-R1",

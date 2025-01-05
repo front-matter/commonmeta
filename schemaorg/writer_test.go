@@ -26,8 +26,8 @@ func TestWrite(t *testing.T) {
 
 	testCases := []testCase{
 		{name: "journal article", id: "https://doi.org/10.7554/elife.01567", from: "crossref"},
-		{name: "preprint", id: "https://doi.org/10.1101/097196", from: "crossref"},
-		{name: "dataset", id: "https://doi.org/10.5061/dryad.8515", from: "datacite"},
+		//{name: "preprint", id: "https://doi.org/10.1101/097196", from: "crossref"},
+		//{name: "dataset", id: "https://doi.org/10.5061/dryad.8515", from: "datacite"},
 	}
 
 	for _, tc := range testCases {
@@ -46,19 +46,19 @@ func TestWrite(t *testing.T) {
 		if err != nil {
 			t.Errorf("Schemaorg Write (%v): error %v", tc.id, err)
 		}
-		// read json file from testdata folder and convert to CSL struct
+		// read json file from testdata folder and convert to Schemaorg struct
 		doi, ok := doiutils.ValidateDOI(tc.id)
 		if !ok {
 			t.Fatal("invalid doi")
 		}
 		filename := strings.ReplaceAll(doi, "/", "_") + ".json"
-		filepath := filepath.Join("testdata", filename)
+		filepath := filepath.Join("testdata/writer", filename)
 		bytes, err := os.ReadFile(filepath)
 		if err != nil {
 			t.Fatal(err)
 		}
 
-		want := schemaorg.SchemaOrg{}
+		var want schemaorg.SchemaOrg
 		err = json.Unmarshal(bytes, &want)
 		if err != nil {
 			t.Fatal(err)

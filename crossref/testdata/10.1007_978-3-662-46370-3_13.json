@@ -30,11 +30,15 @@
       "identifierType": "DOI"
     }
   ],
+  "language": "en",
   "license": {
     "url": "https://www.springernature.com/gp/researchers/text-and-data-mining"
   },
   "provider": "Crossref",
-  "publisher": { "name": "Springer Berlin Heidelberg" },
+  "publisher": {
+    "id": "https://api.crossref.org/members/297",
+    "name": "Springer Berlin Heidelberg"
+  },
   "references": [
     {
       "key": "13_CR1",

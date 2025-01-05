@@ -33,7 +33,10 @@
     "url": "https://creativecommons.org/licenses/by/4.0/legalcode"
   },
   "provider": "Crossref",
-  "publisher": { "name": "Front Matter" },
+  "publisher": {
+    "id": "https://api.crossref.org/members/31795",
+    "name": "Front Matter"
+  },
   "subjects": [{ "subject": "Social sciences" }],
   "titles": [{ "title": "KU Leuven supports ResearchEquals" }],
   "url": "https://libscie.org/ku-leuven-supports-researchequals"

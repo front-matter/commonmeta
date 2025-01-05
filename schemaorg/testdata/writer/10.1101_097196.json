@@ -1,0 +1,98 @@
+{
+  "@context": "http://schema.org",
+  "@id": "https://doi.org/10.1101/097196",
+  "identifier": ["https://doi.org/10.1101/097196"],
+  "@type": "Article",
+  "url": "http://biorxiv.org/lookup/doi/10.1101/097196",
+  "name": "A Data Citation Roadmap for Scholarly Data Repositories",
+  "author": [
+    {
+      "id": "https://orcid.org/0000-0003-1419-2405",
+      "givenName": "Martin",
+      "familyName": "Fenner",
+      "@type": "Person",
+      "name": "Martin Fenner"
+    },
+    {
+      "id": "https://orcid.org/0000-0003-1304-1939",
+      "givenName": "Mercè",
+      "familyName": "Crosas",
+      "@type": "Person",
+      "name": "Mercè Crosas"
+    },
+    {
+      "id": "https://orcid.org/0000-0001-5212-7052",
+      "givenName": "Jeffrey",
+      "familyName": "Grethe",
+      "@type": "Person",
+      "name": "Jeffrey Grethe"
+    },
+    {
+      "id": "https://orcid.org/0000-0002-9377-0797",
+      "givenName": "David",
+      "familyName": "Kennedy",
+      "@type": "Person",
+      "name": "David Kennedy"
+    },
+    {
+      "id": "https://orcid.org/0000-0001-8479-0262",
+      "givenName": "Henning",
+      "familyName": "Hermjakob",
+      "@type": "Person",
+      "name": "Henning Hermjakob"
+    },
+    {
+      "id": "https://orcid.org/0000-0001-9853-5668",
+      "givenName": "Philippe",
+      "familyName": "Rocca-Serra",
+      "@type": "Person",
+      "name": "Philippe Rocca-Serra"
+    },
+    {
+      "id": "https://orcid.org/0000-0002-2188-2570",
+      "givenName": "Gustavo",
+      "familyName": "Durand",
+      "@type": "Person",
+      "name": "Gustavo Durand"
+    },
+    {
+      "id": "https://orcid.org/0000-0002-1731-5346",
+      "givenName": "Robin",
+      "familyName": "Berjon",
+      "@type": "Person",
+      "name": "Robin Berjon"
+    },
+    {
+      "id": "https://orcid.org/0000-0001-8249-7388",
+      "givenName": "Sebastian",
+      "familyName": "Karcher",
+      "@type": "Person",
+      "name": "Sebastian Karcher"
+    },
+    {
+      "id": "https://orcid.org/0000-0002-8406-3871",
+      "givenName": "Maryann",
+      "familyName": "Martone",
+      "@type": "Person",
+      "name": "Maryann Martone"
+    },
+    {
+      "id": "https://orcid.org/0000-0003-4060-7360",
+      "givenName": "Timothy",
+      "familyName": "Clark",
+      "@type": "Person",
+      "name": "Timothy Clark"
+    }
+  ],
+  "editor": [],
+  "description": "AbstractThis article presents a practical roadmap for scholarly data repositories to implement data citation in accordance with the Joint Declaration of Data Citation Principles, a synopsis and harmonization of the recommendations of major science policy bodies. The roadmap was developed by the Repositories Expert Group, as part of the Data Citation Implementation Pilot (DCIP) project, an initiative of FORCE11.org and the NIH BioCADDIE (https://biocaddie.org) program. The roadmap makes 11 specific recommendations, grouped into three phases of implementation: a) required steps needed to support the Joint Declaration of Data Citation Principles, b) recommended steps that facilitate article/data publication workflows, and c) optional steps that further improve data citation support provided by data repositories.",
+  "license": "https://creativecommons.org/licenses/by/4.0/legalcode",
+  "keywords": "Scientific Communication and Education",
+  "datePublished": "2016-12-28",
+  "periodical": { "additionalType": "Periodical" },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Cold Spring Harbor Laboratory"
+  },
+  "provider": { "@type": "Organization", "name": "Crossref" }
+}

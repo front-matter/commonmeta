@@ -307,7 +307,7 @@ func Write(data commonmeta.Data) ([]byte, error) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	err = schemautils.SchemaErrors(output, "datacite-v4.5")
+	err = schemautils.JSONSchemaErrors(output, "datacite-v4.5")
 	return output, err
 }
 
@@ -330,7 +330,7 @@ func WriteAll(list []commonmeta.Data) ([]byte, error) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	err = schemautils.SchemaErrors(output, "datacite-v4.5")
+	err = schemautils.JSONSchemaErrors(output, "datacite-v4.5")
 	return output, err
 }
 

@@ -389,7 +389,7 @@ func Write(data commonmeta.Data) ([]byte, error) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	err = schemautils.SchemaErrors(output, "invenio-rdm-v0.1")
+	err = schemautils.JSONSchemaErrors(output, "invenio-rdm-v0.1")
 	return output, err
 }
 
@@ -407,7 +407,7 @@ func WriteAll(list []commonmeta.Data) ([]byte, error) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	err = schemautils.SchemaErrors(output, "invenio-rdm-v0.1")
+	err = schemautils.JSONSchemaErrors(output, "invenio-rdm-v0.1")
 	return output, err
 }
 

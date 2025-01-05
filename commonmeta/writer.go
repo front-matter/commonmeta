@@ -26,7 +26,7 @@ func Write(data Data) ([]byte, error) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	err = schemautils.SchemaErrors(output)
+	err = schemautils.JSONSchemaErrors(output)
 	if err != nil {
 		return nil, err
 	}
@@ -39,7 +39,7 @@ func WriteAll(list []Data) ([]byte, error) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	err = schemautils.SchemaErrors(output)
+	err = schemautils.JSONSchemaErrors(output)
 	if err != nil {
 		return nil, err
 	}

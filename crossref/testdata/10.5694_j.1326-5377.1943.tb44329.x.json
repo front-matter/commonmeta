@@ -39,7 +39,10 @@
     "url": "https://onlinelibrary.wiley.com/termsAndConditions#vor"
   },
   "provider": "Crossref",
-  "publisher": { "name": "AMPCo" },
+  "publisher": {
+    "id": "https://api.crossref.org/members/3677",
+    "name": "AMPCo"
+  },
   "references": [
     {
       "key": "e_1_2_1_2_1",

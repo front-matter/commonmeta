@@ -121,7 +121,7 @@ func Write(data commonmeta.Data) ([]byte, error) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	err = schemautils.SchemaErrors(output, "csl-data")
+	err = schemautils.JSONSchemaErrors(output, "csl-data")
 	if err != nil {
 		return nil, err
 	}
@@ -143,6 +143,6 @@ func WriteAll(list []commonmeta.Data) ([]byte, error) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	err = schemautils.SchemaErrors(output, "csl-data")
+	err = schemautils.JSONSchemaErrors(output, "csl-data")
 	return output, err
 }

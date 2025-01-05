@@ -23,7 +23,10 @@
   ],
   "license": { "url": "https://www.cambridge.org/core/terms" },
   "provider": "Crossref",
-  "publisher": { "name": "Cambridge University Press" },
+  "publisher": {
+    "id": "https://api.crossref.org/members/56",
+    "name": "Cambridge University Press"
+  },
   "references": [
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-273",
@@ -122,6 +125,7 @@
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-239",
+      "id": "https://doi.org/10.1093/oso/9780195133950.001.0001",
       "contributor": "Van Norden",
       "publicationYear": "2002"
     },
@@ -147,6 +151,7 @@
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-229",
+      "id": "https://doi.org/10.1093/oso/9780195133950.003.0003",
       "contributor": "Shun",
       "publicationYear": "2002",
       "firstPage": "53"
@@ -469,6 +474,7 @@
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-134",
+      "id": "https://doi.org/10.1093/oso/9780199256044.001.0001",
       "contributor": "Latour",
       "publicationYear": "2005"
     },
@@ -728,6 +734,7 @@
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-192",
+      "id": "https://plato.stanford.edu/archives/spr2017/entries/chinese-legalism",
       "unstructured": "Pines, Yuri , “Legalism in Chinese Philosophy,” The Stanford Encyclopedia of Philosophy, 2017 https://plato.stanford.edu/archives/spr2017/entries/chinese-legalism, accessed May 31, 2018"
     },
     {
@@ -784,6 +791,7 @@
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-126",
+      "id": "https://doi.org/10.2307/jj.7762608",
       "contributor": "Knoblock",
       "publicationYear": "2013"
     },
@@ -866,6 +874,7 @@
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-262",
+      "id": "https://doi.org/10.1093/oso/9780195133950.003.0005",
       "contributor": "Wilson",
       "publicationYear": "2002",
       "firstPage": "94"
@@ -1041,6 +1050,7 @@
     },
     {
       "key": "9781108348843#EMT-rl-1_BIBe-r-120",
+      "id": "https://doi.org/10.2307/jj.14904978",
       "contributor": "Keightley",
       "publicationYear": "2000"
     },

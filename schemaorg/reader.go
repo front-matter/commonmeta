@@ -2,8 +2,11 @@ package schemaorg
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
+	"os"
+	"path"
 	"slices"
 	"strings"
 	"time"
@@ -33,7 +36,7 @@ type SchemaOrg struct {
 	DateCreated           string        `json:"dateCreated,omitempty"`
 	DatePublished         string        `json:"datePublished,omitempty"`
 	DateModified          string        `json:"dateModified,omitempty"`
-	Description           []string      `json:"description,omitempty"`
+	Description           string        `json:"description,omitempty"`
 	Distribution          []MediaObject `json:"distribution,omitempty"`
 	Editor                []Editor      `json:"editor,omitempty"`
 	Encoding              []MediaObject `json:"encoding,omitempty"`
@@ -281,7 +284,7 @@ func Get(url string) (Content, error) {
 		descriptions = append(descriptions, doc.FindMatcher(goquery.Single("meta[property='og:description']")))
 		descriptions = append(descriptions, doc.FindMatcher(goquery.Single("meta[name='twitter:description']")))
 		if len(descriptions) == 0 {
-			content.Description = append(content.Description, lo.Compact(descriptions)[0].Text())
+			content.Description = lo.Compact(descriptions)[0].Text()
 		}
 	}
 
@@ -331,6 +334,33 @@ func Get(url string) (Content, error) {
 	return content, err
 }
 
+// Load loads the metadata for a single work from a JSON file
+func Load(filename string) (commonmeta.Data, error) {
+	var data commonmeta.Data
+	var content Content
+
+	extension := path.Ext(filename)
+	if extension != ".json" {
+		return data, errors.New("invalid file extension")
+	}
+	file, err := os.Open(filename)
+	if err != nil {
+		return data, errors.New("error reading file")
+	}
+	defer file.Close()
+
+	decoder := json.NewDecoder(file)
+	err = decoder.Decode(&content)
+	if err != nil {
+		return data, err
+	}
+	data, err = Read(content)
+	if err != nil {
+		return data, err
+	}
+	return data, nil
+}
+
 // Read reads Schema.org metadata and converts it to commonmeta.
 func Read(content Content) (commonmeta.Data, error) {
 	var data commonmeta.Data
@@ -374,12 +404,10 @@ func Read(content Content) (commonmeta.Data, error) {
 	}
 
 	if len(content.Description) > 0 {
-		for _, desc := range content.Description {
-			data.Descriptions = append(data.Descriptions, commonmeta.Description{
-				Description: utils.Sanitize(desc),
-				Type:        "Abstract",
-			})
-		}
+		data.Descriptions = append(data.Descriptions, commonmeta.Description{
+			Description: utils.Sanitize(content.Description),
+			Type:        "Abstract",
+		})
 	}
 
 	var identifier string

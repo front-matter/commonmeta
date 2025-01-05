@@ -18,7 +18,10 @@
     }
   ],
   "provider": "Crossref",
-  "publisher": { "name": "University of Queensland Library" },
+  "publisher": {
+    "id": "https://api.crossref.org/members/5387",
+    "name": "University of Queensland Library"
+  },
   "titles": [
     {
       "title": "School truancy and financial independence during emerging adulthood: a longitudinal analysis of receipt of and reliance on cash transfers"

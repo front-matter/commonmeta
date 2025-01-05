@@ -10,7 +10,7 @@
       "familyName": "Magland",
       "affiliations": [
         {
-          "name": "Center for Computational Mathematics, Flatiron Institute, New York, United States"
+          "name": "Center for Computational Mathematics, Flatiron Institute"
         }
       ]
     },
@@ -21,7 +21,7 @@
       "familyName": "Jun",
       "affiliations": [
         {
-          "name": "Center for Computational Mathematics, Flatiron Institute, New York, United States"
+          "name": "Center for Computational Mathematics, Flatiron Institute"
         }
       ]
     },
@@ -33,7 +33,7 @@
       "familyName": "Lovero",
       "affiliations": [
         {
-          "name": "Scientific Computing Core, Flatiron Institute, New York, United States"
+          "name": "Scientific Computing Core, Flatiron Institute"
         }
       ]
     },
@@ -45,7 +45,7 @@
       "familyName": "Morley",
       "affiliations": [
         {
-          "name": "Medical Research Council Brain Network Dynamics Unit, University of Oxford, Oxford, United Kingdom"
+          "name": "Medical Research Council Brain Network Dynamics Unit, University of Oxford"
         }
       ]
     },
@@ -57,7 +57,7 @@
       "familyName": "Hurwitz",
       "affiliations": [
         {
-          "name": "Institute for Adaptive and Neural Computation Informatics, University of Edinburgh, Edinburgh, United Kingdom"
+          "name": "Institute for Adaptive and Neural Computation Informatics, University of Edinburgh"
         }
       ]
     },
@@ -68,7 +68,7 @@
       "familyName": "Buccino",
       "affiliations": [
         {
-          "name": "Centre for IntegrativeNeuroplasticity (CINPLA), University of Oslo, Oslo, Norway"
+          "name": "Centre for IntegrativeNeuroplasticity (CINPLA), University of Oslo"
         }
       ]
     },
@@ -79,7 +79,7 @@
       "familyName": "Garcia",
       "affiliations": [
         {
-          "name": "Centre de Recherche en Neuroscience de Lyon, Université de Lyon, Lyon, France"
+          "name": "Centre de Recherche en Neuroscience de Lyon, Université de Lyon"
         }
       ]
     },
@@ -90,7 +90,7 @@
       "familyName": "Barnett",
       "affiliations": [
         {
-          "name": "Center for Computational Mathematics, Flatiron Institute, New York, United States"
+          "name": "Center for Computational Mathematics, Flatiron Institute"
         }
       ]
     }
@@ -107,11 +107,14 @@
     "url": "https://creativecommons.org/licenses/by/4.0/legalcode"
   },
   "provider": "Crossref",
-  "publisher": { "name": "eLife Sciences Publications, Ltd" },
+  "publisher": {
+    "id": "https://api.crossref.org/members/4374",
+    "name": "eLife Sciences Publications, Ltd"
+  },
   "titles": [
     {
       "title": "Author response: SpikeForest, reproducible web-facing ground-truth validation of automated neural spike sorters"
     }
   ],
-  "url": "https://elifesciences.org/articles/55167#sa2"
+  "url": "https://elifesciences.org/articles/55167v1/peer-reviews"
 }

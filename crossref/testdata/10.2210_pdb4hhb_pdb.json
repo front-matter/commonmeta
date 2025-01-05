@@ -23,7 +23,10 @@
     }
   ],
   "provider": "Crossref",
-  "publisher": { "name": "Worldwide Protein Data Bank" },
+  "publisher": {
+    "id": "https://api.crossref.org/members/7763",
+    "name": "Worldwide Protein Data Bank"
+  },
   "titles": [
     {
       "title": "THE CRYSTAL STRUCTURE OF HUMAN DEOXYHAEMOGLOBIN AT 1.74 ANGSTROMS RESOLUTION"

@@ -186,11 +186,11 @@ type Content struct {
 		} `json:"primary"`
 	} `json:"resource"`
 	Subject  []string `json:"subject"`
-	Subtitle []string `json:"subtitle"`
+	Subtitle []string `json:"subtitle,omitempty"`
 	Title    []string `json:"title"`
 	URL      string   `json:"url"`
-	Version  string   `json:"version"`
-	Volume   string   `json:"volume"`
+	Version  string   `json:"version,omitempty"`
+	Volume   string   `json:"volume,omitempty"`
 }
 
 // CRToCMMappings maps Crossref types to Commonmeta types
@@ -738,21 +738,27 @@ func Read(content Content) (commonmeta.Data, error) {
 	}
 
 	if len(content.Title) > 0 && content.Title[0] != "" {
-		data.Titles = append(data.Titles, commonmeta.Title{
-			Title: content.Title[0],
-		})
+		for _, v := range content.Title {
+			data.Titles = append(data.Titles, commonmeta.Title{
+				Title: v,
+			})
+		}
 	}
 	if len(content.Subtitle) > 0 && content.Subtitle[0] != "" {
-		data.Titles = append(data.Titles, commonmeta.Title{
-			Title: content.Subtitle[0],
-			Type:  "Subtitle",
-		})
+		for _, v := range content.Subtitle {
+			data.Titles = append(data.Titles, commonmeta.Title{
+				Title: v,
+				Type:  "Subtitle",
+			})
+		}
 	}
 	if len(content.OriginalTitle) > 0 && content.OriginalTitle[0] != "" {
-		data.Titles = append(data.Titles, commonmeta.Title{
-			Title: content.OriginalTitle[0],
-			Type:  "TranslatedTitle",
-		})
+		for _, v := range content.OriginalTitle {
+			data.Titles = append(data.Titles, commonmeta.Title{
+				Title: v,
+				Type:  "OriginalTitle",
+			})
+		}
 	}
 
 	data.URL = content.Resource.Primary.URL
