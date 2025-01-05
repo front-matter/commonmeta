@@ -12,8 +12,8 @@ import (
 )
 
 // Convert converts commonmeta metadata to Schema.org metadata.
-func Convert(data commonmeta.Data) (SchemaOrg, error) {
-	var schemaorg SchemaOrg
+func Convert(data commonmeta.Data) (Schemaorg, error) {
+	var schemaorg Schemaorg
 
 	schemaorg.Context = "http://schema.org"
 	schemaorg.ID = data.ID
@@ -183,7 +183,7 @@ func Write(data commonmeta.Data) ([]byte, error) {
 
 // WriteAll writes a list of schemaorg metadata.
 func WriteAll(list []commonmeta.Data) ([]byte, error) {
-	var schemaorgList []SchemaOrg
+	var schemaorgList []Schemaorg
 	for _, data := range list {
 		csl, err := Convert(data)
 		if err != nil {

@@ -18,7 +18,7 @@ Commonmeta reads and/or writes these metadata formats:
 | [CrossRef XML](https://www.crossref.org/schema/documentation/unixref1.1/unixref1.1.html) | crossrefxml      | application/vnd.crossref.unixref+xml   | yes | yes |
 | [Crossref](https://api.crossref.org)                                                             | crossref | application/vnd.crossref+json          | yes     | n/a     |
 | [DataCite](https://api.datacite.org/)                                                            | datacite | application/vnd.datacite.datacite+json | yes     | yes |
-| [Schema.org (in JSON-LD)](http://schema.org/)                                                    | schemaorg    | application/vnd.schemaorg.ld+json      | planned   | yes   |
+| [Schema.org (in JSON-LD)](http://schema.org/)                                                    | schemaorg    | application/vnd.schemaorg.ld+json      | yes   | yes   |
 | [RDF XML](http://www.w3.org/TR/rdf-syntax-grammar/)                                              | rdf       | application/rdf+xml                    | no      | later   |
 | [RDF Turtle](http://www.w3.org/TeamSubmission/turtle/)                                           | turtle        | text/turtle                            | no      | later   |
 | [CSL-JSON](https://citationstyles.org/)                                                     | csl      | application/vnd.citationstyles.csl+json | yes | yes   |

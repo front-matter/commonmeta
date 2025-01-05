@@ -2,6 +2,7 @@ package schemaorg_test
 
 import (
 	"encoding/json"
+	"errors"
 	"os"
 	"path/filepath"
 	"strings"
@@ -46,25 +47,21 @@ func TestWrite(t *testing.T) {
 		if err != nil {
 			t.Errorf("Schemaorg Write (%v): error %v", tc.id, err)
 		}
-		// read json file from testdata folder and convert to Schemaorg struct
+		// read json file from testdata folder and convert to Data struct
 		doi, ok := doiutils.ValidateDOI(tc.id)
 		if !ok {
-			t.Fatal("invalid doi")
+			t.Fatal(errors.New("invalid doi"))
 		}
 		filename := strings.ReplaceAll(doi, "/", "_") + ".json"
 		filepath := filepath.Join("testdata/writer", filename)
-		bytes, err := os.ReadFile(filepath)
+		content, err := os.ReadFile(filepath)
 		if err != nil {
 			t.Fatal(err)
 		}
-
-		var want schemaorg.SchemaOrg
-		err = json.Unmarshal(bytes, &want)
-		if err != nil {
-			t.Fatal(err)
-		}
+		var want schemaorg.Schemaorg
+		_ = json.Unmarshal(content, &want)
 		if diff := cmp.Diff(want, got); diff != "" {
-			t.Errorf("Fetch (%s) mismatch (-want +got):\n%s", tc.id, diff)
+			t.Errorf("Schemaorg Fetch (%v): -want +got %s", tc.id, diff)
 		}
 	}
 }

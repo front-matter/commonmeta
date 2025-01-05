@@ -21,8 +21,8 @@ import (
 	"github.com/samber/lo"
 )
 
-// SchemaOrg represents the Schema.org metadata.
-type SchemaOrg struct {
+// Schemaorg represents the Schema.org metadata.
+type Schemaorg struct {
 	Context               string        `json:"@context"`
 	ID                    string        `json:"@id"`
 	Type                  string        `json:"@type"`
@@ -56,11 +56,11 @@ type SchemaOrg struct {
 	Version               string        `json:"version,omitempty"`
 }
 
-// Content represents the SchemaOrg metadata returned from SchemaOrg sources. The type is more
-// flexible than the SchemaOrg type, allowing for different formats of some metadata.
+// Content represents the Schemaorg metadata returned from Schemaorg sources. The type is more
+// flexible than the Schemaorg type, allowing for different formats of some metadata.
 // Identifier can be string or []string.
 type Content struct {
-	SchemaOrg
+	Schemaorg
 	Author      json.RawMessage `json:"author,omitempty"`
 	Creator     json.RawMessage `json:"creator,omitempty"`
 	Contributor json.RawMessage `json:"contributor,omitempty"`
