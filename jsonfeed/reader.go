@@ -270,7 +270,10 @@ func Read(content Content) (commonmeta.Data, error) {
 
 	if content.DOI != "" {
 		data.ID = doiutils.NormalizeDOI(content.DOI)
-	} else if content.Blog.Prefix != "" {
+	} else if content.GUID != "" {
+		data.ID = doiutils.NormalizeDOI(content.GUID)
+	}
+	if data.ID == "" && content.Blog.Prefix != "" {
 		// optionally generate a DOI string if missing but a DOI prefix is provided
 		data.ID = doiutils.EncodeDOI(content.Blog.Prefix)
 	} else {
