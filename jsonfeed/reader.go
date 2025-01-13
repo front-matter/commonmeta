@@ -276,7 +276,7 @@ func Read(content Content) (commonmeta.Data, error) {
 	if data.ID == "" && content.Blog.Prefix != "" {
 		// optionally generate a DOI string if missing but a DOI prefix is provided
 		data.ID = doiutils.EncodeDOI(content.Blog.Prefix)
-	} else {
+	} else if data.ID == "" {
 		data.ID = content.URL
 	}
 	data.Type = "Article"
