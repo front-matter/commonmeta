@@ -271,7 +271,14 @@ func Read(content Content) (commonmeta.Data, error) {
 	if content.DOI != "" {
 		data.ID = doiutils.NormalizeDOI(content.DOI)
 	} else if content.GUID != "" {
-		data.ID = doiutils.NormalizeDOI(content.GUID)
+		// use GUID as DOI string if prefix matches blog prefix
+		// and suffix is base32 encoded number with checksum
+		doi := doiutils.NormalizeDOI(content.GUID)
+		prefix, ok := doiutils.ValidatePrefix(doi)
+		number, err := utils.DecodeID(doi)
+		if ok && prefix == content.Blog.Prefix && number != 0 && err == nil {
+			data.ID = doi
+		}
 	}
 	if data.ID == "" && content.Blog.Prefix != "" {
 		// optionally generate a DOI string if missing but a DOI prefix is provided
