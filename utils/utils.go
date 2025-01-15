@@ -9,12 +9,15 @@ import (
 	"net/http"
 	"net/url"
 	"regexp"
+	"strconv"
 	"strings"
 	"time"
 
 	iso639_3 "github.com/barbashov/iso639-3"
+	"github.com/front-matter/commonmeta/crockford"
 	"github.com/front-matter/commonmeta/doiutils"
 	"github.com/microcosm-cc/bluemonday"
+	"github.com/pkosilo/iso7064"
 )
 
 // ROR represents a Research Organization Registry (ROR) record
@@ -567,6 +570,34 @@ func GetLanguage(lang string, format string) string {
 	} else {
 		return language.Part1
 	}
+}
+
+func DecodeID(id string) (int64, error) {
+	var number int64
+	var ok bool
+	var err error
+
+	identifier, identifierType := ValidateID(id)
+	if identifierType == "DOI" {
+		suffix := strings.Split(identifier, "/")[1]
+		number, err = crockford.Decode(suffix, true)
+	} else if identifierType == "ROR" {
+		number, err = crockford.Decode(identifier, true)
+	} else if identifierType == "ORCID" {
+		str := identifier
+		identifier = strings.ReplaceAll(identifier, "-", "")
+		calc := iso7064.NewMod112Calculator()
+		ok, _ = calc.Verify(identifier)
+		if !ok {
+			cs := identifier[len(identifier)-1:]
+			return 0, fmt.Errorf("wrong checksum %s for identifier %s", cs, str)
+		}
+		number, err = strconv.ParseInt(identifier[:len(identifier)-1], 10, 64)
+		if err != nil {
+			fmt.Println(err)
+		}
+	}
+	return number, err
 }
 
 // ParseString parses an interface into a string

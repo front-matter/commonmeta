@@ -6,21 +6,28 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/front-matter/commonmeta/utils"
 	"github.com/spf13/cobra"
 )
 
 // decodeCmd represents the decode command
 var decodeCmd = &cobra.Command{
 	Use:   "decode",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "Decode a DOI string encoded with Crockford's Base32",
+	Long: `Decode a DOI string encoded with Crockford's Base32. Example usage:
+	
+	commonmeta decode 10.54900/d3ck1-skq19`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("decode called")
+		if len(args) == 0 {
+			fmt.Println("Please provide an input")
+			return
+		}
+		number, err := utils.DecodeID(args[0])
+		if err != nil {
+			cmd.Println(err)
+			return
+		}
+		cmd.Println(number)
 	},
 }
 

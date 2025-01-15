@@ -175,6 +175,8 @@ func TestValidateROR(t *testing.T) {
 	}
 	testCases := []testCase{
 		{input: "https://ror.org/0342dzm54", want: "0342dzm54"},
+		//{input: "ror.org/0342dzm54", want: "0342dzm54"},
+		{input: "0342dzm54", want: "0342dzm54"},
 	}
 	for _, tc := range testCases {
 		got, ok := utils.ValidateROR(tc.input)
@@ -263,6 +265,28 @@ func TestValidateID(t *testing.T) {
 		if tc.want != type_ {
 			t.Errorf("Validate ID(%v): want %v, got %v (%v)",
 				tc.input, tc.want, got, type_)
+		}
+	}
+}
+
+func TestDecodeID(t *testing.T) {
+	t.Parallel()
+	type testCase struct {
+		input string
+		want  int64
+	}
+	testCases := []testCase{
+		{input: "https://doi.org/10.59350/gp7b7-zw139", want: 0},
+		{input: "https://doi.org/10.7554/elife.01567", want: 0},
+		{input: "10.1101/097196", want: 0},
+		{input: "https://ror.org/0342dzm54", want: 104937460},
+		{input: "https://orcid.org/0000-0003-1419-2405", want: 31419240},
+	}
+	for _, tc := range testCases {
+		got, _ := utils.DecodeID(tc.input)
+		if tc.want != got {
+			t.Errorf("Decode ID(%v): want %v, got %v",
+				tc.input, tc.want, got)
 		}
 	}
 }

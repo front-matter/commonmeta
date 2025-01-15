@@ -13,13 +13,13 @@ import (
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:     "commonmeta",
-	Version: "v0.6.29",
+	Version: "v0.6.30",
 	Short:   "Convert scholarly metadata from one format to another",
 	Long: `Convert scholarly metadata between formats. Currently
 supported input formats are Crossref and DataCite DOIs, currently
 the only supported output format is Commonmeta. Example usage:
 
-commonmeta 10.5555/12345678`,
+commonmeta convert 10.5555/12345678`,
 
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("root called")

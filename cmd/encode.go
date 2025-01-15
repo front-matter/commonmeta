@@ -14,7 +14,8 @@ import (
 var encodeCmd = &cobra.Command{
 	Use:   "encode",
 	Short: "Generate a random DOI string given a prefix",
-	Long:  `Generate a random DOI string given a prefix. For example: commonmeta encode 10.5555`,
+	Long: `Generate a random DOI string given a prefix. Example usage: 
+	commonmeta encode 10.5555`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 0 {
 			fmt.Println("Please provide an input")

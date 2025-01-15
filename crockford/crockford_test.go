@@ -72,12 +72,33 @@ func TestDecode(t *testing.T) {
 		{input: "f9zqn-sf065", want: 538751765283013, checksum: false},
 		{input: "v2gec-5xt36", want: 930412369850, checksum: true},
 		{input: "axgv5-6aq92", want: 375301249367, checksum: true},
+		{input: "elife.01567", want: 0, checksum: false},
 	}
 	for _, tc := range testCases {
 		got, err := crockford.Decode(tc.input, tc.checksum)
 		if tc.want != got {
 			t.Errorf("Decode(%v): want %v, got %v, error %v",
 				tc.input, tc.want, got, err)
+		}
+	}
+}
+
+func TestNormalize(t *testing.T) {
+	t.Parallel()
+	type testCase struct {
+		input string
+		want  string
+	}
+	testCases := []testCase{
+		{input: "f9ZQNSF065", want: "f9zqnsf065"},
+		{input: "f9zqn-sf065", want: "f9zqnsf065"},
+		{input: "f9Llio", want: "f91110"},
+	}
+	for _, tc := range testCases {
+		got := crockford.Normalize(tc.input)
+		if tc.want != got {
+			t.Errorf("Normalize(%v): want %v, got %v",
+				tc.input, tc.want, got)
 		}
 	}
 }

@@ -80,27 +80,48 @@ func Generate(length int, splitEvery int, checksum bool) string {
 }
 
 // Decode a URI-friendly Douglas Crockford base32 string to a number.
-func Decode(encoded string, checksum bool) (int64, error) {
-	var encodedChecksum int64
-	number := int64(0)
-	encoded = strings.ReplaceAll(encoded, "-", "")
+func Decode(str string, checksum bool) (int64, error) {
+	var encoded string
+	var number, cs int64
+	var ok bool
+	var err error
+
+	encoded = Normalize(str)
 	if checksum {
-		encodedChecksum, _ = strconv.ParseInt(encoded[len(encoded)-2:], 10, 64)
+		// checksum is the last two characters
+		cs, err = strconv.ParseInt(encoded[len(encoded)-2:], 10, 64)
 		encoded = encoded[:len(encoded)-2]
 	}
 	for _, c := range encoded {
 		number *= 32
 		pos := strings.Index(ENCODING_CHARS, string(c))
+		// invalid character, stop decoding and return 0
 		if pos == -1 {
 			return 0, fmt.Errorf("invalid character: %s", string(c))
 		}
 		number += int64(pos)
 	}
 	if checksum {
-		computedChecksum := 97 - ((100 * number) % 97) + 1
-		if computedChecksum != encodedChecksum {
-			return 0, fmt.Errorf("invalid checksum: %d", encodedChecksum)
+		ok = Validate(number, cs)
+		if !ok {
+			return 0, fmt.Errorf("wrong checksum %d for identifier %s", cs, str)
 		}
 	}
-	return number, nil
+	return number, err
+}
+
+// Normalize returns a normalized encoded string for base32 encoding.
+func Normalize(str string) string {
+	normalized := strings.ToLower(str)
+	normalized = strings.ReplaceAll(normalized, "-", "")
+	normalized = strings.ReplaceAll(normalized, "i", "1")
+	normalized = strings.ReplaceAll(normalized, "l", "1")
+	normalized = strings.ReplaceAll(normalized, "o", "0")
+	return normalized
+}
+
+// Validate returns true if the encoded string is a valid base32 string with checksum.
+func Validate(number int64, checksum int64) bool {
+	computed_checksum := 97 - ((100 * number) % 97) + 1
+	return computed_checksum == checksum
 }
