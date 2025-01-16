@@ -118,6 +118,7 @@ func TestValidateORCID(t *testing.T) {
 		{input: "0000-0002-1825-0097", want: "0000-0002-1825-0097"},
 		{input: "https://sandbox.orcid.org/0000-0002-1825-0097", want: "0000-0002-1825-0097"},
 		{input: "0000-0002-1825-009", want: ""}, // invalid ORCID
+		{input: "0009-0002-1825-0097", want: "0009-0002-1825-0097"},
 	}
 	for _, tc := range testCases {
 		got, ok := utils.ValidateORCID(tc.input)
@@ -276,7 +277,8 @@ func TestDecodeID(t *testing.T) {
 		want  int64
 	}
 	testCases := []testCase{
-		{input: "https://doi.org/10.59350/gp7b7-zw139", want: 0},
+		{input: "https://doi.org/10.59350/b8pcg-q9k70", want: 387298385203},
+		{input: "10.5555/ka4bq-90315", want: 663718962179},
 		{input: "https://doi.org/10.7554/elife.01567", want: 0},
 		{input: "10.1101/097196", want: 0},
 		{input: "https://ror.org/0342dzm54", want: 104937460},

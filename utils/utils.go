@@ -402,8 +402,12 @@ func NormalizeORCID(orcid string) string {
 }
 
 // ValidateORCID validates an ORCID
+// ORCID is a 16-character string in blocks of four
+// separated by hyphens between
+// 0000-0001-5000-0007 and 0000-0003-5000-0001,
+// or between 0009-0000-0000-0000 and 0009-0010-0000-0000.
 func ValidateORCID(orcid string) (string, bool) {
-	r, err := regexp.Compile(`^(?:(?:http|https)://(?:(?:www|sandbox)?\.)?orcid\.org/)?(\d{4}[ -]\d{4}[ -]\d{4}[ -]\d{3}[0-9X]+)$`)
+	r, err := regexp.Compile(`^(?:(?:http|https)://(?:(?:www|sandbox)?\.)?orcid\.org/)?(000[09][ -]00\d{2}[ -]\d{4}[ -]\d{3}[0-9X]+)$`)
 	if err != nil {
 		log.Printf("Error compiling regex: %v", err)
 		return "", false
@@ -424,9 +428,10 @@ func NormalizeROR(ror string) string {
 	return "https://ror.org/" + rorStr
 }
 
-// ValidateROR validates a ROR
+// ValidateROR validates a ROR ID. The ROR ID starts with 0 followed by a 6-character
+// alphanumeric string which is base32-encoded and a 2-digit checksum.
 func ValidateROR(ror string) (string, bool) {
-	r, err := regexp.Compile(`^(?:(?:http|https)://ror\.org/)?([0-9a-z]{7}\d{2})$`)
+	r, err := regexp.Compile(`^(?:(?:http|https)://ror\.org/)?(0[0-9a-z]{6}\d{2})$`)
 	if err != nil {
 		log.Printf("Error compiling regex: %v", err)
 		return "", false
@@ -579,9 +584,15 @@ func DecodeID(id string) (int64, error) {
 
 	identifier, identifierType := ValidateID(id)
 	if identifierType == "DOI" {
+		// the format of a DOI is a prefix and a suffix separated by a slash
+		// the prefix starts with 10. and is followed by 4-5 digits
+		// the suffix is a string of characters and is not case-sensitive
+		// suffixes from Rogue Scholar are base32-encoded numbers with checksums
 		suffix := strings.Split(identifier, "/")[1]
 		number, err = crockford.Decode(suffix, true)
 	} else if identifierType == "ROR" {
+		// ROR ID is a 9-character string that starts with 0
+		// and is a base32-encoded number with a mod 97-1
 		number, err = crockford.Decode(identifier, true)
 	} else if identifierType == "ORCID" {
 		str := identifier
@@ -596,6 +607,8 @@ func DecodeID(id string) (int64, error) {
 		if err != nil {
 			fmt.Println(err)
 		}
+	} else {
+		return 0, fmt.Errorf("identifier %s not recognized", id)
 	}
 	return number, err
 }

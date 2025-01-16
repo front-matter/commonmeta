@@ -21,7 +21,7 @@ func TestEncode(t *testing.T) {
 		{input: 1234, want: "16-j", splitEvery: 2, length: 0, checksum: false},
 		{input: 1234, want: "01-6j", splitEvery: 2, length: 4, checksum: false},
 		{input: 538751765283013, want: "f9zqn-sf065", splitEvery: 5, length: 10, checksum: false},
-		{input: 123456789012, want: "3jz9j-6gm44", splitEvery: 5, length: 10, checksum: true},
+		{input: 324712168277, want: "9ed5m-ytn30", splitEvery: 5, length: 10, checksum: true},
 	}
 	for _, tc := range testCases {
 		got := crockford.Encode(tc.input, tc.splitEvery, tc.length, tc.checksum)
@@ -70,8 +70,9 @@ func TestDecode(t *testing.T) {
 		{input: "16-j", want: 1234, checksum: false},
 		{input: "01-6j", want: 1234, checksum: false},
 		{input: "f9zqn-sf065", want: 538751765283013, checksum: false},
-		{input: "v2gec-5xt36", want: 930412369850, checksum: true},
-		{input: "axgv5-6aq92", want: 375301249367, checksum: true},
+		{input: "twwjw-1ww98", want: 924377286556, checksum: true},
+		{input: "9ed5m-ytn", want: 324712168277, checksum: false},
+		{input: "9ed5m-ytn30", want: 324712168277, checksum: true},
 		{input: "elife.01567", want: 0, checksum: false},
 	}
 	for _, tc := range testCases {
@@ -98,6 +99,45 @@ func TestNormalize(t *testing.T) {
 		got := crockford.Normalize(tc.input)
 		if tc.want != got {
 			t.Errorf("Normalize(%v): want %v, got %v",
+				tc.input, tc.want, got)
+		}
+	}
+}
+
+func TestGenerateChecksum(t *testing.T) {
+	t.Parallel()
+	type testCase struct {
+		input int64
+		want  int64
+	}
+	testCases := []testCase{
+		{input: 450320459383, want: 85},
+		{input: 123456789012, want: 44},
+	}
+	for _, tc := range testCases {
+		got := crockford.GenerateChecksum(tc.input)
+		if tc.want != got {
+			t.Errorf("GenerateChecksum(%v): want %v, got %v",
+				tc.input, tc.want, got)
+		}
+	}
+}
+
+func TestValidate(t *testing.T) {
+	t.Parallel()
+	type testCase struct {
+		input    int64
+		checksum int64
+		want     bool
+	}
+	testCases := []testCase{
+		{input: 375301249367, checksum: 92, want: true},
+		{input: 930412369850, checksum: 36, want: true},
+	}
+	for _, tc := range testCases {
+		got := crockford.Validate(tc.input, tc.checksum)
+		if tc.want != got {
+			t.Errorf("Validate(%v): want %v, got %v",
 				tc.input, tc.want, got)
 		}
 	}

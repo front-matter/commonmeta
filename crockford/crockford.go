@@ -41,12 +41,9 @@ func Encode(number int64, splitEvery int, length int, checksum bool) string {
 	if length > 0 && len(encoded) < length {
 		encoded = strings.Repeat("0", length-len(encoded)) + encoded
 	}
-	if length > 0 {
-		encoded = encoded[:length]
-	}
 
 	if checksum {
-		computedChecksum := 97 - ((100 * originalNumber) % 97) + 1
+		computedChecksum := GenerateChecksum(originalNumber)
 		encoded += fmt.Sprintf("%02d", computedChecksum)
 	}
 
@@ -72,6 +69,10 @@ func Generate(length int, splitEvery int, checksum bool) string {
 	if checksum && length < 3 {
 		panic("Invalid 'length'. Must be >= 3 if checksum enabled.")
 	}
+	// fixes number size, otherwise decoding checksum check will fail
+	if checksum {
+		length -= 2
+	}
 	// generate a random number between 0 and 32^length
 	n := math.Pow(float64(32), float64(length))
 	number := int64(rand.IntN(int(n)))
@@ -90,6 +91,9 @@ func Decode(str string, checksum bool) (int64, error) {
 	if checksum {
 		// checksum is the last two characters
 		cs, err = strconv.ParseInt(encoded[len(encoded)-2:], 10, 64)
+		if err != nil {
+			return 0, fmt.Errorf("invalid checksum: %s", encoded[len(encoded)-2:])
+		}
 		encoded = encoded[:len(encoded)-2]
 	}
 	for _, c := range encoded {
@@ -104,7 +108,7 @@ func Decode(str string, checksum bool) (int64, error) {
 	if checksum {
 		ok = Validate(number, cs)
 		if !ok {
-			return 0, fmt.Errorf("wrong checksum %d for identifier %s", cs, str)
+			return 0, fmt.Errorf("wrong checksum %02d for identifier %s", cs, str)
 		}
 	}
 	return number, err
@@ -122,6 +126,11 @@ func Normalize(str string) string {
 
 // Validate returns true if the encoded string is a valid base32 string with checksum.
 func Validate(number int64, checksum int64) bool {
-	computed_checksum := 97 - ((100 * number) % 97) + 1
-	return computed_checksum == checksum
+	return checksum == GenerateChecksum(number)
+}
+
+// GenerateChecksum returns the checksum for a number using ISO 7064 (mod 97-10).
+func GenerateChecksum(number int64) int64 {
+	checksum := 97 - ((100 * number) % 97) + 1
+	return checksum
 }
