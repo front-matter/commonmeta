@@ -12,6 +12,8 @@ import (
 
 // UpdateLegacyRecord updates a record in Rogue Scholar legacy database.
 func UpdateLegacyRecord(record commonmeta.APIResponse, legacyKey string, field string) (commonmeta.APIResponse, error) {
+	var legacyHost = "zggonsjmmfozmfxlrjmg.supabase.co"
+
 	if legacyKey == "" {
 		return record, fmt.Errorf("no legacy key provided")
 	}
@@ -27,7 +29,7 @@ func UpdateLegacyRecord(record commonmeta.APIResponse, legacyKey string, field s
 	} else {
 		return record, fmt.Errorf("no valid field to update")
 	}
-	requestURL := fmt.Sprintf("https://db.rogue-scholar.org/rest/v1/posts?id=eq.%s", record.UUID)
+	requestURL := fmt.Sprintf("https://%s/rest/v1/posts?id=eq.%s", legacyHost, record.UUID)
 	req, _ := http.NewRequest(http.MethodPatch, requestURL, bytes.NewReader(output))
 	req.Header = http.Header{
 		"Content-Type":  {"application/json"},
