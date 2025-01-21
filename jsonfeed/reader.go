@@ -95,6 +95,7 @@ type Reference struct {
 	ID              string `json:"id"`
 	PublicationYear string `json:"publicationYear"`
 	Title           string `json:"title"`
+	Unstructured    string `json:"unstructured"`
 }
 
 // relation types to include
@@ -414,6 +415,7 @@ func Read(content Content) (commonmeta.Data, error) {
 				ID:              v.ID,
 				Title:           v.Title,
 				PublicationYear: v.PublicationYear,
+				Unstructured:    v.Unstructured,
 			}
 			containsKey := slices.ContainsFunc(data.References, func(e commonmeta.Reference) bool {
 				return e.Key != "" && e.Key == reference.Key

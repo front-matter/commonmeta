@@ -332,6 +332,9 @@ func Convert(data commonmeta.Data) (Inveniordm, error) {
 				} else {
 					unstructured = "Unknown title"
 				}
+				if v.PublicationYear != "" {
+					unstructured += " (" + v.PublicationYear + ")."
+				}
 			} else {
 				if v.ID != "" {
 					// remove duplicate ID from unstructured reference
@@ -340,10 +343,6 @@ func Convert(data commonmeta.Data) (Inveniordm, error) {
 				// remove optional trailing period
 				unstructured = strings.TrimSuffix(unstructured, " .")
 			}
-			if v.PublicationYear != "" {
-				unstructured += " (" + v.PublicationYear + ")."
-			}
-
 			reference := Reference{
 				Reference:  unstructured,
 				Scheme:     scheme,
