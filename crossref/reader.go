@@ -81,6 +81,9 @@ type Content struct {
 		DateAsParts []dateutils.DateSlice `json:"date-parts"`
 		DateTime    string                `json:"date-time"`
 	} `json:"created"`
+	Institution []struct {
+		Name string `json:"name"`
+	} `json:"institution"`
 	ISSNType []struct {
 		Value string `json:"value"`
 		Type  string `json:"type"`
@@ -508,6 +511,8 @@ func Read(content Content) (commonmeta.Data, error) {
 	var containerTitle string
 	if len(content.ContainerTitle) > 0 {
 		containerTitle = content.ContainerTitle[0]
+	} else if len(content.Institution) > 0 {
+		containerTitle = content.Institution[0].Name
 	}
 	var lastPage string
 	pages := strings.Split(content.Page, "-")
@@ -644,7 +649,7 @@ func Read(content Content) (commonmeta.Data, error) {
 	})
 
 	data.Language = content.Language
-	if content.License != nil && len(content.License) > 0 {
+	if len(content.License) > 0 {
 		url, _ := utils.NormalizeCCUrl(content.License[0].URL)
 		id := utils.URLToSPDX(url)
 		data.License = commonmeta.License{
@@ -697,10 +702,11 @@ func Read(content Content) (commonmeta.Data, error) {
 				var id string
 				if v.IDType == "doi" {
 					id = doiutils.NormalizeDOI(v.ID)
-				} else if v.IDType == "issn" {
-					id = utils.ISSNAsURL(v.ID)
 				} else if utils.ValidateURL(v.ID) == "URL" {
 					id = v.ID
+				} else if v.IDType == "issn" {
+					data.Container.IdentifierType = "ISSN"
+					data.Container.Identifier = v.ID
 				}
 				relation := commonmeta.Relation{
 					ID:   id,
