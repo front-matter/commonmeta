@@ -408,21 +408,18 @@ func Read(content Content) (commonmeta.Data, error) {
 	}
 
 	for _, v := range content.Reference {
-		_, idtype := utils.ValidateID(v.ID)
-		if idtype == "DOI" || idtype == "URL" {
-			reference := commonmeta.Reference{
-				Key:             v.Key,
-				ID:              v.ID,
-				Title:           v.Title,
-				PublicationYear: v.PublicationYear,
-				Unstructured:    v.Unstructured,
-			}
-			containsKey := slices.ContainsFunc(data.References, func(e commonmeta.Reference) bool {
-				return e.Key != "" && e.Key == reference.Key
-			})
-			if !containsKey {
-				data.References = append(data.References, reference)
-			}
+		reference := commonmeta.Reference{
+			Key:             v.Key,
+			ID:              v.ID,
+			Title:           v.Title,
+			PublicationYear: v.PublicationYear,
+			Unstructured:    v.Unstructured,
+		}
+		containsKey := slices.ContainsFunc(data.References, func(e commonmeta.Reference) bool {
+			return e.Key != "" && e.Key == reference.Key
+		})
+		if !containsKey {
+			data.References = append(data.References, reference)
 		}
 	}
 
