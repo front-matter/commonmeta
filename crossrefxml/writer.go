@@ -332,12 +332,19 @@ func Convert(data commonmeta.Data) (Body, error) {
 	if len(data.References) > 0 {
 		for _, v := range data.References {
 			d, _ := doiutils.ValidateDOI(v.ID)
-			if d != "" || v.Unstructured != "" {
+			if d != "" && v.Unstructured != "" {
 				citationList.Citation = append(citationList.Citation, Citation{
 					Key: v.Key,
 					DOI: &DOI{
 						Text: d,
 					},
+					ArticleTitle:       v.Title,
+					CYear:              v.PublicationYear,
+					UnstructedCitation: v.Unstructured,
+				})
+			} else if v.Unstructured != "" {
+				citationList.Citation = append(citationList.Citation, Citation{
+					Key:                v.Key,
 					ArticleTitle:       v.Title,
 					CYear:              v.PublicationYear,
 					UnstructedCitation: v.Unstructured,
