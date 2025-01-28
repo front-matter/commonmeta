@@ -330,11 +330,15 @@ func Convert(data commonmeta.Data) (Body, error) {
 
 	citationList := CitationList{}
 	if len(data.References) > 0 {
-		for _, v := range data.References {
+		for i, v := range data.References {
+			key := v.Key
+			if v.Key == "" {
+				key = fmt.Sprintf("ref%d", i+1)
+			}
 			d, _ := doiutils.ValidateDOI(v.ID)
-			if d != "" && v.Unstructured != "" {
+			if d != "" {
 				citationList.Citation = append(citationList.Citation, Citation{
-					Key: v.Key,
+					Key: key,
 					DOI: &DOI{
 						Text: d,
 					},
