@@ -348,7 +348,7 @@ func Convert(data commonmeta.Data) (Body, error) {
 				})
 			} else if v.Unstructured != "" {
 				citationList.Citation = append(citationList.Citation, Citation{
-					Key:                v.Key,
+					Key:                key,
 					ArticleTitle:       v.Title,
 					CYear:              v.PublicationYear,
 					UnstructedCitation: v.Unstructured,
