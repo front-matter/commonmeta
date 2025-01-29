@@ -127,7 +127,7 @@ nfpms:
     # Umask to be used on files without explicit mode set. (overridable)
     #
     # Default: 0o002 (will remove world-writable permissions).
-    umask: 0o002
+    # umask: 0o002
 
     # Packages your package depends on. (overridable)
     # dependencies:
@@ -160,7 +160,7 @@ nfpms:
     # Path that the binaries should be installed.
     #
     # Default: '/usr/bin'.
-    bindir: /usr/bin
+    # bindir: /usr/bin
 
     # Paths to the directories where to put specific types of libraries that
     # GoReleaser built.
@@ -221,7 +221,7 @@ nfpms:
 
     # Contents to add to the package.
     # GoReleaser will automatically add the binaries.
-    contents:
+    # contents:
       # Basic file that applies to all packagers
       # - src: path/to/foo
       #   dst: /usr/bin/foo
@@ -264,9 +264,9 @@ nfpms:
 
       # Simple symlink.
       # Corresponds to `ln -s /sbin/foo /usr/local/bin/foo`
-      - src: /sbin/commonmeta
-        dst: /usr/bin/commonmeta
-        type: "symlink"
+      # - src: /sbin/commonmeta
+      #   dst: /usr/bin/commonmeta
+      #   type: "symlink"
 
       # Corresponds to `%config(noreplace)` if the packager is rpm, otherwise it
       # is just a config file
@@ -416,7 +416,7 @@ nfpms:
     # ...
 
     # Custom configuration applied only to the RPM packager.
-    rpm:
+    # rpm:
       # RPM specific scripts.
       # scripts:
       #   # The pretrans script runs before all RPM package transactions / stages.
@@ -438,14 +438,14 @@ nfpms:
       # the software, as opposed to the author of the software.
       # `maintainer` will be used as fallback if not specified.
       # This will expand any env var you set in the field, eg packager: ${PACKAGER}
-      packager: GoReleaser <staff@goreleaser.com>
+      # packager: GoReleaser <staff@goreleaser.com>
 
       # Compression algorithm (gzip (default), lzma or xz).
       # compression: lzma
 
       # Prefixes for relocatable packages.
-      prefixes:
-        - /usr/bin
+      # prefixes:
+      #   - /usr/bin
 
       # The package is signed if a key_file is set
       # signature:
@@ -457,7 +457,7 @@ nfpms:
       # key_file: "{{ .Env.GPG_KEY_PATH }}"
 
     # Custom configuration applied only to the Deb packager.
-    deb:
+    # deb:
       # Lintian overrides
       # lintian_overrides:
       #   - statically-linked-binary
@@ -515,7 +515,7 @@ nfpms:
       # predepends:
       #   - baz (>= 1.2.3-0)
 
-    apk:
+    # apk:
       # APK specific scripts.
       # scripts:
       #   # The preupgrade script runs before APK upgrade.
