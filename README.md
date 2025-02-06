@@ -38,7 +38,7 @@ _Later_: we plan to implement this format in a later release.
 
 ## Installation
 
-Commonmeta is a single Go binary, available for download from the [releases page](https://github.com/front-matter/commonmeta/releases). Download the binary for your platform (Linux, Mac, Windows; X86 or ARM architecture), and place it in your PATH.
+Commonmeta is a single Go binary, available for download from the [releases page](https://github.com/front-matter/commonmeta/releases). Download the binary for your platform (Linux, Mac, Windows; X86 or ARM architecture), and place it in your PATH. Linux packages in deb, rpm and apk formats are also available from the releases page. 
 
 ### Homebrew
 
