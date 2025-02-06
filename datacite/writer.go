@@ -48,6 +48,9 @@ func Convert(data commonmeta.Data) (Datacite, error) {
 	if data.AdditionalType != "" {
 		datacite.Types.ResourceType = data.AdditionalType
 	}
+	if data.Type == "BlogPost" {
+		datacite.Types.ResourceType = "BlogPost"
+	}
 	if datacite.Types.ResourceTypeGeneral == "" {
 		datacite.Types.ResourceTypeGeneral = "Other"
 	}

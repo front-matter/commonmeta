@@ -136,7 +136,6 @@ var FOSKeyMappings = map[string]string{
 	"agriculturalBiotechnology":                "Agricultural biotechnology",
 	"otherAgriculturalSciences":                "Other agricultural sciences",
 	"socialScience":                            "Social science",
-	"socialSciences":                           "Social science",
 	"psychology":                               "Psychology",
 	"economicsAndBusiness":                     "Economics and business",
 	"educationalSciences":                      "Educational sciences",
@@ -287,7 +286,7 @@ func Read(content Content) (commonmeta.Data, error) {
 	} else if data.ID == "" {
 		data.ID = content.URL
 	}
-	data.Type = "Article"
+	data.Type = "BlogPost"
 
 	identifier := content.Blog.HomePageURL
 	identifierType := "URL"

@@ -15,6 +15,7 @@ import (
 var CMToCSLMappings = map[string]string{
 	"Article":               "article",
 	"JournalArticle":        "article-journal",
+	"BlogPost":              "post-weblog",
 	"Book":                  "book",
 	"BookChapter":           "chapter",
 	"Collection":            "collection",
@@ -50,7 +51,7 @@ func Convert(data commonmeta.Data) (CSL, error) {
 	if data.Type == "Software" && data.Version != "" {
 		csl.Type = "book"
 	} else if csl.Type == "" {
-		csl.Type = "Document"
+		csl.Type = "document"
 	}
 	csl.ContainerTitle = data.Container.Title
 	doi, _ := doiutils.ValidateDOI(data.ID)

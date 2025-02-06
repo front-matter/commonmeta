@@ -111,7 +111,7 @@ var CSLToCMMappings = map[string]string{
 	"periodical":             "Journal",
 	"personal_communication": "PersonalCommunication",
 	"post":                   "Post",
-	"post-weblog":            "Article",
+	"post-weblog":            "BlogPost",
 	"regulation":             "LegalDocument",
 	"report":                 "Report",
 	"review":                 "Review",

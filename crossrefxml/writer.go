@@ -57,6 +57,7 @@ type Account struct {
 // source: http://api.crossref.org/types
 var CMToCRMappings = map[string]string{
 	"Article":            "PostedContent",
+	"BlogPost":           "PostedContent",
 	"BookChapter":        "BookChapter",
 	"BookSeries":         "BookSeries",
 	"Book":               "Book",
@@ -372,7 +373,7 @@ func Convert(data commonmeta.Data) (Body, error) {
 	}
 
 	switch data.Type {
-	case "Article":
+	case "Article", "BlogPost":
 		var groupTitle string
 		if len(data.Subjects) > 0 {
 			groupTitle = utils.CamelCaseToWords(data.Subjects[0].Subject)

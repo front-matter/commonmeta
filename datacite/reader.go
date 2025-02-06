@@ -223,7 +223,7 @@ type Types struct {
 // source: https://github.com/datacite/schema/blob/master/source/meta/kernel-4/include/datacite-resourceType-v4.xsd
 var DCToCMMappings = map[string]string{
 	"Audiovisual":           "Audiovisual",
-	"BlogPosting":           "Article",
+	"BlogPosting":           "BlogPost",
 	"Book":                  "Book",
 	"BookChapter":           "BookChapter",
 	"Collection":            "Collection",
@@ -260,6 +260,7 @@ var DCToCMMappings = map[string]string{
 var CMToDCMappings = map[string]string{
 	"Article":               "Preprint",
 	"Audiovisual":           "Audiovisual",
+	"BlogPost":              "Preprint",
 	"Book":                  "Book",
 	"BookChapter":           "BookChapter",
 	"Collection":            "Collection",

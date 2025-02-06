@@ -1139,6 +1139,10 @@ func Read(query Query) (commonmeta.Data, error) {
 		ID:   publisherID,
 		Name: publisherName,
 	}
+	// workaround until Crossref supports BlogPost as posted-content type
+	if data.Type == "Article" && data.Publisher.Name == "Front Matter" {
+		data.Type = "BlogPost"
+	}
 
 	if len(citationList.Citation) > 0 {
 		for _, v := range citationList.Citation {

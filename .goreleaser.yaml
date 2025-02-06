@@ -104,7 +104,7 @@ nfpms:
     # Your app's maintainer (probably you).
     #
     # Default: inferred from global metadata.
-    # maintainer: Drummer <drum-roll@example.com>
+    maintainer: Martin Fenner <martin@front-matter.io>
 
     # Your app's description.
     #

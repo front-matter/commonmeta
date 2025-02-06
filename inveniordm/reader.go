@@ -271,6 +271,7 @@ var InvenioToCMMappings = map[string]string{
 var CMToInvenioMappings = map[string]string{
 	"Article":               "publication-preprint",
 	"Audiovisual":           "video",
+	"BlogPost":              "publication-preprint",
 	"Book":                  "publication-book",
 	"BookChapter":           "publication-section",
 	"Collection":            "publication-annotationcollection",
@@ -928,6 +929,10 @@ func Read(content Content) (commonmeta.Data, error) {
 		data.Publisher = commonmeta.Publisher{
 			Name: content.Metadata.Publisher,
 		}
+	}
+	// workaround until InvenioRDM supports BlogPost type
+	if data.Type == "Article" && data.Publisher.Name == "Front Matter" {
+		data.Type = "BlogPost"
 	}
 
 	if len(content.Metadata.Subjects) > 0 {

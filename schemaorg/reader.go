@@ -155,7 +155,7 @@ type Publisher struct {
 // SOToCMMappings maps Schema.org types to Commonmeta types.
 var SOToCMMappings = map[string]string{
 	"Article":            "Article",
-	"BlogPosting":        "Article",
+	"BlogPosting":        "BlogPost",
 	"Book":               "Book",
 	"BookChapter":        "BookChapter",
 	"CreativeWork":       "Other",

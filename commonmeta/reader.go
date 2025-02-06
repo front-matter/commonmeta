@@ -292,6 +292,7 @@ type APIResponse struct {
 var CMToSOMappings = map[string]string{
 	"Article":        "Article",
 	"Audiovisual":    "CreativeWork",
+	"BlogPost":       "BlogPosting",
 	"Book":           "Book",
 	"BookChapter":    "BookChapter",
 	"Collection":     "CreativeWork",

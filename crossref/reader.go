@@ -670,6 +670,11 @@ func Read(content Content) (commonmeta.Data, error) {
 			Name: content.Publisher,
 		}
 	}
+	// workaround until Crossref supports BlogPost as posted-content type
+	if data.Type == "Article" && data.Publisher.Name == "Front Matter" {
+		data.Type = "BlogPost"
+	}
+
 	rxStrict := xurls.Strict()
 	for _, v := range content.Reference {
 		ID := doiutils.NormalizeDOI(v.DOI)

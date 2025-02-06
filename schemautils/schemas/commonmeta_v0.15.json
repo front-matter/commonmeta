@@ -265,17 +265,16 @@
                   "arXiv",
                   "Bibcode",
                   "DOI",
-                  "GUID",
                   "Handle",
                   "ISBN",
                   "ISSN",
                   "PMID",
                   "PMCID",
                   "PURL",
-                  "RID",
                   "URL",
                   "URN",
                   "UUID",
+                  "GUID",
                   "Other"
                 ]
               }
@@ -534,6 +533,7 @@
       "enum": [
         "Article",
         "Audiovisual",
+        "BlogPost",
         "BookChapter",
         "BookPart",
         "BookSection",
@@ -558,7 +558,6 @@
         "Journal",
         "PeerReview",
         "PhysicalObject",
-        "Poster",
         "Presentation",
         "ProceedingsArticle",
         "ProceedingsSeries",
