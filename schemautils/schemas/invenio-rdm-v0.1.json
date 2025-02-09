@@ -83,7 +83,11 @@
                 "id": {
                   "description": "The unique identifier of the resource type.",
                   "type": "string",
-                  "enum": ["dataset", "publication-preprint"]
+                  "enum": [
+                    "dataset",
+                    "publication-blogpost",
+                    "publication-preprint"
+                  ]
                 }
               },
               "required": ["id"]

@@ -253,6 +253,7 @@ var InvenioToCMMappings = map[string]string{
 	"presentation":          "Presentation",
 	"preprint":              "Article",
 	"publication":           "JournalArticle",
+	"publication-blogpost":  "BlogPost",
 	"publication-preprint":  "Article",
 	"report":                "Report",
 	"section":               "BookChapter",
@@ -271,7 +272,7 @@ var InvenioToCMMappings = map[string]string{
 var CMToInvenioMappings = map[string]string{
 	"Article":               "publication-preprint",
 	"Audiovisual":           "video",
-	"BlogPost":              "publication-preprint",
+	"BlogPost":              "publication-blogpost",
 	"Book":                  "publication-book",
 	"BookChapter":           "publication-section",
 	"Collection":            "publication-annotationcollection",
