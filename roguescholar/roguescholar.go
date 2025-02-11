@@ -12,7 +12,7 @@ import (
 
 // UpdateLegacyRecord updates a record in Rogue Scholar legacy database.
 func UpdateLegacyRecord(record commonmeta.APIResponse, legacyKey string, field string) (commonmeta.APIResponse, error) {
-	var legacyHost = "zggonsjmmfozmfxlrjmg.supabase.co"
+	var legacyHost = "bosczcmeodcrajtcaddf.supabase.co"
 
 	if legacyKey == "" {
 		return record, fmt.Errorf("no legacy key provided")
