@@ -32,6 +32,7 @@ type Query struct {
 // Inveniordm represents the InvenioRDM metadata.
 type Inveniordm struct {
 	ID           string       `json:"id,omitempty"`
+	Parent       Parent       `json:"parent"`
 	Pids         Pids         `json:"pids"`
 	Access       Access       `json:"access"`
 	Files        Files        `json:"files"`
@@ -53,6 +54,11 @@ type Content struct {
 type Affiliation struct {
 	ID   string `json:"id,omitempty"`
 	Name string `json:"name"`
+}
+
+type Parent struct {
+	ID          string      `json:"id"`
+	Communities Communities `json:"communities"`
 }
 
 type Pids struct {
@@ -104,6 +110,35 @@ type Award struct {
 
 type AwardTitle struct {
 	En string `json:"en,omitempty"`
+}
+
+type Communities struct {
+	IDS     []string    `json:"ids"`
+	Default string      `json:"default"`
+	Entries []Community `json:"entries"`
+}
+
+type Community struct {
+	ID           string                `json:"id"`
+	Slug         string                `json:"slug"`
+	Created      string                `json:"created"`
+	Updated      string                `json:"updated"`
+	Metadata     CommunityMetadata     `json:"metadata"`
+	CustomFields CommunityCustomFields `json:"custom_fields"`
+}
+
+type CommunityCustomFields struct {
+	ISSN    string `json:"rs:issn,omitempty"`
+	FeedURL string `json:"rs:feed_url,omitempty"`
+}
+
+type CommunityMetadata struct {
+	Title       string `json:"title,omitempty"`
+	Description string `json:"description,omitempty"`
+	Type        struct {
+		ID string `json:"id"`
+	}
+	Website string `json:"website,omitempty"`
 }
 
 type Creator struct {
@@ -486,6 +521,31 @@ var CMToInvenioRelationTypeMappings = map[string]string{
 	"Corrects":          "corrects",
 }
 
+// LicenseMappings maps InvenioRDM license types to Commonmeta license types
+var LicenseMappings = map[string]string{
+	"cc-by-3.0":       "CC-BY-3.0",
+	"cc-by-4.0":       "CC-BY-4.0",
+	"cc-by-nc-3.0":    "CC-BY-NC-3.0",
+	"cc-by-nc-4.0":    "CC-BY-NC-4.0",
+	"cc-by-nc-nd-3.0": "CC-BY-NC-ND-3.0",
+	"cc-by-nc-nd-4.0": "CC-BY-NC-ND-4.0",
+	"cc-by-nc-sa-3.0": "CC-BY-NC-SA-3.0",
+	"cc-by-nc-sa-4.0": "CC-BY-NC-SA-4.0",
+	"cc-by-nd-3.0":    "CC-BY-ND-3.0",
+	"cc-by-nd-4.0":    "CC-BY-ND-4.0",
+	"cc-by-sa-3.0":    "CC-BY-SA-3.0",
+	"cc-by-sa-4.0":    "CC-BY-SA-4.0",
+	"cc0-1.0":         "CC0-1.0",
+	"mit":             "MIT",
+	"apache-2.0":      "Apache-2.0",
+	"gpl-3.0":         "GPL-3.0",
+}
+
+// CommunityTypes maps InvenioRDM community types to Commonmeta container types
+var CommunityTypes = map[string]string{
+	"blog": "Periodical",
+}
+
 // Fetch fetches InvenioRDM metadata and returns Commonmeta metadata.
 func Fetch(str string) (commonmeta.Data, error) {
 	var data commonmeta.Data
@@ -569,6 +629,7 @@ func Get(id string) (Content, error) {
 	if err != nil {
 		return content, err
 	}
+	fmt.Println(string(body))
 	err = json.Unmarshal(body, &content)
 	if err != nil {
 		fmt.Println("error:", err)
@@ -756,16 +817,48 @@ func Read(content Content) (commonmeta.Data, error) {
 		data.Type = InvenioToCMMappings[content.Metadata.ResourceType.Type]
 	}
 
-	// data.Container = commonmeta.Container{
-	// 	Identifier:     content.Container.Identifier,
-	// 	IdentifierType: content.Container.IdentifierType,
-	// 	Type:           content.Container.Type,
-	// 	Title:          content.Container.Title,
-	// 	Volume:         content.Container.Volume,
-	// 	Issue:          content.Container.Issue,
-	// 	FirstPage:      content.Container.FirstPage,
-	// 	LastPage:       content.Container.LastPage,
-	// }
+	if content.Parent.Communities.Default != "" {
+		for _, v := range content.Parent.Communities.Entries {
+			if v.ID == content.Parent.Communities.Default {
+				var identifier, identifierType string
+				if v.CustomFields.ISSN != "" {
+					identifier = v.CustomFields.ISSN
+					identifierType = "ISSN"
+				} else {
+					identifier = utils.CommunitySlugAsURL(v.Slug, "rogue-scholar.org")
+					identifierType = "URL"
+				}
+				type_ := CommunityTypes[v.Metadata.Type.ID]
+				if type_ == "" {
+					type_ = "Community"
+				}
+				data.Container = commonmeta.Container{
+					Identifier:     identifier,
+					IdentifierType: identifierType,
+					Type:           type_,
+					Title:          v.Metadata.Title,
+				}
+				if identifierType == "ISSN" {
+					identifier = utils.ISSNAsURL(identifier)
+				}
+				data.Relations = append(data.Relations, commonmeta.Relation{
+					ID:   identifier,
+					Type: "IsPartOf",
+				})
+				identifier = utils.CommunitySlugAsURL(v.Slug, "rogue-scholar.org")
+				data.Relations = append(data.Relations, commonmeta.Relation{
+					ID:   identifier,
+					Type: "IsPartOf",
+				})
+			} else {
+				identifier := utils.CommunitySlugAsURL(v.Slug, "rogue-scholar.org")
+				data.Relations = append(data.Relations, commonmeta.Relation{
+					ID:   identifier,
+					Type: "IsPartOf",
+				})
+			}
+		}
+	}
 
 	for _, v := range content.Metadata.Creators {
 		var contributor commonmeta.Contributor
@@ -811,7 +904,7 @@ func Read(content Content) (commonmeta.Data, error) {
 		if t == "created" {
 			data.Date.Created = v.Date
 		}
-		if t == "Issued" {
+		if t == "issued" {
 			data.Date.Published = v.Date
 		}
 		if t == "submitted" {
@@ -842,8 +935,29 @@ func Read(content Content) (commonmeta.Data, error) {
 		})
 	}
 
-	// Files not yet supported. Sizes and formats are part of the file object,
-	// but can't be mapped directly
+	if content.CustomFields.FeatureImage != "" {
+		data.FeatureImage = content.CustomFields.FeatureImage
+	}
+
+	if doiutils.IsRogueScholarDOI(data.ID, "") {
+		doi, _ := doiutils.ValidateDOI(data.ID)
+		data.Files = append(data.Files, commonmeta.File{
+			URL:      fmt.Sprintf("https://api.rogue-scholar.org/posts/%s.md", doi),
+			MimeType: "text/markdown",
+		})
+		data.Files = append(data.Files, commonmeta.File{
+			URL:      fmt.Sprintf("https://api.rogue-scholar.org/posts/%s.pdf", doi),
+			MimeType: "application/pdf",
+		})
+		data.Files = append(data.Files, commonmeta.File{
+			URL:      fmt.Sprintf("https://api.rogue-scholar.org/posts/%s.epub", doi),
+			MimeType: "application/epub+zip",
+		})
+		data.Files = append(data.Files, commonmeta.File{
+			URL:      fmt.Sprintf("https://api.rogue-scholar.org/posts/%s.xml", doi),
+			MimeType: "application/xml",
+		})
+	}
 
 	if len(content.Metadata.Funding) > 0 {
 		for _, v := range content.Metadata.Funding {
@@ -905,6 +1019,10 @@ func Read(content Content) (commonmeta.Data, error) {
 	// 	data.GeoLocations = append(data.GeoLocations, geoLocation)
 	//}
 
+	data.Identifiers = append(data.Identifiers, commonmeta.Identifier{
+		Identifier:     data.ID,
+		IdentifierType: "DOI",
+	})
 	if len(content.Metadata.Identifiers) > 0 {
 		for _, v := range content.Metadata.Identifiers {
 			identifier := v.Identifier
@@ -919,11 +1037,40 @@ func Read(content Content) (commonmeta.Data, error) {
 			}
 		}
 	}
+	if content.ID != nil {
+		switch v := content.ID.(type) {
+		case string:
+			data.Identifiers = append(data.Identifiers, commonmeta.Identifier{
+				Identifier:     v,
+				IdentifierType: "RID",
+			})
+		}
+	}
 
 	if len(content.Metadata.Languages) > 0 {
 		data.Language = utils.GetLanguage(content.Metadata.Languages[0].ID, "iso639-1")
 	} else if content.Metadata.Language != "" {
 		data.Language = utils.GetLanguage(content.Metadata.Language, "iso639-1")
+	}
+
+	if len(content.Metadata.Rights) > 0 {
+		licenseID := LicenseMappings[content.Metadata.Rights[0].ID]
+		licenseURL := utils.SPDXToURL(licenseID)
+		data.License = commonmeta.License{
+			ID:  licenseID,
+			URL: licenseURL,
+		}
+	} else if content.Metadata.License.ID != "" {
+		licenseID := LicenseMappings[content.Metadata.License.ID]
+		licenseURL := utils.SPDXToURL(licenseID)
+		data.License = commonmeta.License{
+			ID:  licenseID,
+			URL: licenseURL,
+		}
+	}
+
+	if doiutils.IsRogueScholarDOI(data.ID, "") {
+		data.Provider = "Crossref"
 	}
 
 	if content.Metadata.Publisher != "" {
@@ -939,9 +1086,9 @@ func Read(content Content) (commonmeta.Data, error) {
 	if len(content.Metadata.Subjects) > 0 {
 		for _, v := range content.Metadata.Subjects {
 			s := v.Subject
-			if v.Scheme == "FOS" {
-				s = "FOS: " + s
-			}
+			// if v.Scheme == "FOS" {
+			// 	s = "FOS: " + s
+			// }
 			subject := commonmeta.Subject{
 				Subject: s,
 			}
@@ -960,15 +1107,13 @@ func Read(content Content) (commonmeta.Data, error) {
 		}
 	}
 
-	if len(content.Metadata.Rights) > 0 {
-		id := content.Metadata.Rights[0].ID
-		data.License = commonmeta.License{
-			ID: id,
-		}
-	} else if content.Metadata.License.ID != "" {
-		id := content.Metadata.License.ID
-		data.License = commonmeta.License{
-			ID: id,
+	if len(content.Metadata.References) > 0 {
+		for _, v := range content.Metadata.References {
+			id := utils.NormalizeID(v.Identifier)
+			data.References = append(data.References, commonmeta.Reference{
+				ID:           id,
+				Unstructured: v.Reference,
+			})
 		}
 	}
 
@@ -977,12 +1122,11 @@ func Read(content Content) (commonmeta.Data, error) {
 			"cites",
 			"references",
 		}
-		for i, v := range content.Metadata.RelatedIdentifiers {
+		for _, v := range content.Metadata.RelatedIdentifiers {
 			id := utils.NormalizeID(v.Identifier)
 			if id != "" && slices.Contains(references, v.RelationType.ID) {
 				data.References = append(data.References, commonmeta.Reference{
-					Key: "ref" + strconv.Itoa(i+1),
-					ID:  id,
+					ID: id,
 				})
 			} else if id != "" {
 				t := InvenioToCMRelationTypeMappings[v.RelationType.ID]
@@ -1003,6 +1147,11 @@ func Read(content Content) (commonmeta.Data, error) {
 	}
 
 	data.Version = content.Metadata.Version
+
+	// optional full text content
+	if content.CustomFields.ContentText != "" {
+		data.ContentText = content.CustomFields.ContentText
+	}
 
 	return data, nil
 }

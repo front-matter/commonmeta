@@ -78,6 +78,7 @@ var ContainerTypes = map[string]string{
 	"Book":               "BookSeries",
 	"ProceedingsArticle": "Proceedings",
 	"Article":            "Periodical",
+	"BlogPost":           "Blog",
 }
 
 // IdentifierTypes list of identifier types defined in the commonmeta schema.
@@ -250,7 +251,7 @@ type Publisher struct {
 
 // Reference represents the reference of a publication, defined in the commonmeta JSON Schema.
 type Reference struct {
-	Key             string `json:"key"`
+	Key             string `json:"key,omitempty"`
 	ID              string `json:"id,omitempty"`
 	Type            string `json:"type,omitempty"`
 	Title           string `json:"title,omitempty"`

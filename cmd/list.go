@@ -34,7 +34,8 @@ var listCmd = &cobra.Command{
 	work type, and Crossref member id or DataCite client id. For example:
 
 	commonmeta list --number 10 --member 78 --type journal-article - f crossref,
-	commonmeta list --number 10 --client cern.zenodo --type dataset -f datacite`,
+	commonmeta list --number 10 --client cern.zenodo --type dataset -f datacite,
+	commonmeta list --number 10 --from inveniordm --from-host rogue-scholar.org --community front_matter`,
 	Run: func(cmd *cobra.Command, args []string) {
 		var input string
 		var str string // a string, content loaded from a file
@@ -83,7 +84,7 @@ var listCmd = &cobra.Command{
 			str = input
 		}
 
-		if str != "" && from == "commonmeta" {
+		if from == "commonmeta" {
 			data, err = commonmeta.LoadAll(str)
 		} else if str != "" && from == "crossref" {
 			data, err = crossref.LoadAll(str)
@@ -103,6 +104,10 @@ var listCmd = &cobra.Command{
 			data, err = inveniordm.FetchAll(number, page, fromHost, community, type_, year, language, orcid, ror, hasORCID, hasROR)
 		} else {
 			fmt.Println("Please provide a valid input format")
+			return
+		}
+		if err != nil {
+			fmt.Println("An error occurred:", err)
 			return
 		}
 

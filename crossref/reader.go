@@ -726,6 +726,15 @@ func Read(content Content) (commonmeta.Data, error) {
 			})
 		}
 	}
+
+	// add relation to subject area community
+	if content.GroupTitle != "" && data.Type == "BlogPost" {
+		groupTitle := utils.WordsToCamelCase(content.GroupTitle)
+		data.Relations = append(data.Relations, commonmeta.Relation{
+			ID:   utils.CommunitySlugAsURL(groupTitle, "rogue-scholar.org"),
+			Type: "IsPartOf",
+		})
+	}
 	if data.Container.IdentifierType == "ISSN" {
 		data.Relations = append(data.Relations, commonmeta.Relation{
 			ID:   utils.ISSNAsURL(data.Container.Identifier),

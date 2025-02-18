@@ -820,9 +820,18 @@ func Read(query Query) (commonmeta.Data, error) {
 			Month: postedContent.PostedDate.Month,
 			Day:   postedContent.PostedDate.Day,
 		})
+
 		// use group title for subjects
 		subjects = append(subjects, postedContent.GroupTitle)
 		titles = postedContent.Titles
+
+		// add relation to subject area community
+		if postedContent.GroupTitle != "" {
+			data.Relations = append(data.Relations, commonmeta.Relation{
+				ID:   utils.CommunitySlugAsURL(postedContent.GroupTitle, "rogue-scholar.org"),
+				Type: "IsPartOf",
+			})
+		}
 	case "Book":
 		book := meta.Book
 		abstract = book.BookMetadata.Abstract

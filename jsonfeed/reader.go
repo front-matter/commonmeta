@@ -91,11 +91,11 @@ type Relation struct {
 
 // Reference represents a reference in the JSON Feed item.
 type Reference struct {
-	Key             string `json:"key"`
-	ID              string `json:"id"`
-	PublicationYear string `json:"publicationYear"`
-	Title           string `json:"title"`
-	Unstructured    string `json:"unstructured"`
+	Key             string `json:"key,omitempty"`
+	ID              string `json:"id,omitempty"`
+	PublicationYear string `json:"publicationYear,omitempty"`
+	Title           string `json:"title,omitempty"`
+	Unstructured    string `json:"unstructured,omitempty"`
 }
 
 // relation types to include
@@ -389,7 +389,7 @@ func Read(content Content) (commonmeta.Data, error) {
 	}
 
 	data.Publisher = commonmeta.Publisher{
-		Name: content.Blog.Title,
+		Name: "Front Matter",
 	}
 	for _, v := range content.Relationships {
 		if slices.Contains(relationTypes, v.Type) {
@@ -417,16 +417,24 @@ func Read(content Content) (commonmeta.Data, error) {
 		containsKey := slices.ContainsFunc(data.References, func(e commonmeta.Reference) bool {
 			return e.Key != "" && e.Key == reference.Key
 		})
-		if !containsKey {
+		containsID := slices.ContainsFunc(data.References, func(e commonmeta.Reference) bool {
+			return e.ID != "" && e.ID == reference.ID
+		})
+		if !containsKey && !containsID {
 			data.References = append(data.References, reference)
 		}
 	}
 
 	if content.Blog.Category != "" {
+		fmt.Println(content.Blog.Category)
 		subject := FOSKeyMappings[content.Blog.Category]
 		data.Subjects = []commonmeta.Subject{
 			{Subject: subject},
 		}
+		data.Relations = append(data.Relations, commonmeta.Relation{
+			ID:   utils.CommunitySlugAsURL(content.Blog.Category, "rogue-scholar.org"),
+			Type: "IsPartOf",
+		})
 	}
 
 	data.Titles = []commonmeta.Title{

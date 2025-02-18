@@ -176,6 +176,31 @@ func URLToSPDX(url string) string {
 	return id
 }
 
+// SPDXToURL provides the SPDX license URL given a Creative Commons SPDX ID
+func SPDXToURL(id string) string {
+	// appreviated list from https://spdx.org/licenses/
+	SPDXLicenses := map[string]string{
+		"CC-BY-3.0":       "https://creativecommons.org/licenses/by/3.0/legalcode",
+		"CC-BY-4.0":       "https://creativecommons.org/licenses/by/4.0/legalcode",
+		"CC-BY-NC-3.0":    "https://creativecommons.org/licenses/by-nc/3.0/legalcode",
+		"CC-BY-NC-4.0":    "https://creativecommons.org/licenses/by-nc/4.0/legalcode",
+		"CC-BY-NC-ND-3.0": "https://creativecommons.org/licenses/by-nc-nd/3.0/legalcode",
+		"CC-BY-NC-ND-4.0": "https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode",
+		"CC-BY-NC-SA-3.0": "https://creativecommons.org/licenses/by-nc-sa/3.0/legalcode",
+		"CC-BY-NC-SA-4.0": "https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode",
+		"CC-BY-ND-3.0":    "https://creativecommons.org/licenses/by-nd/3.0/legalcode",
+		"CC-BY-ND-4.0":    "https://creativecommons.org/licenses/by-nd/4.0/legalcode",
+		"CC-BY-SA-3.0":    "https://creativecommons.org/licenses/by-sa/3.0/legalcode",
+		"CC-BY-SA-4.0":    "https://creativecommons.org/licenses/by-sa/4.0/legalcode",
+		"CC0-1.0":         "https://creativecommons.org/publicdomain/zero/1.0/legalcode",
+		"MIT":             "https://opensource.org/licenses/MIT",
+		"Apache-2.0":      "https://opensource.org/licenses/Apache-2.0",
+		"GPL-3.0":         "https://opensource.org/licenses/GPL-3.0",
+	}
+	url := SPDXLicenses[id]
+	return url
+}
+
 type Params struct {
 	Pid, Str, Ext, Filename string
 	Map                     map[string]interface{}
@@ -228,7 +253,7 @@ func FindFromFormatByID(id string) string {
 	if len(r.FindStringSubmatch(id)) > 0 {
 		return "jsonfeed"
 	}
-	r = regexp.MustCompile(`^https:/(/)(.+)/api/records/(.+)$`)
+	r = regexp.MustCompile(`^https:/(/)(.+)/(api/)?records/(.+)$`)
 	if len(r.FindStringSubmatch(id)) > 0 {
 		return "inveniordm"
 	}
@@ -550,6 +575,21 @@ func CamelCaseToWords(str string) string {
 	words := matchFirstCap.ReplaceAllString(str, "${1} ${2}")
 	words = matchAllCap.ReplaceAllString(words, "${1} ${2}")
 	return strings.ToUpper(words[:1]) + strings.ToLower(words[1:])
+}
+
+// CamelCaseString converts a pascal case string to camel case
+func WordsToCamelCase(str string) string {
+	var matchFirstCap = regexp.MustCompile("(.)([A-Z][a-z]+)")
+	var matchAllCap = regexp.MustCompile("([a-z0-9])([A-Z])")
+
+	words := matchFirstCap.ReplaceAllString(str, "${1} ${2}")
+	words = matchAllCap.ReplaceAllString(words, "${1} ${2}")
+	var s string
+	for _, word := range strings.Fields(words) {
+		s += strings.ToUpper(string(word)[:1]) + string(word)[1:]
+	}
+	s = strings.ReplaceAll(s, " ", "")
+	return strings.ToLower(s[:1]) + s[1:]
 }
 
 // CamelCaseString converts a pascal case string to camel case

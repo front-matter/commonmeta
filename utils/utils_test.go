@@ -100,6 +100,7 @@ func TestFindFromFormatByID(t *testing.T) {
 		{input: "https://github.com/datacite/maremma/blob/master/codemeta.json", want: "codemeta"},
 		{input: "https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/GAOC03", want: "schemaorg"},
 		{input: "https://api.rogue-scholar.org/posts/c3095752-2af0-40a4-a229-3ceb7424bce2", want: "jsonfeed"},
+		{input: "https://rogue-scholar.org/records/h9ckh-tke61", want: "inveniordm"},
 	}
 	for _, tc := range testCases {
 		got := utils.FindFromFormatByID(tc.input)
@@ -443,6 +444,13 @@ func ExampleUnescapeUTF8() {
 	fmt.Println(s)
 	// Output:
 	// capable of signi"cance.
+}
+
+func ExampleWordsToCamelCase() {
+	s := utils.WordsToCamelCase("Earth and related environmental sciences")
+	fmt.Println(s)
+	// Output:
+	// earthAndRelatedEnvironmentalSciences
 }
 
 func ExampleCamelCaseToWords() {
