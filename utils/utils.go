@@ -176,13 +176,13 @@ func URLToSPDX(url string) string {
 	return id
 }
 
-type params struct {
+type Params struct {
 	Pid, Str, Ext, Filename string
-	Dct                     map[string]interface{}
+	Map                     map[string]interface{}
 }
 
 // FindFromFormat finds the commonmeta read format
-func FindFromFormat(p params) string {
+func FindFromFormat(p Params) string {
 	// Find reader from format
 	if p.Pid != "" {
 		return FindFromFormatByID(p.Pid)
@@ -190,8 +190,8 @@ func FindFromFormat(p params) string {
 	if p.Str != "" && p.Ext != "" {
 		return FindFromFormatByExt(p.Ext)
 	}
-	if p.Dct != nil {
-		return FindFromFormatByDict(p.Dct)
+	if p.Map != nil {
+		return FindFromFormatByMap(p.Map)
 	}
 	if p.Str != "" {
 		return FindFromFormatByString(p.Str)
@@ -204,15 +204,22 @@ func FindFromFormat(p params) string {
 
 // FindFromFormatByID finds the commonmeta reader from format by id
 func FindFromFormatByID(id string) string {
-	_, ok := doiutils.ValidateDOI(id)
+	doi, ok := doiutils.ValidateDOI(id)
 	if ok {
+		registrationAgency, ok := doiutils.GetDOIRA(doi)
+		if ok {
+			return strings.ToLower(registrationAgency)
+		}
 		return "datacite"
+	}
+	if strings.HasSuffix(id, "codemeta.json") {
+		return "codemeta"
+	}
+	if strings.HasSuffix(id, "CITATION.cff") {
+		return "cff"
 	}
 	if strings.Contains(id, "github.com") {
 		return "cff"
-	}
-	if strings.Contains(id, "codemeta.json") {
-		return "codemeta"
 	}
 	if strings.Contains(id, "jsonfeed") {
 		return "jsonfeed"
@@ -225,7 +232,7 @@ func FindFromFormatByID(id string) string {
 	if len(r.FindStringSubmatch(id)) > 0 {
 		return "inveniordm"
 	}
-	return "schema_org"
+	return "schemaorg"
 }
 
 // FindFromFormatByExt finds the commonmeta reader from format by file extension
@@ -239,36 +246,36 @@ func FindFromFormatByExt(ext string) string {
 	return ""
 }
 
-// FindFromFormatByDict finds the commonmeta reader from format by dictionary
-func FindFromFormatByDict(dct map[string]interface{}) string {
-	if dct == nil {
+// FindFromFormatByMap finds the commonmeta reader from format by map
+func FindFromFormatByMap(m map[string]interface{}) string {
+	if m == nil {
 		return ""
 	}
-	if v, ok := dct["schema_version"]; ok && strings.HasPrefix(v.(string), "https://commonmeta.org") {
+	if v, ok := m["schema_version"]; ok && strings.HasPrefix(v.(string), "https://commonmeta.org") {
 		return "commonmeta"
 	}
-	if v, ok := dct["@context"]; ok && v == "http://schema.org" {
-		return "schema_org"
+	if v, ok := m["@context"]; ok && v == "http://schema.org" {
+		return "schemaorg"
 	}
-	if v, ok := dct["@context"]; ok && v == "https://raw.githubusercontent.com/codemeta/codemeta/master/codemeta.jsonld" {
+	if v, ok := m["@context"]; ok && v == "https://raw.githubusercontent.com/codemeta/codemeta/master/codemeta.jsonld" {
 		return "codemeta"
 	}
-	if _, ok := dct["guid"]; ok {
+	if _, ok := m["guid"]; ok {
 		return "jsonfeed"
 	}
-	if v, ok := dct["schemaVersion"]; ok && strings.HasPrefix(v.(string), "http://datacite.org/schema/kernel") {
+	if v, ok := m["schemaVersion"]; ok && strings.HasPrefix(v.(string), "http://datacite.org/schema/kernel") {
 		return "datacite"
 	}
-	if v, ok := dct["source"]; ok && v == "Crossref" {
+	if v, ok := m["source"]; ok && v == "Crossref" {
 		return "crossref"
 	}
-	if _, ok := dct["issued.date-parts"]; ok {
+	if _, ok := m["issued.date-parts"]; ok {
 		return "csl"
 	}
-	if _, ok := dct["conceptdoi"]; ok {
+	if _, ok := m["conceptdoi"]; ok {
 		return "inveniordm"
 	}
-	if _, ok := dct["credit_metadata"]; ok {
+	if _, ok := m["credit_metadata"]; ok {
 		return "kbase"
 	}
 	return ""
@@ -287,7 +294,7 @@ func FindFromFormatByString(str string) string {
 		return "commonmeta"
 	}
 	if v, ok := data["@context"]; ok && v == "http://schema.org" {
-		return "schema_org"
+		return "schemaorg"
 	}
 	if v, ok := data["@context"]; ok && v == "https://raw.githubusercontent.com/codemeta/codemeta/master/codemeta.jsonld" {
 		return "codemeta"

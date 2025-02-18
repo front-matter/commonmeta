@@ -29,6 +29,13 @@ func TestNormalizeID(t *testing.T) {
 	}
 }
 
+func ExampleNormalizeID() {
+	s := utils.NormalizeID("10.1101/097196")
+	fmt.Println(s)
+	// Output:
+	// https://doi.org/10.1101/097196
+}
+
 func TestNormalizeURL(t *testing.T) {
 	t.Parallel()
 	type testCase struct {
@@ -53,6 +60,92 @@ func TestNormalizeURL(t *testing.T) {
 				tc.input, tc.want, got, err)
 		}
 	}
+}
+
+func ExampleNormalizeURL() {
+	s, _ := utils.NormalizeURL("http://elifesciences.org/Articles/91729/", true, true)
+	fmt.Println(s)
+	// Output:
+	// https://elifesciences.org/articles/91729
+}
+
+func ExampleNormalizeCCUrl() {
+	s, ok := utils.NormalizeCCUrl("https://creativecommons.org/licenses/by/4.0")
+	fmt.Println(s, ok)
+	// Output:
+	// https://creativecommons.org/licenses/by/4.0/legalcode true
+}
+
+func ExampleURLToSPDX() {
+	s := utils.URLToSPDX("https://creativecommons.org/licenses/by/4.0/legalcode")
+	fmt.Println(s)
+	// Output:
+	// CC-BY-4.0
+}
+
+func TestFindFromFormatByID(t *testing.T) {
+	t.Parallel()
+	type testCase struct {
+		input string
+		want  string
+	}
+	testCases := []testCase{
+		{input: "10.1371/journal.pone.0042793", want: "crossref"},
+		{input: "https://doi.org/10.5061/dryad.8515", want: "datacite"},
+		{input: "10.1392/roma081203", want: "medra"},
+		{input: "https://doi.org/10.5012/bkcs.2013.34.10.2889", want: "kisti"},
+		{input: "https://doi.org/10.11367/grsj1979.12.283", want: "jalc"},
+		{input: "https://doi.org/10.2903/j.efsa.2018.5239", want: "op"},
+		{input: "https://github.com/citation-file-format/ruby-cff/blob/main/CITATION.cff", want: "cff"},
+		{input: "https://github.com/datacite/maremma/blob/master/codemeta.json", want: "codemeta"},
+		{input: "https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/GAOC03", want: "schemaorg"},
+		{input: "https://api.rogue-scholar.org/posts/c3095752-2af0-40a4-a229-3ceb7424bce2", want: "jsonfeed"},
+	}
+	for _, tc := range testCases {
+		got := utils.FindFromFormatByID(tc.input)
+		if tc.want != got {
+			t.Errorf("Find from format by ID (%v): want %v, got %v",
+				tc.input, tc.want, got)
+		}
+	}
+}
+
+func ExampleFindFromFormatByID() {
+	s := utils.FindFromFormatByID("https://api.rogue-scholar.org/posts/4e4bf150-751f-4245-b4ca-fe69e3c3bb24")
+	fmt.Println(s)
+	// Output:
+	// jsonfeed
+}
+
+func ExampleFindFromFormatByExt() {
+	s := utils.FindFromFormatByExt(".bib")
+	fmt.Println(s)
+	// Output:
+	// bibtex
+}
+
+func ExampleFindFromFormatByMap() {
+	f := map[string]any{
+		"schemaVersion": "http://datacite.org/schema/kernel-4",
+	}
+	s := utils.FindFromFormatByMap(f)
+	fmt.Println(s)
+	// Output:
+	// datacite
+}
+
+// func ExampleFindFromFormatByString() {
+// 	s := utils.FindFromFormatByString(".bib")
+// 	fmt.Println(s)
+// 	// Output:
+// 	// bibtex
+// }
+
+func ExampleFindFromFormatByFilename() {
+	s := utils.FindFromFormatByFilename("CITATION.cff")
+	fmt.Println(s)
+	// Output:
+	// cff
 }
 
 func TestISSNAsURL(t *testing.T) {
@@ -106,6 +199,13 @@ func TestNormalizeORCID(t *testing.T) {
 	}
 }
 
+func ExampleNormalizeORCID() {
+	s := utils.NormalizeORCID("0000-0002-1825-0097")
+	fmt.Println(s)
+	// Output:
+	// https://orcid.org/0000-0002-1825-0097
+}
+
 func TestValidateORCID(t *testing.T) {
 	t.Parallel()
 	type testCase struct {
@@ -129,6 +229,13 @@ func TestValidateORCID(t *testing.T) {
 	}
 }
 
+func ExampleValidateORCID() {
+	s, _ := utils.ValidateORCID("https://orcid.org/0000-0002-1825-0097")
+	fmt.Println(s)
+	// Output:
+	// 0000-0002-1825-0097
+}
+
 func TestNormalizeROR(t *testing.T) {
 	t.Parallel()
 	type testCase struct {
@@ -146,6 +253,13 @@ func TestNormalizeROR(t *testing.T) {
 				tc.input, tc.want, got)
 		}
 	}
+}
+
+func ExampleNormalizeROR() {
+	s := utils.NormalizeROR("http://ror.org/0342dzm54")
+	fmt.Println(s)
+	// Output:
+	// https://ror.org/0342dzm54
 }
 
 func TestGetROR(t *testing.T) {
@@ -168,6 +282,13 @@ func TestGetROR(t *testing.T) {
 	}
 }
 
+func ExampleGetROR() {
+	ror, _ := utils.GetROR("https://ror.org/0342dzm54")
+	fmt.Println(ror.Name)
+	// Output:
+	// Liberate Science
+}
+
 func TestValidateROR(t *testing.T) {
 	t.Parallel()
 	type testCase struct {
@@ -176,7 +297,7 @@ func TestValidateROR(t *testing.T) {
 	}
 	testCases := []testCase{
 		{input: "https://ror.org/0342dzm54", want: "0342dzm54"},
-		//{input: "ror.org/0342dzm54", want: "0342dzm54"},
+		//TODO: {input: "ror.org/0342dzm54", want: "0342dzm54"},
 		{input: "0342dzm54", want: "0342dzm54"},
 	}
 	for _, tc := range testCases {
@@ -219,6 +340,13 @@ func TestSanitize(t *testing.T) {
 				tc.input, tc.want, got)
 		}
 	}
+}
+
+func ExampleSanitize() {
+	s := utils.Sanitize("<p>The Origins of SARS-CoV-2: A <i>Critical</i> <a href=\"index.html\">Review</a></p>")
+	fmt.Println(s)
+	// Output:
+	// The Origins of SARS-CoV-2: A <i>Critical</i> Review
 }
 
 func TestValidateURL(t *testing.T) {
@@ -270,6 +398,13 @@ func TestValidateID(t *testing.T) {
 	}
 }
 
+func ExampleValidateID() {
+	s, t := utils.ValidateID("https://ror.org/0342dzm54")
+	fmt.Println(s, t)
+	// Output:
+	// 0342dzm54 ROR
+}
+
 func TestDecodeID(t *testing.T) {
 	t.Parallel()
 	type testCase struct {
@@ -293,11 +428,11 @@ func TestDecodeID(t *testing.T) {
 	}
 }
 
-func ExampleSanitize() {
-	s := utils.Sanitize("<p>The Origins of SARS-CoV-2: A <i>Critical</i> <a href=\"index.html\">Review</a></p>")
+func ExampleDecodeID() {
+	s, _ := utils.DecodeID("https://doi.org/10.59350/b8pcg-q9k70")
 	fmt.Println(s)
 	// Output:
-	// The Origins of SARS-CoV-2: A <i>Critical</i> Review
+	// 387298385203
 }
 
 func ExampleUnescapeUTF8() {
