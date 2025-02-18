@@ -8,13 +8,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
-	"strings"
 
 	"github.com/front-matter/commonmeta/commonmeta"
 	"github.com/front-matter/commonmeta/crossrefxml"
 	"github.com/front-matter/commonmeta/csl"
 	"github.com/front-matter/commonmeta/datacite"
-	"github.com/front-matter/commonmeta/doiutils"
 	"github.com/front-matter/commonmeta/inveniordm"
 	"github.com/front-matter/commonmeta/jsonfeed"
 	"github.com/front-matter/commonmeta/schemaorg"
@@ -65,22 +63,11 @@ commonmeta 10.5555/12345678`,
 		}
 
 		from, _ := cmd.Flags().GetString("from")
-		if from == "" {
-			var ok bool
-			doi, ok := doiutils.ValidateDOI(input)
-			if !ok {
-				fmt.Println("Please provide a valid input")
-				return
-			}
-			from, ok = doiutils.GetDOIRA(doi)
-			if !ok {
-				cmd.PrintErr("Please provide a valid input")
-				return
-			}
-			from = strings.ToLower(from)
-		}
 
 		if id != "" {
+			if from == "" {
+				from = utils.FindFromFormatByID(id)
+			}
 			if from == "crossref" {
 				data, err = crossref.Fetch(id)
 			} else if from == "crossrefxml" {
@@ -97,7 +84,14 @@ commonmeta 10.5555/12345678`,
 				fmt.Println("Please provide a valid input")
 				return
 			}
+			if err != nil {
+				fmt.Println("An error occurred:", err)
+				return
+			}
 		} else if str != "" {
+			if from == "" {
+				from = utils.FindFromFormatByString(str)
+			}
 			if from == "commonmeta" {
 				data, err = commonmeta.Load(str)
 			} else if from == "crossref" {
@@ -113,7 +107,11 @@ commonmeta 10.5555/12345678`,
 			} else if from == "schemaorg" {
 				data, err = schemaorg.Load(str)
 			} else {
-				cmd.PrintErr("Please provide a valid input format")
+				cmd.PrintErr("Please provide a valid input")
+				return
+			}
+			if err != nil {
+				fmt.Println("An error occurred:", err)
 				return
 			}
 		}

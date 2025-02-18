@@ -13,7 +13,7 @@ import (
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:     "commonmeta",
-	Version: "v0.6.47",
+	Version: "v0.6.48",
 	Short:   "Convert scholarly metadata from one format to another",
 	Long: `Convert scholarly metadata between formats. Currently
 supported input formats are Crossref and DataCite DOIs, currently
@@ -34,7 +34,7 @@ func Execute() {
 }
 
 func init() {
-	rootCmd.PersistentFlags().StringP("from", "f", "crossref", "the format to convert from")
+	rootCmd.PersistentFlags().StringP("from", "f", "", "the format to convert from")
 	rootCmd.PersistentFlags().StringP("to", "t", "commonmeta", "the format to convert to")
 
 	rootCmd.PersistentFlags().IntP("number", "n", 10, "number of results")
