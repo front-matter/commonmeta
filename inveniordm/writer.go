@@ -491,7 +491,7 @@ func Upsert(record commonmeta.APIResponse, client *InvenioRDMClient, apiKey stri
 
 	// add record to blog community if blog community is specified and exists
 	if record.Community != "" {
-		communityID, err := SearchBySlug(record.Community, client)
+		communityID, err := SearchBySlug(record.Community, "blog", client)
 		if err != nil {
 			return record, err
 		}
@@ -507,7 +507,7 @@ func Upsert(record commonmeta.APIResponse, client *InvenioRDMClient, apiKey stri
 		var slug, communityID string
 		for _, v := range data.Subjects {
 			slug = strings.ToLower(utils.WordsToCamelCase(v.Subject))
-			communityID, err = SearchBySlug(slug, client)
+			communityID, err = SearchBySlug(slug, "topic", client)
 			if err != nil {
 				return record, err
 			}
@@ -534,7 +534,7 @@ func Upsert(record commonmeta.APIResponse, client *InvenioRDMClient, apiKey stri
 func UpsertAll(list []commonmeta.Data, host string, apiKey string, legacyKey string) ([]commonmeta.APIResponse, error) {
 	var records []commonmeta.APIResponse
 
-	// create a new http client with rate limiting and ssl certificate handling on localhost
+	// create a new http client with rate limiting
 	rl := rate.NewLimiter(rate.Every(30*time.Second), 450) // 450 request every 30 seconds
 	client := NewClient(rl, host)
 
