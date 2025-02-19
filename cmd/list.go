@@ -58,6 +58,7 @@ var listCmd = &cobra.Command{
 		ror, _ := cmd.Flags().GetString("ror")
 		fromHost, _ := cmd.Flags().GetString("from-host")
 		community, _ := cmd.Flags().GetString("community")
+		subject, _ := cmd.Flags().GetString("subject")
 		hasORCID, _ := cmd.Flags().GetBool("has-orcid")
 		hasROR, _ := cmd.Flags().GetBool("has-ror-id")
 		hasReferences, _ := cmd.Flags().GetBool("has-references")
@@ -101,7 +102,7 @@ var listCmd = &cobra.Command{
 		} else if from == "datacite" {
 			data, err = datacite.FetchAll(number, page, client_, type_, sample, year, language, orcid, ror, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense)
 		} else if from == "inveniordm" {
-			data, err = inveniordm.FetchAll(number, page, fromHost, community, type_, year, language, orcid, ror, hasORCID, hasROR)
+			data, err = inveniordm.FetchAll(number, page, fromHost, community, subject, type_, year, language, orcid, ror, hasORCID, hasROR)
 		} else {
 			fmt.Println("Please provide a valid input format")
 			return
