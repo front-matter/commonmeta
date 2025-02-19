@@ -134,6 +134,10 @@ commonmeta push --sample -f crossref -t inveniordm -h rogue-scholar.org --token 
 			}
 			records, err = datacite.UpsertAll(data, account)
 		} else if to == "inveniordm" {
+			if host == "" || token == "" {
+				fmt.Println("Please provide an inveniordm host and token")
+				return
+			}
 			records, err = inveniordm.UpsertAll(data, host, token, legacyKey)
 		} else {
 			fmt.Println("Please provide a valid service")
