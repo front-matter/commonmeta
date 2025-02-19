@@ -504,20 +504,19 @@ func Upsert(record commonmeta.APIResponse, client *InvenioRDMClient, apiKey stri
 	// add record to subject area community if subject area community is specified and exists
 	// subject area communities should exist for all subjects in the FOSMappings
 	if len(data.Subjects) > 0 {
-		var slug string
+		var slug, communityID string
 		for _, v := range data.Subjects {
-			slug := FOSMappings[v.Subject]
-			if slug != "" {
-				continue
+			slug = strings.ToLower(utils.WordsToCamelCase(v.Subject))
+			communityID, err = SearchBySlug(slug, client)
+			if err != nil {
+				return record, err
 			}
 		}
-		communityID, err := SearchBySlug(slug, client)
-		if err != nil {
-			return record, err
-		}
-		record, err = AddRecordToCommunity(record, client, apiKey, communityID)
-		if err != nil {
-			return record, err
+		if communityID != "" {
+			record, err = AddRecordToCommunity(record, client, apiKey, communityID)
+			if err != nil {
+				return record, err
+			}
 		}
 	}
 
