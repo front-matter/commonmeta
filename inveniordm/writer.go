@@ -511,11 +511,11 @@ func Upsert(record commonmeta.APIResponse, client *InvenioRDMClient, apiKey stri
 			if err != nil {
 				return record, err
 			}
-		}
-		if communityID != "" {
-			record, err = AddRecordToCommunity(record, client, apiKey, communityID)
-			if err != nil {
-				return record, err
+			if communityID != "" {
+				record, err = AddRecordToCommunity(record, client, apiKey, communityID)
+				if err != nil {
+					return record, err
+				}
 			}
 		}
 	}

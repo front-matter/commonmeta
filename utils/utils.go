@@ -589,6 +589,7 @@ func WordsToCamelCase(str string) string {
 		s += strings.ToUpper(string(word)[:1]) + string(word)[1:]
 	}
 	s = strings.ReplaceAll(s, " ", "")
+	s = strings.ReplaceAll(s, "-", "")
 	return strings.ToLower(s[:1]) + s[1:]
 }
 
