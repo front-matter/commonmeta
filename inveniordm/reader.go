@@ -128,8 +128,11 @@ type Community struct {
 }
 
 type CommunityCustomFields struct {
-	ISSN    string `json:"rs:issn,omitempty"`
-	FeedURL string `json:"rs:feed_url,omitempty"`
+	ISSN     string `json:"rs:issn,omitempty"`
+	FeedURL  string `json:"rs:feed_url,omitempty"`
+	Language string `json:"rs:language,omitempty"`
+	License  string `json:"rs:license,omitempty"`
+	Category string `json:"rs:category,omitempty"`
 }
 
 type CommunityMetadata struct {
@@ -824,8 +827,8 @@ func Read(content Content) (commonmeta.Data, error) {
 		for _, v := range content.Parent.Communities.Entries {
 			if v.ID == content.Parent.Communities.Default {
 				var identifier, identifierType string
-				if v.CustomFields.ISSN != "" {
-					identifier = v.CustomFields.ISSN
+				if content.CustomFields.Journal.ISSN != "" {
+					identifier = content.CustomFields.Journal.ISSN
 					identifierType = "ISSN"
 				} else {
 					identifier = utils.CommunitySlugAsURL(v.Slug, "rogue-scholar.org")
@@ -843,11 +846,11 @@ func Read(content Content) (commonmeta.Data, error) {
 				}
 				if identifierType == "ISSN" {
 					identifier = utils.ISSNAsURL(identifier)
+					data.Relations = append(data.Relations, commonmeta.Relation{
+						ID:   identifier,
+						Type: "IsPartOf",
+					})
 				}
-				data.Relations = append(data.Relations, commonmeta.Relation{
-					ID:   identifier,
-					Type: "IsPartOf",
-				})
 				identifier = utils.CommunitySlugAsURL(v.Slug, "rogue-scholar.org")
 				data.Relations = append(data.Relations, commonmeta.Relation{
 					ID:   identifier,
