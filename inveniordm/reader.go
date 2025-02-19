@@ -85,7 +85,7 @@ type Metadata struct {
 	Keywords           []string            `json:"keywords,omitempty"`
 	Language           string              `json:"language,omitempty"`
 	Languages          []Language          `json:"languages,omitempty"`
-	License            License             `json:"license,omitempty"`
+	License            *License            `json:"license,omitempty"`
 	Publisher          string              `json:"publisher,omitempty"`
 	PublicationDate    string              `json:"publication_date"`
 	References         []Reference         `json:"references,omitempty"`
@@ -230,7 +230,10 @@ type Subject struct {
 }
 
 type Right struct {
-	ID string `json:"id"`
+	ID    string `json:"id"`
+	Props struct {
+		URL string `json:"url,omitempty"`
+	} `json:"props,omitempty"`
 }
 
 type Language struct {
@@ -1055,7 +1058,7 @@ func Read(content Content) (commonmeta.Data, error) {
 
 	if len(content.Metadata.Rights) > 0 {
 		licenseID := LicenseMappings[content.Metadata.Rights[0].ID]
-		licenseURL := utils.SPDXToURL(licenseID)
+		licenseURL := content.Metadata.Rights[0].Props.URL
 		data.License = commonmeta.License{
 			ID:  licenseID,
 			URL: licenseURL,

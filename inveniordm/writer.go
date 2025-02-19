@@ -145,19 +145,19 @@ func Convert(data commonmeta.Data) (Inveniordm, error) {
 
 	// optional custom fields
 	inveniordm.CustomFields.ContentText = data.ContentText
-
 	inveniordm.CustomFields.FeatureImage = data.FeatureImage
 
 	if len(data.Identifiers) > 0 {
 		for _, v := range data.Identifiers {
 			scheme := CMToInvenioIdentifierMappings[v.IdentifierType]
-			if v.Identifier != data.ID && scheme != "" {
-				identifier := Identifier{
-					Identifier: v.Identifier,
-					Scheme:     scheme,
-				}
-				inveniordm.Metadata.Identifiers = append(inveniordm.Metadata.Identifiers, identifier)
+			if scheme == "" || (v.Identifier == data.ID && scheme == "doi") {
+				continue
 			}
+			identifier := Identifier{
+				Identifier: v.Identifier,
+				Scheme:     scheme,
+			}
+			inveniordm.Metadata.Identifiers = append(inveniordm.Metadata.Identifiers, identifier)
 		}
 	}
 
@@ -489,9 +489,29 @@ func Upsert(record commonmeta.APIResponse, client *InvenioRDMClient, apiKey stri
 		return record, err
 	}
 
-	// add record to community if community is specified and exists
+	// add record to blog community if blog community is specified and exists
 	if record.Community != "" {
 		communityID, err := SearchBySlug(record.Community, client)
+		if err != nil {
+			return record, err
+		}
+		record, err = AddRecordToCommunity(record, client, apiKey, communityID)
+		if err != nil {
+			return record, err
+		}
+	}
+
+	// add record to subject area community if subject area community is specified and exists
+	// subject area communities should exist for all subjects in the FOSMappings
+	if len(data.Subjects) > 0 {
+		var slug string
+		for _, v := range data.Subjects {
+			slug := FOSMappings[v.Subject]
+			if slug != "" {
+				continue
+			}
+		}
+		communityID, err := SearchBySlug(slug, client)
 		if err != nil {
 			return record, err
 		}

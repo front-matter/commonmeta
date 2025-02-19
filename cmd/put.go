@@ -16,6 +16,7 @@ import (
 	"github.com/front-matter/commonmeta/datacite"
 	"github.com/front-matter/commonmeta/inveniordm"
 	"github.com/front-matter/commonmeta/jsonfeed"
+	"github.com/front-matter/commonmeta/schemaorg"
 	"github.com/front-matter/commonmeta/utils"
 	"golang.org/x/time/rate"
 
@@ -82,8 +83,12 @@ commonmeta put 10.5555/12345678 -f crossref -t inveniordm -h rogue-scholar.org -
 				data, err = crossrefxml.Fetch(id)
 			} else if from == "datacite" {
 				data, err = datacite.Fetch(id)
+			} else if from == "inveniordm" {
+				data, err = inveniordm.Fetch(id)
 			} else if from == "jsonfeed" {
 				data, err = jsonfeed.Fetch(id)
+			} else if from == "schemaorg" {
+				data, err = schemaorg.Fetch(id)
 			} else {
 				fmt.Println("Please provide a valid input")
 				return
