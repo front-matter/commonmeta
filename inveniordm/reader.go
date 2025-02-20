@@ -785,8 +785,8 @@ func SearchByDOI(doi string, client *InvenioRDMClient) (string, error) {
 	}
 }
 
-// SearchBySlug searches InvenioRDM communities by slug. Optionally only search
-// for specific types of communities (blog or topic).
+// SearchBySlug searches InvenioRDM communities by slug.
+// Specify type of community (blog or topic) in query, subject area communities are always queried.
 func SearchBySlug(slug string, type_ string, client *InvenioRDMClient) (string, error) {
 	var query Query
 	requestURL := fmt.Sprintf("https://%s/api/communities?q=slug:%s&type=%s&type=subject", client.Host, slug, type_)

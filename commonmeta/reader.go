@@ -382,15 +382,16 @@ type Title struct {
 }
 
 type APIResponse struct {
-	DOI        string `json:"doi"`
-	ID         string `json:"id,omitempty"`
-	DOIBatchID string `json:"doi_batch_id,omitempty"`
-	UUID       string `json:"uuid,omitempty"`
-	Community  string `json:"community,omitempty"`
-	Created    string `json:"created,omitempty"`
-	Updated    string `json:"updated,omitempty"`
-	Timestamp  string `json:"timestamp,omitempty"`
-	Status     string `json:"status,omitempty"`
+	DOI         string `json:"doi"`
+	ID          string `json:"id,omitempty"`
+	DOIBatchID  string `json:"doi_batch_id,omitempty"`
+	UUID        string `json:"uuid,omitempty"`
+	Community   string `json:"community,omitempty"`
+	CommunityID string `json:"community_id,omitempty"`
+	Created     string `json:"created,omitempty"`
+	Updated     string `json:"updated,omitempty"`
+	Timestamp   string `json:"timestamp,omitempty"`
+	Status      string `json:"status,omitempty"`
 }
 
 // CMToSOMappings maps Commonmeta types to Schema.org types.

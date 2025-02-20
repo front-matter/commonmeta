@@ -444,6 +444,7 @@ func Upsert(record commonmeta.APIResponse, client *InvenioRDMClient, apiKey stri
 			communityID, _ := SearchBySlug(slug, "blog", client)
 			if communityID != "" {
 				record.Community = slug
+				record.CommunityID = communityID
 				communityIndex = i
 			}
 		}
@@ -494,12 +495,8 @@ func Upsert(record commonmeta.APIResponse, client *InvenioRDMClient, apiKey stri
 	}
 
 	// add record to blog community if blog community is specified and exists
-	if record.Community != "" {
-		communityID, err := SearchBySlug(record.Community, "blog", client)
-		if err != nil {
-			return record, err
-		}
-		record, err = AddRecordToCommunity(record, client, apiKey, communityID)
+	if record.CommunityID != "" {
+		record, err = AddRecordToCommunity(record, client, apiKey, record.CommunityID)
 		if err != nil {
 			return record, err
 		}
