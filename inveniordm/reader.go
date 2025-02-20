@@ -552,6 +552,15 @@ var CommunityTypes = map[string]string{
 	"blog": "Blog",
 }
 
+// CommunityTranslations maps Community names in different languages to the community slug
+// Also maps concepts
+var CommunityTranslations = map[string]string{
+	"nachrichten":            "news",
+	"papers":                 "researchblogging",
+	"urheberrecht":           "copyright",
+	"veranstaltungshinweise": "events",
+}
+
 // Fetch fetches InvenioRDM metadata and returns Commonmeta metadata.
 func Fetch(str string) (commonmeta.Data, error) {
 	var data commonmeta.Data
