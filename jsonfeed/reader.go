@@ -101,58 +101,6 @@ type Reference struct {
 // relation types to include
 var relationTypes = []string{"IsPartOf", "HasPart", "IsVariantFormOf", "IsOriginalFormOf", "IsIdenticalTo", "IsTranslationOf", "IsReviewedBy", "Reviews", "HasReview", "IsPreprintOf", "HasPreprint", "IsSupplementTo", "IsSupplementedBy"}
 
-// FOSKeyMappings maps OECD FOS keys to OECD FOS strings
-var FOSKeyMappings = map[string]string{
-	"naturalSciences":                          "Natural sciences",
-	"mathematics":                              "Mathematics",
-	"computerAndInformationSciences":           "Computer and information sciences",
-	"physicalSciences":                         "Physical sciences",
-	"chemicalSciences":                         "Chemical sciences",
-	"earthAndRelatedEnvironmentalSciences":     "Earth and related environmental sciences",
-	"biologicalSciences":                       "Biological sciences",
-	"otherNaturalSciences":                     "Other natural sciences",
-	"engineeringAndTechnology":                 "Engineering and technology",
-	"civilEngineering":                         "Civil engineering",
-	"electricalEngineering":                    "Electrical engineering, electronic engineering, information engineering",
-	"mechanicalEngineering":                    "Mechanical engineering",
-	"chemicalEngineering":                      "Chemical engineering",
-	"materialsEngineering":                     "Materials engineering",
-	"medicalEngineering":                       "Medical engineering",
-	"environmentalEngineering":                 "Environmental engineering",
-	"environmentalBiotechnology":               "Environmental biotechnology",
-	"industrialBiotechnology":                  "Industrial biotechnology",
-	"nanoTechnology":                           "Nano technology",
-	"otherEngineeringAndTechnologies":          "Other engineering and technologies",
-	"medicalAndHealthSciences":                 "Medical and health sciences",
-	"basicMedicine":                            "Basic medicine",
-	"clinicalMedicine":                         "Clinical medicine",
-	"healthSciences":                           "Health sciences",
-	"healthBiotechnology":                      "Health biotechnology",
-	"otherMedicalSciences":                     "Other medical sciences",
-	"agriculturalSciences":                     "Agricultural sciences",
-	"agricultureForestryAndFisheries":          "Agriculture, forestry, and fisheries",
-	"animalAndDairyScience":                    "Animal and dairy science",
-	"veterinaryScience":                        "Veterinary science",
-	"agriculturalBiotechnology":                "Agricultural biotechnology",
-	"otherAgriculturalSciences":                "Other agricultural sciences",
-	"socialScience":                            "Social science",
-	"psychology":                               "Psychology",
-	"economicsAndBusiness":                     "Economics and business",
-	"educationalSciences":                      "Educational sciences",
-	"sociology":                                "Sociology",
-	"law":                                      "Law",
-	"politicalScience":                         "Political science",
-	"socialAndEconomicGeography":               "Social and economic geography",
-	"mediaAndCommunications":                   "Media and communications",
-	"otherSocialSciences":                      "Other social sciences",
-	"humanities":                               "Humanities",
-	"historyAndArchaeology":                    "History and archaeology",
-	"languagesAndLiterature":                   "Languages and literature",
-	"philosophyEthicsAndReligion":              "Philosophy, ethics and religion",
-	"artsArtsHistoryOfArtsPerformingArtsMusic": "Arts (arts, history of arts, performing arts, music)",
-	"otherHumanities":                          "Other humanities",
-}
-
 // Fetch fetches JSON Feed metadata and returns Commonmeta metadata.
 func Fetch(str string) (commonmeta.Data, error) {
 	var data commonmeta.Data
@@ -305,7 +253,7 @@ func Read(content Content) (commonmeta.Data, error) {
 		})
 	}
 	data.Container = commonmeta.Container{
-		Type:           "Periodical",
+		Type:           "Blog",
 		Title:          content.Blog.Title,
 		Identifier:     identifier,
 		IdentifierType: identifierType,
@@ -426,7 +374,7 @@ func Read(content Content) (commonmeta.Data, error) {
 	}
 
 	if content.Blog.Category != "" {
-		subject := FOSKeyMappings[content.Blog.Category]
+		subject := commonmeta.FOSKeyMappings[content.Blog.Category]
 		data.Subjects = []commonmeta.Subject{
 			{Subject: subject},
 		}

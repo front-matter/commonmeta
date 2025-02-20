@@ -440,8 +440,12 @@ func Upsert(record commonmeta.APIResponse, client *InvenioRDMClient, apiKey stri
 	var communityIndex int
 	for i, v := range data.Relations {
 		if v.Type == "IsPartOf" && strings.HasPrefix(v.ID, "https://rogue-scholar.org/api/communities/") {
-			record.Community = strings.Split(v.ID, "/")[5]
-			communityIndex = i
+			slug := strings.Split(v.ID, "/")[5]
+			communityID, _ := SearchBySlug(slug, "blog", client)
+			if communityID != "" {
+				record.Community = slug
+				communityIndex = i
+			}
 		}
 		if communityIndex != 0 {
 			data.Relations = slices.Delete(data.Relations, i, i)
@@ -535,7 +539,7 @@ func UpsertAll(list []commonmeta.Data, host string, apiKey string, legacyKey str
 	var records []commonmeta.APIResponse
 
 	// create a new http client with rate limiting
-	rl := rate.NewLimiter(rate.Every(30*time.Second), 450) // 450 request every 30 seconds
+	rl := rate.NewLimiter(rate.Every(60*time.Second), 900) // 900 request every 60 seconds
 	client := NewClient(rl, host)
 
 	for _, data := range list {

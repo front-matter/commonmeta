@@ -66,6 +66,7 @@
               "description": "The type of the container.",
               "type": "string",
               "enum": [
+                "Blog",
                 "Book",
                 "BookSeries",
                 "Journal",
