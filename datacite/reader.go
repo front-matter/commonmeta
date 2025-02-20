@@ -801,8 +801,8 @@ func GetAll(number int, page int, client_ string, type_ string, sample bool, yea
 		Data []Data `json:"data"`
 	}
 
-	if number > 100 {
-		number = 100
+	if number > 500 {
+		number = 500
 	}
 	var response Response
 	client := &http.Client{
