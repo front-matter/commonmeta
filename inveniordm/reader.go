@@ -648,8 +648,8 @@ func GetAll(number int, page int, host string, community string, subject string,
 	var response Query
 	var content []Content
 
-	if number > 100 {
-		number = 100
+	if number > 500 {
+		number = 500
 	}
 	client := &http.Client{
 		Timeout: time.Second * 30,
