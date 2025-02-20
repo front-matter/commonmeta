@@ -426,7 +426,6 @@ func Read(content Content) (commonmeta.Data, error) {
 	}
 
 	if content.Blog.Category != "" {
-		fmt.Println(content.Blog.Category)
 		subject := FOSKeyMappings[content.Blog.Category]
 		data.Subjects = []commonmeta.Subject{
 			{Subject: subject},

@@ -884,9 +884,7 @@ func QueryURL(number int, page int, client_ string, type_ string, sample bool, y
 		query = append(query, "language:"+language)
 	}
 	if orcid != "" {
-		fmt.Println(orcid)
 		o, _ := utils.ValidateORCID(orcid)
-		fmt.Println(o)
 		if o != "" {
 			query = append(query, "creators.nameIdentifiers.nameIdentifier:"+o)
 		}

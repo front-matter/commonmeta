@@ -842,7 +842,6 @@ func SearchByDOI(doi string, client *InvenioRDMClient) (string, error) {
 func SearchBySlug(slug string, type_ string, client *InvenioRDMClient) (string, error) {
 	var query Query
 	requestURL := fmt.Sprintf("https://%s/api/communities?q=slug:%s&type=%s&type=subject", client.Host, slug, type_)
-	fmt.Println(requestURL)
 	req, _ := http.NewRequest(http.MethodGet, requestURL, nil)
 	req.Header = http.Header{
 		"Content-Type": {"application/json"},
