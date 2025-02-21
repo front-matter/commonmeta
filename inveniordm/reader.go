@@ -555,6 +555,9 @@ var CommunityTypes = map[string]string{
 // CommunityTranslations maps Community names in different languages to the community slug
 // Also maps concepts
 var CommunityTranslations = map[string]string{
+	"ai":                     "artificialintelligence",
+	"llms":                   "artificialintelligence",
+	"books":                  "bookreview",
 	"nachrichten":            "news",
 	"papers":                 "researchblogging",
 	"urheberrecht":           "copyright",
