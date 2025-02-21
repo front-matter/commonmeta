@@ -200,6 +200,7 @@ func IsRogueScholarDOI(doi string, ra string) bool {
 		"10.5438",
 		"10.34732",
 		"10.57689",
+		"10.58079",
 		// "10.83132",
 	}
 	prefix, ok := ValidatePrefix(doi)
