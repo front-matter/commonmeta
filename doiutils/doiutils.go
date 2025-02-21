@@ -197,6 +197,7 @@ func IsRogueScholarDOI(doi string, ra string) bool {
 		"10.59351",
 	}
 	var rogueScholarDatacitePrefixes = []string{
+		"10.5438",
 		"10.34732",
 		"10.57689",
 		// "10.83132",
