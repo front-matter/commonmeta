@@ -324,6 +324,13 @@ func ExampleValidateUUID() {
 	// 2491b2d5-7daf-486b-b78b-e5aab48064c1
 }
 
+func ExampleValidateRID() {
+	s, _ := utils.ValidateRID("nryd8-14284")
+	fmt.Println(s)
+	// Output:
+	// nryd8-14284
+}
+
 func TestSanitize(t *testing.T) {
 	t.Parallel()
 	type testCase struct {
@@ -382,6 +389,7 @@ func TestValidateID(t *testing.T) {
 		{input: "https://doi.org/10.7554/eLife.01567", want: "DOI"},
 		{input: "10.1101/097196", want: "DOI"},
 		{input: "2491b2d5-7daf-486b-b78b-e5aab48064c1", want: "UUID"},
+		{input: "nryd8-14284", want: "RID"},
 		{input: "https://ror.org/0342dzm54", want: "ROR"},
 		{input: "https://orcid.org/0000-0002-1825-0097", want: "ORCID"},
 		{input: "https://datadryad.org/stash/dataset/doi:10.5061/dryad.8515", want: "URL"},

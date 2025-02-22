@@ -502,7 +502,7 @@ func GetROR(ror string) (ROR, error) {
 }
 
 // ValidateID validates an identifier and returns the type
-// Can be DOI, UUID, ISSN, ORCID, ROR, URL
+// Can be DOI, UUID, ISSN, ORCID, ROR, URL, RID
 func ValidateID(id string) (string, string) {
 	doi, ok := doiutils.ValidateDOI(id)
 	if ok {
@@ -515,6 +515,10 @@ func ValidateID(id string) (string, string) {
 	uuid, ok := ValidateUUID(id)
 	if ok {
 		return uuid, "UUID"
+	}
+	rid, ok := ValidateRID(id)
+	if ok {
+		return rid, "RID"
 	}
 	orcid, ok := ValidateORCID(id)
 	if ok {
@@ -566,6 +570,16 @@ func ValidateUUID(uuid string) (string, bool) {
 		return "", false
 	}
 	return r.FindString(uuid), true
+}
+
+// ValidateRID validates a RID
+// RID is the unique identifier used by the InvenioRDM platform
+func ValidateRID(rid string) (string, bool) {
+	r := regexp.MustCompile("^[0-9a-z]{5}-[0-9a-z]{3}[0-9]{2}$")
+	if !r.MatchString(rid) {
+		return "", false
+	}
+	return r.FindString(rid), true
 }
 
 func CamelCaseToWords(str string) string {
@@ -641,6 +655,10 @@ func DecodeID(id string) (int64, error) {
 	} else if identifierType == "ROR" {
 		// ROR ID is a 9-character string that starts with 0
 		// and is a base32-encoded number with a mod 97-1
+		number, err = crockford.Decode(identifier, true)
+	} else if identifierType == "RID" {
+		// RID is a 10-character string with a hyphen after five digits.
+		// It is a base32-encoded numbers with checksum.
 		number, err = crockford.Decode(identifier, true)
 	} else if identifierType == "ORCID" {
 		str := identifier

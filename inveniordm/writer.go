@@ -711,6 +711,28 @@ func PublishDraftRecord(record commonmeta.APIResponse, client *InvenioRDMClient,
 	return record, nil
 }
 
+// DeleteDraftRecord publishes a draft record in InvenioRDM.
+func DeleteDraftRecord(record commonmeta.APIResponse, client *InvenioRDMClient, apiKey string) (commonmeta.APIResponse, error) {
+	requestURL := fmt.Sprintf("https://%s/api/records/%s/draft", client.Host, record.ID)
+	req, _ := http.NewRequest(http.MethodDelete, requestURL, nil)
+	req.Header = http.Header{
+		"Content-Type":  {"application/json"},
+		"Authorization": {"Bearer " + apiKey},
+	}
+	resp, err := client.Do(req)
+	if err != nil {
+		return record, err
+	}
+	defer resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	if resp.StatusCode != 204 {
+		fmt.Println(string(body), record)
+		return record, err
+	}
+	record.Status = "deleted"
+	return record, nil
+}
+
 // CreateCommunity creates a community in InvenioRDM.
 func CreateCommunity(community string, client *InvenioRDMClient, apiKey string) (string, error) {
 	type Response struct {
