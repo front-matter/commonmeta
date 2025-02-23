@@ -565,6 +565,7 @@ var CommunityTranslations = map[string]string{
 	"nachrichten":                "news",
 	"papers":                     "researchblogging",
 	"urheberrecht":               "copyright",
+	"veranstaltungen":            "events",
 	"veranstaltungshinweise":     "events",
 	"asapbio":                    "preprints",
 	"biorxiv":                    "preprints",
