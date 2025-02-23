@@ -1,9 +1,13 @@
 package inveniordm_test
 
 import (
+	"fmt"
 	"testing"
+	"time"
 
 	"github.com/front-matter/commonmeta/inveniordm"
+	"github.com/muesli/cache2go"
+	"golang.org/x/time/rate"
 )
 
 func TestGet(t *testing.T) {
@@ -96,3 +100,14 @@ func TestFetch(t *testing.T) {
 // 	// Output:
 // 	// [xm2mv-r7378]
 // }
+
+func ExampleSearchBySlug() {
+	host := "rogue-scholar.org"
+	rl := rate.NewLimiter(rate.Every(60*time.Second), 900)
+	client := inveniordm.NewClient(rl, host)
+	cache := cache2go.Cache("communities")
+	s, _ := inveniordm.SearchBySlug("naturalSciences", "topic", client, cache)
+	fmt.Println(s)
+	// Output:
+	// 7d3b25fd-a4a8-4155-8e76-99d6be06706a
+}

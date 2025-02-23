@@ -575,7 +575,7 @@ func ValidateUUID(uuid string) (string, bool) {
 // ValidateRID validates a RID
 // RID is the unique identifier used by the InvenioRDM platform
 func ValidateRID(rid string) (string, bool) {
-	r := regexp.MustCompile("^[0-9a-z]{5}-[0-9a-z]{3}[0-9]{2}$")
+	r := regexp.MustCompile("^[" + crockford.ENCODING_CHARS + "]{5}-[" + crockford.ENCODING_CHARS + "]{3}[0-9]{2}$")
 	if !r.MatchString(rid) {
 		return "", false
 	}

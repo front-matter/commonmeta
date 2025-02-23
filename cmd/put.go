@@ -18,6 +18,7 @@ import (
 	"github.com/front-matter/commonmeta/jsonfeed"
 	"github.com/front-matter/commonmeta/schemaorg"
 	"github.com/front-matter/commonmeta/utils"
+	"github.com/muesli/cache2go"
 	"golang.org/x/time/rate"
 
 	"github.com/front-matter/commonmeta/crossref"
@@ -149,7 +150,8 @@ commonmeta put 10.5555/12345678 -f crossref -t inveniordm -h rogue-scholar.org -
 			}
 			rl := rate.NewLimiter(rate.Every(60*time.Second), 900) // 900 request every 60 seconds
 			client := inveniordm.NewClient(rl, host)
-			record, err = inveniordm.Upsert(record, client, token, legacyKey, data)
+			cache := cache2go.Cache("communities")
+			record, err = inveniordm.Upsert(record, client, cache, token, legacyKey, data)
 			if err != nil {
 				cmd.PrintErr(err)
 			}

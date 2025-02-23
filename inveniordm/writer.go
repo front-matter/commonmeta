@@ -20,6 +20,7 @@ import (
 	"github.com/front-matter/commonmeta/roguescholar"
 	"github.com/front-matter/commonmeta/schemautils"
 	"github.com/front-matter/commonmeta/utils"
+	"github.com/muesli/cache2go"
 	"golang.org/x/time/rate"
 	"gopkg.in/yaml.v3"
 )
@@ -411,7 +412,7 @@ func WriteAll(list []commonmeta.Data) ([]byte, error) {
 }
 
 // Upsert updates or creates a record in InvenioRDM.
-func Upsert(record commonmeta.APIResponse, client *InvenioRDMClient, apiKey string, legacyKey string, data commonmeta.Data) (commonmeta.APIResponse, error) {
+func Upsert(record commonmeta.APIResponse, client *InvenioRDMClient, cache *cache2go.CacheTable, apiKey string, legacyKey string, data commonmeta.Data) (commonmeta.APIResponse, error) {
 	if !doiutils.IsRogueScholarDOI(data.ID, "") {
 		record.Status = "failed_not_rogue_scholar_doi"
 		return record, nil
@@ -441,7 +442,7 @@ func Upsert(record commonmeta.APIResponse, client *InvenioRDMClient, apiKey stri
 	for i, v := range data.Relations {
 		if v.Type == "IsPartOf" && strings.HasPrefix(v.ID, "https://rogue-scholar.org/api/communities/") {
 			slug := strings.Split(v.ID, "/")[5]
-			communityID, _ := SearchBySlug(slug, "blog", client)
+			communityID, _ := SearchBySlug(slug, "blog", client, cache)
 			if communityID != "" {
 				record.Community = slug
 				record.CommunityID = communityID
@@ -511,7 +512,7 @@ func Upsert(record commonmeta.APIResponse, client *InvenioRDMClient, apiKey stri
 			if synonym := CommunityTranslations[slug]; synonym != "" {
 				slug = synonym
 			}
-			communityID, err = SearchBySlug(slug, "topic", client)
+			communityID, err = SearchBySlug(slug, "topic", client, cache)
 			if err != nil {
 				return record, err
 			}
@@ -538,6 +539,9 @@ func Upsert(record commonmeta.APIResponse, client *InvenioRDMClient, apiKey stri
 func UpsertAll(list []commonmeta.Data, host string, apiKey string, legacyKey string) ([]commonmeta.APIResponse, error) {
 	var records []commonmeta.APIResponse
 
+	// create a new cache for frequently accessed community queries
+	cache := cache2go.Cache("communities")
+
 	// create a new http client with rate limiting
 	rl := rate.NewLimiter(rate.Every(60*time.Second), 900) // 900 request every 60 seconds
 	client := NewClient(rl, host)
@@ -550,7 +554,7 @@ func UpsertAll(list []commonmeta.Data, host string, apiKey string, legacyKey str
 		} else if !doiutils.IsRogueScholarDOI(data.ID, "") {
 			record.Status = "failed_not_rogue_scholar_doi"
 		} else {
-			record, _ = Upsert(record, client, apiKey, legacyKey, data)
+			record, _ = Upsert(record, client, cache, apiKey, legacyKey, data)
 		}
 
 		records = append(records, record)
