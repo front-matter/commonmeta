@@ -555,17 +555,19 @@ var CommunityTypes = map[string]string{
 }
 
 // CommunityTranslations maps Community names in different languages to the community slug
-// Also maps concepts
+// Also maps synonyms
 var CommunityTranslations = map[string]string{
-	"ai":                     "artificialintelligence",
-	"llms":                   "artificialintelligence",
-	"books":                  "bookreview",
-	"nachrichten":            "news",
-	"papers":                 "researchblogging",
-	"urheberrecht":           "copyright",
-	"veranstaltungshinweise": "events",
-	"asapbio":                "preprints",
-	"biorxiv":                "preprints",
+	"ai":                         "artificialintelligence",
+	"llms":                       "artificialintelligence",
+	"book%20review":              "bookreview",
+	"bjps%20review%20of%20books": "bookreview",
+	"books":                      "bookreview",
+	"nachrichten":                "news",
+	"papers":                     "researchblogging",
+	"urheberrecht":               "copyright",
+	"veranstaltungshinweise":     "events",
+	"asapbio":                    "preprints",
+	"biorxiv":                    "preprints",
 }
 
 // Fetch fetches InvenioRDM metadata and returns Commonmeta metadata.
