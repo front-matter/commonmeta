@@ -13,7 +13,7 @@ import (
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:     "commonmeta",
-	Version: "v0.6.68",
+	Version: "v0.6.69",
 	Short:   "Convert scholarly metadata from one format to another",
 	Long: `Convert scholarly metadata between formats. Currently
 supported input formats are Crossref and DataCite DOIs, currently
@@ -45,6 +45,7 @@ func init() {
 	rootCmd.PersistentFlags().StringP("year", "", "", "work publication year")
 	rootCmd.PersistentFlags().StringP("language", "", "", "work language")
 	rootCmd.PersistentFlags().StringP("orcid", "", "", "ORCID ID")
+	rootCmd.PersistentFlags().StringP("affiliation", "", "", "affiliation name")
 	rootCmd.PersistentFlags().StringP("ror", "", "", "ROR ID")
 	rootCmd.PersistentFlags().StringP("from-host", "", "", "from InvenioRDM host")
 	rootCmd.PersistentFlags().StringP("community", "", "", "InvenioRDM community slug")

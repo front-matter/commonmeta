@@ -93,7 +93,7 @@ commonmeta push --sample -f crossref -t inveniordm -h rogue-scholar.org --token 
 		} else if from == "datacite" {
 			data, err = datacite.FetchAll(number, page, client_, type_, sample, year, language, orcid, ror, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense)
 		} else if from == "inveniordm" {
-			data, err = inveniordm.FetchAll(number, page, fromHost, community, subject, type_, year, language, orcid, ror, hasORCID, hasROR)
+			data, err = inveniordm.FetchAll(number, page, fromHost, community, subject, type_, year, language, orcid, affiliation, ror, hasORCID, hasROR)
 		} else if str != "" && from == "commonmeta" {
 			data, err = commonmeta.LoadAll(str)
 		} else if str != "" && from == "crossref" {

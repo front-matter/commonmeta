@@ -584,9 +584,9 @@ func Fetch(str string) (commonmeta.Data, error) {
 }
 
 // FetchAll gets the metadata for a list of records from a InvenioRDM community and returns Commonmeta metadata.
-func FetchAll(number int, page int, host string, community string, subject string, type_ string, year string, language string, orcid string, ror string, hasORCID bool, hasROR bool) ([]commonmeta.Data, error) {
+func FetchAll(number int, page int, host string, community string, subject string, type_ string, year string, language string, orcid string, affiliation string, ror string, hasORCID bool, hasROR bool) ([]commonmeta.Data, error) {
 	var data []commonmeta.Data
-	content, err := GetAll(number, page, host, community, subject, type_, year, language, orcid, ror, hasORCID, hasROR)
+	content, err := GetAll(number, page, host, community, subject, type_, year, language, orcid, affiliation, ror, hasORCID, hasROR)
 	if err != nil {
 		return data, err
 	}
@@ -663,7 +663,7 @@ func Get(id string) (Content, error) {
 }
 
 // GetAll retrieves InvenioRDM metadata for all records in a community.
-func GetAll(number int, page int, host string, community string, subject string, type_ string, year string, language string, orcid string, ror string, hasORCID bool, hasROR bool) ([]Content, error) {
+func GetAll(number int, page int, host string, community string, subject string, type_ string, year string, language string, orcid string, affiliation string, ror string, hasORCID bool, hasROR bool) ([]Content, error) {
 	var response Query
 	var content []Content
 
@@ -673,7 +673,7 @@ func GetAll(number int, page int, host string, community string, subject string,
 	client := &http.Client{
 		Timeout: time.Second * 30,
 	}
-	url := QueryURL(number, page, host, community, subject, type_, year, language, orcid, ror, hasORCID, hasROR)
+	url := QueryURL(number, page, host, community, subject, type_, year, language, orcid, affiliation, ror, hasORCID, hasROR)
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		return content, err
@@ -699,7 +699,7 @@ func GetAll(number int, page int, host string, community string, subject string,
 }
 
 // QueryURL returns the URL for the InvenioRDM API query
-func QueryURL(number int, page int, host string, community string, subject string, type_ string, year string, language string, orcid string, ror string, hasORCID bool, hasROR bool) string {
+func QueryURL(number int, page int, host string, community string, subject string, type_ string, year string, language string, orcid string, affiliation string, ror string, hasORCID bool, hasROR bool) string {
 	var requestURL string
 	var q string
 	if community != "" {
@@ -746,6 +746,13 @@ func QueryURL(number int, page int, host string, community string, subject strin
 			}
 			values.Set("q", q+"metadata.creators.affiliations.id:"+r)
 		}
+	}
+	if affiliation != "" {
+		q := values.Get("q")
+		if q != "" {
+			q += " AND "
+		}
+		values.Set("q", q+"metadata.creators.affiliations.name:"+r)
 	}
 	if hasORCID {
 		q := values.Get("q")
