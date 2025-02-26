@@ -55,6 +55,7 @@ var listCmd = &cobra.Command{
 		year, _ := cmd.Flags().GetString("year")
 		language, _ := cmd.Flags().GetString("language")
 		orcid, _ := cmd.Flags().GetString("orcid")
+		affiliation, _ := cmd.Flags().GetString("affiliation")
 		ror, _ := cmd.Flags().GetString("ror")
 		fromHost, _ := cmd.Flags().GetString("from-host")
 		community, _ := cmd.Flags().GetString("community")
