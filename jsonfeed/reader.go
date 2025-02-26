@@ -12,6 +12,7 @@ import (
 	"os"
 	"path"
 	"slices"
+	"strconv"
 	"strings"
 	"time"
 
@@ -21,6 +22,12 @@ import (
 	"github.com/front-matter/commonmeta/doiutils"
 	"github.com/front-matter/commonmeta/utils"
 )
+
+// Query represents the InvenioRDM JSON API query.
+type Query struct {
+	Items        []Content `json:"items"`
+	TotalResults int       `json:"total-results"`
+}
 
 // Content represents the JSON Feed metadata.
 type Content struct {
@@ -120,6 +127,17 @@ func Fetch(str string) (commonmeta.Data, error) {
 	return data, nil
 }
 
+// FetchAll fetches a list of JSON Feed metadata and returns Commonmeta metadata.
+func FetchAll(number int, page int, community string) ([]commonmeta.Data, error) {
+	var data []commonmeta.Data
+	content, err := GetAll(number, page, community)
+	if err != nil {
+		return data, err
+	}
+	data, err = ReadAll(content)
+	return data, err
+}
+
 // Get retrieves JSON Feed metadata.
 func Get(id string) (Content, error) {
 	var content Content
@@ -143,6 +161,53 @@ func Get(id string) (Content, error) {
 		fmt.Println("error:", err)
 	}
 	return content, err
+}
+
+// GetAll retrieves JSON Feed metadata for all records in a community.
+func GetAll(number int, page int, community string) ([]Content, error) {
+	var response Query
+	var content []Content
+
+	client := &http.Client{
+		Timeout: time.Second * 30,
+	}
+	url := QueryURL(number, page, community)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		return content, err
+	}
+	resp, err := client.Do(req)
+	if err != nil {
+		return content, err
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != 200 {
+		return content, fmt.Errorf("status code error: %d %s", resp.StatusCode, resp.Status)
+	}
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return content, err
+	}
+	err = json.Unmarshal(body, &response)
+	if err != nil {
+		fmt.Println("error:", err)
+	}
+	content = append(content, response.Items...)
+	return content, err
+}
+
+// QueryURL returns the URL for the Rogue Scholar API query
+func QueryURL(number int, page int, community string) string {
+	var requestURL string
+	requestURL = fmt.Sprintf("https://api.rogue-scholar.org/posts?")
+	values := url.Values{}
+	if community != "" {
+		values.Set("blog_slug", community)
+	}
+	values.Add("per_page", strconv.Itoa(number))
+	values.Add("page", strconv.Itoa(page))
+
+	return requestURL + values.Encode()
 }
 
 // Load loads the metadata for a single work from a JSON file

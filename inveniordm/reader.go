@@ -752,7 +752,7 @@ func QueryURL(number int, page int, host string, community string, subject strin
 		if q != "" {
 			q += " AND "
 		}
-		values.Set("q", q+"metadata.creators.affiliations.name:"+affiliation)
+		values.Set("q", q+"metadata.creators.affiliations.name:\""+affiliation+"\"")
 	}
 	if hasORCID {
 		q := values.Get("q")
