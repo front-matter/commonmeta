@@ -86,10 +86,9 @@ func Convert(data commonmeta.Data) (Inveniordm, error) {
 			}
 			var affiliations []Affiliation
 			for _, a := range v.Affiliations {
-				// don't include ROR ID for now, as records may be rejected if not found in the InvenioRDM instance
-				// id, _ := utils.ValidateROR(a.ID)
+				id, _ := utils.ValidateROR(a.ID)
 				affiliation := Affiliation{
-					// ID:   id,
+					ID:   id,
 					Name: a.Name,
 				}
 				// avoid duplicate affiliations
