@@ -73,6 +73,7 @@ type Blog struct {
 	Description string  `json:"description"`
 	Favicon     string  `json:"favicon"`
 	Funding     Funding `json:"funding"`
+	Generator   string  `json:"generator"`
 	HomePageURL string  `json:"home_page_url"`
 	ISSN        string  `json:"issn"`
 	Language    string  `json:"language"`
@@ -320,6 +321,11 @@ func Read(content Content) (commonmeta.Data, error) {
 	data.Container = commonmeta.Container{
 		Type:           "Blog",
 		Title:          content.Blog.Title,
+		Description:    content.Blog.Description,
+		Language:       content.Blog.Language,
+		License:        commonmeta.License{URL: content.Blog.License},
+		Favicon:        content.Blog.Favicon,
+		Platform:       content.Blog.Generator,
 		Identifier:     identifier,
 		IdentifierType: identifierType,
 	}

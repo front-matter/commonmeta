@@ -13,11 +13,11 @@ import (
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:     "commonmeta",
-	Version: "v0.6.73",
-	Short:   "Convert scholarly metadata from one format to another",
+	Version: "v0.7.0",
+	Short:   "Convert scholarly metadata between formats",
 	Long: `Convert scholarly metadata between formats. Currently
-supported input formats are Crossref and DataCite DOIs, currently
-the only supported output format is Commonmeta. Example usage:
+supported formats include Crossref, DataCite, Schema.org, CSL, InvenioRDM,
+and JSON Feed. Example usage:
 
 commonmeta convert 10.5555/12345678`,
 

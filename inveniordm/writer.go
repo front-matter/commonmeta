@@ -130,6 +130,9 @@ func Convert(data commonmeta.Data) (Inveniordm, error) {
 	if data.Container.Title != "" {
 		inveniordm.CustomFields.Journal.Title = data.Container.Title
 	}
+	if data.Container.Platform != "" {
+		inveniordm.CustomFields.Generator = data.Container.Platform
+	}
 	if data.Container.Volume != "" {
 		inveniordm.CustomFields.Journal.Volume = data.Container.Volume
 	}

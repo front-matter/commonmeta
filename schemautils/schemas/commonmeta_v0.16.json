@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://commonmeta.org/commonmeta_v0.15.json",
-  "title": "Commonmeta v0.15",
+  "$id": "https://commonmeta.org/commonmeta_v0.16.json",
+  "title": "Commonmeta v0.16",
   "description": "JSON representation of the Commonmeta schema.",
   "commonmeta": {
     "anyOf": [
@@ -66,6 +66,7 @@
               "description": "The type of the container.",
               "type": "string",
               "enum": [
+                "Blog",
                 "Book",
                 "BookSeries",
                 "Journal",
@@ -80,6 +81,31 @@
             "title": {
               "description": "The title of the container.",
               "type": "string"
+            },
+            "description": {
+              "description": "The description of the container.",
+              "type": "string"
+            },
+            "language": {
+              "description": "The language of the container. Use one of the language codes from the IETF BCP 47 standard.",
+              "type": "string"
+            },
+            "license": {
+              "description": "The license for the container. Use one of the SPDX license identifiers.",
+              "type": "object",
+              "properties": {
+                "id": { "type": "string" },
+                "url": { "type": "string", "format": "uri" }
+              }
+            },
+            "platform": {
+              "description": "The platform of the container.",
+              "type": "string"
+            },
+            "favicon": {
+              "description": "The icon of the container.",
+              "type": "string",
+              "format": "uri"
             },
             "firstPage": {
               "description": "The first page of the resource.",

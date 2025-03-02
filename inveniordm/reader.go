@@ -158,6 +158,7 @@ type CustomFields struct {
 	Journal      Journal `json:"journal:journal,omitempty"`
 	ContentText  string  `json:"rs:content_text,omitempty"`
 	FeatureImage string  `json:"rs:image,omitempty"`
+	Generator    string  `json:"rs:generator,omitempty"`
 }
 
 type Date struct {

@@ -244,14 +244,19 @@ type Affiliation struct {
 
 // Container represents the container of a publication, defined in the commonmeta JSON Schema.
 type Container struct {
-	Identifier     string `json:"identifier,omitempty"`
-	IdentifierType string `json:"identifierType,omitempty"`
-	Type           string `json:"type,omitempty"`
-	Title          string `json:"title,omitempty"`
-	FirstPage      string `json:"firstPage,omitempty"`
-	LastPage       string `json:"lastPage,omitempty"`
-	Volume         string `json:"volume,omitempty"`
-	Issue          string `json:"issue,omitempty"`
+	Identifier     string  `json:"identifier,omitempty"`
+	IdentifierType string  `json:"identifierType,omitempty"`
+	Type           string  `json:"type,omitempty"`
+	Title          string  `json:"title,omitempty"`
+	Description    string  `json:"description,omitempty"`
+	Language       string  `json:"language,omitempty"`
+	License        License `json:"license,omitempty"`
+	Platform       string  `json:"platform,omitempty"`
+	Favicon        string  `json:"favicon,omitempty"`
+	FirstPage      string  `json:"firstPage,omitempty"`
+	LastPage       string  `json:"lastPage,omitempty"`
+	Volume         string  `json:"volume,omitempty"`
+	Issue          string  `json:"issue,omitempty"`
 }
 
 // Contributor represents a contributor of a publication, defined in the commonmeta JSON Schema.
