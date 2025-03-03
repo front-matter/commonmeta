@@ -23,9 +23,9 @@ func UpdateLegacyRecord(record commonmeta.APIResponse, legacyKey string, field s
 	now := strconv.FormatInt(time.Now().Unix(), 10)
 	var output []byte
 	if field == "rid" && record.ID != "" {
-		output = []byte(`{"rid":"` + record.ID + `", "indexed_at":"` + now + `", "indexed":"true"}`)
+		output = []byte(`{"rid":"` + record.ID + `", "indexed_at":"` + now + `", "indexed":"true", "archived":"true"}`)
 	} else if record.DOI != "" {
-		output = []byte(`{"doi":"` + record.DOI + `", "indexed_at":"` + now + `", "indexed":"true"}`)
+		output = []byte(`{"doi":"` + record.DOI + `", "indexed_at":"` + now + `", "indexed":"true", "archived":"true"}`)
 	} else {
 		return record, fmt.Errorf("no valid field to update")
 	}
