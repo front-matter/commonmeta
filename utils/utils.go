@@ -604,6 +604,9 @@ func WordsToCamelCase(str string) string {
 	}
 	s = strings.ReplaceAll(s, " ", "")
 	s = strings.ReplaceAll(s, "-", "")
+	if s == "" {
+		return s
+	}
 	return strings.ToLower(s[:1]) + s[1:]
 }
 
