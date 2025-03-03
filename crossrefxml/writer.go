@@ -376,7 +376,12 @@ func Convert(data commonmeta.Data) (Body, error) {
 	case "Article", "BlogPost":
 		var groupTitle string
 		if len(data.Subjects) > 0 {
-			groupTitle = utils.CamelCaseToWords(data.Subjects[0].Subject)
+			for _, v := range data.Subjects {
+				if commonmeta.FOSMappings[v.Subject] != "" {
+					groupTitle = v.Subject
+					break
+				}
+			}
 		}
 		var postedDate PostedDate
 		if len(data.Date.Published) > 0 {

@@ -299,13 +299,12 @@ func Convert(data commonmeta.Data) (Inveniordm, error) {
 	}
 	if len(data.Subjects) > 0 {
 		for _, v := range data.Subjects {
-			// ID := FOSMappings[v.Subject]
-			// ID := ""
-			// var scheme string
-			// if ID != "" {
-			// 	scheme = "FOS"
-			// }
-			subject := Subject{Subject: v.Subject}
+			ID := commonmeta.FOSMappings[v.Subject]
+			var scheme string
+			if ID != "" {
+				scheme = "FOS"
+			}
+			subject := Subject{Subject: v.Subject, ID: ID, Scheme: scheme}
 			inveniordm.Metadata.Subjects = append(inveniordm.Metadata.Subjects, subject)
 		}
 	}

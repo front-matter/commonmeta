@@ -49,6 +49,7 @@ type Content struct {
 	Relationships []Relation  `json:"relationships"`
 	Reference     []Reference `json:"reference"`
 	Summary       string      `json:"summary"`
+	Tags          []string    `json:"tags"`
 	Title         string      `json:"title"`
 	UpdatedAt     int64       `json:"updated_at"`
 	URL           string      `json:"url"`
@@ -199,8 +200,7 @@ func GetAll(number int, page int, community string) ([]Content, error) {
 
 // QueryURL returns the URL for the Rogue Scholar API query
 func QueryURL(number int, page int, community string) string {
-	var requestURL string
-	requestURL = fmt.Sprintf("https://api.rogue-scholar.org/posts?")
+	requestURL := "https://api.rogue-scholar.org/posts?"
 	values := url.Values{}
 	if community != "" {
 		values.Set("blog_slug", community)
@@ -446,12 +446,18 @@ func Read(content Content) (commonmeta.Data, error) {
 
 	if content.Blog.Category != "" {
 		subject := commonmeta.FOSKeyMappings[content.Blog.Category]
-		data.Subjects = []commonmeta.Subject{
-			{Subject: subject},
-		}
+		data.Subjects = append(data.Subjects, commonmeta.Subject{
+			Subject: subject,
+		})
 		data.Relations = append(data.Relations, commonmeta.Relation{
 			ID:   utils.CommunitySlugAsURL(content.Blog.Category, "rogue-scholar.org"),
 			Type: "IsPartOf",
+		})
+	}
+
+	for _, v := range content.Tags {
+		data.Subjects = append(data.Subjects, commonmeta.Subject{
+			Subject: v,
 		})
 	}
 
