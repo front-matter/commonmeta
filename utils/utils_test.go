@@ -482,6 +482,20 @@ func ExampleKebabCaseToPascalCase() {
 	// EarthAndRelatedEnvironmentalSciences
 }
 
+func ExampleStringToSlug() {
+	s := utils.StringToSlug("Investigación-Digital💿")
+	fmt.Println(s)
+	// Output:
+	// investigaciondigital
+}
+
+func ExampleNormalizeString() {
+	s, _ := utils.NormalizeString("Investigación-Digital💿")
+	fmt.Println(s)
+	// Output:
+	// Investigacion-Digital💿
+}
+
 func ExampleGetLanguage() {
 	i := utils.GetLanguage("de", "iso639-3")
 	fmt.Println(i)

@@ -12,12 +12,16 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"unicode"
 
 	iso639_3 "github.com/barbashov/iso639-3"
 	"github.com/front-matter/commonmeta/crockford"
 	"github.com/front-matter/commonmeta/doiutils"
 	"github.com/microcosm-cc/bluemonday"
 	"github.com/pkosilo/iso7064"
+	"golang.org/x/text/runes"
+	"golang.org/x/text/transform"
+	"golang.org/x/text/unicode/norm"
 )
 
 // ROR represents a Research Organization Registry (ROR) record
@@ -627,6 +631,27 @@ func KebabCaseToCamelCase(str string) string {
 func KebabCaseToPascalCase(str string) string {
 	s := KebabCaseToCamelCase(str)
 	return strings.ToUpper(s[:1]) + s[1:]
+}
+
+// StringToSlug makes a string lowercase and removes non-alphanumeric characters
+func StringToSlug(str string) string {
+	s, _ := NormalizeString(str)
+	return strings.Map(func(r rune) rune {
+		if unicode.IsLetter(r) || unicode.IsNumber(r) {
+			return unicode.ToLower(r)
+		}
+		return -1
+	}, s)
+}
+
+func NormalizeString(s string) (string, error) {
+	t := transform.Chain(norm.NFD, runes.Remove(runes.In(unicode.Mn)), norm.NFC)
+	result, _, err := transform.String(t, s)
+	if err != nil {
+		return "", err
+	}
+
+	return result, nil
 }
 
 func GetLanguage(lang string, format string) string {

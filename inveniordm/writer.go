@@ -509,13 +509,13 @@ func Upsert(record commonmeta.APIResponse, client *InvenioRDMClient, cache *cach
 	if len(data.Subjects) > 0 {
 		var slug, communityID string
 		for _, v := range data.Subjects {
-			slug = strings.ToLower(utils.WordsToCamelCase(v.Subject))
+			slug = utils.StringToSlug(v.Subject)
 			if synonym := CommunityTranslations[slug]; synonym != "" {
 				slug = synonym
 			}
 			communityID, err = SearchBySlug(slug, "topic", client, cache)
 			if err != nil {
-				return record, err
+				fmt.Println(err)
 			}
 			if communityID != "" {
 				record, err = AddRecordToCommunity(record, client, apiKey, communityID)
