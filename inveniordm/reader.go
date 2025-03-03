@@ -518,6 +518,7 @@ var CommunityTranslations = map[string]string{
 	"veranstaltungshinweise":     "events",
 	"asapbio":                    "preprints",
 	"biorxiv":                    "preprints",
+	"runiverse":                  "r",
 }
 
 // Fetch fetches InvenioRDM metadata and returns Commonmeta metadata.
