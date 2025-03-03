@@ -68,6 +68,7 @@ var listCmd = &cobra.Command{
 		hasAward, _ := cmd.Flags().GetBool("has-award")
 		hasLicense, _ := cmd.Flags().GetBool("has-license")
 		hasArchive, _ := cmd.Flags().GetBool("has-archive")
+		isArchived, _ := cmd.Flags().GetBool("is-archived")
 		sample, _ := cmd.Flags().GetBool("sample")
 
 		depositor, _ := cmd.Flags().GetString("depositor")
@@ -105,7 +106,7 @@ var listCmd = &cobra.Command{
 		} else if from == "inveniordm" {
 			data, err = inveniordm.FetchAll(number, page, fromHost, community, subject, type_, year, language, orcid, affiliation, ror, hasORCID, hasROR)
 		} else if from == "jsonfeed" {
-			data, err = jsonfeed.FetchAll(number, page, community)
+			data, err = jsonfeed.FetchAll(number, page, community, isArchived)
 		} else {
 			fmt.Println("Please provide a valid input format")
 			return

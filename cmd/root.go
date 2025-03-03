@@ -13,7 +13,7 @@ import (
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:     "commonmeta",
-	Version: "v0.9.0",
+	Version: "v0.10.0",
 	Short:   "Convert scholarly metadata between formats",
 	Long: `Convert scholarly metadata between formats. Currently
 supported formats include Crossref, DataCite, Schema.org, CSL, InvenioRDM,
@@ -59,6 +59,7 @@ func init() {
 	rootCmd.PersistentFlags().BoolP("has-award", "", false, "has award")
 	rootCmd.PersistentFlags().BoolP("has-license", "", false, "has license")
 	rootCmd.PersistentFlags().BoolP("has-archive", "", false, "has archive")
+	rootCmd.PersistentFlags().BoolP("is-archived", "", true, "is archived")
 
 	// needed for DOI registration
 	rootCmd.PersistentFlags().StringP("prefix", "", "", "DOI prefix")

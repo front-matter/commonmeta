@@ -130,9 +130,9 @@ func Fetch(str string) (commonmeta.Data, error) {
 }
 
 // FetchAll fetches a list of JSON Feed metadata and returns Commonmeta metadata.
-func FetchAll(number int, page int, community string) ([]commonmeta.Data, error) {
+func FetchAll(number int, page int, community string, archived bool) ([]commonmeta.Data, error) {
 	var data []commonmeta.Data
-	content, err := GetAll(number, page, community)
+	content, err := GetAll(number, page, community, archived)
 	if err != nil {
 		return data, err
 	}
@@ -166,14 +166,14 @@ func Get(id string) (Content, error) {
 }
 
 // GetAll retrieves JSON Feed metadata for all records in a community.
-func GetAll(number int, page int, community string) ([]Content, error) {
+func GetAll(number int, page int, community string, archived bool) ([]Content, error) {
 	var response Query
 	var content []Content
 
 	client := &http.Client{
 		Timeout: time.Second * 30,
 	}
-	url := QueryURL(number, page, community)
+	url := QueryURL(number, page, community, archived)
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		return content, err
@@ -199,9 +199,12 @@ func GetAll(number int, page int, community string) ([]Content, error) {
 }
 
 // QueryURL returns the URL for the Rogue Scholar API query
-func QueryURL(number int, page int, community string) string {
+func QueryURL(number int, page int, community string, archived bool) string {
 	requestURL := "https://api.rogue-scholar.org/posts?"
 	values := url.Values{}
+	if !archived {
+		values.Set("flag", "needs_update")
+	}
 	if community != "" {
 		values.Set("blog_slug", community)
 	}

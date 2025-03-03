@@ -63,6 +63,7 @@ commonmeta push --sample -f crossref -t inveniordm -h rogue-scholar.org --token 
 		hasAward, _ := cmd.Flags().GetBool("has-award")
 		hasLicense, _ := cmd.Flags().GetBool("has-license")
 		hasArchive, _ := cmd.Flags().GetBool("has-archive")
+		isArchived, _ := cmd.Flags().GetBool("is-archived")
 		sample, _ := cmd.Flags().GetBool("sample")
 
 		depositor, _ := cmd.Flags().GetString("depositor")
@@ -96,7 +97,7 @@ commonmeta push --sample -f crossref -t inveniordm -h rogue-scholar.org --token 
 		} else if from == "inveniordm" {
 			data, err = inveniordm.FetchAll(number, page, fromHost, community, subject, type_, year, language, orcid, affiliation, ror, hasORCID, hasROR)
 		} else if from == "jsonfeed" {
-			data, err = jsonfeed.FetchAll(number, page, community)
+			data, err = jsonfeed.FetchAll(number, page, community, isArchived)
 		} else if str != "" && from == "commonmeta" {
 			data, err = commonmeta.LoadAll(str)
 		} else if str != "" && from == "crossref" {
