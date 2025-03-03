@@ -225,7 +225,6 @@ func Convert(data commonmeta.Data) (Body, error) {
 		assertion := []Assertion{}
 		for _, fundingReference := range data.FundingReferences {
 			a := []Assertion{}
-			f := Assertion{}
 			fi := Assertion{}
 			if fundingReference.FunderIdentifier != "" {
 				fi = Assertion{
@@ -233,7 +232,7 @@ func Convert(data commonmeta.Data) (Body, error) {
 					Text: fundingReference.FunderIdentifier,
 				}
 			}
-			f = Assertion{
+			f := Assertion{
 				Name:      "funder_name",
 				Text:      fundingReference.FunderName,
 				Assertion: []Assertion{fi},
