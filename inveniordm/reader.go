@@ -512,13 +512,16 @@ var CommunityTranslations = map[string]string{
 	"bjps%20review%20of%20books": "bookreview",
 	"books":                      "bookreview",
 	"nachrichten":                "news",
+	"opencitations":              "researchassessment",
 	"papers":                     "researchblogging",
 	"urheberrecht":               "copyright",
+	"workshop":                   "events",
 	"veranstaltungen":            "events",
 	"veranstaltungshinweise":     "events",
 	"asapbio":                    "preprints",
 	"biorxiv":                    "preprints",
 	"runiverse":                  "r",
+	"bericht":                    "report",
 }
 
 // Fetch fetches InvenioRDM metadata and returns Commonmeta metadata.
