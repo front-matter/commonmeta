@@ -368,6 +368,8 @@ func TestValidateURL(t *testing.T) {
 		{input: "https://doi.org/10.7554/eLife.91729.3", want: "DOI"},
 		{input: "10.7554/eLife.91729.3", want: "DOI"},
 		{input: "https://doi.org/10.1101", want: "URL"},
+		{input: "https://api.rogue-scholar.org/posts/f5dd4c59-47ac-44de-8aac-0c0ea6583b5a", want: "JSONFEEDID"},
+		{input: "https://api.rogue-scholar.org/posts/10.59350/at255-j1j24", want: "JSONFEEDID"},
 		{input: "10.1101", want: ""},
 	}
 	for _, tc := range testCases {
@@ -396,6 +398,8 @@ func TestValidateID(t *testing.T) {
 		// {input: "https://archive.softwareheritage.org/swh:1:dir:44641d8369477d44432fdf50b2eae38e5d079742;origin=https://github.com/murrayds/sci-text-disagreement;visit=swh:1:snp:5695398f6bd0811d67792e16a2684052abe9dc37;anchor=swh:1:rev:b361157a9cfeb536ca255422280e154855b4e9a3", want: "URL"},
 		{input: "https://portal.issn.org/resource/ISSN/1094-4087", want: "ISSN"},
 		{input: "2749-9952", want: "ISSN"},
+		{input: "https://api.rogue-scholar.org/posts/f5dd4c59-47ac-44de-8aac-0c0ea6583b5a", want: "JSONFEEDID"},
+		{input: "https://api.rogue-scholar.org/posts/10.59350/at255-j1j24", want: "JSONFEEDID"},
 		{input: "dryad.8515", want: ""},
 	}
 	for _, tc := range testCases {

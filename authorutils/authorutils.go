@@ -45,6 +45,8 @@ func IsPersonalName(name string) bool {
 		"Government",
 		"Redaktion",
 		"Count",
+		"Lab",
+		"Group",
 	}
 
 	for _, word := range organizationWords {

@@ -538,7 +538,7 @@ func ValidateID(id string) (string, string) {
 	}
 	url := ValidateURL(id)
 	if url != "" {
-		return id, "URL"
+		return id, url
 	}
 	return "", ""
 }
@@ -561,7 +561,20 @@ func ValidateURL(str string) string {
 			return ""
 		}
 	}
-	if u.Scheme == "http" || u.Scheme == "https" {
+	if u.Scheme == "https" && u.Host == "api.rogue-scholar.org" {
+		path := strings.Split(u.Path, "/")
+		if len(path) == 3 && path[1] == "posts" {
+			_, ok = ValidateUUID(path[2])
+			if ok {
+				return "JSONFEEDID"
+			}
+		} else if len(path) == 4 && path[1] == "posts" {
+			_, ok = doiutils.ValidateDOI(path[2] + "/" + path[3])
+			if ok {
+				return "JSONFEEDID"
+			}
+		}
+	} else if u.Scheme == "http" || u.Scheme == "https" {
 		return "URL"
 	}
 	return ""

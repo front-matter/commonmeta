@@ -113,12 +113,20 @@ var relationTypes = []string{"IsPartOf", "HasPart", "IsVariantFormOf", "IsOrigin
 // Fetch fetches JSON Feed metadata and returns Commonmeta metadata.
 func Fetch(str string) (commonmeta.Data, error) {
 	var data commonmeta.Data
-	UUID := strings.Split(str, "/")[4]
-	_, IdentifierType := utils.ValidateID(UUID)
-	if IdentifierType != "UUID" {
-		return data, errors.New("invalid UUID")
+	var id string
+
+	_, identifierType := utils.ValidateID(str)
+	if identifierType == "JSONFEEDID" {
+		id = str
+	} else if identifierType == "DOI" {
+		doi, _ := doiutils.ValidateDOI(str)
+		id = "https://api.rogue-scholar.org/posts/" + doi
+	} else if identifierType == "UUID" {
+		id = "https://api.rogue-scholar.org/posts/" + str
+	} else {
+		return data, errors.New("invalid ID")
 	}
-	content, err := Get(str)
+	content, err := Get(id)
 	if err != nil {
 		return data, err
 	}
