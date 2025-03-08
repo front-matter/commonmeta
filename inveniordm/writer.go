@@ -15,6 +15,7 @@ import (
 	"time"
 
 	"github.com/front-matter/commonmeta/commonmeta"
+	"github.com/front-matter/commonmeta/crossrefxml"
 	"github.com/front-matter/commonmeta/dateutils"
 	"github.com/front-matter/commonmeta/doiutils"
 	"github.com/front-matter/commonmeta/roguescholar"
@@ -201,18 +202,17 @@ func Convert(data commonmeta.Data) (Inveniordm, error) {
 
 	if len(data.FundingReferences) > 0 {
 		for _, v := range data.FundingReferences {
-			// id, identifierType := utils.ValidateID(v.FunderIdentifier)
+			id, identifierType := utils.ValidateID(v.FunderIdentifier)
 
 			// convert Open Funder Registry DOI to ROR using mapping file
-			// don't include ROR ID for now, as records may be rejected if not found in the InvenioRDM instance
-			// if identifierType == "Crossref Funder ID" {
-			// 	id = crossrefxml.OFRToRORMappings[v.FunderIdentifier]
-			// }
-			// if id != "" {
-			// 	id, _ = utils.ValidateROR(id)
-			// }
+			if identifierType == "Crossref Funder ID" {
+				id = crossrefxml.OFRToRORMappings[v.FunderIdentifier]
+			}
+			if id != "" {
+				id, _ = utils.ValidateROR(id)
+			}
 			funder := Funder{
-				// ID:   id,
+				ID:   id,
 				Name: v.FunderName,
 			}
 			var award Award

@@ -31,28 +31,29 @@ type Query struct {
 
 // Content represents the JSON Feed metadata.
 type Content struct {
-	ID            string      `json:"id"`
-	DOI           string      `json:"doi"`
-	GUID          string      `json:"guid"`
-	RID           string      `json:"rid"`
-	Abstract      string      `json:"abstract"`
-	ArchiveURL    string      `json:"archive_url"`
-	Authors       Authors     `json:"authors"`
-	Blog          Blog        `json:"blog"`
-	BlogName      string      `json:"blog_name"`
-	BlogSlug      string      `json:"blog_slug"`
-	ContentText   string      `json:"content_text"`
-	FeatureImage  string      `json:"image"`
-	IndexedAt     int64       `json:"indexed_at"`
-	Language      string      `json:"language"`
-	PublishedAt   int64       `json:"published_at"`
-	Relationships []Relation  `json:"relationships"`
-	Reference     []Reference `json:"reference"`
-	Summary       string      `json:"summary"`
-	Tags          []string    `json:"tags"`
-	Title         string      `json:"title"`
-	UpdatedAt     int64       `json:"updated_at"`
-	URL           string      `json:"url"`
+	ID                string             `json:"id"`
+	DOI               string             `json:"doi"`
+	GUID              string             `json:"guid"`
+	RID               string             `json:"rid"`
+	Abstract          string             `json:"abstract"`
+	ArchiveURL        string             `json:"archive_url"`
+	Authors           Authors            `json:"authors"`
+	Blog              Blog               `json:"blog"`
+	BlogName          string             `json:"blog_name"`
+	BlogSlug          string             `json:"blog_slug"`
+	ContentText       string             `json:"content_text"`
+	FeatureImage      string             `json:"image"`
+	IndexedAt         int64              `json:"indexed_at"`
+	Language          string             `json:"language"`
+	PublishedAt       int64              `json:"published_at"`
+	Relationships     []Relation         `json:"relationships"`
+	Reference         []Reference        `json:"reference"`
+	FundingReferences []FundingReference `json:"funding_references"`
+	Summary           string             `json:"summary"`
+	Tags              []string           `json:"tags"`
+	Title             string             `json:"title"`
+	UpdatedAt         int64              `json:"updated_at"`
+	URL               string             `json:"url"`
 }
 
 // Affiliation represents an affiliation in the JSON Feed item.
@@ -90,6 +91,16 @@ type Funding struct {
 	AwardURI    string `json:"award_uri"`
 	FunderID    string `json:"funder_id"`
 	FunderName  string `json:"funder_name"`
+}
+
+// FundingReference represents the funding reference of a publication, defined in the commonmeta JSON Schema.
+type FundingReference struct {
+	FunderIdentifier     string `json:"funderIdentifier,omitempty"`
+	FunderIdentifierType string `json:"funderIdentifierType,omitempty"`
+	FunderName           string `json:"funderName,omitempty"`
+	AwardNumber          string `json:"awardNumber,omitempty"`
+	AwardTitle           string `json:"awardTitle,omitempty"`
+	AwardURI             string `json:"awardUri,omitempty"`
 }
 
 // Relation represents a relation in the JSON Feed item.
@@ -559,6 +570,18 @@ func GetFundingReferences(content Content) []commonmeta.FundingReference {
 			AwardNumber:          content.Blog.Funding.AwardNumber,
 			AwardURI:             content.Blog.Funding.AwardURI,
 		})
+	}
+	if len(content.FundingReferences) > 0 {
+		for _, v := range content.FundingReferences {
+			fundingReferences = append(fundingReferences, commonmeta.FundingReference{
+				FunderName:           v.FunderName,
+				FunderIdentifier:     v.FunderIdentifier,
+				FunderIdentifierType: v.FunderIdentifierType,
+				AwardTitle:           v.AwardTitle,
+				AwardNumber:          v.AwardNumber,
+				AwardURI:             v.AwardURI,
+			})
+		}
 	} else {
 		// Funding references from relationships
 		for _, v := range content.Relationships {

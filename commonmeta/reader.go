@@ -310,7 +310,7 @@ type FundingReference struct {
 	FunderName           string `json:"funderName,omitempty"`
 	AwardNumber          string `json:"awardNumber,omitempty"`
 	AwardTitle           string `json:"awardTitle,omitempty"`
-	AwardURI             string `json:"award_uri,omitempty"`
+	AwardURI             string `json:"awardUri,omitempty"`
 }
 
 // GeoLocation represents the geographical location of a publication, defined in the commonmeta JSON Schema.
