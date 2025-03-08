@@ -70,27 +70,20 @@ type Authors []struct {
 }
 
 type Blog struct {
-	ID          string  `json:"id"`
-	Category    string  `json:"category"`
-	Description string  `json:"description"`
-	Favicon     string  `json:"favicon"`
-	Funding     Funding `json:"funding"`
-	Generator   string  `json:"generator"`
-	HomePageURL string  `json:"home_page_url"`
-	ISSN        string  `json:"issn"`
-	Language    string  `json:"language"`
-	License     string  `json:"license"`
-	Prefix      string  `json:"prefix"`
-	Slug        string  `json:"slug"`
-	Status      string  `json:"status"`
-	Title       string  `json:"title"`
-}
-
-type Funding struct {
-	AwardNumber string `json:"award_number"`
-	AwardURI    string `json:"award_uri"`
-	FunderID    string `json:"funder_id"`
-	FunderName  string `json:"funder_name"`
+	ID          string           `json:"id"`
+	Category    string           `json:"category"`
+	Description string           `json:"description"`
+	Favicon     string           `json:"favicon"`
+	Funding     FundingReference `json:"funding"`
+	Generator   string           `json:"generator"`
+	HomePageURL string           `json:"home_page_url"`
+	ISSN        string           `json:"issn"`
+	Language    string           `json:"language"`
+	License     string           `json:"license"`
+	Prefix      string           `json:"prefix"`
+	Slug        string           `json:"slug"`
+	Status      string           `json:"status"`
+	Title       string           `json:"title"`
 }
 
 // FundingReference represents the funding reference of a publication, defined in the commonmeta JSON Schema.
@@ -565,8 +558,9 @@ func GetFundingReferences(content Content) []commonmeta.FundingReference {
 	if content.Blog.Funding.FunderName != "" {
 		fundingReferences = append(fundingReferences, commonmeta.FundingReference{
 			FunderName:           content.Blog.Funding.FunderName,
-			FunderIdentifier:     content.Blog.Funding.FunderID,
-			FunderIdentifierType: "Crossref Funder ID",
+			FunderIdentifier:     content.Blog.Funding.FunderIdentifier,
+			FunderIdentifierType: content.Blog.Funding.FunderIdentifierType,
+			AwardTitle:           content.Blog.Funding.AwardTitle,
 			AwardNumber:          content.Blog.Funding.AwardNumber,
 			AwardURI:             content.Blog.Funding.AwardURI,
 		})
@@ -627,7 +621,7 @@ func GetFundingReferences(content Content) []commonmeta.FundingReference {
 							AwardNumber:          awardNumber,
 							AwardURI:             v.Urls[1],
 						})
-					} else if _, ok := utils.ValidateROR(v.Urls[0]); ok == true {
+					} else if _, ok := utils.ValidateROR(v.Urls[0]); ok {
 						// URL is ROR ID for funder. Need to transform to Crossref Funder ID
 						// until Crossref production service supports ROR IDs.
 						ror, _ := utils.GetROR(v.Urls[0])
