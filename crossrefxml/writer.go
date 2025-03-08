@@ -225,17 +225,30 @@ func Convert(data commonmeta.Data) (Body, error) {
 		assertion := []Assertion{}
 		for _, fundingReference := range data.FundingReferences {
 			a := []Assertion{}
-			fi := Assertion{}
+			f := Assertion{}
 			if fundingReference.FunderIdentifier != "" {
-				fi = Assertion{
-					Name: "funder_identifier",
-					Text: fundingReference.FunderIdentifier,
+				if fundingReference.FunderIdentifierType == "ROR" {
+					f = Assertion{
+						Name: "ror",
+						Text: fundingReference.FunderIdentifier,
+					}
+				} else if fundingReference.FunderIdentifierType == "Crossref Funder ID" {
+					fi := Assertion{
+						Name: "funder_identifier",
+						Text: fundingReference.FunderIdentifier,
+					}
+					f = Assertion{
+						Name:      "funder_name",
+						Text:      fundingReference.FunderName,
+						Assertion: []Assertion{fi},
+					}
 				}
-			}
-			f := Assertion{
-				Name:      "funder_name",
-				Text:      fundingReference.FunderName,
-				Assertion: []Assertion{fi},
+			} else {
+				f = Assertion{
+					Name:      "funder_name",
+					Text:      fundingReference.FunderName,
+					Assertion: []Assertion{},
+				}
 			}
 			a = append(a, f)
 			if fundingReference.AwardNumber != "" {
