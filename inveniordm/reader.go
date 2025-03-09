@@ -298,7 +298,7 @@ var InvenioToCMMappings = map[string]string{
 	"preprint":              "Article",
 	"publication":           "JournalArticle",
 	"publication-blogpost":  "BlogPost",
-	"publication-preprint":  "Article",
+	"publication-preprint":  "BlogPost", //"Article"
 	"report":                "Report",
 	"section":               "BookChapter",
 	"software":              "Software",
