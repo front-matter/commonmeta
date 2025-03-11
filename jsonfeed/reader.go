@@ -579,7 +579,7 @@ func GetFundingReferences(content Content) []commonmeta.FundingReference {
 	} else {
 		// Funding references from relationships
 		for _, v := range content.Relationships {
-			if "HasAward" == v.Type {
+			if v.Type == "HasAward" {
 				// Urls can either be a list of grant IDs or a funder identifier
 				// (Open Funder Registry ID or ROR), followed by a grant URL
 				if len(v.Urls) == 1 {
@@ -592,21 +592,24 @@ func GetFundingReferences(content Content) []commonmeta.FundingReference {
 						awardNumber := paths[len(paths)-1]
 						fundingReferences = append(fundingReferences, commonmeta.FundingReference{
 							FunderName:           "European Commission",
-							FunderIdentifier:     "https://doi.org/10.13039/501100000780",
-							FunderIdentifierType: "Crossref Funder ID",
+							FunderIdentifier:     "https://ror.org/00k4n6c32",
+							FunderIdentifierType: "ROR",
 							AwardNumber:          awardNumber,
 							AwardURI:             v.Urls[0],
 						})
 
 					}
 				} else if len(v.Urls) == 2 {
-					var funderName string
+					var funderName, funderIdentifier, funderIdentifierType string
 					prefix, _ := doiutils.ValidatePrefix(v.Urls[0])
 					u, _ := url.Parse(v.Urls[1])
 					if prefix == "10.13039" {
 						// Prefix 10.13039 means funder ID from Open Funder registry.
 						if v.Urls[0] == "https://doi.org/10.13039/100000001" {
 							funderName = "National Science Foundation"
+							funderIdentifier = "https://ror.org/021nxhr62"
+							funderIdentifierType = "ROR"
+
 						}
 						var awardNumber string
 						if q := u.Query(); q != nil {
@@ -616,33 +619,27 @@ func GetFundingReferences(content Content) []commonmeta.FundingReference {
 						}
 						fundingReferences = append(fundingReferences, commonmeta.FundingReference{
 							FunderName:           funderName,
-							FunderIdentifier:     v.Urls[0],
-							FunderIdentifierType: "Crossref Funder ID",
+							FunderIdentifier:     funderIdentifier,
+							FunderIdentifierType: funderIdentifierType,
 							AwardNumber:          awardNumber,
 							AwardURI:             v.Urls[1],
 						})
 					} else if _, ok := utils.ValidateROR(v.Urls[0]); ok {
-						// URL is ROR ID for funder. Need to transform to Crossref Funder ID
-						// until Crossref production service supports ROR IDs.
 						ror, _ := utils.GetROR(v.Urls[0])
-						funderIdentifier := ror.ExternalIds.FundRef.All[0]
-						if funderIdentifier != "" {
-							funderIdentifier = "https://doi.org/" + funderIdentifier
-							var awardNumber string
-							if q := u.Query(); q != nil {
-								awardNumber = q["awd_id"][0]
-							} else {
-								paths := strings.Split(u.Path, "/")
-								awardNumber = paths[len(paths)-1]
-							}
-							fundingReferences = append(fundingReferences, commonmeta.FundingReference{
-								FunderName:           ror.Name,
-								FunderIdentifier:     funderIdentifier,
-								FunderIdentifierType: "Crossref Funder ID",
-								AwardNumber:          awardNumber,
-								AwardURI:             v.Urls[1],
-							})
+						var awardNumber string
+						if q := u.Query(); q != nil {
+							awardNumber = q["awd_id"][0]
+						} else {
+							paths := strings.Split(u.Path, "/")
+							awardNumber = paths[len(paths)-1]
 						}
+						fundingReferences = append(fundingReferences, commonmeta.FundingReference{
+							FunderName:           ror.Name,
+							FunderIdentifier:     ror.ID,
+							FunderIdentifierType: "ROR",
+							AwardNumber:          awardNumber,
+							AwardURI:             v.Urls[1],
+						})
 					}
 				}
 			}
