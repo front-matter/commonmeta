@@ -259,11 +259,15 @@ func Convert(data commonmeta.Data) (Body, error) {
 				}
 				a = append(a, f)
 			}
-			fg := Assertion{
-				Name:      "fundgroup",
-				Assertion: a,
+			if len(data.FundingReferences) > 1 {
+				fg := Assertion{
+					Name:      "fundgroup",
+					Assertion: a,
+				}
+				assertion = append(assertion, fg)
+			} else {
+				assertion = append(assertion, a...)
 			}
-			assertion = append(assertion, fg)
 		}
 		program = append(program, Program{
 			Name:      "fundref",
