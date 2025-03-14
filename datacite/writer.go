@@ -270,10 +270,14 @@ func Convert(data commonmeta.Data) (Datacite, error) {
 	if len(data.Relations) > 0 {
 		for _, v := range data.Relations {
 			identifier, identifierType := utils.ValidateID(v.ID)
+			relationType := CMToDataciteRelationTypeMappings[v.Type]
+			if relationType == "" {
+				relationType = v.Type
+			}
 			RelatedIdentifier := RelatedIdentifier{
 				RelatedIdentifier:     identifier,
 				RelatedIdentifierType: identifierType,
-				RelationType:          v.Type,
+				RelationType:          relationType,
 			}
 			datacite.RelatedIdentifiers = append(datacite.RelatedIdentifiers, RelatedIdentifier)
 		}

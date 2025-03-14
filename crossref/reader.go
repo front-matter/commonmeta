@@ -153,11 +153,7 @@ type Content struct {
 			ID     string `json:"id"`
 			IDType string `json:"id-type"`
 		} `json:"is-translation-of"`
-		IsReviewedBy []struct {
-			ID     string `json:"id"`
-			IDType string `json:"id-type"`
-		} `json:"is-reviewed-by"`
-		Reviews []struct {
+		IsReviewOf []struct {
 			ID     string `json:"id"`
 			IDType string `json:"id-type"`
 		} `json:"reviews"`
@@ -253,7 +249,7 @@ var CRToCMContainerTranslations = map[string]string{
 }
 
 // relation types to include
-var relationTypes = []string{"IsPartOf", "HasPart", "IsVariantFormOf", "IsOriginalFormOf", "IsIdenticalTo", "IsTranslationOf", "IsReviewedBy", "Reviews", "HasReview", "IsPreprintOf", "HasPreprint", "IsSupplementTo", "IsSupplementedBy"}
+var relationTypes = []string{"IsPartOf", "HasPart", "IsVariantFormOf", "IsOriginalFormOf", "IsIdenticalTo", "IsTranslationOf", "IsReviewOf", "HasReview", "IsPreprintOf", "HasPreprint", "IsSupplementTo", "IsSupplementedBy"}
 
 // Fetch gets the metadata for a single work from the Crossref API and converts it to the Commonmeta format
 func Fetch(str string) (commonmeta.Data, error) {

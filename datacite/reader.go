@@ -292,6 +292,18 @@ var CMToDCMappings = map[string]string{
 	"WebPage":               "Text",
 }
 
+// DataciteToCMRelationTypeMappings maps Datacite relation_types to Commonmeta relation_types
+var DataciteToCMRelationTypeMappings = map[string]string{
+	"Reviews":      "IsReviewOf",
+	"IsReviewedby": "HasReview",
+}
+
+// CMToDataciteRelationTypeMappings maps Commonmeta relation_types to Datacite relation_types
+var CMToDataciteRelationTypeMappings = map[string]string{
+	"IsReviewOf": "Reviews",
+	"HasReview":  "IsReviewedby",
+}
+
 // Fetch fetches DataCite metadata for a given DOI and returns Commonmeta metadata.
 func Fetch(str string) (commonmeta.Data, error) {
 	var data commonmeta.Data
@@ -680,9 +692,13 @@ func Read(content Content) (commonmeta.Data, error) {
 		for _, v := range content.RelatedIdentifiers {
 			id := utils.NormalizeID(v.RelatedIdentifier)
 			if id != "" && slices.Contains(supportedRelations, v.RelationType) {
+				relationType := DataciteToCMRelationTypeMappings[v.RelationType]
+				if relationType == "" {
+					relationType = v.RelationType
+				}
 				relation := commonmeta.Relation{
 					ID:   id,
-					Type: v.RelationType,
+					Type: relationType,
 				}
 				if !slices.Contains(data.Relations, relation) {
 					data.Relations = append(data.Relations, relation)

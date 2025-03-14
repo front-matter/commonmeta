@@ -443,7 +443,7 @@ var InvenioToCMRelationTypeMappings = map[string]string{
 	"corrects":          "Corrects",
 }
 
-// CMToInvenioRelationTypeMappings maps Commonmeta identifier types to InvenioRDM identifier types
+// CMToInvenioRelationTypeMappings maps Commonmeta relation_types to InvenioRDM relation_types
 var CMToInvenioRelationTypeMappings = map[string]string{
 	"IsCitedBy":         "iscitedby",
 	"Cites":             "cites",
@@ -464,8 +464,8 @@ var CMToInvenioRelationTypeMappings = map[string]string{
 	"IsVariantFormOf":   "isvariantformof",
 	"IsOriginalFormOf":  "isoriginalformof",
 	"IsIdenticalTo":     "isidenticalto",
-	"IsReviewedBy":      "isreviewedby",
-	"Reviews":           "reviews",
+	"IsReviewOf":        "reviews",
+	"HasReview":         "isreviewedby",
 	"IsDerivedFrom":     "isderivedfrom",
 	"IsSourceOf":        "issourceof",
 	"Describes":         "describes",
