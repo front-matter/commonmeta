@@ -107,6 +107,7 @@ type Content struct {
 	Publisher     string   `json:"publisher"`
 	Reference     []struct {
 		Key          string `json:"key"`
+		Type         string `json:"type"`
 		DOI          string `json:"DOI"`
 		ArticleTitle string `json:"article-title"`
 		Year         string `json:"year"`
@@ -225,6 +226,28 @@ var CRToCMMappings = map[string]string{
 	"report-series":       "ReportSeries",
 	"report":              "Report",
 	"standard":            "Standard",
+}
+
+// CRCitationToCMMappings maps Crossref citation types to Commonmeta types
+var CRCitationToCMMappings = map[string]string{
+	"blog-post":              "BlogPost",
+	"book":                   "Book",
+	"book-chapter":           "BookChapter",
+	"dataset":                "Dataset",
+	"dissertation":           "Dissertation",
+	"journal":                "Journal",
+	"journal-article":        "JournalArticle",
+	"patent":                 "Patent",
+	"peer-review":            "PeerReview",
+	"preprint":               "Preprint",
+	"conference-proceedings": "Proceedings",
+	"conference-paper":       "ProceedingsArticle",
+	"protocol":               "Protocol",
+	"report":                 "Report",
+	"software":               "Software",
+	"standard":               "Standard",
+	"web-resource":           "Webpage",
+	"other":                  "Other",
 }
 
 // CrossrefContainerTypes maps Crossref types to Crossref container types
@@ -677,8 +700,13 @@ func Read(content Content) (commonmeta.Data, error) {
 		if ID == "" && v.Unstructured != "" {
 			ID = rxStrict.FindString(v.Unstructured)
 		}
+		type_ := CRCitationToCMMappings[v.Type]
+		if type_ == "" {
+			type_ = "Other"
+		}
 		reference := commonmeta.Reference{
 			Key:             v.Key,
+			Type:            type_,
 			ID:              ID,
 			Title:           v.ArticleTitle,
 			PublicationYear: v.Year,

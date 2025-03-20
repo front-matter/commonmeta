@@ -104,11 +104,10 @@ type Relation struct {
 
 // Reference represents a reference in the JSON Feed item.
 type Reference struct {
-	Key             string `json:"key,omitempty"`
-	ID              string `json:"id,omitempty"`
-	PublicationYear string `json:"publicationYear,omitempty"`
-	Title           string `json:"title,omitempty"`
-	Unstructured    string `json:"unstructured,omitempty"`
+	Key          string `json:"key,omitempty"`
+	ID           string `json:"id,omitempty"`
+	Type         string `json:"type,omitempty"`
+	Unstructured string `json:"unstructured,omitempty"`
 }
 
 // relation types to include
@@ -442,11 +441,10 @@ func Read(content Content) (commonmeta.Data, error) {
 
 	for _, v := range content.Reference {
 		reference := commonmeta.Reference{
-			Key:             v.Key,
-			ID:              v.ID,
-			Title:           v.Title,
-			PublicationYear: v.PublicationYear,
-			Unstructured:    v.Unstructured,
+			Key:          v.Key,
+			ID:           v.ID,
+			Type:         v.Type,
+			Unstructured: v.Unstructured,
 		}
 		containsKey := slices.ContainsFunc(data.References, func(e commonmeta.Reference) bool {
 			return e.Key != "" && e.Key == reference.Key

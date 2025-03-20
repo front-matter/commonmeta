@@ -79,6 +79,28 @@ var CMToCRMappings = map[string]string{
 	"Other":              "Other",
 }
 
+// CMToCRCitationMappings maps Commonmeta citation types to Crossref citation types
+var CMToCRCitationMappings = map[string]string{
+	"BlogPost":           "blog_post",
+	"Book":               "book",
+	"BookChapter":        "book_chapter",
+	"Dataset":            "dataset",
+	"Dissertation":       "dissertation",
+	"Journal":            "journal",
+	"JournalArticle":     "journal_article",
+	"Patent":             "patent",
+	"PeerReview":         "peer_review",
+	"Preprint":           "preprint",
+	"Proceedings":        "conference_proceedings",
+	"ProceedingsArticle": "conference_paper",
+	"Protocol":           "protocol",
+	"Report":             "report",
+	"Software":           "software",
+	"Standard":           "standard",
+	"Webpage":            "web_resource",
+	"Other":              "other",
+}
+
 // Convert converts Commonmeta metadata to Crossrefxml metadata
 func Convert(data commonmeta.Data) (Body, error) {
 	c := Body{}
@@ -353,10 +375,12 @@ func Convert(data commonmeta.Data) (Body, error) {
 			if v.Key == "" {
 				key = fmt.Sprintf("ref%d", i+1)
 			}
+			type_ := CMToCRCitationMappings[v.Type]
 			d, _ := doiutils.ValidateDOI(v.ID)
 			if d != "" {
 				citationList.Citation = append(citationList.Citation, Citation{
-					Key: key,
+					Key:  key,
+					Type: type_,
 					DOI: &DOI{
 						Text: d,
 					},
@@ -367,6 +391,7 @@ func Convert(data commonmeta.Data) (Body, error) {
 			} else if v.Unstructured != "" {
 				citationList.Citation = append(citationList.Citation, Citation{
 					Key:                key,
+					Type:               type_,
 					ArticleTitle:       v.Title,
 					CYear:              v.PublicationYear,
 					UnstructedCitation: v.Unstructured,
@@ -513,8 +538,8 @@ func Write(data commonmeta.Data, account Account) ([]byte, error) {
 		Registrant: account.Registrant,
 	}
 	doiBatch := DOIBatch{
-		Xmlns:   "http://www.crossref.org/schema/5.3.1",
-		Version: "5.3.1",
+		Xmlns:   "http://www.crossref.org/schema/5.4.0",
+		Version: "5.4.0",
 		Head:    head,
 		Body:    body,
 	}
@@ -566,8 +591,8 @@ func WriteAll(list []commonmeta.Data, account Account) ([]byte, error) {
 		Registrant: account.Registrant,
 	}
 	doiBatch := DOIBatch{
-		Xmlns:   "http://www.crossref.org/schema/5.3.1",
-		Version: "5.3.1",
+		Xmlns:   "http://www.crossref.org/schema/5.4.0",
+		Version: "5.4.0",
 		Head:    head,
 		Body:    body,
 	}

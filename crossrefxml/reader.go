@@ -174,6 +174,7 @@ type BookSetMetadata struct {
 
 type Citation struct {
 	XMLName            xml.Name `xml:"citation"`
+	Type               string   `xml:"type,attr,omitempty"`
 	Key                string   `xml:"key,attr"`
 	JournalTitle       string   `xml:"journal_title,omitempty"`
 	Author             string   `xml:"author,omitempty"`
@@ -648,6 +649,28 @@ var CRToCMMappings = map[string]string{
 	"standard_series": "StandardSeries",
 	// "standard_content": "StandardComponent",
 	// "prepublication":
+}
+
+// CRCitationToCMMappings maps Crossref citation types to Commonmeta types
+var CRCitationToCMMappings = map[string]string{
+	"blog_post":              "BlogPost",
+	"book":                   "Book",
+	"book_chapter":           "BookChapter",
+	"dataset":                "Dataset",
+	"dissertation":           "Dissertation",
+	"journal":                "Journal",
+	"journal_article":        "JournalArticle",
+	"patent":                 "Patent",
+	"peer_review":            "PeerReview",
+	"preprint":               "Preprint",
+	"conference_proceedings": "Proceedings",
+	"conference_paper":       "ProceedingsArticle",
+	"protocol":               "Protocol",
+	"report":                 "Report",
+	"software":               "Software",
+	"standard":               "Standard",
+	"web_resource":           "Webpage",
+	"other":                  "Other",
 }
 
 var InterWorkRelationTypes = []string{
@@ -1163,6 +1186,7 @@ func Read(query Query) (commonmeta.Data, error) {
 				reference := commonmeta.Reference{
 					Key:             v.Key,
 					ID:              id,
+					Type:            v.Type,
 					Title:           v.ArticleTitle,
 					PublicationYear: v.CYear,
 					Unstructured:    v.UnstructedCitation,
