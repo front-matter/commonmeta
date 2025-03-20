@@ -414,6 +414,11 @@ func Convert(data commonmeta.Data) (Body, error) {
 		}
 	}
 
+	versionInfo := VersionInfo{}
+	if data.Version != "" {
+		versionInfo.Version = data.Version
+	}
+
 	switch data.Type {
 	case "Article", "BlogPost":
 		var groupTitle string
@@ -449,6 +454,7 @@ func Convert(data commonmeta.Data) (Body, error) {
 			ItemNumber:   itemNumber,
 			Abstract:     abstract,
 			Program:      program,
+			VersionInfo:  versionInfo,
 			DOIData:      doiData,
 			CitationList: citationList,
 		})
@@ -487,7 +493,8 @@ func Convert(data commonmeta.Data) (Body, error) {
 				// Crossmark: Crossmark{
 				// 	CustomMetadata: customMetadata,
 				// },
-				DOIData: doiData,
+				VersionInfo: versionInfo,
+				DOIData:     doiData,
 				// Pages:
 				Program: program,
 				// PublicationDate: data.Date.Published,

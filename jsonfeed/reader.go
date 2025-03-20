@@ -487,6 +487,7 @@ func Read(content Content) (commonmeta.Data, error) {
 	}
 
 	data.URL = url
+	data.Version = "1"
 	data.ContentText = content.ContentText
 	data.FeatureImage = content.FeatureImage
 

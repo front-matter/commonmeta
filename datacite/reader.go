@@ -182,6 +182,7 @@ type RelatedIdentifier struct {
 	RelatedIdentifier     string `json:"relatedIdentifier,omitempty"`
 	RelatedIdentifierType string `json:"relatedIdentifierType,omitempty"`
 	RelationType          string `json:"relationType,omitempty"`
+	ResourceTypeGeneral   string `json:"resourceTypeGeneral,omitempty"`
 }
 
 type Rights struct {
@@ -660,12 +661,13 @@ func Read(content Content) (commonmeta.Data, error) {
 			"Cites",
 			"References",
 		}
-		for i, v := range content.RelatedIdentifiers {
+		for _, v := range content.RelatedIdentifiers {
 			id := utils.NormalizeID(v.RelatedIdentifier)
 			if id != "" && slices.Contains(supportedRelations, v.RelationType) {
+				type_ := DCToCMMappings[v.ResourceTypeGeneral]
 				data.References = append(data.References, commonmeta.Reference{
-					Key: "ref" + strconv.Itoa(i+1),
-					ID:  id,
+					ID:   id,
+					Type: type_,
 				})
 			}
 		}

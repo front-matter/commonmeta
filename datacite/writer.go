@@ -286,10 +286,12 @@ func Convert(data commonmeta.Data) (Datacite, error) {
 	if len(data.References) > 0 {
 		for _, v := range data.References {
 			identifier, identifierType := utils.ValidateID(v.ID)
+			resourceTypeGeneral := CMToDCMappings[v.Type]
 			RelatedIdentifier := RelatedIdentifier{
 				RelatedIdentifier:     identifier,
 				RelatedIdentifierType: identifierType,
 				RelationType:          "References",
+				ResourceTypeGeneral:   resourceTypeGeneral,
 			}
 			datacite.RelatedIdentifiers = append(datacite.RelatedIdentifiers, RelatedIdentifier)
 		}
