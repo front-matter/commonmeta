@@ -54,6 +54,7 @@ type Content struct {
 	Title             string             `json:"title"`
 	UpdatedAt         int64              `json:"updated_at"`
 	URL               string             `json:"url"`
+	Version           string             `json:"version"`
 }
 
 // Affiliation represents an affiliation in the JSON Feed item.
@@ -487,7 +488,7 @@ func Read(content Content) (commonmeta.Data, error) {
 	}
 
 	data.URL = url
-	data.Version = "1"
+	data.Version = content.Version
 	data.ContentText = content.ContentText
 	data.FeatureImage = content.FeatureImage
 
