@@ -191,10 +191,6 @@ func Convert(data commonmeta.Data) (Body, error) {
 	})
 	if len(data.Files) > 0 {
 		for _, file := range data.Files {
-			if file.MimeType == "text/markdown" {
-				// Crossref schema currently doesn't support text/markdown
-				file.MimeType = "text/plain"
-			}
 			item := Item{
 				Resource: Resource{
 					Text:     file.URL,
