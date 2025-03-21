@@ -439,13 +439,13 @@ func Convert(data commonmeta.Data) (Body, error) {
 				Organization: organization,
 				PersonName:   personName,
 			},
-			Titles:       titles,
-			PostedDate:   postedDate,
-			Institution:  institution,
-			ItemNumber:   itemNumber,
-			Abstract:     abstract,
-			Program:      program,
-			Version:      data.Version,
+			Titles:      titles,
+			PostedDate:  postedDate,
+			Institution: institution,
+			ItemNumber:  itemNumber,
+			Abstract:    abstract,
+			Program:     program,
+			// Version:      data.Version,
 			DOIData:      doiData,
 			CitationList: citationList,
 		})
@@ -468,7 +468,7 @@ func Convert(data commonmeta.Data) (Body, error) {
 			// 	Month: data.Date.Published.Month,
 			// 	Day:   data.Date.Published.Day,
 			// },
-			Version:      data.Version,
+			// Version:      data.Version,
 			DOIData:      doiData,
 			CitationList: citationList,
 		})
@@ -485,7 +485,7 @@ func Convert(data commonmeta.Data) (Body, error) {
 				// Crossmark: Crossmark{
 				// 	CustomMetadata: customMetadata,
 				// },
-				Version: data.Version,
+				// Version: data.Version,
 				DOIData: doiData,
 				// Pages:
 				Program: program,
