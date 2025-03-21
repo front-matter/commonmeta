@@ -158,7 +158,7 @@ type BookMetadata struct {
 	PublicationDate []PublicationDate `xml:"publication_date"`
 	ISBN            []ISBN            `xml:"isbn"`
 	Publisher       Publisher         `xml:"publisher"`
-	VersionInfo     VersionInfo       `xml:"version_info,omitempty"`
+	VersionInfo     *VersionInfo      `xml:"version_info,omitempty"`
 	DOIData         DOIData           `xml:"doi_data"`
 }
 
@@ -231,7 +231,7 @@ type ConferencePaper struct {
 	Pages           Pages             `xml:"pages"`
 	PublisherItem   PublisherItem     `xml:"publisher_item"`
 	Crossmark       Crossmark         `xml:"crossmark"`
-	VersionInfo     VersionInfo       `xml:"version_info,omitempty"`
+	VersionInfo     *VersionInfo      `xml:"version_info,omitempty"`
 	DOIData         DOIData           `xml:"doi_data"`
 	CitationList    CitationList      `xml:"citation_list,omitempty"`
 }
@@ -248,7 +248,7 @@ type ContentItem struct {
 		FirstPage string `xml:"first_page"`
 		LastPage  string `xml:"last_page"`
 	} `xml:"pages"`
-	VersionInfo  VersionInfo  `xml:"version_info,omitempty"`
+	VersionInfo  *VersionInfo `xml:"version_info,omitempty"`
 	DOIData      DOIData      `xml:"doi_data"`
 	CitationList CitationList `xml:"citation_list,omitempty"`
 }
@@ -307,8 +307,8 @@ type Dataset struct {
 	DatabaseDate struct {
 		CreationDate CreationDate `xml:"creation_date"`
 	} `xml:"database_date"`
-	VersionInfo VersionInfo `xml:"version_info,omitempty"`
-	DOIData     DOIData     `xml:"doi_data"`
+	VersionInfo *VersionInfo `xml:"version_info,omitempty"`
+	DOIData     DOIData      `xml:"doi_data"`
 }
 
 type Dissertation struct {
@@ -320,7 +320,7 @@ type Dissertation struct {
 	ApprovalDate    ApprovalDate `xml:"approval_date"`
 	Institution     Institution  `xml:"institution"`
 	Degree          string       `xml:"degree"`
-	VersionInfo     VersionInfo  `xml:"version_info,omitempty"`
+	VersionInfo     *VersionInfo `xml:"version_info,omitempty"`
 	DOIData         DOIData      `xml:"doi_data"`
 	CitationList    CitationList `xml:"citation_list,omitempty"`
 }
@@ -425,7 +425,7 @@ type JournalArticle struct {
 	Program                   []Program         `xml:"program"`
 	Crossmark                 *Crossmark        `xml:"crossmark,omitempty"`
 	ArchiveLocations          ArchiveLocations  `xml:"archive_locations"`
-	VersionInfo               VersionInfo       `xml:"version_info,omitempty"`
+	VersionInfo               *VersionInfo      `xml:"version_info,omitempty"`
 	DOIData                   DOIData           `xml:"doi_data"`
 	CitationList              CitationList      `xml:"citation_list,omitempty"`
 }
@@ -522,7 +522,7 @@ type PostedContent struct {
 	ItemNumber     ItemNumber      `xml:"item_number,omitempty"`
 	Abstract       []Abstract      `xml:"abstract"`
 	Program        []Program       `xml:"program"`
-	VersionInfo    VersionInfo     `xml:"version_info,omitempty"`
+	VersionInfo    *VersionInfo    `xml:"version_info,omitempty"`
 	DOIData        DOIData         `xml:"doi_data"`
 	CitationList   CitationList    `xml:"citation_list,omitempty"`
 }
@@ -543,7 +543,7 @@ type ProceedingsMetadata struct {
 	PublicationDate  []PublicationDate `xml:"publication_date"`
 	ISBN             []ISBN            `xml:"isbn"`
 	PublisherItem    PublisherItem     `xml:"publisher_item"`
-	VersionInfo      VersionInfo       `xml:"version_info,omitempty"`
+	VersionInfo      *VersionInfo      `xml:"version_info,omitempty"`
 	DOIData          DOIData           `xml:"doi_data"`
 }
 
@@ -635,7 +635,7 @@ type Titles struct {
 // VersionInfo represents the version information in Crossref XML metadata.
 type VersionInfo struct {
 	XMLName xml.Name `xml:"version_info"`
-	Version string   `xml:"version"`
+	Version string   `xml:"version,omitempty"`
 }
 
 // CRToCMMappings maps Crossref Query types to Commonmeta types

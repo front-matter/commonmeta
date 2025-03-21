@@ -414,10 +414,10 @@ func Convert(data commonmeta.Data) (Body, error) {
 		}
 	}
 
-	versionInfo := VersionInfo{}
-	if data.Version != "" {
-		versionInfo.Version = data.Version
-	}
+	// var versionInfo VersionInfo
+	// if data.Version != "" {
+	// 	versionInfo.Version = data.Version
+	// }
 
 	switch data.Type {
 	case "Article", "BlogPost":
@@ -454,7 +454,6 @@ func Convert(data commonmeta.Data) (Body, error) {
 			ItemNumber:   itemNumber,
 			Abstract:     abstract,
 			Program:      program,
-			VersionInfo:  versionInfo,
 			DOIData:      doiData,
 			CitationList: citationList,
 		})
@@ -493,8 +492,7 @@ func Convert(data commonmeta.Data) (Body, error) {
 				// Crossmark: Crossmark{
 				// 	CustomMetadata: customMetadata,
 				// },
-				VersionInfo: versionInfo,
-				DOIData:     doiData,
+				DOIData: doiData,
 				// Pages:
 				Program: program,
 				// PublicationDate: data.Date.Published,
