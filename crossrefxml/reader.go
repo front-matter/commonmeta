@@ -158,8 +158,8 @@ type BookMetadata struct {
 	PublicationDate []PublicationDate `xml:"publication_date"`
 	ISBN            []ISBN            `xml:"isbn"`
 	Publisher       Publisher         `xml:"publisher"`
-	Version         string            `xml:"version_info>version,omitempty"`
-	DOIData         DOIData           `xml:"doi_data"`
+	// Version         string            `xml:"version_info>version,omitempty"`
+	DOIData DOIData `xml:"doi_data"`
 }
 
 type BookSetMetadata struct {
@@ -231,9 +231,9 @@ type ConferencePaper struct {
 	Pages           Pages             `xml:"pages"`
 	PublisherItem   PublisherItem     `xml:"publisher_item"`
 	Crossmark       Crossmark         `xml:"crossmark"`
-	Version         string            `xml:"version_info>version,omitempty"`
-	DOIData         DOIData           `xml:"doi_data"`
-	CitationList    CitationList      `xml:"citation_list,omitempty"`
+	// Version         string            `xml:"version_info>version,omitempty"`
+	DOIData      DOIData      `xml:"doi_data"`
+	CitationList CitationList `xml:"citation_list,omitempty"`
 }
 
 type ContentItem struct {
@@ -248,7 +248,7 @@ type ContentItem struct {
 		FirstPage string `xml:"first_page"`
 		LastPage  string `xml:"last_page"`
 	} `xml:"pages"`
-	Version      string       `xml:"version_info>version,omitempty"`
+	// Version      string       `xml:"version_info>version,omitempty"`
 	DOIData      DOIData      `xml:"doi_data"`
 	CitationList CitationList `xml:"citation_list,omitempty"`
 }
@@ -307,7 +307,7 @@ type Dataset struct {
 	DatabaseDate struct {
 		CreationDate CreationDate `xml:"creation_date"`
 	} `xml:"database_date"`
-	Version string  `xml:"version_info>version,omitempty"`
+	// Version string  `xml:"version_info>version,omitempty"`
 	DOIData DOIData `xml:"doi_data"`
 }
 
@@ -320,9 +320,9 @@ type Dissertation struct {
 	ApprovalDate    ApprovalDate `xml:"approval_date"`
 	Institution     Institution  `xml:"institution"`
 	Degree          string       `xml:"degree"`
-	Version         string       `xml:"version_info>version,omitempty"`
-	DOIData         DOIData      `xml:"doi_data"`
-	CitationList    CitationList `xml:"citation_list,omitempty"`
+	// Version         string       `xml:"version_info>version,omitempty"`
+	DOIData      DOIData      `xml:"doi_data"`
+	CitationList CitationList `xml:"citation_list,omitempty"`
 }
 
 type DOIData struct {
@@ -425,9 +425,9 @@ type JournalArticle struct {
 	Program                   []Program         `xml:"program"`
 	Crossmark                 *Crossmark        `xml:"crossmark,omitempty"`
 	ArchiveLocations          ArchiveLocations  `xml:"archive_locations"`
-	Version                   string            `xml:"version_info>version,omitempty"`
-	DOIData                   DOIData           `xml:"doi_data"`
-	CitationList              CitationList      `xml:"citation_list,omitempty"`
+	// Version                   string            `xml:"version_info>version,omitempty"`
+	DOIData      DOIData      `xml:"doi_data"`
+	CitationList CitationList `xml:"citation_list,omitempty"`
 }
 
 type JournalIssue struct {
@@ -522,9 +522,9 @@ type PostedContent struct {
 	ItemNumber     ItemNumber      `xml:"item_number,omitempty"`
 	Abstract       []Abstract      `xml:"abstract"`
 	Program        []Program       `xml:"program"`
-	Version        string          `xml:"version_info>version,omitempty"`
-	DOIData        DOIData         `xml:"doi_data"`
-	CitationList   CitationList    `xml:"citation_list,omitempty"`
+	//Version        string          `xml:"version_info>version,omitempty"`
+	DOIData      DOIData      `xml:"doi_data"`
+	CitationList CitationList `xml:"citation_list,omitempty"`
 }
 
 type PostedDate struct {
@@ -543,8 +543,8 @@ type ProceedingsMetadata struct {
 	PublicationDate  []PublicationDate `xml:"publication_date"`
 	ISBN             []ISBN            `xml:"isbn"`
 	PublisherItem    PublisherItem     `xml:"publisher_item"`
-	Version          string            `xml:"version_info>version,omitempty"`
-	DOIData          DOIData           `xml:"doi_data"`
+	// Version          string            `xml:"version_info>version,omitempty"`
+	DOIData DOIData `xml:"doi_data"`
 }
 
 type Program struct {
@@ -805,7 +805,7 @@ func Get(pid string) (Query, error) {
 func Read(query Query) (commonmeta.Data, error) {
 	var data = commonmeta.Data{}
 
-	var containerTitle, issue, language, version, volume string
+	var containerTitle, issue, language, volume string
 	var accessIndicators Program
 	var abstract []Abstract
 	var archiveLocations ArchiveLocations
@@ -863,7 +863,7 @@ func Read(query Query) (commonmeta.Data, error) {
 				Type: "IsPartOf",
 			})
 		}
-		version = postedContent.Version
+		// version = postedContent.Version
 	case "Book":
 		book := meta.Book
 		abstract = book.BookMetadata.Abstract
@@ -907,7 +907,7 @@ func Read(query Query) (commonmeta.Data, error) {
 			Day:   database.Dataset.DatabaseDate.CreationDate.Day,
 		})
 		doiData = database.Dataset.DOIData
-		version = database.Dataset.Version
+		// version = database.Dataset.Version
 	case "Dissertation":
 		dissertation := meta.Dissertation
 		contributors = Contributors{
@@ -921,7 +921,7 @@ func Read(query Query) (commonmeta.Data, error) {
 			Day:   dissertation.ApprovalDate.Day,
 		})
 		titles = dissertation.Titles
-		version = dissertation.Version
+		// version = dissertation.Version
 	case "Entry":
 	case "Grant":
 	case "Journal":
@@ -946,7 +946,7 @@ func Read(query Query) (commonmeta.Data, error) {
 		program = append(program, journal.JournalArticle.Program...)
 		publicationDate = journal.JournalArticle.PublicationDate
 		titles = journal.JournalArticle.Titles
-		version = journal.JournalArticle.Version
+		// version = journal.JournalArticle.Version
 		volume = journal.JournalIssue.JournalVolume.Volume
 	case "JournalIssue":
 		journal := meta.Journal
@@ -980,7 +980,7 @@ func Read(query Query) (commonmeta.Data, error) {
 		pages = conference.ConferencePaper.Pages
 		publicationDate = conference.ConferencePaper.PublicationDate
 		titles = conference.ConferencePaper.Titles
-		version = conference.ConferencePaper.Version
+		// version = conference.ConferencePaper.Version
 	case "ProceedingsSeries":
 	case "ReferenceBook":
 	case "Report":
@@ -1274,7 +1274,7 @@ func Read(query Query) (commonmeta.Data, error) {
 	// }
 
 	data.URL = doiData.Resource
-	data.Version = version
+	// data.Version = version
 
 	return data, nil
 }
