@@ -15,6 +15,12 @@ type DateStruct struct {
 	Day   int
 }
 
+type FormattedDateStruct struct {
+	Year  string
+	Month string
+	Day   string
+}
+
 type DateSlice []interface{}
 
 // Iso8601DateFormat is the ISO 8601 date format without time.
@@ -108,6 +114,27 @@ func GetDateStruct(iso8601Time string) DateStruct {
 	day, _ := strconv.Atoi(iso8601Time[8:10])
 
 	return DateStruct{
+		Year:  year,
+		Month: month,
+		Day:   day,
+	}
+}
+
+// GetFormattedDateStruct returns a formatted date struct from an ISO 8601 date string
+func GetFormattedDateStruct(iso8601Time string) FormattedDateStruct {
+	var year, month, day string
+	dateStruct := GetDateStruct(iso8601Time)
+	if dateStruct.Year == 0 {
+		return FormattedDateStruct{}
+	}
+	year = fmt.Sprintf("%04d", dateStruct.Year)
+	if dateStruct.Month != 0 {
+		month = fmt.Sprintf("%02d", dateStruct.Month)
+	}
+	if dateStruct.Day != 0 {
+		day = fmt.Sprintf("%02d", dateStruct.Day)
+	}
+	return FormattedDateStruct{
 		Year:  year,
 		Month: month,
 		Day:   day,

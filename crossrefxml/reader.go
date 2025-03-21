@@ -158,7 +158,7 @@ type BookMetadata struct {
 	PublicationDate []PublicationDate `xml:"publication_date"`
 	ISBN            []ISBN            `xml:"isbn"`
 	Publisher       Publisher         `xml:"publisher"`
-	VersionInfo     *VersionInfo      `xml:"version_info,omitempty"`
+	Version         string            `xml:"version_info>version,omitempty"`
 	DOIData         DOIData           `xml:"doi_data"`
 }
 
@@ -231,7 +231,7 @@ type ConferencePaper struct {
 	Pages           Pages             `xml:"pages"`
 	PublisherItem   PublisherItem     `xml:"publisher_item"`
 	Crossmark       Crossmark         `xml:"crossmark"`
-	VersionInfo     *VersionInfo      `xml:"version_info,omitempty"`
+	Version         string            `xml:"version_info>version,omitempty"`
 	DOIData         DOIData           `xml:"doi_data"`
 	CitationList    CitationList      `xml:"citation_list,omitempty"`
 }
@@ -248,7 +248,7 @@ type ContentItem struct {
 		FirstPage string `xml:"first_page"`
 		LastPage  string `xml:"last_page"`
 	} `xml:"pages"`
-	VersionInfo  *VersionInfo `xml:"version_info,omitempty"`
+	Version      string       `xml:"version_info>version,omitempty"`
 	DOIData      DOIData      `xml:"doi_data"`
 	CitationList CitationList `xml:"citation_list,omitempty"`
 }
@@ -307,8 +307,8 @@ type Dataset struct {
 	DatabaseDate struct {
 		CreationDate CreationDate `xml:"creation_date"`
 	} `xml:"database_date"`
-	VersionInfo *VersionInfo `xml:"version_info,omitempty"`
-	DOIData     DOIData      `xml:"doi_data"`
+	Version string  `xml:"version_info>version,omitempty"`
+	DOIData DOIData `xml:"doi_data"`
 }
 
 type Dissertation struct {
@@ -320,7 +320,7 @@ type Dissertation struct {
 	ApprovalDate    ApprovalDate `xml:"approval_date"`
 	Institution     Institution  `xml:"institution"`
 	Degree          string       `xml:"degree"`
-	VersionInfo     *VersionInfo `xml:"version_info,omitempty"`
+	Version         string       `xml:"version_info>version,omitempty"`
 	DOIData         DOIData      `xml:"doi_data"`
 	CitationList    CitationList `xml:"citation_list,omitempty"`
 }
@@ -397,7 +397,7 @@ type Item struct {
 // ItemNumber represents an item number in Crossref XML metadata.
 type ItemNumber struct {
 	XMLName        xml.Name `xml:"item_number"`
-	ItemNumberType string   `xml:"item_number_type,attr"`
+	ItemNumberType string   `xml:"item_number_type,attr,omitempty"`
 	Text           string   `xml:",chardata"`
 }
 
@@ -425,7 +425,7 @@ type JournalArticle struct {
 	Program                   []Program         `xml:"program"`
 	Crossmark                 *Crossmark        `xml:"crossmark,omitempty"`
 	ArchiveLocations          ArchiveLocations  `xml:"archive_locations"`
-	VersionInfo               *VersionInfo      `xml:"version_info,omitempty"`
+	Version                   string            `xml:"version_info>version,omitempty"`
 	DOIData                   DOIData           `xml:"doi_data"`
 	CitationList              CitationList      `xml:"citation_list,omitempty"`
 }
@@ -522,7 +522,7 @@ type PostedContent struct {
 	ItemNumber     ItemNumber      `xml:"item_number,omitempty"`
 	Abstract       []Abstract      `xml:"abstract"`
 	Program        []Program       `xml:"program"`
-	VersionInfo    *VersionInfo    `xml:"version_info,omitempty"`
+	Version        string          `xml:"version_info>version,omitempty"`
 	DOIData        DOIData         `xml:"doi_data"`
 	CitationList   CitationList    `xml:"citation_list,omitempty"`
 }
@@ -530,8 +530,8 @@ type PostedContent struct {
 type PostedDate struct {
 	XMLName   xml.Name `xml:"posted_date"`
 	MediaType string   `xml:"media_type,attr"`
-	Month     string   `xml:"month"`
-	Day       string   `xml:"day"`
+	Month     string   `xml:"month,omitempty"`
+	Day       string   `xml:"day,omitempty"`
 	Year      string   `xml:"year"`
 }
 
@@ -543,7 +543,7 @@ type ProceedingsMetadata struct {
 	PublicationDate  []PublicationDate `xml:"publication_date"`
 	ISBN             []ISBN            `xml:"isbn"`
 	PublisherItem    PublisherItem     `xml:"publisher_item"`
-	VersionInfo      *VersionInfo      `xml:"version_info,omitempty"`
+	Version          string            `xml:"version_info>version,omitempty"`
 	DOIData          DOIData           `xml:"doi_data"`
 }
 
@@ -630,12 +630,6 @@ type Titles struct {
 	Title                 string                 `xml:"title,omitempty"`
 	Subtitle              string                 `xml:"subtitle,omitempty"`
 	OriginalLanguageTitle *OriginalLanguageTitle `xml:"original_language_title,omitempty"`
-}
-
-// VersionInfo represents the version information in Crossref XML metadata.
-type VersionInfo struct {
-	XMLName xml.Name `xml:"version_info"`
-	Version string   `xml:"version,omitempty"`
 }
 
 // CRToCMMappings maps Crossref Query types to Commonmeta types
@@ -811,7 +805,7 @@ func Get(pid string) (Query, error) {
 func Read(query Query) (commonmeta.Data, error) {
 	var data = commonmeta.Data{}
 
-	var containerTitle, issue, language, volume string
+	var containerTitle, issue, language, version, volume string
 	var accessIndicators Program
 	var abstract []Abstract
 	var archiveLocations ArchiveLocations
@@ -869,6 +863,7 @@ func Read(query Query) (commonmeta.Data, error) {
 				Type: "IsPartOf",
 			})
 		}
+		version = postedContent.Version
 	case "Book":
 		book := meta.Book
 		abstract = book.BookMetadata.Abstract
@@ -912,6 +907,7 @@ func Read(query Query) (commonmeta.Data, error) {
 			Day:   database.Dataset.DatabaseDate.CreationDate.Day,
 		})
 		doiData = database.Dataset.DOIData
+		version = database.Dataset.Version
 	case "Dissertation":
 		dissertation := meta.Dissertation
 		contributors = Contributors{
@@ -925,6 +921,7 @@ func Read(query Query) (commonmeta.Data, error) {
 			Day:   dissertation.ApprovalDate.Day,
 		})
 		titles = dissertation.Titles
+		version = dissertation.Version
 	case "Entry":
 	case "Grant":
 	case "Journal":
@@ -949,6 +946,7 @@ func Read(query Query) (commonmeta.Data, error) {
 		program = append(program, journal.JournalArticle.Program...)
 		publicationDate = journal.JournalArticle.PublicationDate
 		titles = journal.JournalArticle.Titles
+		version = journal.JournalArticle.Version
 		volume = journal.JournalIssue.JournalVolume.Volume
 	case "JournalIssue":
 		journal := meta.Journal
@@ -982,6 +980,7 @@ func Read(query Query) (commonmeta.Data, error) {
 		pages = conference.ConferencePaper.Pages
 		publicationDate = conference.ConferencePaper.PublicationDate
 		titles = conference.ConferencePaper.Titles
+		version = conference.ConferencePaper.Version
 	case "ProceedingsSeries":
 	case "ReferenceBook":
 	case "Report":
@@ -1275,6 +1274,7 @@ func Read(query Query) (commonmeta.Data, error) {
 	// }
 
 	data.URL = doiData.Resource
+	data.Version = version
 
 	return data, nil
 }

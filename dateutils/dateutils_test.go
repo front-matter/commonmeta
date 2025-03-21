@@ -67,6 +67,13 @@ func TestGetDateStruct(t *testing.T) {
 	}
 }
 
+func ExampleGetFormattedDateStruct() {
+	s := dateutils.GetFormattedDateStruct("2024-11")
+	fmt.Println(s)
+	// Output:
+	// {2024 11 }
+}
+
 func ExampleGetDateParts() {
 	m := dateutils.GetDateParts("2023-12-06")
 	fmt.Println(m)

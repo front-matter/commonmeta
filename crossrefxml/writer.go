@@ -410,11 +410,6 @@ func Convert(data commonmeta.Data) (Body, error) {
 		}
 	}
 
-	// var versionInfo VersionInfo
-	// if data.Version != "" {
-	// 	versionInfo.Version = data.Version
-	// }
-
 	switch data.Type {
 	case "Article", "BlogPost":
 		var groupTitle string
@@ -428,12 +423,12 @@ func Convert(data commonmeta.Data) (Body, error) {
 		}
 		var postedDate PostedDate
 		if len(data.Date.Published) > 0 {
-			datePublished := dateutils.GetDateStruct(data.Date.Published)
+			datePublished := dateutils.GetFormattedDateStruct(data.Date.Published)
 			postedDate = PostedDate{
 				MediaType: "online",
-				Year:      fmt.Sprintf("%04d", datePublished.Year),
-				Month:     fmt.Sprintf("%02d", datePublished.Month),
-				Day:       fmt.Sprintf("%02d", datePublished.Day),
+				Year:      datePublished.Year,
+				Month:     datePublished.Month,
+				Day:       datePublished.Day,
 			}
 		}
 		c.PostedContent = append(c.PostedContent, PostedContent{
@@ -450,6 +445,7 @@ func Convert(data commonmeta.Data) (Body, error) {
 			ItemNumber:   itemNumber,
 			Abstract:     abstract,
 			Program:      program,
+			Version:      data.Version,
 			DOIData:      doiData,
 			CitationList: citationList,
 		})
@@ -472,6 +468,7 @@ func Convert(data commonmeta.Data) (Body, error) {
 			// 	Month: data.Date.Published.Month,
 			// 	Day:   data.Date.Published.Day,
 			// },
+			Version:      data.Version,
 			DOIData:      doiData,
 			CitationList: citationList,
 		})
@@ -488,6 +485,7 @@ func Convert(data commonmeta.Data) (Body, error) {
 				// Crossmark: Crossmark{
 				// 	CustomMetadata: customMetadata,
 				// },
+				Version: data.Version,
 				DOIData: doiData,
 				// Pages:
 				Program: program,
