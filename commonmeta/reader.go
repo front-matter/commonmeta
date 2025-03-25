@@ -215,7 +215,8 @@ type Data struct {
 	AdditionalType    string             `db:"additional_type" json:"additionalType,omitempty"`
 	ArchiveLocations  []string           `db:"archive_locations" json:"archiveLocations,omitempty"`
 	Container         Container          `db:"container" json:"container,omitempty"`
-	ContentText       string             `db:"content" json:"content_text,omitempty"`
+	ContentText       string             `db:"content_text" json:"content_text,omitempty"`
+	ContentHTML       string             `db:"content_html" json:"content_html,omitempty"`
 	Contributors      []Contributor      `db:"contributors" json:"contributors,omitempty"`
 	Date              Date               `db:"date" json:"date,omitempty"`
 	Descriptions      []Description      `db:"descriptions" json:"descriptions,omitempty"`

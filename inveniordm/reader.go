@@ -157,6 +157,7 @@ type Creator struct {
 type CustomFields struct {
 	Journal      Journal `json:"journal:journal,omitempty"`
 	ContentText  string  `json:"rs:content_text,omitempty"`
+	ContentHTML  string  `json:"rs:content_html,omitempty"`
 	FeatureImage string  `json:"rs:image,omitempty"`
 	Generator    string  `json:"rs:generator,omitempty"`
 }
@@ -1152,6 +1153,9 @@ func Read(content Content) (commonmeta.Data, error) {
 	// optional full text content
 	if content.CustomFields.ContentText != "" {
 		data.ContentText = content.CustomFields.ContentText
+	}
+	if content.CustomFields.ContentHTML != "" {
+		data.ContentHTML = content.CustomFields.ContentHTML
 	}
 
 	return data, nil
