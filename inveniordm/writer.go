@@ -148,7 +148,6 @@ func Convert(data commonmeta.Data) (Inveniordm, error) {
 	}
 
 	// optional custom fields
-	inveniordm.CustomFields.ContentText = data.ContentText
 	inveniordm.CustomFields.ContentHTML = data.ContentHTML
 	inveniordm.CustomFields.FeatureImage = data.FeatureImage
 

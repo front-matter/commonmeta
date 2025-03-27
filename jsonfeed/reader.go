@@ -41,7 +41,6 @@ type Content struct {
 	Blog              Blog               `json:"blog"`
 	BlogName          string             `json:"blog_name"`
 	BlogSlug          string             `json:"blog_slug"`
-	ContentText       string             `json:"content_text"`
 	ContentHTML       string             `json:"content_html"`
 	FeatureImage      string             `json:"image"`
 	IndexedAt         int64              `json:"indexed_at"`
@@ -490,7 +489,6 @@ func Read(content Content) (commonmeta.Data, error) {
 
 	data.URL = url
 	data.Version = content.Version
-	data.ContentText = content.ContentText
 	data.ContentHTML = content.ContentHTML
 	data.FeatureImage = content.FeatureImage
 
