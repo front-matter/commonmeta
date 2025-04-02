@@ -142,6 +142,7 @@ func GetDOIRA(doi string) (string, bool) {
 		"10.59349",
 		"10.59350",
 		"10.59351",
+		"10.63485",
 		"10.64000",
 	}
 	var knownDatacitePrefixes = []string{
