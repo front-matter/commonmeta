@@ -142,6 +142,7 @@ func GetDOIRA(doi string) (string, bool) {
 		"10.59349",
 		"10.59350",
 		"10.59351",
+		"10.64000",
 	}
 	var knownDatacitePrefixes = []string{
 		"10.34732",
@@ -195,6 +196,7 @@ func IsRogueScholarDOI(doi string, ra string) bool {
 		"10.59349",
 		"10.59350",
 		"10.63485",
+		"10.64000",
 	}
 	var rogueScholarDatacitePrefixes = []string{
 		"10.5438",
