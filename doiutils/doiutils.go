@@ -189,6 +189,7 @@ func GetDOIRA(doi string) (string, bool) {
 // IsRogueScholarDOI checks if a DOI is from Rogue Scholar
 func IsRogueScholarDOI(doi string, ra string) bool {
 	var rogueScholarCrossrefPrefixes = []string{
+		"10.13003",
 		"10.53731",
 		"10.54900",
 		"10.57689",
