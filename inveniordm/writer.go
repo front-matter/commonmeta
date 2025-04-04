@@ -88,7 +88,7 @@ func Convert(data commonmeta.Data, ror string) (Inveniordm, error) {
 			var affiliations []Affiliation
 			for _, a := range v.Affiliations {
 				id, _ := utils.ValidateROR(a.ID)
-				if id != ror {
+				if !doiutils.IsRogueScholarDOI(data.ID, "") && id != ror {
 					id = ""
 				}
 				affiliation := Affiliation{
