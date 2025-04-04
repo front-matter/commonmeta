@@ -50,6 +50,7 @@ commonmeta put 10.5555/12345678 -f crossref -t inveniordm -h rogue-scholar.org -
 		host, _ := cmd.Flags().GetString("host")
 		token, _ := cmd.Flags().GetString("token")
 		legacyKey, _ := cmd.Flags().GetString("legacyKey")
+		ror, _ := cmd.Flags().GetString("ror")
 		client_, _ := cmd.Flags().GetString("client")
 		password, _ := cmd.Flags().GetString("password")
 		development, _ := cmd.Flags().GetBool("development")
@@ -148,10 +149,10 @@ commonmeta put 10.5555/12345678 -f crossref -t inveniordm -h rogue-scholar.org -
 				fmt.Println("Please provide an inveniordm host and token")
 				return
 			}
-			rl := rate.NewLimiter(rate.Every(60*time.Second), 900) // 900 request every 60 seconds
+			rl := rate.NewLimiter(rate.Every(60*time.Second), 800) // 800 request every 60 seconds
 			client := inveniordm.NewClient(rl, host)
 			cache := cache2go.Cache("communities")
-			record, err = inveniordm.Upsert(record, client, cache, token, legacyKey, data)
+			record, err = inveniordm.Upsert(record, client, cache, token, legacyKey, ror, data)
 			if err != nil {
 				cmd.PrintErr(err)
 			}

@@ -100,7 +100,7 @@ var listCmd = &cobra.Command{
 		} else if str != "" && from == "csl" {
 			data, err = csl.LoadAll(str)
 		} else if from == "crossref" {
-			data, err = crossref.FetchAll(number, page, member, type_, sample, year, ror, orcid, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
+			data, err = crossref.FetchAll(number, page, member, type_, sample, year, orcid, ror, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
 		} else if from == "datacite" {
 			data, err = datacite.FetchAll(number, page, client_, type_, sample, year, language, orcid, ror, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense)
 		} else if from == "inveniordm" {
@@ -138,7 +138,7 @@ var listCmd = &cobra.Command{
 		} else if to == "schemaorg" {
 			output, err = schemaorg.WriteAll(data)
 		} else if to == "inveniordm" {
-			output, err = inveniordm.WriteAll(data)
+			output, err = inveniordm.WriteAll(data, ror)
 		}
 
 		if to == "crossrefxml" {

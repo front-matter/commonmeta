@@ -103,7 +103,7 @@ func TestFetch(t *testing.T) {
 
 func ExampleSearchBySlug() {
 	host := "rogue-scholar.org"
-	rl := rate.NewLimiter(rate.Every(60*time.Second), 900)
+	rl := rate.NewLimiter(rate.Every(60*time.Second), 800)
 	client := inveniordm.NewClient(rl, host)
 	cache := cache2go.Cache("communities")
 	s, _ := inveniordm.SearchBySlug("naturalSciences", "topic", client, cache)

@@ -296,7 +296,7 @@ func Fetch(str string) (commonmeta.Data, error) {
 func FetchAll(number int, page int, member string, type_ string, sample bool, year string, ror string, orcid string, hasORCID bool, hasROR bool, hasReferences bool, hasRelation bool, hasAbstract bool, hasAward bool, hasLicense bool, hasArchive bool) ([]commonmeta.Data, error) {
 
 	var data []commonmeta.Data
-	content, err := GetAll(number, page, member, type_, sample, year, ror, orcid, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
+	content, err := GetAll(number, page, member, type_, sample, year, orcid, ror, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
 	if err != nil {
 		return data, err
 	}
@@ -373,7 +373,7 @@ func GetAll(number int, page int, member string, type_ string, sample bool, year
 	client := &http.Client{
 		Timeout: 20 * time.Second,
 	}
-	url := QueryURL(number, page, member, type_, sample, year, ror, orcid, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
+	url := QueryURL(number, page, member, type_, sample, year, orcid, ror, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	v := "0.1"
 	u := "info@front-matter.io"

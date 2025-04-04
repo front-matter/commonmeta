@@ -32,7 +32,7 @@ import (
 var Vocabularies embed.FS
 
 // Convert converts Commonmeta metadata to InvenioRDM metadata
-func Convert(data commonmeta.Data) (Inveniordm, error) {
+func Convert(data commonmeta.Data, ror string) (Inveniordm, error) {
 	var inveniordm Inveniordm
 
 	// load awards vocabulary
@@ -88,6 +88,9 @@ func Convert(data commonmeta.Data) (Inveniordm, error) {
 			var affiliations []Affiliation
 			for _, a := range v.Affiliations {
 				id, _ := utils.ValidateROR(a.ID)
+				if id != ror {
+					id = ""
+				}
 				affiliation := Affiliation{
 					ID:   id,
 					Name: a.Name,
@@ -381,8 +384,8 @@ func Convert(data commonmeta.Data) (Inveniordm, error) {
 }
 
 // Write writes inveniordm metadata.
-func Write(data commonmeta.Data) ([]byte, error) {
-	inveniordm, err := Convert(data)
+func Write(data commonmeta.Data, ror string) ([]byte, error) {
+	inveniordm, err := Convert(data, ror)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -395,10 +398,10 @@ func Write(data commonmeta.Data) ([]byte, error) {
 }
 
 // WriteAll writes a list of inveniordm metadata.
-func WriteAll(list []commonmeta.Data) ([]byte, error) {
+func WriteAll(list []commonmeta.Data, ror string) ([]byte, error) {
 	var inveniordmList []Inveniordm
 	for _, data := range list {
-		inveniordm, err := Convert(data)
+		inveniordm, err := Convert(data, ror)
 		if err != nil {
 			fmt.Println(err)
 		}
@@ -413,13 +416,13 @@ func WriteAll(list []commonmeta.Data) ([]byte, error) {
 }
 
 // Upsert updates or creates a record in InvenioRDM.
-func Upsert(record commonmeta.APIResponse, client *InvenioRDMClient, cache *cache2go.CacheTable, apiKey string, legacyKey string, data commonmeta.Data) (commonmeta.APIResponse, error) {
+func Upsert(record commonmeta.APIResponse, client *InvenioRDMClient, cache *cache2go.CacheTable, apiKey string, legacyKey string, ror string, data commonmeta.Data) (commonmeta.APIResponse, error) {
 	if client.Host == "rogue-scholar.org" && !doiutils.IsRogueScholarDOI(data.ID, "") {
 		record.Status = "failed_not_rogue_scholar_doi"
 		return record, nil
 	}
 
-	inveniordm, err := Convert(data)
+	inveniordm, err := Convert(data, ror)
 	if err != nil {
 		return record, err
 	}
@@ -537,14 +540,14 @@ func Upsert(record commonmeta.APIResponse, client *InvenioRDMClient, cache *cach
 }
 
 // UpsertAll updates or creates a list of records in InvenioRDM.
-func UpsertAll(list []commonmeta.Data, host string, apiKey string, legacyKey string) ([]commonmeta.APIResponse, error) {
+func UpsertAll(list []commonmeta.Data, host string, apiKey string, legacyKey string, ror string) ([]commonmeta.APIResponse, error) {
 	var records []commonmeta.APIResponse
 
 	// create a new cache for frequently accessed community queries
 	cache := cache2go.Cache("communities")
 
 	// create a new http client with rate limiting
-	rl := rate.NewLimiter(rate.Every(60*time.Second), 900) // 900 request every 60 seconds
+	rl := rate.NewLimiter(rate.Every(60*time.Second), 800) // 800 request every 60 seconds
 	client := NewClient(rl, host)
 
 	for _, data := range list {
@@ -555,7 +558,7 @@ func UpsertAll(list []commonmeta.Data, host string, apiKey string, legacyKey str
 		} else if host == "rogue-scholar.org" && !doiutils.IsRogueScholarDOI(data.ID, "") {
 			record.Status = "failed_not_rogue_scholar_doi"
 		} else {
-			record, _ = Upsert(record, client, cache, apiKey, legacyKey, data)
+			record, _ = Upsert(record, client, cache, apiKey, legacyKey, ror, data)
 		}
 
 		records = append(records, record)
@@ -598,6 +601,7 @@ func CreateDraftRecord(record commonmeta.APIResponse, client *InvenioRDMClient, 
 	}
 	body, _ := io.ReadAll(resp.Body)
 	if resp.StatusCode != 201 {
+		fmt.Println(string(body), record)
 		record.Status = "failed_create_draft"
 		return record, errors.New("failed to create draft record:" + string(body))
 	}

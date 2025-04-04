@@ -91,7 +91,7 @@ commonmeta push --sample -f crossref -t inveniordm -h rogue-scholar.org --token 
 		}
 
 		if from == "crossref" {
-			data, err = crossref.FetchAll(number, page, member, type_, sample, year, ror, orcid, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
+			data, err = crossref.FetchAll(number, page, member, type_, sample, year, orcid, ror, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
 		} else if from == "datacite" {
 			data, err = datacite.FetchAll(number, page, client_, type_, sample, year, language, orcid, ror, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense)
 		} else if from == "inveniordm" {
@@ -143,7 +143,7 @@ commonmeta push --sample -f crossref -t inveniordm -h rogue-scholar.org --token 
 				fmt.Println("Please provide an inveniordm host and token")
 				return
 			}
-			records, err = inveniordm.UpsertAll(data, host, token, legacyKey)
+			records, err = inveniordm.UpsertAll(data, host, token, legacyKey, ror)
 		} else {
 			fmt.Println("Please provide a valid service")
 			return
