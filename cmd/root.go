@@ -39,6 +39,7 @@ func init() {
 
 	rootCmd.PersistentFlags().IntP("number", "n", 10, "number of results")
 	rootCmd.PersistentFlags().IntP("page", "", 1, "page number")
+	rootCmd.PersistentFlags().StringP("file", "", "", "file to write to")
 	rootCmd.PersistentFlags().StringP("client", "", "", "DataCite client ID")
 	rootCmd.PersistentFlags().StringP("member", "", "", "Crossref member ID")
 	rootCmd.PersistentFlags().StringP("type", "", "", "work type")
@@ -60,6 +61,8 @@ func init() {
 	rootCmd.PersistentFlags().BoolP("has-license", "", false, "has license")
 	rootCmd.PersistentFlags().BoolP("has-archive", "", false, "has archive")
 	rootCmd.PersistentFlags().BoolP("is-archived", "", true, "is archived")
+	rootCmd.PersistentFlags().BoolP("vocabulary", "", false, "with vocabulary")
+	rootCmd.PersistentFlags().BoolP("compress", "", false, "with zip compression")
 
 	// needed for DOI registration
 	rootCmd.PersistentFlags().StringP("prefix", "", "", "DOI prefix")
