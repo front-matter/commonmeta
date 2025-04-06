@@ -485,11 +485,8 @@ func Read(content Content) (commonmeta.Data, error) {
 			containsID := slices.ContainsFunc(data.Contributors, func(e commonmeta.Contributor) bool {
 				return e.ID != "" && e.ID == contributor.ID
 			})
-			if containsID {
-				log.Printf("Contributor with ID %s already exists", contributor.ID)
-			} else {
+			if !containsID {
 				data.Contributors = append(data.Contributors, contributor)
-
 			}
 		}
 	}
@@ -819,8 +816,8 @@ func GetAll(number int, page int, client_ string, type_ string, sample bool, yea
 		Data []Data `json:"data"`
 	}
 
-	if number > 500 {
-		number = 500
+	if number > 1000 {
+		number = 1000
 	}
 	var response Response
 	client := &http.Client{

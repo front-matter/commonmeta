@@ -367,8 +367,8 @@ func GetAll(number int, page int, member string, type_ string, sample bool, year
 		} `json:"message`
 	}
 	var response Response
-	if number > 500 {
-		number = 500
+	if number > 100 {
+		number = 1000
 	}
 	client := &http.Client{
 		Timeout: 20 * time.Second,
@@ -863,8 +863,8 @@ func QueryURL(number int, page int, member string, type_ string, sample bool, ye
 	if number <= 0 {
 		number = 10
 	}
-	if number > 500 {
-		number = 500
+	if number > 1000 {
+		number = 1000
 	}
 	if page <= 0 {
 		page = 1
