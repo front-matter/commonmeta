@@ -5,3 +5,4 @@ cover.html
 cover.out
 affiliations_ror*
 v1.*-ror-data_schema_v2.json
+!affiliations_ror.yaml.zip
