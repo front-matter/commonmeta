@@ -9,10 +9,13 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/front-matter/commonmeta/commonmeta"
 	"github.com/front-matter/commonmeta/csl"
+	"github.com/front-matter/commonmeta/fileutils"
 	"github.com/front-matter/commonmeta/inveniordm"
+	"github.com/front-matter/commonmeta/ror"
 
 	"github.com/front-matter/commonmeta/crossref"
 	"github.com/front-matter/commonmeta/crossrefxml"
@@ -56,10 +59,11 @@ var listCmd = &cobra.Command{
 		language, _ := cmd.Flags().GetString("language")
 		orcid, _ := cmd.Flags().GetString("orcid")
 		affiliation, _ := cmd.Flags().GetString("affiliation")
-		ror, _ := cmd.Flags().GetString("ror")
+		ror_, _ := cmd.Flags().GetString("ror")
 		fromHost, _ := cmd.Flags().GetString("from-host")
 		community, _ := cmd.Flags().GetString("community")
 		subject, _ := cmd.Flags().GetString("subject")
+		vocabulary, _ := cmd.Flags().GetBool("vocabulary")
 		hasORCID, _ := cmd.Flags().GetBool("has-orcid")
 		hasROR, _ := cmd.Flags().GetBool("has-ror-id")
 		hasReferences, _ := cmd.Flags().GetBool("has-references")
@@ -70,6 +74,8 @@ var listCmd = &cobra.Command{
 		hasArchive, _ := cmd.Flags().GetBool("has-archive")
 		isArchived, _ := cmd.Flags().GetBool("is-archived")
 		sample, _ := cmd.Flags().GetBool("sample")
+		file, _ := cmd.Flags().GetString("file")
+		compress, _ := cmd.Flags().GetBool("compress")
 
 		depositor, _ := cmd.Flags().GetString("depositor")
 		email, _ := cmd.Flags().GetString("email")
@@ -100,11 +106,11 @@ var listCmd = &cobra.Command{
 		} else if str != "" && from == "csl" {
 			data, err = csl.LoadAll(str)
 		} else if from == "crossref" {
-			data, err = crossref.FetchAll(number, page, member, type_, sample, year, orcid, ror, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
+			data, err = crossref.FetchAll(number, page, member, type_, sample, year, orcid, ror_, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
 		} else if from == "datacite" {
-			data, err = datacite.FetchAll(number, page, client_, type_, sample, year, language, orcid, ror, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense)
+			data, err = datacite.FetchAll(number, page, client_, type_, sample, year, language, orcid, ror_, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense)
 		} else if from == "inveniordm" {
-			data, err = inveniordm.FetchAll(number, page, fromHost, community, subject, type_, year, language, orcid, affiliation, ror, hasORCID, hasROR)
+			data, err = inveniordm.FetchAll(number, page, fromHost, community, subject, type_, year, language, orcid, affiliation, ror_, hasORCID, hasROR)
 		} else if from == "jsonfeed" {
 			data, err = jsonfeed.FetchAll(number, page, community, isArchived)
 		} else {
@@ -138,15 +144,38 @@ var listCmd = &cobra.Command{
 		} else if to == "schemaorg" {
 			output, err = schemaorg.WriteAll(data)
 		} else if to == "inveniordm" {
-			output, err = inveniordm.WriteAll(data, ror)
+			output, err = inveniordm.WriteAll(data)
 		}
 
-		if to == "crossrefxml" {
-			fmt.Printf("%s\n", output)
-		} else {
+		if to != "crossrefxml" {
 			var out bytes.Buffer
 			json.Indent(&out, output, "", "  ")
-			fmt.Println(out.String())
+			output = out.Bytes()
+		}
+
+		if file != "" {
+			if compress {
+				err = fileutils.WriteZIPFile(file, output)
+			} else {
+				err = fileutils.WriteFile(file, output)
+			}
+		} else {
+			fmt.Printf("%s\n", output)
+		}
+
+		if to == "inveniordm" && vocabulary {
+			file = "affiliations_ror.yaml"
+			roroutput, err := ror.ExtractAll(data)
+			if err != nil {
+				cmd.PrintErr(err)
+			}
+			today := time.Now().UTC()
+			roroutput = append([]byte("# file generated from "+from+" query on "+today.Format("2006-01-02")+".\n\n"), roroutput...)
+			err = fileutils.WriteFile(file, roroutput)
+			if err != nil {
+				cmd.PrintErr(err)
+			}
+			fmt.Printf("Found ROR IDs written to %s\n", file)
 		}
 
 		if err != nil {
