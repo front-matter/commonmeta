@@ -8,7 +8,6 @@ import (
 	"log"
 	"os"
 	"path"
-	"path/filepath"
 	"slices"
 
 	"gopkg.in/yaml.v3"
@@ -183,8 +182,7 @@ func ExtractAll(content []commonmeta.Data) ([]byte, error) {
 	var err error
 
 	// Load the ROR metadata from the embedded ZIP file with all ROR records
-	filename := filepath.Join("ror", "affiliations_ror.yaml.zip")
-	out, err := fileutils.ReadZIPFile(filename)
+	out, err := fileutils.ReadZIPFile("affiliations_ror.yaml.zip")
 	if err != nil {
 		return nil, err
 	}

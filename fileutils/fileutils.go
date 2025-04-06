@@ -3,9 +3,15 @@ package fileutils
 
 import (
 	"archive/zip"
+	"bytes"
+	"embed"
 	"io"
 	"os"
+	"path/filepath"
 )
+
+//go:embed *.zip
+var Files embed.FS
 
 func ReadFile(filename string) ([]byte, error) {
 	file, err := os.Open(filename)
@@ -13,7 +19,6 @@ func ReadFile(filename string) ([]byte, error) {
 		return nil, err
 	}
 	defer file.Close()
-
 	info, err := file.Stat()
 	if err != nil {
 		return nil, err
@@ -29,13 +34,26 @@ func ReadFile(filename string) ([]byte, error) {
 
 // ReadZIPFile opens a zip archive for reading
 func ReadZIPFile(filename string) ([]byte, error) {
-	var output []byte
-
-	zipfile, err := zip.OpenReader(filename)
-	if err != nil {
-		return nil, err
+	var zipfile *zip.Reader
+	if filename == "affiliations_ror.yaml.zip" {
+		file, err := Files.ReadFile(filepath.Join("affiliations_ror.yaml.zip"))
+		if err != nil {
+			return nil, err
+		}
+		reader := bytes.NewReader(file)
+		len := len(file)
+		zipfile, err = zip.NewReader(reader, int64(len))
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		zipfile, err := zip.OpenReader(filename)
+		if err != nil {
+			return nil, err
+		}
+		defer zipfile.Close()
 	}
-	defer zipfile.Close()
+	var output []byte
 
 	// Iterate through the files in the archive,
 	for _, file := range zipfile.File {
