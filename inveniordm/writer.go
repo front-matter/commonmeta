@@ -32,7 +32,7 @@ import (
 var Vocabularies embed.FS
 
 // Convert converts Commonmeta metadata to InvenioRDM metadata
-func Convert(data commonmeta.Data, ror string) (Inveniordm, error) {
+func Convert(data commonmeta.Data) (Inveniordm, error) {
 	var inveniordm Inveniordm
 
 	// load awards vocabulary
@@ -381,8 +381,8 @@ func Convert(data commonmeta.Data, ror string) (Inveniordm, error) {
 }
 
 // Write writes inveniordm metadata.
-func Write(data commonmeta.Data, ror string) ([]byte, error) {
-	inveniordm, err := Convert(data, ror)
+func Write(data commonmeta.Data) ([]byte, error) {
+	inveniordm, err := Convert(data)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -395,10 +395,10 @@ func Write(data commonmeta.Data, ror string) ([]byte, error) {
 }
 
 // WriteAll writes a list of inveniordm metadata.
-func WriteAll(list []commonmeta.Data, ror string) ([]byte, error) {
+func WriteAll(list []commonmeta.Data) ([]byte, error) {
 	var inveniordmList []Inveniordm
 	for _, data := range list {
-		inveniordm, err := Convert(data, ror)
+		inveniordm, err := Convert(data)
 		if err != nil {
 			fmt.Println(err)
 		}
@@ -413,13 +413,13 @@ func WriteAll(list []commonmeta.Data, ror string) ([]byte, error) {
 }
 
 // Upsert updates or creates a record in InvenioRDM.
-func Upsert(record commonmeta.APIResponse, client *InvenioRDMClient, cache *cache2go.CacheTable, apiKey string, legacyKey string, ror string, data commonmeta.Data) (commonmeta.APIResponse, error) {
+func Upsert(record commonmeta.APIResponse, client *InvenioRDMClient, cache *cache2go.CacheTable, apiKey string, legacyKey string, data commonmeta.Data) (commonmeta.APIResponse, error) {
 	if client.Host == "rogue-scholar.org" && !doiutils.IsRogueScholarDOI(data.ID, "") {
 		record.Status = "failed_not_rogue_scholar_doi"
 		return record, nil
 	}
 
-	inveniordm, err := Convert(data, ror)
+	inveniordm, err := Convert(data)
 	if err != nil {
 		return record, err
 	}
@@ -537,7 +537,7 @@ func Upsert(record commonmeta.APIResponse, client *InvenioRDMClient, cache *cach
 }
 
 // UpsertAll updates or creates a list of records in InvenioRDM.
-func UpsertAll(list []commonmeta.Data, host string, apiKey string, legacyKey string, ror string) ([]commonmeta.APIResponse, error) {
+func UpsertAll(list []commonmeta.Data, host string, apiKey string, legacyKey string) ([]commonmeta.APIResponse, error) {
 	var records []commonmeta.APIResponse
 
 	// create a new cache for frequently accessed community queries
@@ -555,7 +555,7 @@ func UpsertAll(list []commonmeta.Data, host string, apiKey string, legacyKey str
 		} else if host == "rogue-scholar.org" && !doiutils.IsRogueScholarDOI(data.ID, "") {
 			record.Status = "failed_not_rogue_scholar_doi"
 		} else {
-			record, _ = Upsert(record, client, cache, apiKey, legacyKey, ror, data)
+			record, _ = Upsert(record, client, cache, apiKey, legacyKey, data)
 		}
 
 		records = append(records, record)

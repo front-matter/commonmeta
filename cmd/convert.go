@@ -43,7 +43,6 @@ commonmeta 10.5555/12345678`,
 		depositor, _ := cmd.Flags().GetString("depositor")
 		email, _ := cmd.Flags().GetString("email")
 		registrant, _ := cmd.Flags().GetString("registrant")
-		ror, _ := cmd.Flags().GetString("ror")
 
 		cmd.SetOut(os.Stdout)
 		cmd.SetErr(os.Stderr)
@@ -135,7 +134,7 @@ commonmeta 10.5555/12345678`,
 			}
 			output, err = crossrefxml.Write(data, account)
 		} else if to == "inveniordm" {
-			output, err = inveniordm.Write(data, ror)
+			output, err = inveniordm.Write(data)
 		}
 
 		if err != nil {
