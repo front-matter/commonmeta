@@ -7,6 +7,53 @@ import (
 	"os"
 )
 
+func ReadFile(filename string) ([]byte, error) {
+	file, err := os.Open(filename)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+
+	info, err := file.Stat()
+	if err != nil {
+		return nil, err
+	}
+
+	output := make([]byte, info.Size())
+	_, err = file.Read(output)
+	if err != nil {
+		return nil, err
+	}
+	return output, nil
+}
+
+// ReadZIPFile opens a zip archive for reading
+func ReadZIPFile(filename string) ([]byte, error) {
+	var output []byte
+
+	zipfile, err := zip.OpenReader(filename)
+	if err != nil {
+		return nil, err
+	}
+	defer zipfile.Close()
+
+	// Iterate through the files in the archive,
+	for _, file := range zipfile.File {
+		reader, err := file.Open()
+		if err != nil {
+			return nil, err
+		}
+		defer reader.Close()
+
+		out, err := io.ReadAll(reader)
+		if err != nil {
+			return nil, err
+		}
+		output = append(output, out...)
+	}
+	return output, nil
+}
+
 func WriteFile(filename string, output []byte) error {
 	file, err := os.Create(filename)
 	if err != nil {
