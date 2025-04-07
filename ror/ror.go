@@ -279,6 +279,15 @@ func LoadAll(filename string) ([]ROR, error) {
 	return data, nil
 }
 
+// LoadBuiltin loads the embedded ROR metadata from the ZIP file with all ROR records.
+func LoadBuiltin() ([]byte, error) {
+	output, err := fileutils.ReadZIPFile("affiliations_ror.yaml.zip")
+	if err != nil {
+		return nil, err
+	}
+	return output, err
+}
+
 // Read reads ROR full metadata and converts it into ROR minimal metadata.
 func Read(content Content) (ROR, error) {
 	var data ROR

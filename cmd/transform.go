@@ -14,17 +14,18 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// obtainCmd represents the obtain command
-var obtainCmd = &cobra.Command{
-	Use:   "obtain",
-	Short: "obtain vocabulary",
-	Long: `obtain a vocabulary from a url. Currently only supported for
-	ROR (Research Organization Registry) and InvenioRDM awards vocabulary.
+// transformCmd represents the transform command
+var transformCmd = &cobra.Command{
+	Use:   "transform",
+	Short: "transform vocabulary",
+	Long: `transform a vocabulary. Currently only supported for
+	ROR (Research Organization Registry) institutions vocabulary.
 	
 	Example usage:
 	
-	commonmeta obtain v1.63-2025-04-03-ror-data_schema_v2.json -f ror -t inveniordm`,
+	commonmeta transform v1.63-2025-04-03-ror-data_schema_v2.json -f ror -t inveniordm`,
 	Run: func(cmd *cobra.Command, args []string) {
+		var input string
 		var id string // an identifier, content fetched via API
 		var str string
 		var err error
@@ -39,19 +40,17 @@ var obtainCmd = &cobra.Command{
 		cmd.SetOut(os.Stdout)
 		cmd.SetErr(os.Stderr)
 
-		if len(args) == 0 {
-			fmt.Println("Please provide an input")
-			return
-		}
-		input := args[0]
-		id = utils.NormalizeID(input)
-		if id == "" {
-			_, err = os.Stat(input)
-			if err != nil {
-				fmt.Printf("File not found: %s", input)
-				return
+		if len(args) > 0 {
+			input = args[0]
+			id = utils.NormalizeID(input)
+			if id == "" {
+				_, err = os.Stat(input)
+				if err != nil {
+					fmt.Printf("File not found: %s", input)
+					return
+				}
+				str = input
 			}
-			str = input
 		}
 
 		if str != "" {
@@ -73,10 +72,17 @@ var obtainCmd = &cobra.Command{
 			return
 		}
 
-		output, err = ror.WriteAll(data, to)
+		if input != "" {
+			output, err = ror.WriteAll(data, to)
+		} else {
+			// if no input is provided, return the built-in ROR vocabulary
+			output, err = ror.LoadBuiltin()
+		}
 
 		if file != "" {
-			output = append([]byte("# file generated from "+input+"\n\n"), output...)
+			if input != "" {
+				output = append([]byte("# file generated from "+input+"\n\n"), output...)
+			}
 			if compress {
 				err = fileutils.WriteZIPFile(file, output)
 			} else {
@@ -93,5 +99,5 @@ var obtainCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(obtainCmd)
+	rootCmd.AddCommand(transformCmd)
 }
