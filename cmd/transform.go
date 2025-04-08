@@ -34,6 +34,8 @@ var transformCmd = &cobra.Command{
 
 		from, _ := cmd.Flags().GetString("from")
 		to, _ := cmd.Flags().GetString("to")
+		type_, _ := cmd.Flags().GetString("type")
+		country, _ := cmd.Flags().GetString("country")
 		file, _ := cmd.Flags().GetString("file")
 		compress, _ := cmd.Flags().GetBool("compress")
 
@@ -55,7 +57,12 @@ var transformCmd = &cobra.Command{
 
 		if str != "" {
 			if from == "ror" {
-				data, err = ror.LoadAll(str)
+				supportedTypes := []string{"archive", "company", "education", "facility", "funder", "government", "healthcare", "nonprofit", "other"}
+				if type_ != "" && !slices.Contains(supportedTypes, type_) {
+					cmd.PrintErr("Please provide a valid type")
+					return
+				}
+				data, err = ror.LoadAll(str, type_, country)
 			} else {
 				cmd.PrintErr("Please provide a valid input")
 				return

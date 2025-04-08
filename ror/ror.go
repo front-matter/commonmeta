@@ -20,6 +20,7 @@ import (
 // ROR represents the minimal ROR metadata record.
 type ROR struct {
 	ID    string `json:"id"`
+	Locations []Location `json:"locations"`
 	Names []Name `json:"names"`
 	Admin struct {
 		Created struct {
@@ -36,21 +37,22 @@ type ROR struct {
 // Content represents the full ROR metadata record.
 type Content struct {
 	*ROR
-	Locations     []Location     `json:"locations"`
 	Established   int            `json:"established"`
 	ExternalIDs   []ExternalID   `json:"external_ids"`
 	Links         []Link         `json:"links"`
 	Relationships []Relationship `json:"relationships"`
-	Status        string         `json:"status"`
 	Types         []string       `json:"types"`
+	Status        string         `json:"status"`
 }
 
 // InvenioRDM represents the ROR metadata record in InvenioRDM format.
 type InvenioRDM struct {
-	ID          string       `json:"id"`
-	Identifiers []Identifier `json:"identifiers"`
-	Name        string       `json:"name"`
-	Title       Title        `json:"title"`
+	Acronym		  string       `yaml:"acronym,omitempty"`
+	ID          string       `yaml:"id"`
+	Country 		string       `yaml:"country"`
+	Identifiers []Identifier `yaml:"identifiers"`
+	Name        string       `yaml:"name"`
+	Title       Title        `yaml:"title"`
 }
 
 type ExternalID struct {
@@ -248,7 +250,7 @@ var RORVersions = map[string]string{
 }
 
 // LoadAll loads the metadata for a list of organizations from a ROR JSON file
-func LoadAll(filename string) ([]ROR, error) {
+func LoadAll(filename string, type_ string, country string) ([]ROR, error) {
 	var data []ROR
 	var content []Content
 	var err error
@@ -272,7 +274,7 @@ func LoadAll(filename string) ([]ROR, error) {
 		return data, errors.New("unsupported file format")
 	}
 
-	data, err = ReadAll(content)
+	data, err = ReadAll(content, type_, country)
 	if err != nil {
 		return data, err
 	}
@@ -293,6 +295,7 @@ func Read(content Content) (ROR, error) {
 	var data ROR
 
 	data.ID = content.ID
+	data.Locations = content.Locations
 	data.Names = content.Names
 	data.Admin.LastModified.Date = content.Admin.LastModified.Date
 
@@ -300,9 +303,28 @@ func Read(content Content) (ROR, error) {
 }
 
 // ReadAll reads a list of ROR JSON organizations
-func ReadAll(content []Content) ([]ROR, error) {
+func ReadAll(content []Content, type_ string, country string) ([]ROR, error) {
+	var filtered []Content
 	var data []ROR
-	for _, v := range content {
+
+  // optionally filter by type and/or country
+	if type_ != "" || country != "" {
+		for _, v := range content {
+			if type_ != "" && !slices.Contains(v.Types, type_) {
+				continue
+			}
+			if country != "" && !slices.ContainsFunc(v.Locations, func(l Location) bool {
+				return l.GeonamesDetails.CountryCode == country
+			}) {
+       continue
+			}
+      filtered = append(filtered, v)
+		}
+	} else {
+    filtered = append(filtered, content...)
+	}
+
+	for _, v := range filtered {
 		d, err := Read(v)
 		if err != nil {
 			log.Println(err)
@@ -359,6 +381,9 @@ func Convert(data ROR) (InvenioRDM, error) {
 
 	id, _ := utils.ValidateROR(data.ID)
 	inveniordm.ID = id
+	for _, location := range data.Locations {
+		inveniordm.Country = location.GeonamesDetails.CountryCode
+	}
 	inveniordm.Identifiers = []Identifier{
 		{
 			Identifier: id,
@@ -368,6 +393,8 @@ func Convert(data ROR) (InvenioRDM, error) {
 	for _, name := range data.Names {
 		if slices.Contains(name.Types, "ror_display") {
 			inveniordm.Name = name.Value
+		} else if slices.Contains(name.Types, "acronym") && name.Value != "" {
+			inveniordm.Acronym = name.Value
 		}
 	}
 	inveniordm.Title = GetTitle(data.Names)
