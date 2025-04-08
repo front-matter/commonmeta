@@ -80,7 +80,7 @@ var transformCmd = &cobra.Command{
 		}
 
 		if input != "" {
-			output, err = ror.WriteAll(data, to)
+			output, err = ror.WriteAll(data, to, type_)
 		} else {
 			// if no input is provided, return the built-in ROR vocabulary
 			output, err = ror.LoadBuiltin()

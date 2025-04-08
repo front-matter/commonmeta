@@ -49,7 +49,7 @@ type Content struct {
 type InvenioRDM struct {
 	Acronym		  string       `yaml:"acronym,omitempty"`
 	ID          string       `yaml:"id"`
-	Country 		string       `yaml:"country"`
+	Country 		string       `yaml:"country,omitempty"`
 	Identifiers []Identifier `yaml:"identifiers"`
 	Name        string       `yaml:"name"`
 	Title       Title        `yaml:"title"`
@@ -376,13 +376,15 @@ func ExtractAll(content []commonmeta.Data) ([]byte, error) {
 }
 
 // Convert converts ROR metadata into InvenioRDM format.
-func Convert(data ROR) (InvenioRDM, error) {
+func Convert(data ROR, type_ string) (InvenioRDM, error) {
 	var inveniordm InvenioRDM
 
 	id, _ := utils.ValidateROR(data.ID)
 	inveniordm.ID = id
-	for _, location := range data.Locations {
+	if type_ == "funder" {
+			for _, location := range data.Locations {
 		inveniordm.Country = location.GeonamesDetails.CountryCode
+	}
 	}
 	inveniordm.Identifiers = []Identifier{
 		{
@@ -393,7 +395,7 @@ func Convert(data ROR) (InvenioRDM, error) {
 	for _, name := range data.Names {
 		if slices.Contains(name.Types, "ror_display") {
 			inveniordm.Name = name.Value
-		} else if slices.Contains(name.Types, "acronym") && name.Value != "" {
+		} else if type_ != "funder" && slices.Contains(name.Types, "acronym") && name.Value != "" {
 			inveniordm.Acronym = name.Value
 		}
 	}
@@ -402,8 +404,8 @@ func Convert(data ROR) (InvenioRDM, error) {
 }
 
 // Write writes ROR metadata to InvenioRDM YAML format.
-func Write(data ROR) ([]byte, error) {
-	inveniordm, err := Convert(data)
+func Write(data ROR, type_ string) ([]byte, error) {
+	inveniordm, err := Convert(data, type_)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -412,7 +414,7 @@ func Write(data ROR) ([]byte, error) {
 }
 
 // WriteAll writes a list of ROR metadata in InvenioRDM YAML format.
-func WriteAll(list []ROR, to string) ([]byte, error) {
+func WriteAll(list []ROR, to string, type_ string) ([]byte, error) {
 	var inveniordmList []InvenioRDM
 	var err error
 	var output []byte
@@ -422,7 +424,7 @@ func WriteAll(list []ROR, to string) ([]byte, error) {
 	}
 
 	for _, data := range list {
-		inveniordm, err := Convert(data)
+		inveniordm, err := Convert(data, type_)
 		if err != nil {
 			fmt.Println(err)
 		}
