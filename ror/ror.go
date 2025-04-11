@@ -11,6 +11,7 @@ import (
 	"slices"
 
 	"gopkg.in/yaml.v3"
+	"github.com/hamba/avro/v2"
 
 	"github.com/front-matter/commonmeta/commonmeta"
 	"github.com/front-matter/commonmeta/fileutils"
@@ -47,12 +48,12 @@ type Content struct {
 
 // InvenioRDM represents the ROR metadata record in InvenioRDM format.
 type InvenioRDM struct {
-	Acronym		  string       `yaml:"acronym,omitempty"`
-	ID          string       `yaml:"id"`
-	Country 		string       `yaml:"country,omitempty"`
-	Identifiers []Identifier `yaml:"identifiers"`
-	Name        string       `yaml:"name"`
-	Title       Title        `yaml:"title"`
+	Acronym		  string       `avro:"acronym,omitempty" yaml:"acronym,omitempty"`
+	ID          string       `avro:"id" yaml:"id"`
+	Country 		string       `avro:"country,omitempty" yaml:"country,omitempty"`
+	Identifiers []Identifier `avro:"identifiers" yaml:"identifiers"`
+	Name        string       `avro:"name" yaml:"name"`
+	Title       Title        `avro:"title" yaml:"title"`
 }
 
 type ExternalID struct {
@@ -74,8 +75,8 @@ type GeonamesDetails struct {
 }
 
 type Identifier struct {
-	Identifier string `json:"identifier"`
-	Scheme     string `json:"scheme"`
+	Identifier string `avro:"identifier" json:"identifier"`
+	Scheme     string `avro:"scheme" json:"scheme"`
 }
 
 type Location struct {
@@ -101,131 +102,131 @@ type Relationship struct {
 }
 
 type Title struct {
-	Aa string `yaml:"aa,omitempty"` // Afar
-	Af string `yaml:"af,omitempty"` // Afrikaans
-	Am string `yaml:"am,omitempty"` // Amharic
-	Ar string `yaml:"ar,omitempty"` // Arabic
-	As string `yaml:"as,omitempty"` // Assamese
-	Az string `yaml:"az,omitempty"` // Azerbaijani
-	Ba string `yaml:"ba,omitempty"` // Bashkir
-	Be string `yaml:"be,omitempty"` // Belgian
-	Bg string `yaml:"bg,omitempty"` // Bulgarian
-	Bi string `yaml:"bi,omitempty"` // Bislama
-	Bn string `yaml:"bn,omitempty"` // Bengali
-	Bs string `yaml:"bs,omitempty"` // Bosnian
-	Ca string `yaml:"ca,omitempty"` // Catalan
-	Ch string `yaml:"ch,omitempty"` // Chamorro
-	Co string `yaml:"co,omitempty"` // Corsican
-	Cs string `yaml:"cs,omitempty"` // Czech
-	Cu string `yaml:"cu,omitempty"` // Church Slavic
-	Cy string `yaml:"cy,omitempty"` // Welsh
-	Da string `yaml:"da,omitempty"` // Danish
-	De string `yaml:"de,omitempty"` // German
-	Dv string `yaml:"dv,omitempty"` // Divehi
-	Dz string `yaml:"dz,omitempty"` // Dzongkha
-	El string `yaml:"el,omitempty"` // Greek
-	En string `yaml:"en,omitempty"` // English
-	Es string `yaml:"es,omitempty"` // Spanish
-	Et string `yaml:"et,omitempty"` // Estonian
-	Eu string `yaml:"eu,omitempty"` // Basque
-	Fa string `yaml:"fa,omitempty"` // Persian
-	Fo string `yaml:"fo,omitempty"` // Faroese
-	Fi string `yaml:"fi,omitempty"` // Finnish
-	Fr string `yaml:"fr,omitempty"` // French
-	Fy string `yaml:"fy,omitempty"` // Frisian
-	Ga string `yaml:"ga,omitempty"` // Irish
-	Gd string `yaml:"gd,omitempty"` // Scottish Gaelic
-	Gl string `yaml:"gl,omitempty"` // Galician
-	Gu string `yaml:"gu,omitempty"` // Gujarati
-	Gv string `yaml:"gv,omitempty"` // Manx
-	Ha string `yaml:"ha,omitempty"` // Hausa
-	He string `yaml:"he,omitempty"` // Hebrew
-	Hi string `yaml:"hi,omitempty"` // Hindi
-	Hr string `yaml:"hr,omitempty"` // Croatian
-	Ht string `yaml:"ht,omitempty"` // Haitian
-	Hu string `yaml:"hu,omitempty"` // Hungarian
-	Hy string `yaml:"hy,omitempty"` // Armenian
-	Id string `yaml:"id,omitempty"` // Indonesian
-	Is string `yaml:"is,omitempty"` // Icelandic
-	It string `yaml:"it,omitempty"` // Italian
-	Iu string `yaml:"iu,omitempty"` // Inuktitut
-	Ja string `yaml:"ja,omitempty"` // Japanese
-	Jv string `yaml:"jv,omitempty"` // Javanese
-	Ka string `yaml:"ka,omitempty"` // Georgian
-	Kg string `yaml:"kg,omitempty"` // Kongo
-	Ki string `yaml:"ki,omitempty"` // Kikuyu
-	Kk string `yaml:"kk,omitempty"` // Kazakh
-	Kl string `yaml:"kl,omitempty"` // Greenlandic
-	Km string `yaml:"km,omitempty"` // Khmer
-	Kn string `yaml:"kn,omitempty"` // Kannada
-	Ko string `yaml:"ko,omitempty"` // Korean
-	Kr string `yaml:"kr,omitempty"` // Kanuri
-	Ku string `yaml:"ku,omitempty"` // Kurdish
-	Ky string `yaml:"ky,omitempty"` // Kyrgyz
-	La string `yaml:"la,omitempty"` // Latin
-	Lb string `yaml:"lb,omitempty"` // Luxembourgish
-	Lo string `yaml:"lo,omitempty"` // Lao
-	Lt string `yaml:"lt,omitempty"` // Lithuanian
-	Lu string `yaml:"lu,omitempty"` // Luba-Katanga
-	Lv string `yaml:"lv,omitempty"` // Latvian
-	Mg string `yaml:"mg,omitempty"` // Malagasy
-	Mi string `yaml:"mi,omitempty"` // Maori
-	Mk string `yaml:"mk,omitempty"` // Macedonian
-	Ml string `yaml:"ml,omitempty"` // Malayalam
-	Mn string `yaml:"mn,omitempty"` // Mongolian
-	Mr string `yaml:"mr,omitempty"` // Marathi
-	Ms string `yaml:"ms,omitempty"` // Malay
-	Mt string `yaml:"mt,omitempty"` // Maltese
-	My string `yaml:"my,omitempty"` // Burmese
-	Na string `yaml:"na,omitempty"` // Nauru
-	Nb string `yaml:"nb,omitempty"` // Norwegian Bokmål
-	Ne string `yaml:"ne,omitempty"` // Nepali
-	Nl string `yaml:"nl,omitempty"` // Dutch
-	Nn string `yaml:"nn,omitempty"` // Norwegian Nynorsk
-	No string `yaml:"no,omitempty"` // Norwegian
-	Oc string `yaml:"oc,omitempty"` // Occitan
-	Om string `yaml:"om,omitempty"` // Oromo
-	Or string `yaml:"or,omitempty"` // Oriya
-	Pa string `yaml:"pa,omitempty"` // Punjabi
-	Pl string `yaml:"pl,omitempty"` // Polish
-	Ps string `yaml:"ps,omitempty"` // Pashto
-	Pt string `yaml:"pt,omitempty"` // Portuguese
-	Rm string `yaml:"rm,omitempty"` // Romansh
-	Ro string `yaml:"ro,omitempty"` // Romanian
-	Ru string `yaml:"ru,omitempty"` // Russian
-	Rw string `yaml:"rw,omitempty"` // Kinyarwanda
-	Sa string `yaml:"sa,omitempty"` // Sanskrit
-	Sd string `yaml:"sd,omitempty"` // Sindhi
-	Se string `yaml:"se,omitempty"` // Northern Sami
-	Sh string `yaml:"sh,omitempty"` // Serbo-Croatian
-	Si string `yaml:"si,omitempty"` // Sinhalese
-	Sk string `yaml:"sk,omitempty"` // Slovak
-	Sl string `yaml:"sl,omitempty"` // Slovenian
-	Sm string `yaml:"sm,omitempty"` // Samoan
-	So string `yaml:"so,omitempty"` // Somali
-	Sq string `yaml:"sq,omitempty"` // Albanian
-	Sr string `yaml:"sr,omitempty"` // Serbian
-	St string `yaml:"st,omitempty"` // Southern Sotho
-	Sv string `yaml:"sv,omitempty"` // Swedish
-	Sw string `yaml:"sw,omitempty"` // Swahili
-	Ta string `yaml:"ta,omitempty"` // Tamil
-	Te string `yaml:"te,omitempty"` // Telugu
-	Tg string `yaml:"tg,omitempty"` // Tajik
-	Th string `yaml:"th,omitempty"` // Thai
-	Ti string `yaml:"ti,omitempty"` // Tigrinya
-	Tk string `yaml:"tk,omitempty"` // Turkmen
-	Tl string `yaml:"tl,omitempty"` // Tagalog
-	Tr string `yaml:"tr,omitempty"` // Turkish
-	Tt string `yaml:"tt,omitempty"` // Tatar
-	Ug string `yaml:"ug,omitempty"` // Uighur
-	Uk string `yaml:"uk,omitempty"` // Ukrainian
-	Ur string `yaml:"ur,omitempty"` // Urdu
-	Uz string `yaml:"uz,omitempty"` // Uzbek
-	Vi string `yaml:"vi,omitempty"` // Vietnamese
-	Xh string `yaml:"xh,omitempty"` // Xhosa
-	Yo string `yaml:"yo,omitempty"` // Yoruba
-	Zh string `yaml:"zh,omitempty"` // Chinese
-	Zu string `yaml:"zu,omitempty"` // Zulu
+	Aa string `avro:"aa,omitempty" yaml:"aa,omitempty"` // Afar
+	Af string `avro:"af,omitempty" yaml:"af,omitempty"` // Afrikaans
+	Am string `avro:"am,omitempty" yaml:"am,omitempty"` // Amharic
+	Ar string `avro:"ar,omitempty" yaml:"ar,omitempty"` // Arabic
+	As string `avro:"as,omitempty" yaml:"as,omitempty"` // Assamese
+	Az string `avro:"az,omitempty" yaml:"az,omitempty"` // Azerbaijani
+	Ba string `avro:"ba,omitempty" yaml:"ba,omitempty"` // Bashkir
+	Be string `avro:"be,omitempty" yaml:"be,omitempty"` // Belgian
+	Bg string `avro:"bu,omitempty" yaml:"bg,omitempty"` // Bulgarian
+	Bi string `avro:"bi,omitempty" yaml:"bi,omitempty"` // Bislama
+	Bn string `avro:"bn,omitempty" yaml:"bn,omitempty"` // Bengali
+	Bs string `avro:"bo,omitempty" yaml:"bs,omitempty"` // Bosnian
+	Ca string `avro:"ca,omitempty" yaml:"ca,omitempty"` // Catalan
+	Ch string `avro:"ch,omitempty" yaml:"ch,omitempty"` // Chamorro
+	Co string `avro:"co,omitempty" yaml:"co,omitempty"` // Corsican
+	Cs string `avro:"cs,omitempty" yaml:"cs,omitempty"` // Czech
+	Cu string `avro:"cu,omitempty" yaml:"cu,omitempty"` // Church Slavic
+	Cy string `avro:"cy,omitempty" yaml:"cy,omitempty"` // Welsh
+	Da string `avro:"da,omitempty" yaml:"da,omitempty"` // Danish
+	De string `avro:"de,omitempty" yaml:"de,omitempty"` // German
+	Dv string `avro:"dv,omitempty" yaml:"dv,omitempty"` // Divehi
+	Dz string `avro:"dz,omitempty" yaml:"dz,omitempty"` // Dzongkha
+	El string `avro:"el,omitempty" yaml:"el,omitempty"` // Greek
+	En string `avro:"en,omitempty" yaml:"en,omitempty"` // English
+	Es string `avro:"es,omitempty" yaml:"es,omitempty"` // Spanish
+	Et string `avro:"et,omitempty" yaml:"et,omitempty"` // Estonian
+	Eu string `avro:"eu,omitempty" yaml:"eu,omitempty"` // Basque
+	Fa string `avro:"fa,omitempty" yaml:"fa,omitempty"` // Persian
+	Fi string `avro:"fi,omitempty" yaml:"fi,omitempty"` // Finnish
+	Fo string `avro:"fo,omitempty" yaml:"fo,omitempty"` // Faroese
+	Fr string `avro:"fr,omitempty" yaml:"fr,omitempty"` // French
+	Fy string `avro:"fy,omitempty" yaml:"fy,omitempty"` // Frisian
+	Ga string `avro:"ga,omitempty" yaml:"ga,omitempty"` // Irish
+	Gd string `avro:"gd,omitempty" yaml:"gd,omitempty"` // Scottish Gaelic
+	Gl string `avro:"gl,omitempty" yaml:"gl,omitempty"` // Galician
+	Gu string `avro:"gu,omitempty" yaml:"gu,omitempty"` // Gujarati
+	Gv string `avro:"gv,omitempty" yaml:"gv,omitempty"` // Manx
+	Ha string `avro:"ha,omitempty" yaml:"ha,omitempty"` // Hausa
+	He string `avro:"he,omitempty" yaml:"he,omitempty"` // Hebrew
+	Hi string `avro:"hi,omitempty" yaml:"hi,omitempty"` // Hindi
+	Hr string `avro:"hr,omitempty" yaml:"hr,omitempty"` // Croatian
+	Ht string `avro:"ht,omitempty" yaml:"ht,omitempty"` // Haitian
+	Hu string `avro:"hu,omitempty" yaml:"hu,omitempty"` // Hungarian
+	Hy string `avro:"hy,omitempty" yaml:"hy,omitempty"` // Armenian
+	Id string `avro:"id,omitempty" yaml:"id,omitempty"` // Indonesian
+	Is string `avro:"is,omitempty" yaml:"is,omitempty"` // Icelandic
+	It string `avro:"it,omitempty" yaml:"it,omitempty"` // Italian
+	Iu string `avro:"iu,omitempty" yaml:"iu,omitempty"` // Inuktitut
+	Ja string `avro:"ja,omitempty" yaml:"ja,omitempty"` // Japanese
+	Jv string `avro:"jv,omitempty" yaml:"jv,omitempty"` // Javanese
+	Ka string `avro:"ka,omitempty" yaml:"ka,omitempty"` // Georgian
+	Kg string `avro:"kg,omitempty" yaml:"kg,omitempty"` // Kongo
+	Ki string `avro:"ki,omitempty" yaml:"ki,omitempty"` // Kikuyu
+	Kk string `avro:"kk,omitempty" yaml:"kk,omitempty"` // Kazakh
+	Kl string `avro:"kl,omitempty" yaml:"kl,omitempty"` // Greenlandic
+	Km string `avro:"km,omitempty" yaml:"km,omitempty"` // Khmer
+	Kn string `avro:"kn,omitempty" yaml:"kn,omitempty"` // Kannada
+	Ko string `avro:"ko,omitempty" yaml:"ko,omitempty"` // Korean
+	Kr string `avro:"kr,omitempty" yaml:"kr,omitempty"` // Kanuri
+	Ku string `avro:"ku,omitempty" yaml:"ku,omitempty"` // Kurdish
+	Ky string `avro:"ky,omitempty" yaml:"ky,omitempty"` // Kyrgyz
+	La string `avro:"la,omitempty" yaml:"la,omitempty"` // Latin
+	Lb string `avro:"lb,omitempty" yaml:"lb,omitempty"` // Luxembourgish
+	Lo string `avro:"lo,omitempty" yaml:"lo,omitempty"` // Lao
+	Lt string `avro:"lt,omitempty" yaml:"lt,omitempty"` // Lithuanian
+	Lu string `avro:"lu,omitempty" yaml:"lu,omitempty"` // Luba-Katanga
+	Lv string `avro:"lv,omitempty" yaml:"lv,omitempty"` // Latvian
+	Mg string `avro:"mg,omitempty" yaml:"mg,omitempty"` // Malagasy
+	Mi string `avro:"mi,omitempty" yaml:"mi,omitempty"` // Maori
+	Mk string `avro:"mk,omitempty" yaml:"mk,omitempty"` // Macedonian
+	Ml string `avro:"ml,omitempty" yaml:"ml,omitempty"` // Malayalam
+	Mn string `avro:"mn,omitempty" yaml:"mn,omitempty"` // Mongolian
+	Mr string `avro:"mr,omitempty" yaml:"mr,omitempty"` // Marathi
+	Ms string `avro:"ms,omitempty" yaml:"ms,omitempty"` // Malay
+	Mt string `avro:"mt,omitempty" yaml:"mt,omitempty"` // Maltese
+	My string `avro:"my,omitempty" yaml:"my,omitempty"` // Burmese
+	Na string `avro:"na,omitempty" yaml:"na,omitempty"` // Nauru
+	Nb string `avro:"nb,omitempty" yaml:"nb,omitempty"` // Norwegian Bokmål
+	Ne string `avro:"ne,omitempty" yaml:"ne,omitempty"` // Nepali
+	Nl string `avro:"nl,omitempty" yaml:"nl,omitempty"` // Dutch
+	Nn string `avro:"nn,omitempty" yaml:"nn,omitempty"` // Norwegian Nynorsk
+	No string `avro:"no,omitempty" yaml:"no,omitempty"` // Norwegian
+	Oc string `avro:"oc,omitempty" yaml:"oc,omitempty"` // Occitan
+	Om string `avro:"om,omitempty" yaml:"om,omitempty"` // Oromo
+	Or string `avro:"or,omitempty" yaml:"or,omitempty"` // Oriya
+	Pa string `avro:"pa,omitempty" yaml:"pa,omitempty"` // Punjabi
+	Pl string `avro:"pl,omitempty" yaml:"pl,omitempty"` // Polish
+	Ps string `avro:"ps,omitempty" yaml:"ps,omitempty"` // Pashto
+	Pt string `avro:"pt,omitempty" yaml:"pt,omitempty"` // Portuguese
+	Rm string `avro:"rm,omitempty" yaml:"rm,omitempty"` // Romansh
+	Ro string `avro:"ro,omitempty" yaml:"ro,omitempty"` // Romanian
+	Ru string `avro:"ru,omitempty" yaml:"ru,omitempty"` // Russian
+	Rw string `avro:"rw,omitempty" yaml:"rw,omitempty"` // Kinyarwanda
+	Sa string `avro:"sa,omitempty" yaml:"sa,omitempty"` // Sanskrit
+	Sd string `avro:"sd,omitempty" yaml:"sd,omitempty"` // Sindhi
+	Se string `avro:"se,omitempty" yaml:"se,omitempty"` // Northern Sami
+	Sh string `avro:"sh,omitempty" yaml:"sh,omitempty"` // Serbo-Croatian
+	Si string `avro:"si,omitempty" yaml:"si,omitempty"` // Sinhalese
+	Sk string `avro:"sk,omitempty" yaml:"sk,omitempty"` // Slovak
+	Sl string `avro:"sl,omitempty" yaml:"sl,omitempty"` // Slovenian
+	Sm string `avro:"sm,omitempty" yaml:"sm,omitempty"` // Samoan
+	So string `avro:"so,omitempty" yaml:"so,omitempty"` // Somali
+	Sq string `avro:"sq,omitempty" yaml:"sq,omitempty"` // Albanian
+	Sr string `avro:"sr,omitempty" yaml:"sr,omitempty"` // Serbian
+	St string `avro:"st,omitempty" yaml:"st,omitempty"` // Southern Sotho
+	Sv string `avro:"sv,omitempty" yaml:"sv,omitempty"` // Swedish
+	Sw string `avro:"sw,omitempty" yaml:"sw,omitempty"` // Swahili
+	Ta string `avro:"ta,omitempty" yaml:"ta,omitempty"` // Tamil
+	Te string `avro:"te,omitempty" yaml:"te,omitempty"` // Telugu
+	Tg string `avro:"tg,omitempty" yaml:"tg,omitempty"` // Tajik
+	Th string `avro:"th,omitempty" yaml:"th,omitempty"` // Thai
+	Ti string `avro:"ti,omitempty" yaml:"ti,omitempty"` // Tigrinya
+	Tk string `avro:"tk,omitempty" yaml:"tk,omitempty"` // Turkmen
+	Tl string `avro:"tl,omitempty" yaml:"tl,omitempty"` // Tagalog
+	Tr string `avro:"tr,omitempty" yaml:"tr,omitempty"` // Turkish
+	Tt string `avro:"tt,omitempty" yaml:"tt,omitempty"` // Tatar
+	Ug string `avro:"ug,omitempty" yaml:"ug,omitempty"` // Uighur
+	Uk string `avro:"uk,omitempty" yaml:"uk,omitempty"` // Ukrainian
+	Ur string `avro:"ur,omitempty" yaml:"ur,omitempty"` // Urdu
+	Uz string `avro:"uz,omitempty" yaml:"uz,omitempty"` // Uzbek
+	Vi string `avro:"vi,omitempty" yaml:"vi,omitempty"` // Vietnamese
+	Xh string `avro:"xh,omitempty" yaml:"xh,omitempty"` // Xhosa
+	Yo string `avro:"yo,omitempty" yaml:"yo,omitempty"` // Yoruba
+	Zh string `avro:"zh,omitempty" yaml:"zh,omitempty"` // Chinese
+	Zu string `avro:"zu,omitempty" yaml:"zu,omitempty"` // Zulu
 }
 
 // RORVersions contains the ROR versions and their release dates, published on Zenodo.
@@ -248,6 +249,170 @@ var RORVersions = map[string]string{
 	"v1.62": "2025-03-27",
 	"v1.63": "2025-04-03",
 }
+
+var InvenioRDMSchema = `{
+  "type": "array",
+  "items": {
+    "name": "InvenioRDM",
+    "type": "record",
+    "fields": [
+      { "name": "acronym", "type": ["null", "string"], "default": null },
+      { "name": "id", "type": "string" },
+			{ "name": "country", "type": ["null", "string"], "default": null },
+      {
+        "name": "identifiers",
+        "type": {
+          "type": "array",
+          "items": {
+            "name": "identifier",
+            "type": "record",
+						"fields": [
+							{ "name": "identifier", "type": "string" },
+							{ "name": "scheme", "type": "string" }
+						]
+          }
+        }
+      },
+      { "name": "name", "type": "string" },
+      {
+        "name": "title",
+        "type": {
+          "name": "title",
+          "type": "record",
+          "fields": [
+            { "name": "aa", "type": ["null", "string"], "default": null },
+						{ "name": "af", "type": ["null", "string"], "default": null },
+						{ "name": "am", "type": ["null", "string"], "default": null },
+						{ "name": "ar", "type": ["null", "string"], "default": null },
+						{ "name": "as", "type": ["null", "string"], "default": null },
+						{ "name": "az", "type": ["null", "string"], "default": null },
+						{ "name": "ba", "type": ["null", "string"], "default": null },
+						{ "name": "be", "type": ["null", "string"], "default": null },
+						{ "name": "bg", "type": ["null", "string"], "default": null },
+						{ "name": "bi", "type": ["null", "string"], "default": null },
+						{ "name": "bn", "type": ["null", "string"], "default": null },
+						{ "name": "bs", "type": ["null", "string"], "default": null },
+						{ "name": "ca", "type": ["null", "string"], "default": null },
+						{ "name": "ch", "type": ["null", "string"], "default": null },
+						{ "name": "co", "type": ["null", "string"], "default": null },
+						{ "name": "cs", "type": ["null", "string"], "default": null },
+						{ "name": "cu", "type": ["null", "string"], "default": null },
+						{ "name": "cy", "type": ["null", "string"], "default": null },
+						{ "name": "da", "type": ["null", "string"], "default": null },
+						{ "name": "de", "type": ["null", "string"], "default": null },
+						{ "name": "dv", "type": ["null", "string"], "default": null },
+						{ "name": "dz", "type": ["null", "string"], "default": null },
+						{ "name": "el", "type": ["null", "string"], "default": null },
+						{ "name": "en", "type": ["null", "string"], "default": null },
+						{ "name": "es", "type": ["null", "string"], "default": null },
+						{ "name": "et", "type": ["null", "string"], "default": null },
+						{ "name": "eu", "type": ["null", "string"], "default": null },
+						{ "name": "fa", "type": ["null", "string"], "default": null },
+						{ "name": "fi", "type": ["null", "string"], "default": null },
+						{ "name": "fo", "type": ["null", "string"], "default": null },
+						{ "name": "fr", "type": ["null", "string"], "default": null },
+						{ "name": "fy", "type": ["null", "string"], "default": null },
+						{ "name": "ga", "type": ["null", "string"], "default": null },
+						{ "name": "gd", "type": ["null", "string"], "default": null },
+						{ "name": "gl", "type": ["null", "string"], "default": null },
+						{ "name": "gu", "type": ["null", "string"], "default": null },
+						{ "name": "ha", "type": ["null", "string"], "default": null },
+						{ "name": "he", "type": ["null", "string"], "default": null },
+						{ "name": "hi", "type": ["null", "string"], "default": null },
+						{ "name": "hr", "type": ["null", "string"], "default": null },
+						{ "name": "ht", "type": ["null", "string"], "default": null },
+						{ "name": "hu", "type": ["null", "string"], "default": null },
+						{ "name": "hy", "type": ["null", "string"], "default": null },
+						{ "name": "id", "type": ["null", "string"], "default": null },
+						{ "name": "is", "type": ["null", "string"], "default": null },
+						{ "name": "it", "type": ["null", "string"], "default": null },
+						{ "name": "iu", "type": ["null", "string"], "default": null },
+						{ "name": "ja", "type": ["null", "string"], "default": null },
+						{ "name": "jv", "type": ["null", "string"], "default": null },
+						{ "name": "ka", "type": ["null", "string"], "default": null },
+						{ "name": "kg", "type": ["null", "string"], "default": null },
+						{ "name": "ki", "type": ["null", "string"], "default": null },
+						{ "name": "kk", "type": ["null", "string"], "default": null },
+						{ "name": "kl", "type": ["null", "string"], "default": null },
+						{ "name": "km", "type": ["null", "string"], "default": null },
+						{ "name": "kn", "type": ["null", "string"], "default": null },
+						{ "name": "ko", "type": ["null", "string"], "default": null },
+						{ "name": "kr", "type": ["null", "string"], "default": null },
+						{ "name": "ku", "type": ["null", "string"], "default": null },
+						{ "name": "ky", "type": ["null", "string"], "default": null },
+						{ "name": "la", "type": ["null", "string"], "default": null },
+						{ "name": "lb", "type": ["null", "string"], "default": null },
+						{ "name": "lo", "type": ["null", "string"], "default": null },
+						{ "name": "lt", "type": ["null", "string"], "default": null },
+						{ "name": "lu", "type": ["null", "string"], "default": null },
+						{ "name": "lv", "type": ["null", "string"], "default": null },
+						{ "name": "mg", "type": ["null", "string"], "default": null },
+						{ "name": "mi", "type": ["null", "string"], "default": null },
+						{ "name": "mk", "type": ["null", "string"], "default": null },
+						{ "name": "ml", "type": ["null", "string"], "default": null },
+						{ "name": "mn", "type": ["null", "string"], "default": null },
+						{ "name": "mr", "type": ["null", "string"], "default": null },
+						{ "name": "ms", "type": ["null", "string"], "default": null },
+						{ "name": "mt", "type": ["null", "string"], "default": null },
+						{ "name": "my", "type": ["null", "string"], "default": null },
+						{ "name": "na", "type": ["null", "string"], "default": null },
+						{ "name": "nb", "type": ["null", "string"], "default": null },
+						{ "name": "ne", "type": ["null", "string"], "default": null },
+						{ "name": "nl", "type": ["null", "string"], "default": null },
+						{ "name": "nn", "type": ["null", "string"], "default": null },
+						{ "name": "no", "type": ["null", "string"], "default": null },
+						{ "name": "oc", "type": ["null", "string"], "default": null },
+						{ "name": "om", "type": ["null", "string"], "default": null },
+						{ "name": "or", "type": ["null", "string"], "default": null },
+						{ "name": "pa", "type": ["null", "string"], "default": null },
+						{ "name": "pl", "type": ["null", "string"], "default": null },
+						{ "name": "ps", "type": ["null", "string"], "default": null },
+						{ "name": "pt", "type": ["null", "string"], "default": null },
+						{ "name": "rm", "type": ["null", "string"], "default": null },
+						{ "name": "ro", "type": ["null", "string"], "default": null },
+						{ "name": "ru", "type": ["null", "string"], "default": null },
+						{ "name": "rw", "type": ["null", "string"], "default": null },
+						{ "name": "sa", "type": ["null", "string"], "default": null },
+						{ "name": "sd", "type": ["null", "string"], "default": null },
+						{ "name": "se", "type": ["null", "string"], "default": null },
+						{ "name": "sh", "type": ["null", "string"], "default": null },
+						{ "name": "si", "type": ["null", "string"], "default": null },
+						{ "name": "sk", "type": ["null", "string"], "default": null },
+						{ "name": "sl", "type": ["null", "string"], "default": null },
+						{ "name": "sm", "type": ["null", "string"], "default": null },
+						{ "name": "so", "type": ["null", "string"], "default": null },
+						{ "name": "sq", "type": ["null", "string"], "default": null },
+						{ "name": "sr", "type": ["null", "string"], "default": null },
+						{ "name": "st", "type": ["null", "string"], "default": null },
+						{ "name": "sv", "type": ["null", "string"], "default": null },
+						{ "name": "sw", "type": ["null", "string"], "default": null },
+						{ "name": "ta", "type": ["null", "string"], "default": null },
+						{ "name": "te", "type": ["null", "string"], "default": null },
+						{ "name": "tg", "type": ["null", "string"], "default": null },
+						{ "name": "th", "type": ["null", "string"], "default": null },
+						{ "name": "ti", "type": ["null", "string"], "default": null },
+						{ "name": "tk", "type": ["null", "string"], "default": null },
+						{ "name": "tl", "type": ["null", "string"], "default": null },
+						{ "name": "tr", "type": ["null", "string"], "default": null },
+						{ "name": "tt", "type": ["null", "string"], "default": null },
+						{ "name": "ug", "type": ["null", "string"], "default": null },
+						{ "name": "uk", "type": ["null", "string"], "default": null },
+						{ "name": "ur", "type": ["null", "string"], "default": null },
+						{ "name": "uz", "type": ["null", "string"], "default": null },
+						{ "name": "vi", "type": ["null", "string"], "default": null },
+						{ "name": "xh", "type": ["null", "string"], "default": null },
+						{ "name": "yo", "type": ["null", "string"], "default": null },
+						{ "name": "zh", "type": ["null", "string"], "default": null },
+						{ "name": "zu", "type": ["null", "string"], "default": null }
+          ]
+        }
+      }
+    ]
+  }
+}`
+
+var Extensions = []string{".json", ".yaml", ".avro"}
+var RORTypes = []string{"archive", "company", "education", "facility", "funder", "government", "healthcare", "nonprofit", "other"}		
 
 // LoadAll loads the metadata for a list of organizations from a ROR JSON file
 func LoadAll(filename string, type_ string, country string) ([]ROR, error) {
@@ -316,7 +481,7 @@ func ReadAll(content []Content, type_ string, country string) ([]ROR, error) {
 			if country != "" && !slices.ContainsFunc(v.Locations, func(l Location) bool {
 				return l.GeonamesDetails.CountryCode == country
 			}) {
-       continue
+        continue
 			}
       filtered = append(filtered, v)
 		}
@@ -340,6 +505,10 @@ func ExtractAll(content []commonmeta.Data) ([]byte, error) {
 	var extracted []InvenioRDM
 	var ids []string
 	var err error
+  schema, err := avro.Parse(InvenioRDMSchema)
+	if err != nil {
+		return nil, err
+	}
 
 	// Load the ROR metadata from the embedded ZIP file with all ROR records
 	out, err := fileutils.ReadZIPFile("affiliations_ror.yaml.zip")
@@ -371,7 +540,7 @@ func ExtractAll(content []commonmeta.Data) ([]byte, error) {
 		}
 	}
 
-	output, err := yaml.Marshal(extracted)
+	output, err := avro.Marshal(schema, extracted)
 	return output, err
 }
 
@@ -382,9 +551,9 @@ func Convert(data ROR, type_ string) (InvenioRDM, error) {
 	id, _ := utils.ValidateROR(data.ID)
 	inveniordm.ID = id
 	if type_ == "funder" {
-			for _, location := range data.Locations {
-		inveniordm.Country = location.GeonamesDetails.CountryCode
-	}
+		for _, location := range data.Locations {
+      inveniordm.Country = location.GeonamesDetails.CountryCode
+		}
 	}
 	inveniordm.Identifiers = []Identifier{
 		{
@@ -403,21 +572,33 @@ func Convert(data ROR, type_ string) (InvenioRDM, error) {
 	return inveniordm, nil
 }
 
-// Write writes ROR metadata to InvenioRDM YAML format.
-func Write(data ROR, type_ string) ([]byte, error) {
+// Write writes ROR metadata to InvenioRDM format.
+func Write(data ROR, extension string, type_ string) ([]byte, error) {
+	schema, err := avro.Parse(InvenioRDMSchema)
+	if err != nil {
+		return nil, err
+	}
 	inveniordm, err := Convert(data, type_)
 	if err != nil {
 		fmt.Println(err)
 	}
-	output, err := yaml.Marshal(inveniordm)
+	output, err := avro.Marshal(schema, inveniordm)
 	return output, err
 }
 
 // WriteAll writes a list of ROR metadata in InvenioRDM YAML format.
-func WriteAll(list []ROR, to string, type_ string) ([]byte, error) {
+func WriteAll(list []ROR, to string, extension string, type_ string) ([]byte, error) {
 	var inveniordmList []InvenioRDM
 	var err error
 	var output []byte
+		
+	type InvenioRDM struct {
+		Acronym		  string       `avro:"acronym,omitempty" yaml:"acronym,omitempty"`
+		ID          string       `avro:"id" yaml:"id"`
+		// Country 		string       `avro:"country,omitempty" yaml:"country,omitempty"`
+		Name        string       `avro:"name" yaml:"name"`
+		Title       Title        `avro:"title" yaml:"title"`
+	}
 
 	if to != "inveniordm" {
 		return output, errors.New("unsupported output format")
@@ -432,8 +613,26 @@ func WriteAll(list []ROR, to string, type_ string) ([]byte, error) {
 			inveniordmList = append(inveniordmList, inveniordm)
 		}
 	}
-
-	output, err = yaml.Marshal(inveniordmList)
+  if extension == ".yaml" {
+		output, err = yaml.Marshal(inveniordmList)
+	} else if extension == ".json" {
+		output, err = json.Marshal(inveniordmList)
+	} else if extension == ".avro" {
+		schema, err := avro.Parse(InvenioRDMSchema)
+		if err != nil {
+			fmt.Println(err, "avro.Parse")
+			return nil, err
+		}
+    output, err = avro.Marshal(schema, inveniordmList)
+		if err != nil {
+			fmt.Println(err, "avro.Marshal")
+		}
+	} else {
+		return output, errors.New("unsupported file format")
+	}
+	if err != nil {
+		return nil, err
+	}
 	return output, err
 }
 
