@@ -44,6 +44,7 @@ var listCmd = &cobra.Command{
 		var str string // a string, content loaded from a file
 		var err error
 		var data []commonmeta.Data
+		var extension string
 
 		if len(args) > 0 {
 			input = args[0]
@@ -75,7 +76,6 @@ var listCmd = &cobra.Command{
 		isArchived, _ := cmd.Flags().GetBool("is-archived")
 		sample, _ := cmd.Flags().GetBool("sample")
 		file, _ := cmd.Flags().GetString("file")
-		compress, _ := cmd.Flags().GetBool("compress")
 
 		depositor, _ := cmd.Flags().GetString("depositor")
 		email, _ := cmd.Flags().GetString("email")
@@ -83,6 +83,10 @@ var listCmd = &cobra.Command{
 
 		cmd.SetOut(os.Stdout)
 		cmd.SetErr(os.Stderr)
+
+    // extract the file extension and check if output file should be zipped
+		// if the file name is empty, set it to the default value
+    file, extension, compress := fileutils.GetExtension(file, ".json")
 
 		if input != "" && !strings.HasPrefix(input, "--") {
 			_, err = os.Stat(input)
@@ -129,7 +133,7 @@ var listCmd = &cobra.Command{
 		var output []byte
 		to, _ := cmd.Flags().GetString("to")
 		if to == "commonmeta" {
-			output, err = commonmeta.WriteAll(data)
+			output, err = commonmeta.WriteAll(data, extension)
 		} else if to == "csl" {
 			output, err = csl.WriteAll(data)
 		} else if to == "datacite" {
@@ -147,7 +151,7 @@ var listCmd = &cobra.Command{
 			output, err = inveniordm.WriteAll(data)
 		}
 
-		if to != "crossrefxml" {
+		if to != "crossrefxml" && extension == ".json" {
 			var out bytes.Buffer
 			json.Indent(&out, output, "", "  ")
 			output = out.Bytes()

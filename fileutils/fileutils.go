@@ -7,6 +7,7 @@ import (
 	"embed"
 	"io"
 	"os"
+	"path"
 	"path/filepath"
 )
 
@@ -133,4 +134,31 @@ func WriteZIPFile(filename string, output []byte) error {
 	}
 
 	return nil
+}
+
+// GetExtension extracts the file extension and checks if the output file should be zipped.
+func GetExtension(filename string, ext string) (string, string, bool) {
+	var extension string
+	var compress bool
+
+	if filename != "" {
+		extension = path.Ext(filename)
+		if extension == ".zip" {
+			compress = true
+
+			// Remove the ".zip" extension from the filename
+			filename = filename[:len(filename)-4]
+			extension = path.Ext(filename)
+		} else {
+			compress = false
+		}
+		return filename, extension, compress
+	} 
+	
+	if ext == "" {
+		ext = ".json"
+	}
+	extension = ext
+	compress = false
+	return filename, extension, compress
 }
