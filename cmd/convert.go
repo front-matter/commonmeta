@@ -101,7 +101,7 @@ commonmeta 10.5555/12345678`,
 			} else if from == "schemaorg" {
 				data, err = schemaorg.Fetch(id)
 			} else if from == "ror" {
-				orgdata, err = ror.Fetch(id)
+				orgdata, err = ror.Search(id)
 			} else {
 				fmt.Println("Please provide a valid input")
 				return

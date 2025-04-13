@@ -369,6 +369,23 @@ func Get(id string) (ROR, error) {
 	return data, err
 }
 
+// Search searches local ROR metadata for a given ror id.
+func Search(id string) (ROR, error) {
+	var ror ROR
+
+	data, err := LoadBuiltin()
+	if err != nil {
+		return ror, err
+	}
+	idx := slices.IndexFunc(data, func(d ROR) bool { return d.ID == utils.NormalizeROR(id) })
+	if idx == -1 {
+		return ror, errors.New("ror id not found")
+	}
+
+	ror = data[idx]
+	return ror, err
+}
+
 // LoadAll loads the metadata for a list of organizations from a ROR JSON file
 func LoadAll(filename string) ([]ROR, error) {
 	var data []ROR
