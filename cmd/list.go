@@ -84,9 +84,9 @@ var listCmd = &cobra.Command{
 		cmd.SetOut(os.Stdout)
 		cmd.SetErr(os.Stderr)
 
-    // extract the file extension and check if output file should be zipped
+		// extract the file extension and check if output file should be zipped
 		// if the file name is empty, set it to the default value
-    file, extension, compress := fileutils.GetExtension(file, ".json")
+		file, extension, compress := fileutils.GetExtension(file, ".json")
 
 		if input != "" && !strings.HasPrefix(input, "--") {
 			_, err = os.Stat(input)
@@ -133,7 +133,7 @@ var listCmd = &cobra.Command{
 		var output []byte
 		to, _ := cmd.Flags().GetString("to")
 		if to == "commonmeta" {
-			output, err = commonmeta.WriteAll(data, extension)
+			output, err = commonmeta.WriteAll(data)
 		} else if to == "csl" {
 			output, err = csl.WriteAll(data)
 		} else if to == "datacite" {
