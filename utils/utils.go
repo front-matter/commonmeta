@@ -51,6 +51,18 @@ func NormalizeID(pid string) string {
 		return uuid
 	}
 
+	// check for valid ORCID
+	orcid, ok := ValidateORCID(pid)
+	if ok {
+		return orcid
+	}
+
+	// check for valid ROR ID
+	ror, ok := ValidateROR(pid)
+	if ok {
+		return ror
+	}
+
 	// check for valid URL
 	uri, err := url.Parse(pid)
 	if err != nil {

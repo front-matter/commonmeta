@@ -13,12 +13,12 @@ import (
 
 // InvenioRDM represents the ROR metadata record in InvenioRDM format.
 type InvenioRDM struct {
-	Acronym     string       `avro:"acronym,omitempty" yaml:"acronym,omitempty"`
-	ID          string       `avro:"id" yaml:"id"`
-	Country     string       `avro:"country,omitempty" yaml:"country,omitempty"`
-	Identifiers []Identifier `avro:"identifiers" yaml:"identifiers"`
-	Name        string       `avro:"name" yaml:"name"`
-	Title       Title        `avro:"title" yaml:"title"`
+	Acronym     string       `avro:"acronym,omitempty" json:"acronym,omitempty" yaml:"acronym,omitempty"`
+	ID          string       `avro:"id" json:"id"`
+	Country     string       `avro:"country,omitempty" json:"country,omitempty" yaml:"country,omitempty"`
+	Identifiers []Identifier `avro:"identifiers" json:"identifiers"`
+	Name        string       `avro:"name" json:"name"`
+	Title       Title        `avro:"title" json:"title"`
 }
 
 type Identifier struct {
@@ -27,131 +27,131 @@ type Identifier struct {
 }
 
 type Title struct {
-	Aa string `avro:"aa,omitempty" yaml:"aa,omitempty"` // Afar
-	Af string `avro:"af,omitempty" yaml:"af,omitempty"` // Afrikaans
-	Am string `avro:"am,omitempty" yaml:"am,omitempty"` // Amharic
-	Ar string `avro:"ar,omitempty" yaml:"ar,omitempty"` // Arabic
-	As string `avro:"as,omitempty" yaml:"as,omitempty"` // Assamese
-	Az string `avro:"az,omitempty" yaml:"az,omitempty"` // Azerbaijani
-	Ba string `avro:"ba,omitempty" yaml:"ba,omitempty"` // Bashkir
-	Be string `avro:"be,omitempty" yaml:"be,omitempty"` // Belgian
-	Bg string `avro:"bu,omitempty" yaml:"bg,omitempty"` // Bulgarian
-	Bi string `avro:"bi,omitempty" yaml:"bi,omitempty"` // Bislama
-	Bn string `avro:"bn,omitempty" yaml:"bn,omitempty"` // Bengali
-	Bs string `avro:"bo,omitempty" yaml:"bs,omitempty"` // Bosnian
-	Ca string `avro:"ca,omitempty" yaml:"ca,omitempty"` // Catalan
-	Ch string `avro:"ch,omitempty" yaml:"ch,omitempty"` // Chamorro
-	Co string `avro:"co,omitempty" yaml:"co,omitempty"` // Corsican
-	Cs string `avro:"cs,omitempty" yaml:"cs,omitempty"` // Czech
-	Cu string `avro:"cu,omitempty" yaml:"cu,omitempty"` // Church Slavic
-	Cy string `avro:"cy,omitempty" yaml:"cy,omitempty"` // Welsh
-	Da string `avro:"da,omitempty" yaml:"da,omitempty"` // Danish
-	De string `avro:"de,omitempty" yaml:"de,omitempty"` // German
-	Dv string `avro:"dv,omitempty" yaml:"dv,omitempty"` // Divehi
-	Dz string `avro:"dz,omitempty" yaml:"dz,omitempty"` // Dzongkha
-	El string `avro:"el,omitempty" yaml:"el,omitempty"` // Greek
-	En string `avro:"en,omitempty" yaml:"en,omitempty"` // English
-	Es string `avro:"es,omitempty" yaml:"es,omitempty"` // Spanish
-	Et string `avro:"et,omitempty" yaml:"et,omitempty"` // Estonian
-	Eu string `avro:"eu,omitempty" yaml:"eu,omitempty"` // Basque
-	Fa string `avro:"fa,omitempty" yaml:"fa,omitempty"` // Persian
-	Fi string `avro:"fi,omitempty" yaml:"fi,omitempty"` // Finnish
-	Fo string `avro:"fo,omitempty" yaml:"fo,omitempty"` // Faroese
-	Fr string `avro:"fr,omitempty" yaml:"fr,omitempty"` // French
-	Fy string `avro:"fy,omitempty" yaml:"fy,omitempty"` // Frisian
-	Ga string `avro:"ga,omitempty" yaml:"ga,omitempty"` // Irish
-	Gd string `avro:"gd,omitempty" yaml:"gd,omitempty"` // Scottish Gaelic
-	Gl string `avro:"gl,omitempty" yaml:"gl,omitempty"` // Galician
-	Gu string `avro:"gu,omitempty" yaml:"gu,omitempty"` // Gujarati
-	Gv string `avro:"gv,omitempty" yaml:"gv,omitempty"` // Manx
-	Ha string `avro:"ha,omitempty" yaml:"ha,omitempty"` // Hausa
-	He string `avro:"he,omitempty" yaml:"he,omitempty"` // Hebrew
-	Hi string `avro:"hi,omitempty" yaml:"hi,omitempty"` // Hindi
-	Hr string `avro:"hr,omitempty" yaml:"hr,omitempty"` // Croatian
-	Ht string `avro:"ht,omitempty" yaml:"ht,omitempty"` // Haitian
-	Hu string `avro:"hu,omitempty" yaml:"hu,omitempty"` // Hungarian
-	Hy string `avro:"hy,omitempty" yaml:"hy,omitempty"` // Armenian
-	Id string `avro:"id,omitempty" yaml:"id,omitempty"` // Indonesian
-	Is string `avro:"is,omitempty" yaml:"is,omitempty"` // Icelandic
-	It string `avro:"it,omitempty" yaml:"it,omitempty"` // Italian
-	Iu string `avro:"iu,omitempty" yaml:"iu,omitempty"` // Inuktitut
-	Ja string `avro:"ja,omitempty" yaml:"ja,omitempty"` // Japanese
-	Jv string `avro:"jv,omitempty" yaml:"jv,omitempty"` // Javanese
-	Ka string `avro:"ka,omitempty" yaml:"ka,omitempty"` // Georgian
-	Kg string `avro:"kg,omitempty" yaml:"kg,omitempty"` // Kongo
-	Ki string `avro:"ki,omitempty" yaml:"ki,omitempty"` // Kikuyu
-	Kk string `avro:"kk,omitempty" yaml:"kk,omitempty"` // Kazakh
-	Kl string `avro:"kl,omitempty" yaml:"kl,omitempty"` // Greenlandic
-	Km string `avro:"km,omitempty" yaml:"km,omitempty"` // Khmer
-	Kn string `avro:"kn,omitempty" yaml:"kn,omitempty"` // Kannada
-	Ko string `avro:"ko,omitempty" yaml:"ko,omitempty"` // Korean
-	Kr string `avro:"kr,omitempty" yaml:"kr,omitempty"` // Kanuri
-	Ku string `avro:"ku,omitempty" yaml:"ku,omitempty"` // Kurdish
-	Ky string `avro:"ky,omitempty" yaml:"ky,omitempty"` // Kyrgyz
-	La string `avro:"la,omitempty" yaml:"la,omitempty"` // Latin
-	Lb string `avro:"lb,omitempty" yaml:"lb,omitempty"` // Luxembourgish
-	Lo string `avro:"lo,omitempty" yaml:"lo,omitempty"` // Lao
-	Lt string `avro:"lt,omitempty" yaml:"lt,omitempty"` // Lithuanian
-	Lu string `avro:"lu,omitempty" yaml:"lu,omitempty"` // Luba-Katanga
-	Lv string `avro:"lv,omitempty" yaml:"lv,omitempty"` // Latvian
-	Mg string `avro:"mg,omitempty" yaml:"mg,omitempty"` // Malagasy
-	Mi string `avro:"mi,omitempty" yaml:"mi,omitempty"` // Maori
-	Mk string `avro:"mk,omitempty" yaml:"mk,omitempty"` // Macedonian
-	Ml string `avro:"ml,omitempty" yaml:"ml,omitempty"` // Malayalam
-	Mn string `avro:"mn,omitempty" yaml:"mn,omitempty"` // Mongolian
-	Mr string `avro:"mr,omitempty" yaml:"mr,omitempty"` // Marathi
-	Ms string `avro:"ms,omitempty" yaml:"ms,omitempty"` // Malay
-	Mt string `avro:"mt,omitempty" yaml:"mt,omitempty"` // Maltese
-	My string `avro:"my,omitempty" yaml:"my,omitempty"` // Burmese
-	Na string `avro:"na,omitempty" yaml:"na,omitempty"` // Nauru
-	Nb string `avro:"nb,omitempty" yaml:"nb,omitempty"` // Norwegian Bokmål
-	Ne string `avro:"ne,omitempty" yaml:"ne,omitempty"` // Nepali
-	Nl string `avro:"nl,omitempty" yaml:"nl,omitempty"` // Dutch
-	Nn string `avro:"nn,omitempty" yaml:"nn,omitempty"` // Norwegian Nynorsk
-	No string `avro:"no,omitempty" yaml:"no,omitempty"` // Norwegian
-	Oc string `avro:"oc,omitempty" yaml:"oc,omitempty"` // Occitan
-	Om string `avro:"om,omitempty" yaml:"om,omitempty"` // Oromo
-	Or string `avro:"or,omitempty" yaml:"or,omitempty"` // Oriya
-	Pa string `avro:"pa,omitempty" yaml:"pa,omitempty"` // Punjabi
-	Pl string `avro:"pl,omitempty" yaml:"pl,omitempty"` // Polish
-	Ps string `avro:"ps,omitempty" yaml:"ps,omitempty"` // Pashto
-	Pt string `avro:"pt,omitempty" yaml:"pt,omitempty"` // Portuguese
-	Rm string `avro:"rm,omitempty" yaml:"rm,omitempty"` // Romansh
-	Ro string `avro:"ro,omitempty" yaml:"ro,omitempty"` // Romanian
-	Ru string `avro:"ru,omitempty" yaml:"ru,omitempty"` // Russian
-	Rw string `avro:"rw,omitempty" yaml:"rw,omitempty"` // Kinyarwanda
-	Sa string `avro:"sa,omitempty" yaml:"sa,omitempty"` // Sanskrit
-	Sd string `avro:"sd,omitempty" yaml:"sd,omitempty"` // Sindhi
-	Se string `avro:"se,omitempty" yaml:"se,omitempty"` // Northern Sami
-	Sh string `avro:"sh,omitempty" yaml:"sh,omitempty"` // Serbo-Croatian
-	Si string `avro:"si,omitempty" yaml:"si,omitempty"` // Sinhalese
-	Sk string `avro:"sk,omitempty" yaml:"sk,omitempty"` // Slovak
-	Sl string `avro:"sl,omitempty" yaml:"sl,omitempty"` // Slovenian
-	Sm string `avro:"sm,omitempty" yaml:"sm,omitempty"` // Samoan
-	So string `avro:"so,omitempty" yaml:"so,omitempty"` // Somali
-	Sq string `avro:"sq,omitempty" yaml:"sq,omitempty"` // Albanian
-	Sr string `avro:"sr,omitempty" yaml:"sr,omitempty"` // Serbian
-	St string `avro:"st,omitempty" yaml:"st,omitempty"` // Southern Sotho
-	Sv string `avro:"sv,omitempty" yaml:"sv,omitempty"` // Swedish
-	Sw string `avro:"sw,omitempty" yaml:"sw,omitempty"` // Swahili
-	Ta string `avro:"ta,omitempty" yaml:"ta,omitempty"` // Tamil
-	Te string `avro:"te,omitempty" yaml:"te,omitempty"` // Telugu
-	Tg string `avro:"tg,omitempty" yaml:"tg,omitempty"` // Tajik
-	Th string `avro:"th,omitempty" yaml:"th,omitempty"` // Thai
-	Ti string `avro:"ti,omitempty" yaml:"ti,omitempty"` // Tigrinya
-	Tk string `avro:"tk,omitempty" yaml:"tk,omitempty"` // Turkmen
-	Tl string `avro:"tl,omitempty" yaml:"tl,omitempty"` // Tagalog
-	Tr string `avro:"tr,omitempty" yaml:"tr,omitempty"` // Turkish
-	Tt string `avro:"tt,omitempty" yaml:"tt,omitempty"` // Tatar
-	Ug string `avro:"ug,omitempty" yaml:"ug,omitempty"` // Uighur
-	Uk string `avro:"uk,omitempty" yaml:"uk,omitempty"` // Ukrainian
-	Ur string `avro:"ur,omitempty" yaml:"ur,omitempty"` // Urdu
-	Uz string `avro:"uz,omitempty" yaml:"uz,omitempty"` // Uzbek
-	Vi string `avro:"vi,omitempty" yaml:"vi,omitempty"` // Vietnamese
-	Xh string `avro:"xh,omitempty" yaml:"xh,omitempty"` // Xhosa
-	Yo string `avro:"yo,omitempty" yaml:"yo,omitempty"` // Yoruba
-	Zh string `avro:"zh,omitempty" yaml:"zh,omitempty"` // Chinese
-	Zu string `avro:"zu,omitempty" yaml:"zu,omitempty"` // Zulu
+	Aa string `avro:"aa,omitempty" json:"aa,omitempty" yaml:"aa,omitempty"` // Afar
+	Af string `avro:"af,omitempty" json:"af,omitempty" yaml:"af,omitempty"` // Afrikaans
+	Am string `avro:"am,omitempty" json:"am,omitempty" yaml:"am,omitempty"` // Amharic
+	Ar string `avro:"ar,omitempty" json:"ar,omitempty" yaml:"ar,omitempty"` // Arabic
+	As string `avro:"as,omitempty" json:"as,omitempty" yaml:"as,omitempty"` // Assamese
+	Az string `avro:"az,omitempty" json:"az,omitempty" yaml:"az,omitempty"` // Azerbaijani
+	Ba string `avro:"ba,omitempty" json:"aa,omitempty" yaml:"ba,omitempty"` // Bashkir
+	Be string `avro:"be,omitempty" json:"aa,omitempty" yaml:"be,omitempty"` // Belgian
+	Bg string `avro:"bu,omitempty" json:"aa,omitempty" yaml:"bg,omitempty"` // Bulgarian
+	Bi string `avro:"bi,omitempty" json:"aa,omitempty" yaml:"bi,omitempty"` // Bislama
+	Bn string `avro:"bn,omitempty" json:"aa,omitempty" yaml:"bn,omitempty"` // Bengali
+	Bs string `avro:"bo,omitempty" json:"aa,omitempty" yaml:"bs,omitempty"` // Bosnian
+	Ca string `avro:"ca,omitempty" json:"aa,omitempty" yaml:"ca,omitempty"` // Catalan
+	Ch string `avro:"ch,omitempty" json:"aa,omitempty" yaml:"ch,omitempty"` // Chamorro
+	Co string `avro:"co,omitempty" json:"aa,omitempty" yaml:"co,omitempty"` // Corsican
+	Cs string `avro:"cs,omitempty" json:"aa,omitempty" yaml:"cs,omitempty"` // Czech
+	Cu string `avro:"cu,omitempty" json:"aa,omitempty" yaml:"cu,omitempty"` // Church Slavic
+	Cy string `avro:"cy,omitempty" json:"aa,omitempty" yaml:"cy,omitempty"` // Welsh
+	Da string `avro:"da,omitempty" json:"da,omitempty" yaml:"da,omitempty"` // Danish
+	De string `avro:"de,omitempty" json:"de,omitempty" yaml:"de,omitempty"` // German
+	Dv string `avro:"dv,omitempty" json:"aa,omitempty" yaml:"dv,omitempty"` // Divehi
+	Dz string `avro:"dz,omitempty" json:"aa,omitempty" yaml:"dz,omitempty"` // Dzongkha
+	El string `avro:"el,omitempty" json:"aa,omitempty" yaml:"el,omitempty"` // Greek
+	En string `avro:"en,omitempty" json:"en,omitempty" yaml:"en,omitempty"` // English
+	Es string `avro:"es,omitempty" json:"es,omitempty" yaml:"es,omitempty"` // Spanish
+	Et string `avro:"et,omitempty" json:"aa,omitempty" yaml:"et,omitempty"` // Estonian
+	Eu string `avro:"eu,omitempty" json:"aa,omitempty" yaml:"eu,omitempty"` // Basque
+	Fa string `avro:"fa,omitempty" json:"aa,omitempty" yaml:"fa,omitempty"` // Persian
+	Fi string `avro:"fi,omitempty" json:"aa,omitempty" yaml:"fi,omitempty"` // Finnish
+	Fo string `avro:"fo,omitempty" json:"aa,omitempty" yaml:"fo,omitempty"` // Faroese
+	Fr string `avro:"fr,omitempty" json:"fr,omitempty" yaml:"fr,omitempty"` // French
+	Fy string `avro:"fy,omitempty" json:"aa,omitempty" yaml:"fy,omitempty"` // Frisian
+	Ga string `avro:"ga,omitempty" json:"aa,omitempty" yaml:"ga,omitempty"` // Irish
+	Gd string `avro:"gd,omitempty" json:"aa,omitempty" yaml:"gd,omitempty"` // Scottish Gaelic
+	Gl string `avro:"gl,omitempty" json:"aa,omitempty" yaml:"gl,omitempty"` // Galician
+	Gu string `avro:"gu,omitempty" json:"aa,omitempty" yaml:"gu,omitempty"` // Gujarati
+	Gv string `avro:"gv,omitempty" json:"aa,omitempty" yaml:"gv,omitempty"` // Manx
+	Ha string `avro:"ha,omitempty" json:"aa,omitempty" yaml:"ha,omitempty"` // Hausa
+	He string `avro:"he,omitempty" json:"aa,omitempty" yaml:"he,omitempty"` // Hebrew
+	Hi string `avro:"hi,omitempty" json:"aa,omitempty" yaml:"hi,omitempty"` // Hindi
+	Hr string `avro:"hr,omitempty" json:"aa,omitempty" yaml:"hr,omitempty"` // Croatian
+	Ht string `avro:"ht,omitempty" json:"aa,omitempty" yaml:"ht,omitempty"` // Haitian
+	Hu string `avro:"hu,omitempty" json:"aa,omitempty" yaml:"hu,omitempty"` // Hungarian
+	Hy string `avro:"hy,omitempty" json:"aa,omitempty" yaml:"hy,omitempty"` // Armenian
+	Id string `avro:"id,omitempty" json:"aa,omitempty" yaml:"id,omitempty"` // Indonesian
+	Is string `avro:"is,omitempty" json:"aa,omitempty" yaml:"is,omitempty"` // Icelandic
+	It string `avro:"it,omitempty" json:"aa,omitempty" yaml:"it,omitempty"` // Italian
+	Iu string `avro:"iu,omitempty" json:"aa,omitempty" yaml:"iu,omitempty"` // Inuktitut
+	Ja string `avro:"ja,omitempty" json:"aa,omitempty" yaml:"ja,omitempty"` // Japanese
+	Jv string `avro:"jv,omitempty" json:"aa,omitempty" yaml:"jv,omitempty"` // Javanese
+	Ka string `avro:"ka,omitempty" json:"aa,omitempty" yaml:"ka,omitempty"` // Georgian
+	Kg string `avro:"kg,omitempty" json:"aa,omitempty" yaml:"kg,omitempty"` // Kongo
+	Ki string `avro:"ki,omitempty" json:"aa,omitempty" yaml:"ki,omitempty"` // Kikuyu
+	Kk string `avro:"kk,omitempty" json:"aa,omitempty" yaml:"kk,omitempty"` // Kazakh
+	Kl string `avro:"kl,omitempty" json:"aa,omitempty" yaml:"kl,omitempty"` // Greenlandic
+	Km string `avro:"km,omitempty" json:"aa,omitempty" yaml:"km,omitempty"` // Khmer
+	Kn string `avro:"kn,omitempty" json:"aa,omitempty" yaml:"kn,omitempty"` // Kannada
+	Ko string `avro:"ko,omitempty" json:"aa,omitempty" yaml:"ko,omitempty"` // Korean
+	Kr string `avro:"kr,omitempty" json:"aa,omitempty" yaml:"kr,omitempty"` // Kanuri
+	Ku string `avro:"ku,omitempty" json:"aa,omitempty" yaml:"ku,omitempty"` // Kurdish
+	Ky string `avro:"ky,omitempty" json:"aa,omitempty" yaml:"ky,omitempty"` // Kyrgyz
+	La string `avro:"la,omitempty" json:"aa,omitempty" yaml:"la,omitempty"` // Latin
+	Lb string `avro:"lb,omitempty" json:"aa,omitempty" yaml:"lb,omitempty"` // Luxembourgish
+	Lo string `avro:"lo,omitempty" json:"aa,omitempty" yaml:"lo,omitempty"` // Lao
+	Lt string `avro:"lt,omitempty" json:"aa,omitempty" yaml:"lt,omitempty"` // Lithuanian
+	Lu string `avro:"lu,omitempty" json:"aa,omitempty" yaml:"lu,omitempty"` // Luba-Katanga
+	Lv string `avro:"lv,omitempty" json:"aa,omitempty" yaml:"lv,omitempty"` // Latvian
+	Mg string `avro:"mg,omitempty" json:"aa,omitempty" yaml:"mg,omitempty"` // Malagasy
+	Mi string `avro:"mi,omitempty" json:"aa,omitempty" yaml:"mi,omitempty"` // Maori
+	Mk string `avro:"mk,omitempty" json:"aa,omitempty" yaml:"mk,omitempty"` // Macedonian
+	Ml string `avro:"ml,omitempty" json:"aa,omitempty" yaml:"ml,omitempty"` // Malayalam
+	Mn string `avro:"mn,omitempty" json:"aa,omitempty" yaml:"mn,omitempty"` // Mongolian
+	Mr string `avro:"mr,omitempty" json:"aa,omitempty" yaml:"mr,omitempty"` // Marathi
+	Ms string `avro:"ms,omitempty" json:"aa,omitempty" yaml:"ms,omitempty"` // Malay
+	Mt string `avro:"mt,omitempty" json:"aa,omitempty" yaml:"mt,omitempty"` // Maltese
+	My string `avro:"my,omitempty" json:"aa,omitempty" yaml:"my,omitempty"` // Burmese
+	Na string `avro:"na,omitempty" json:"aa,omitempty" yaml:"na,omitempty"` // Nauru
+	Nb string `avro:"nb,omitempty" json:"aa,omitempty" yaml:"nb,omitempty"` // Norwegian Bokmål
+	Ne string `avro:"ne,omitempty" json:"aa,omitempty" yaml:"ne,omitempty"` // Nepali
+	Nl string `avro:"nl,omitempty" json:"aa,omitempty" yaml:"nl,omitempty"` // Dutch
+	Nn string `avro:"nn,omitempty" json:"aa,omitempty" yaml:"nn,omitempty"` // Norwegian Nynorsk
+	No string `avro:"no,omitempty" json:"aa,omitempty" yaml:"no,omitempty"` // Norwegian
+	Oc string `avro:"oc,omitempty" json:"aa,omitempty" yaml:"oc,omitempty"` // Occitan
+	Om string `avro:"om,omitempty" json:"aa,omitempty" yaml:"om,omitempty"` // Oromo
+	Or string `avro:"or,omitempty" json:"aa,omitempty" yaml:"or,omitempty"` // Oriya
+	Pa string `avro:"pa,omitempty" json:"aa,omitempty" yaml:"pa,omitempty"` // Punjabi
+	Pl string `avro:"pl,omitempty" json:"aa,omitempty" yaml:"pl,omitempty"` // Polish
+	Ps string `avro:"ps,omitempty" json:"aa,omitempty" yaml:"ps,omitempty"` // Pashto
+	Pt string `avro:"pt,omitempty" json:"aa,omitempty" yaml:"pt,omitempty"` // Portuguese
+	Rm string `avro:"rm,omitempty" json:"aa,omitempty" yaml:"rm,omitempty"` // Romansh
+	Ro string `avro:"ro,omitempty" json:"aa,omitempty" yaml:"ro,omitempty"` // Romanian
+	Ru string `avro:"ru,omitempty" json:"aa,omitempty" yaml:"ru,omitempty"` // Russian
+	Rw string `avro:"rw,omitempty" json:"aa,omitempty" yaml:"rw,omitempty"` // Kinyarwanda
+	Sa string `avro:"sa,omitempty" json:"aa,omitempty" yaml:"sa,omitempty"` // Sanskrit
+	Sd string `avro:"sd,omitempty" json:"aa,omitempty" yaml:"sd,omitempty"` // Sindhi
+	Se string `avro:"se,omitempty" json:"aa,omitempty" yaml:"se,omitempty"` // Northern Sami
+	Sh string `avro:"sh,omitempty" json:"aa,omitempty" yaml:"sh,omitempty"` // Serbo-Croatian
+	Si string `avro:"si,omitempty" json:"aa,omitempty" yaml:"si,omitempty"` // Sinhalese
+	Sk string `avro:"sk,omitempty" json:"aa,omitempty" yaml:"sk,omitempty"` // Slovak
+	Sl string `avro:"sl,omitempty" json:"aa,omitempty" yaml:"sl,omitempty"` // Slovenian
+	Sm string `avro:"sm,omitempty" json:"aa,omitempty" yaml:"sm,omitempty"` // Samoan
+	So string `avro:"so,omitempty" json:"aa,omitempty" yaml:"so,omitempty"` // Somali
+	Sq string `avro:"sq,omitempty" json:"aa,omitempty" yaml:"sq,omitempty"` // Albanian
+	Sr string `avro:"sr,omitempty" json:"aa,omitempty" yaml:"sr,omitempty"` // Serbian
+	St string `avro:"st,omitempty" json:"aa,omitempty" yaml:"st,omitempty"` // Southern Sotho
+	Sv string `avro:"sv,omitempty" json:"aa,omitempty" yaml:"sv,omitempty"` // Swedish
+	Sw string `avro:"sw,omitempty" json:"aa,omitempty" yaml:"sw,omitempty"` // Swahili
+	Ta string `avro:"ta,omitempty" json:"aa,omitempty" yaml:"ta,omitempty"` // Tamil
+	Te string `avro:"te,omitempty" json:"aa,omitempty" yaml:"te,omitempty"` // Telugu
+	Tg string `avro:"tg,omitempty" json:"aa,omitempty" yaml:"tg,omitempty"` // Tajik
+	Th string `avro:"th,omitempty" json:"aa,omitempty" yaml:"th,omitempty"` // Thai
+	Ti string `avro:"ti,omitempty" json:"aa,omitempty" yaml:"ti,omitempty"` // Tigrinya
+	Tk string `avro:"tk,omitempty" json:"aa,omitempty" yaml:"tk,omitempty"` // Turkmen
+	Tl string `avro:"tl,omitempty" json:"aa,omitempty" yaml:"tl,omitempty"` // Tagalog
+	Tr string `avro:"tr,omitempty" json:"aa,omitempty" yaml:"tr,omitempty"` // Turkish
+	Tt string `avro:"tt,omitempty" json:"aa,omitempty" yaml:"tt,omitempty"` // Tatar
+	Ug string `avro:"ug,omitempty" json:"aa,omitempty" yaml:"ug,omitempty"` // Uighur
+	Uk string `avro:"uk,omitempty" json:"aa,omitempty" yaml:"uk,omitempty"` // Ukrainian
+	Ur string `avro:"ur,omitempty" json:"aa,omitempty" yaml:"ur,omitempty"` // Urdu
+	Uz string `avro:"uz,omitempty" json:"aa,omitempty" yaml:"uz,omitempty"` // Uzbek
+	Vi string `avro:"vi,omitempty" json:"aa,omitempty" yaml:"vi,omitempty"` // Vietnamese
+	Xh string `avro:"xh,omitempty" json:"aa,omitempty" yaml:"xh,omitempty"` // Xhosa
+	Yo string `avro:"yo,omitempty" json:"aa,omitempty" yaml:"yo,omitempty"` // Yoruba
+	Zh string `avro:"zh,omitempty" json:"zh,omitempty" yaml:"zh,omitempty"` // Chinese
+	Zu string `avro:"zu,omitempty" json:"aa,omitempty" yaml:"zu,omitempty"` // Zulu
 }
 
 var InvenioRDMSchema = `{
@@ -341,6 +341,15 @@ func Convert(data ROR) (InvenioRDM, error) {
 	return inveniordm, nil
 }
 
+// Write writes ROR metadata.
+func Write(data ROR) ([]byte, error) {
+	var err error
+	var output []byte
+
+	output, err = json.Marshal(data)
+	return output, err
+}
+
 // WriteAll writes a list of ROR metadata, optionally filtered by type and/or country.
 func WriteAll(list []ROR, extension string) ([]byte, error) {
 	var err error
@@ -369,8 +378,21 @@ func WriteAll(list []ROR, extension string) ([]byte, error) {
 	return output, err
 }
 
-// WriteInvenioRDM writes a list of ROR metadata in InvenioRDM format.
-func WriteInvenioRDM(list []ROR, extension string) ([]byte, error) {
+// WriteInvenioRDM writes ROR metadata in InvenioRDM format.
+func WriteInvenioRDM(data ROR) ([]byte, error) {
+	var err error
+	var output []byte
+
+	inveniordm, err := Convert(data)
+	if err != nil {
+		fmt.Println(err)
+	}
+	output, err = json.Marshal(inveniordm)
+	return output, err
+}
+
+// WriteAllInvenioRDM writes a list of ROR metadata in InvenioRDM format.
+func WriteAllInvenioRDM(list []ROR, extension string) ([]byte, error) {
 	var inveniordmList []InvenioRDM
 	var err error
 	var output []byte
@@ -408,7 +430,7 @@ func WriteInvenioRDM(list []ROR, extension string) ([]byte, error) {
 }
 
 // FilterRecords filters a list of ROR records by type and/or country.
-func FilterRecords(list []ROR, type_ string, country string, file string) ([]ROR, error) {
+func FilterRecords(list []ROR, type_ string, country string, file string, number int, page int) ([]ROR, error) {
 	var filtered []ROR
 
 	if file == "funders.yaml" {
@@ -441,6 +463,19 @@ func FilterRecords(list []ROR, type_ string, country string, file string) ([]ROR
 		}
 	} else {
 		filtered = append(filtered, list...)
+	}
+
+	// optionally filter by number and page
+	if number > 0 {
+		if page == 0 {
+			page = 1
+		}
+		start := (page - 1) * number
+		end := min(start+number, len(filtered))
+		if start > len(filtered) {
+			start = len(filtered)
+		}
+		filtered = filtered[start:end]
 	}
 
 	return filtered, nil

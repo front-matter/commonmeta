@@ -3,8 +3,12 @@ package ror
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
+	"io"
+	"net/http"
 	"path"
 	"slices"
+	"time"
 
 	"github.com/front-matter/commonmeta/commonmeta"
 	"github.com/front-matter/commonmeta/fileutils"
@@ -326,6 +330,45 @@ var RORVersions = map[string]string{
 var RORTypes = []string{"archive", "company", "education", "facility", "funder", "government", "healthcare", "nonprofit", "other"}
 var Extensions = []string{".avro", ".yaml", ".json"}
 
+// Fetch fetches ROR metadata for a given ror id.
+func Fetch(str string) (ROR, error) {
+	var data ROR
+	id, ok := utils.ValidateROR(str)
+	if !ok {
+		return data, errors.New("invalid ror id")
+	}
+	data, err := Get(id)
+	return data, err
+}
+
+// Get gets ROR metadata for a given ror id.
+func Get(id string) (ROR, error) {
+	var data ROR
+
+	id, ok := utils.ValidateROR(id)
+	if !ok {
+		return data, errors.New("invalid ror id")
+	}
+	url := "https://api.ror.org/v2/organizations/" + id
+	client := &http.Client{
+		Timeout: time.Second * 10,
+	}
+	resp, err := client.Get(url)
+	if err != nil {
+		return data, err
+	}
+	if resp.StatusCode >= 400 {
+		return data, errors.New(resp.Status)
+	}
+	defer resp.Body.Close()
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return data, err
+	}
+	err = json.Unmarshal(body, &data)
+	return data, err
+}
+
 // LoadAll loads the metadata for a list of organizations from a ROR JSON file
 func LoadAll(filename string) ([]ROR, error) {
 	var data []ROR
@@ -346,6 +389,7 @@ func LoadAll(filename string) ([]ROR, error) {
 		}
 		err = avro.Unmarshal(schema, output, &data)
 		if err != nil {
+			fmt.Println(err)
 			return data, errors.New("error unmarshalling avro file")
 		}
 	} else if extension == ".json" {
