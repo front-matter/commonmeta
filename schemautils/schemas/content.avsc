@@ -1,0 +1,217 @@
+{
+  "type": "array",
+  "items": {
+    "name": "Content",
+    "type": "record",
+    "fields": [
+      { "name": "established", "type": "int" },
+      {
+        "name": "external_ids",
+        "type": {
+          "type": "array",
+          "items": {
+            "type": [
+              {
+                "name": "external_id",
+                "type": {
+                  "name": "external_id",
+                  "type": "record",
+                  "fields": [
+                    {
+                      "name": "type",
+                      "type": "enum",
+                      "symbols": ["fundref", "grid", "isni", "wikidata"]
+                    },
+                    {
+                      "name": "all",
+                      "type": {
+                        "type": "array",
+                        "items": {
+                          "name": "external_id",
+                          "type": "string"
+                        }
+                      }
+                    },
+                    { "name": "preferred", "type": "string" }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      },
+      { "name": "id", "type": "string" },
+      {
+        "name": "links",
+        "type": {
+          "type": "array",
+          "items": {
+            "name": "link",
+            "type": {
+              "name": "link",
+              "type": "record",
+              "fields": [
+                {
+                  "name": "type",
+                  "type": "enum",
+                  "symbols": ["website", "wikipedia"]
+                },
+                { "name": "value", "type": "string" }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "name": "locations",
+        "type": {
+          "type": "array",
+          "items": {
+            "name": "location",
+            "type": {
+              "name": "location",
+              "type": "record",
+              "fields": [
+                { "name": "geonames_id", "type": "long" },
+                {
+                  "name": "geonames_details",
+                  "type": {
+                    "name": "geonames_details",
+                    "type": "record",
+                    "fields": [
+                      { "name": "continent_code", "type": "string" },
+                      { "name": "continent_name", "type": "string" },
+                      { "name": "country_code", "type": "string" },
+                      { "name": "country_name", "type": "string" },
+                      {
+                        "name": "country_subdivision_code",
+                        "type": ["null", "string"]
+                      },
+                      {
+                        "name": "country_subdivision_name",
+                        "type": ["null", "string"]
+                      },
+                      { "name": "lat", "type": ["null", "double"] },
+                      { "name": "lng", "type": ["null", "double"] },
+                      { "name": "name", "type": "string" }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "name": "names",
+        "type": {
+          "type": "array",
+          "items": {
+            "name": "name",
+            "type": {
+              "name": "name",
+              "type": "record",
+              "fields": [
+                { "name": "value", "type": "string" },
+                {
+                  "name": "type",
+                  "type": "enum",
+                  "symbols": ["acronym", "alias", "label", "ror_display"]
+                },
+                { "name": "lang", "type": ["null", "string"] }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "name": "relationships",
+        "type": {
+          "type": "array",
+          "items": {
+            "name": "relationship",
+            "type": {
+              "name": "relationship",
+              "type": "record",
+              "fields": [
+                {
+                  "name": "type",
+                  "type": "enum",
+                  "symbols": [
+                    "child",
+                    "parent",
+                    "related",
+                    "predecessor",
+                    "successor"
+                  ]
+                },
+                { "name": "label", "type": "string" },
+                { "name": "id", "type": "string" }
+              ]
+            }
+          }
+        }
+      },
+      { "name": "status", "type": "enum", "symbols": ["active"] },
+      {
+        "name": "types",
+        "type": {
+          "name": "type",
+          "type": "array",
+          "items": {
+            "name": "type",
+            "type": "enum",
+            "symbols": [
+              "archive",
+              "company",
+              "education",
+              "facility",
+              "funder",
+              "government",
+              "healthcare",
+              "nonprofit",
+              "other"
+            ]
+          }
+        }
+      },
+      {
+        "name": "admin",
+        "type": {
+          "name": "admin",
+          "type": "record",
+          "fields": [
+            {
+              "name": "created",
+              "type": {
+                "name": "created",
+                "type": "record",
+                "fields": [
+                  { "name": "date", "type": "string" },
+                  {
+                    "name": "schema_version",
+                    "type": "string"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "last_modified",
+              "type": {
+                "name": "last_modified",
+                "type": "record",
+                "fields": [
+                  { "name": "date", "type": "string" },
+                  {
+                    "name": "schema_version",
+                    "type": "string"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,105 @@
+{
+  "type": "array",
+  "items": {
+    "name": "ROR",
+    "type": "record",
+    "fields": [
+      { "name": "id", "type": "string" },
+      {
+        "name": "locations",
+        "type": {
+          "type": "array",
+          "items": {
+            "name": "location",
+            "type": "record",
+            "fields": [
+              { "name": "geonames_id", "type": "long" },
+              {
+                "name": "geonames_details",
+                "type": {
+                  "name": "geonames_details",
+                  "type": "record",
+                  "fields": [
+                    { "name": "continent_code", "type": "string" },
+                    { "name": "continent_name", "type": "string" },
+                    { "name": "country_code", "type": "string" },
+                    { "name": "country_name", "type": "string" },
+                    {
+                      "name": "country_subdivision_code",
+                      "type": ["null", "string"],
+                      "default": null
+                    },
+                    {
+                      "name": "country_subdivision_name",
+                      "type": ["null", "string"],
+                      "default": null
+                    },
+                    { "name": "lat", "type": "double" },
+                    { "name": "lng", "type": "double" },
+                    { "name": "name", "type": "string" }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "name": "names",
+        "type": {
+          "type": "array",
+          "items": {
+            "name": "name",
+            "type": "record",
+            "fields": [
+              { "name": "value", "type": "string" },
+              {
+                "name": "types",
+                "type": {
+                  "type": "array",
+                  "items": {
+                    "name": "type",
+                    "type": "enum",
+                    "symbols": ["acronym", "alias", "label", "ror_display"]
+                  }
+                }
+              },
+              {
+                "name": "lang",
+                "type": {
+                  "type": "array",
+                  "items": {
+                    "name": "lang",
+                    "type": ["null", "string"],
+                    "default": null
+                  }
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "name": "types",
+        "type": {
+          "type": "array",
+          "items": {
+            "name": "type",
+            "type": "enum",
+            "symbols": [
+              "archive",
+              "company",
+              "education",
+              "facility",
+              "funder",
+              "government",
+              "healthcare",
+              "nonprofit",
+              "other"
+            ]
+          }
+        }
+      }
+    ]
+  }
+}

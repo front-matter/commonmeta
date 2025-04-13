@@ -208,66 +208,66 @@ var FOSStringMappings = map[string]string{
 // Data represents the commonmeta metadata, defined in the commonmeta JSON Schema.
 type Data struct {
 	// required fields
-	ID   string `db:"id" json:"id"`
-	Type string `db:"type" json:"type"`
+	ID   string `avro:"id" json:"id"`
+	Type string `avro:"type" json:"type"`
 
 	// optional fields
-	AdditionalType    string             `db:"additional_type" json:"additionalType,omitempty"`
-	ArchiveLocations  []string           `db:"archive_locations" json:"archiveLocations,omitempty"`
-	Container         Container          `db:"container" json:"container,omitempty"`
-	ContentHTML       string             `db:"content_html" json:"content_html,omitempty"`
-	Contributors      []Contributor      `db:"contributors" json:"contributors,omitempty"`
-	Date              Date               `db:"date" json:"date,omitempty"`
-	Descriptions      []Description      `db:"descriptions" json:"descriptions,omitempty"`
-	FeatureImage      string             `db:"image" json:"feature_image,omitempty"`
-	Files             []File             `db:"files" json:"files,omitempty"`
-	FundingReferences []FundingReference `db:"funding_references" json:"fundingReferences,omitempty"`
-	GeoLocations      []GeoLocation      `db:"geo_locations" json:"geoLocations,omitempty"`
-	Identifiers       []Identifier       `db:"identifiers" json:"identifiers,omitempty"`
-	Language          string             `db:"language" json:"language,omitempty"`
-	License           License            `db:"license" json:"license,omitempty"`
-	Provider          string             `db:"provider" json:"provider,omitempty"`
-	Publisher         Publisher          `db:"publisher" json:"publisher,omitempty"`
-	References        []Reference        `db:"references" json:"references,omitempty"`
-	Relations         []Relation         `db:"relations" json:"relations,omitempty"`
-	Subjects          []Subject          `db:"subjects" json:"subjects,omitempty"`
-	Titles            []Title            `db:"titles" json:"titles,omitempty"`
-	URL               string             `db:"url" json:"url,omitempty"`
-	Version           string             `db:"version" json:"version,omitempty"`
+	AdditionalType    string             `avro:"additional_type,omitempty" json:"additionalType,omitempty"`
+	ArchiveLocations  []string           `avro:"archive_locations,omitempty" json:"archiveLocations,omitempty"`
+	Container         Container          `avro:"container,omitempty" json:"container,omitempty"`
+	ContentHTML       string             `avro:"content_html,omitempty" json:"content_html,omitempty"`
+	Contributors      []Contributor      `avro:"contributors,omitempty" json:"contributors,omitempty"`
+	Date              Date               `avro:"date,omitempty" json:"date,omitempty"`
+	Descriptions      []Description      `avro:"descriptions,omitempty" json:"descriptions,omitempty"`
+	FeatureImage      string             `avro:"image,omitempty" json:"feature_image,omitempty"`
+	Files             []File             `avro:"files,omitempty" json:"files,omitempty"`
+	FundingReferences []FundingReference `avro:"funding_references,omitempty" json:"fundingReferences,omitempty"`
+	GeoLocations      []GeoLocation      `avro:"geo_locations,omitempty" json:"geoLocations,omitempty"`
+	Identifiers       []Identifier       `avro:"identifiers,omitempty" json:"identifiers,omitempty"`
+	Language          string             `avro:"language,omitempty" json:"language,omitempty"`
+	License           License            `avro:"license,omitempty" json:"license,omitempty"`
+	Provider          string             `avro:"provider,omitempty" json:"provider,omitempty"`
+	Publisher         Publisher          `avro:"publisher,omitempty" json:"publisher,omitempty"`
+	References        []Reference        `avro:"references,omitempty" json:"references,omitempty"`
+	Relations         []Relation         `avro:"relations,omitempty" json:"relations,omitempty"`
+	Subjects          []Subject          `avro:"subjects,omitempty" json:"subjects,omitempty"`
+	Titles            []Title            `avro:"titles,omitempty" json:"titles,omitempty"`
+	URL               string             `avro:"url,omitempty" json:"url,omitempty"`
+	Version           string             `avro:"version,omitempty" json:"version,omitempty"`
 }
 
 // Affiliation represents the affiliation of a contributor, defined in the commonmeta JSON Schema.
 type Affiliation struct {
-	ID   string `json:"id,omitempty"`
-	Name string `json:"name,omitempty"`
+	ID   string `avro:"id,omitempty json:"id,omitempty"`
+	Name string `avro:"name,omitempty json:"name,omitempty"`
 }
 
 // Container represents the container of a publication, defined in the commonmeta JSON Schema.
 type Container struct {
-	Identifier     string  `json:"identifier,omitempty"`
-	IdentifierType string  `json:"identifierType,omitempty"`
-	Type           string  `json:"type,omitempty"`
-	Title          string  `json:"title,omitempty"`
-	Description    string  `json:"description,omitempty"`
-	Language       string  `json:"language,omitempty"`
-	License        License `json:"license,omitempty"`
-	Platform       string  `json:"platform,omitempty"`
-	Favicon        string  `json:"favicon,omitempty"`
-	FirstPage      string  `json:"firstPage,omitempty"`
-	LastPage       string  `json:"lastPage,omitempty"`
-	Volume         string  `json:"volume,omitempty"`
-	Issue          string  `json:"issue,omitempty"`
+	Identifier     string  `avro:"identifier,omitempty json:"identifier,omitempty"`
+	IdentifierType string  `avro:"identifierType,omitempty" json:"identifierType,omitempty"`
+	Type           string  `avro:"type,omitempty" json:"type,omitempty"`
+	Title          string  `avro:"title,omitempty" json:"title,omitempty"`
+	Description    string  `avro:"description,omitempty" json:"description,omitempty"`
+	Language       string  `avro:"language,omitempty" json:"language,omitempty"`
+	License        License `avro:"license,omitempty" json:"license,omitempty"`
+	Platform       string  `avro:"platform,omitempty" json:"platform,omitempty"`
+	Favicon        string  `avro:"favicon,omitempty" json:"favicon,omitempty"`
+	FirstPage      string  `avro:"firstPage,omitempty" json:"firstPage,omitempty"`
+	LastPage       string  `avro:"lastPage,omitempty" json:"lastPage,omitempty"`
+	Volume         string  `avro:"volume,omitempty" json:"volume,omitempty"`
+	Issue          string  `avro:"issue,omitempty" json:"issue,omitempty"`
 }
 
 // Contributor represents a contributor of a publication, defined in the commonmeta JSON Schema.
 type Contributor struct {
-	ID               string         `json:"id,omitempty"`
-	Type             string         `json:"type,omitempty"`
-	Name             string         `json:"name,omitempty"`
-	GivenName        string         `json:"givenName,omitempty"`
-	FamilyName       string         `json:"familyName,omitempty"`
-	Affiliations     []*Affiliation `json:"affiliations,omitempty"`
-	ContributorRoles []string       `json:"contributorRoles,omitempty"`
+	ID               string         `avro:"id,omitempty" json:"id,omitempty"`
+	Type             string         `avro:"type,omitempty" json:"type,omitempty"`
+	Name             string         `avro:"name,omitempty" json:"name,omitempty"`
+	GivenName        string         `avro:"givenName,omitempty" json:"givenName,omitempty"`
+	FamilyName       string         `avro:"familyName,omitempty" json:"familyName,omitempty"`
+	Affiliations     []*Affiliation `avro:"affiliations,omitempty" json:"affiliations,omitempty"`
+	ContributorRoles []string       `avro:"contributorRoles,omitempty" json:"contributorRoles,omitempty"`
 }
 
 // Date represents the date of a publication, defined in the commonmeta JSON Schema.
