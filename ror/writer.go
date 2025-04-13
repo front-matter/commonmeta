@@ -466,7 +466,7 @@ func FilterRecords(list []ROR, type_ string, country string, file string, number
 	}
 
 	// optionally filter by number and page
-	if number > 0 && number != 10 {
+	if number > 0 {
 		page = max(page, 1)
 		start := (page - 1) * number
 		end := min(start+number, len(filtered))

@@ -45,10 +45,12 @@ var listCmd = &cobra.Command{
 		var data []commonmeta.Data
 		var orgdata []ror.ROR
 		var extension string
+		var output []byte
 
 		number, _ := cmd.Flags().GetInt("number")
 		page, _ := cmd.Flags().GetInt("page")
 		from, _ := cmd.Flags().GetString("from")
+		to, _ := cmd.Flags().GetString("to")
 
 		client_, _ := cmd.Flags().GetString("client")
 		member, _ := cmd.Flags().GetString("member")
@@ -88,6 +90,13 @@ var listCmd = &cobra.Command{
 			args = args[1:]
 			if from == "" {
 				from = "ror"
+			}
+			if to == "" || to == "commonmeta" {
+				to = "ror"
+			}
+		} else {
+			if number == 0 {
+				number = 10
 			}
 		}
 		if len(args) > 0 {
@@ -155,8 +164,6 @@ var listCmd = &cobra.Command{
 			return
 		}
 
-		var output []byte
-		to, _ := cmd.Flags().GetString("to")
 		if to == "commonmeta" {
 			output, err = commonmeta.WriteAll(data)
 		} else if to == "csl" {

@@ -19,7 +19,8 @@ var rootCmd = &cobra.Command{
 supported formats include Crossref, DataCite, Schema.org, CSL, InvenioRDM, 
 JSON Feed, and ROR. Example usage:
 
-commonmeta convert 10.5555/12345678`,
+commonmeta convert 10.5555/12345678
+commonmeta convert org 10.5555/12345678`,
 
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("root called")
@@ -37,7 +38,7 @@ func init() {
 	rootCmd.PersistentFlags().StringP("from", "f", "", "the format to convert from")
 	rootCmd.PersistentFlags().StringP("to", "t", "commonmeta", "the format to convert to")
 
-	rootCmd.PersistentFlags().IntP("number", "n", 10, "number of results")
+	rootCmd.PersistentFlags().IntP("number", "n", 0, "number of results")
 	rootCmd.PersistentFlags().IntP("page", "", 1, "page number")
 	rootCmd.PersistentFlags().StringP("file", "", "", "file to write to")
 	rootCmd.PersistentFlags().StringP("client", "", "", "DataCite client ID")
