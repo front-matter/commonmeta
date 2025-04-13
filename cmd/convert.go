@@ -41,10 +41,12 @@ commonmeta 10.5555/12345678`,
 		var err error
 		var data commonmeta.Data
 		var orgdata ror.ROR
+		var output []byte
 
 		// loginID, _ := cmd.Flags().GetString("login_id")
 		// loginPassword, _ := cmd.Flags().GetString("login_passwd")
 		from, _ := cmd.Flags().GetString("from")
+		to, _ := cmd.Flags().GetString("to")
 		depositor, _ := cmd.Flags().GetString("depositor")
 		email, _ := cmd.Flags().GetString("email")
 		registrant, _ := cmd.Flags().GetString("registrant")
@@ -63,6 +65,9 @@ commonmeta 10.5555/12345678`,
 			args = args[1:]
 			if from == "" {
 				from = "ror"
+			}
+			if to == "" || to == "commonmeta" {
+				to = "ror"
 			}
 		}
 		if len(args) > 0 {
@@ -133,8 +138,6 @@ commonmeta 10.5555/12345678`,
 			}
 		}
 
-		var output []byte
-		to, _ := cmd.Flags().GetString("to")
 		if to == "commonmeta" {
 			output, err = commonmeta.Write(data)
 		} else if to == "csl" {
