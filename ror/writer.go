@@ -1,104 +1,29 @@
-// Package ror converts ROR (Research Organization Registry) metadata.
 package ror
 
 import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"log"
-	"os"
-	"path"
 	"slices"
 
-	"gopkg.in/yaml.v3"
-	"github.com/hamba/avro/v2"
-
-	"github.com/front-matter/commonmeta/commonmeta"
-	"github.com/front-matter/commonmeta/fileutils"
 	"github.com/front-matter/commonmeta/utils"
+	"github.com/hamba/avro/v2"
+	"gopkg.in/yaml.v3"
 )
-
-// ROR represents the minimal ROR metadata record.
-type ROR struct {
-	ID    string `json:"id"`
-	Locations []Location `json:"locations"`
-	Names []Name `json:"names"`
-	Admin struct {
-		Created struct {
-			Date          string `json:"date"`
-			SchemaVersion string `json:"schema_version"`
-		} `json:"created"`
-		LastModified struct {
-			Date          string `json:"date"`
-			SchemaVersion string `json:"schema_version"`
-		} `json:"last_modified"`
-	}
-}
-
-// Content represents the full ROR metadata record.
-type Content struct {
-	*ROR
-	Established   int            `json:"established"`
-	ExternalIDs   []ExternalID   `json:"external_ids"`
-	Links         []Link         `json:"links"`
-	Relationships []Relationship `json:"relationships"`
-	Types         []string       `json:"types"`
-	Status        string         `json:"status"`
-}
 
 // InvenioRDM represents the ROR metadata record in InvenioRDM format.
 type InvenioRDM struct {
-	Acronym		  string       `avro:"acronym,omitempty" yaml:"acronym,omitempty"`
+	Acronym     string       `avro:"acronym,omitempty" yaml:"acronym,omitempty"`
 	ID          string       `avro:"id" yaml:"id"`
-	Country 		string       `avro:"country,omitempty" yaml:"country,omitempty"`
+	Country     string       `avro:"country,omitempty" yaml:"country,omitempty"`
 	Identifiers []Identifier `avro:"identifiers" yaml:"identifiers"`
 	Name        string       `avro:"name" yaml:"name"`
 	Title       Title        `avro:"title" yaml:"title"`
 }
 
-type ExternalID struct {
-	Type      string   `json:"type"`
-	All       []string `json:"all"`
-	Preferred string   `json:"preferred"`
-}
-
-type GeonamesDetails struct {
-	ContinentCode          string  `json:"continent_code"`
-	ContinentName          string  `json:"continent_name"`
-	CountryCode            string  `json:"country_code"`
-	CountryName            string  `json:"country_name"`
-	CountrySubdivisionCode string  `json:"country_subdivision_code"`
-	CountrySubdivisionName string  `json:"country_subdivision_name"`
-	Lat                    float64 `json:"lat"`
-	Lng                    float64 `json:"lng"`
-	Name                   string  `json:"name"`
-}
-
 type Identifier struct {
 	Identifier string `avro:"identifier" json:"identifier"`
 	Scheme     string `avro:"scheme" json:"scheme"`
-}
-
-type Location struct {
-	GeonamesID      int             `json:"geonames_id"`
-	GeonamesDetails GeonamesDetails `json:"geonames_details"`
-}
-
-type Link struct {
-	Type  string `json:"type"`
-	Value string `json:"value"`
-}
-
-type Name struct {
-	Value string   `json:"value"`
-	Types []string `json:"types"`
-	Lang  string   `json:"lang"`
-}
-
-type Relationship struct {
-	Type  string `json:"type"`
-	Label string `json:"label"`
-	ID    string `json:"id"`
 }
 
 type Title struct {
@@ -227,27 +152,6 @@ type Title struct {
 	Yo string `avro:"yo,omitempty" yaml:"yo,omitempty"` // Yoruba
 	Zh string `avro:"zh,omitempty" yaml:"zh,omitempty"` // Chinese
 	Zu string `avro:"zu,omitempty" yaml:"zu,omitempty"` // Zulu
-}
-
-// RORVersions contains the ROR versions and their release dates, published on Zenodo.
-// The ROR version is the first part of the filename, e.g., v1.63-2025-04-03-ror-data_schema_v2.json
-// Beginning with release v1.45 on 11 April 2024, data releases contain JSON and CSV files formatted
-// according to both schema v1 and schema v2. Version 2 files have _schema_v2 appended to the end of
-// the filename, e.g., v1.45-2024-04-11-ror-data_schema_v2.json.
-var RORVersions = map[string]string{
-	"v1.50": "2024-07-29",
-	"v1.51": "2024-08-21",
-	"v1.52": "2024-09-16",
-	"v1.53": "2023-10-14",
-	"v1.54": "2024-10-21",
-	"v1.55": "2024-10-31",
-	"v1.56": "2024-11-19",
-	"v1.58": "2024-12-11",
-	"v1.59": "2025-01-23",
-	"v1.60": "2025-02-27",
-	"v1.61": "2025-03-18",
-	"v1.62": "2025-03-27",
-	"v1.63": "2025-04-03",
 }
 
 var InvenioRDMSchema = `{
@@ -411,149 +315,14 @@ var InvenioRDMSchema = `{
   }
 }`
 
-var Extensions = []string{".json", ".yaml", ".avro"}
-var RORTypes = []string{"archive", "company", "education", "facility", "funder", "government", "healthcare", "nonprofit", "other"}		
-
-// LoadAll loads the metadata for a list of organizations from a ROR JSON file
-func LoadAll(filename string, type_ string, country string) ([]ROR, error) {
-	var data []ROR
-	var content []Content
-	var err error
-
-	extension := path.Ext(filename)
-	if extension == ".json" {
-		file, err := os.Open(filename)
-		if err != nil {
-			return data, errors.New("error reading file")
-		}
-		defer file.Close()
-
-		decoder := json.NewDecoder(file)
-		err = decoder.Decode(&content)
-		if err != nil {
-			return data, err
-		}
-	} else if extension != ".json" {
-		return data, errors.New("invalid file extension")
-	} else {
-		return data, errors.New("unsupported file format")
-	}
-
-	data, err = ReadAll(content, type_, country)
-	if err != nil {
-		return data, err
-	}
-	return data, nil
-}
-
-// LoadBuiltin loads the embedded ROR metadata from the ZIP file with all ROR records.
-func LoadBuiltin() ([]byte, error) {
-	output, err := fileutils.ReadZIPFile("affiliations_ror.yaml.zip")
-	if err != nil {
-		return nil, err
-	}
-	return output, err
-}
-
-// Read reads ROR full metadata and converts it into ROR minimal metadata.
-func Read(content Content) (ROR, error) {
-	var data ROR
-
-	data.ID = content.ID
-	data.Locations = content.Locations
-	data.Names = content.Names
-	data.Admin.LastModified.Date = content.Admin.LastModified.Date
-
-	return data, nil
-}
-
-// ReadAll reads a list of ROR JSON organizations
-func ReadAll(content []Content, type_ string, country string) ([]ROR, error) {
-	var filtered []Content
-	var data []ROR
-
-  // optionally filter by type and/or country
-	if type_ != "" || country != "" {
-		for _, v := range content {
-			if type_ != "" && !slices.Contains(v.Types, type_) {
-				continue
-			}
-			if country != "" && !slices.ContainsFunc(v.Locations, func(l Location) bool {
-				return l.GeonamesDetails.CountryCode == country
-			}) {
-        continue
-			}
-      filtered = append(filtered, v)
-		}
-	} else {
-    filtered = append(filtered, content...)
-	}
-
-	for _, v := range filtered {
-		d, err := Read(v)
-		if err != nil {
-			log.Println(err)
-		}
-		data = append(data, d)
-	}
-	return data, nil
-}
-
-// ExtractAll extracts ROR metadata from a JSON file in commonmeta format.
-func ExtractAll(content []commonmeta.Data) ([]byte, error) {
-	var data []InvenioRDM
-	var extracted []InvenioRDM
-	var ids []string
-	var err error
-  schema, err := avro.Parse(InvenioRDMSchema)
-	if err != nil {
-		return nil, err
-	}
-
-	// Load the ROR metadata from the embedded ZIP file with all ROR records
-	out, err := fileutils.ReadZIPFile("affiliations_ror.yaml.zip")
-	if err != nil {
-		return nil, err
-	}
-	err = yaml.Unmarshal(out, &data)
-	if err != nil {
-		return nil, err
-	}
-
-	// Extract ROR IDs from the content
-	for _, v := range content {
-		if len(v.Contributors) > 0 {
-			for _, c := range v.Contributors {
-				if len(c.Affiliations) > 0 {
-					for _, a := range c.Affiliations {
-						if a.ID != "" && !slices.Contains(ids, a.ID) {
-							id, _ := utils.ValidateROR(a.ID)
-							idx := slices.IndexFunc(data, func(d InvenioRDM) bool { return d.ID == id })
-							if idx != -1 {
-								ids = append(ids, a.ID)
-								extracted = append(extracted, data[idx])
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-
-	output, err := avro.Marshal(schema, extracted)
-	return output, err
-}
-
 // Convert converts ROR metadata into InvenioRDM format.
-func Convert(data ROR, type_ string) (InvenioRDM, error) {
+func Convert(data ROR) (InvenioRDM, error) {
 	var inveniordm InvenioRDM
 
 	id, _ := utils.ValidateROR(data.ID)
 	inveniordm.ID = id
-	if type_ == "funder" {
-		for _, location := range data.Locations {
-      inveniordm.Country = location.GeonamesDetails.CountryCode
-		}
+	if len(data.Locations) > 0 {
+		inveniordm.Country = data.Locations[0].GeonamesDetails.CountryCode
 	}
 	inveniordm.Identifiers = []Identifier{
 		{
@@ -564,7 +333,7 @@ func Convert(data ROR, type_ string) (InvenioRDM, error) {
 	for _, name := range data.Names {
 		if slices.Contains(name.Types, "ror_display") {
 			inveniordm.Name = name.Value
-		} else if type_ != "funder" && slices.Contains(name.Types, "acronym") && name.Value != "" {
+		} else if slices.Contains(name.Types, "acronym") && name.Value != "" {
 			inveniordm.Acronym = name.Value
 		}
 	}
@@ -572,58 +341,22 @@ func Convert(data ROR, type_ string) (InvenioRDM, error) {
 	return inveniordm, nil
 }
 
-// Write writes ROR metadata to InvenioRDM format.
-func Write(data ROR, extension string, type_ string) ([]byte, error) {
-	schema, err := avro.Parse(InvenioRDMSchema)
-	if err != nil {
-		return nil, err
-	}
-	inveniordm, err := Convert(data, type_)
-	if err != nil {
-		fmt.Println(err)
-	}
-	output, err := avro.Marshal(schema, inveniordm)
-	return output, err
-}
-
-// WriteAll writes a list of ROR metadata in InvenioRDM YAML format.
-func WriteAll(list []ROR, to string, extension string, type_ string) ([]byte, error) {
-	var inveniordmList []InvenioRDM
+// WriteAll writes a list of ROR metadata, optionally filtered by type and/or country.
+func WriteAll(list []ROR, extension string) ([]byte, error) {
 	var err error
 	var output []byte
-		
-	type InvenioRDM struct {
-		Acronym		  string       `avro:"acronym,omitempty" yaml:"acronym,omitempty"`
-		ID          string       `avro:"id" yaml:"id"`
-		// Country 		string       `avro:"country,omitempty" yaml:"country,omitempty"`
-		Name        string       `avro:"name" yaml:"name"`
-		Title       Title        `avro:"title" yaml:"title"`
-	}
 
-	if to != "inveniordm" {
-		return output, errors.New("unsupported output format")
-	}
-
-	for _, data := range list {
-		inveniordm, err := Convert(data, type_)
-		if err != nil {
-			fmt.Println(err)
-		}
-		if inveniordm.ID != "" {
-			inveniordmList = append(inveniordmList, inveniordm)
-		}
-	}
-  if extension == ".yaml" {
-		output, err = yaml.Marshal(inveniordmList)
+	if extension == ".yaml" {
+		output, err = yaml.Marshal(list)
 	} else if extension == ".json" {
-		output, err = json.Marshal(inveniordmList)
+		output, err = json.Marshal(list)
 	} else if extension == ".avro" {
-		schema, err := avro.Parse(InvenioRDMSchema)
+		schema, err := avro.Parse(RORSchema)
 		if err != nil {
 			fmt.Println(err, "avro.Parse")
 			return nil, err
 		}
-    output, err = avro.Marshal(schema, inveniordmList)
+		output, err = avro.Marshal(schema, list)
 		if err != nil {
 			fmt.Println(err, "avro.Marshal")
 		}
@@ -636,6 +369,84 @@ func WriteAll(list []ROR, to string, extension string, type_ string) ([]byte, er
 	return output, err
 }
 
+// WriteInvenioRDM writes a list of ROR metadata in InvenioRDM format.
+func WriteInvenioRDM(list []ROR, extension string) ([]byte, error) {
+	var inveniordmList []InvenioRDM
+	var err error
+	var output []byte
+
+	for _, data := range list {
+		inveniordm, err := Convert(data)
+		if err != nil {
+			fmt.Println(err)
+		}
+		if inveniordm.ID != "" {
+			inveniordmList = append(inveniordmList, inveniordm)
+		}
+	}
+	if extension == ".yaml" {
+		output, err = yaml.Marshal(inveniordmList)
+	} else if extension == ".json" {
+		output, err = json.Marshal(inveniordmList)
+	} else if extension == ".avro" {
+		schema, err := avro.Parse(InvenioRDMSchema)
+		if err != nil {
+			fmt.Println(err, "avro.Parse")
+			return nil, err
+		}
+		output, err = avro.Marshal(schema, inveniordmList)
+		if err != nil {
+			fmt.Println(err, "avro.Marshal")
+		}
+	} else {
+		return output, errors.New("unsupported file format")
+	}
+	if err != nil {
+		return nil, err
+	}
+	return output, err
+}
+
+// FilterRecords filters a list of ROR records by type and/or country.
+func FilterRecords(list []ROR, type_ string, country string, file string) ([]ROR, error) {
+	var filtered []ROR
+
+	if file == "funders.yaml" {
+		type_ = "funder"
+	}
+
+	// optionally filter by type and/or country
+	if type_ != "" || country != "" || file != "" {
+		for _, v := range list {
+			if type_ != "" && !slices.Contains(v.Types, type_) {
+				continue
+			}
+			if country != "" && !slices.ContainsFunc(v.Locations, func(l Location) bool {
+				return l.GeonamesDetails.CountryCode == country
+			}) {
+				continue
+			}
+			if file == "funders.yaml" {
+				// remove acronyms
+				v.Names = slices.DeleteFunc(v.Names, func(n Name) bool {
+					return slices.ContainsFunc(n.Types, func(t string) bool {
+						return t == "acronym"
+					})
+				})
+			} else if file == "affiliations_ror.yaml" {
+				// remove country
+				v.Locations = nil
+			}
+			filtered = append(filtered, v)
+		}
+	} else {
+		filtered = append(filtered, list...)
+	}
+
+	return filtered, nil
+}
+
+// GetTitle extracts the title from a list of names.
 func GetTitle(names []Name) Title {
 	var title Title
 	for _, name := range names {
