@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"slices"
 	"strings"
 	"time"
 
@@ -31,24 +32,20 @@ import (
 // listCmd represents the list command
 var listCmd = &cobra.Command{
 	Use:   "list",
-	Short: "A list of works",
-	Long: `A list of works. Currently only available for
-	the Crossref and DataCite provider. Options include numnber of works, 
-	work type, and Crossref member id or DataCite client id. For example:
+	Short: "A list of scholarly metadata",
+	Long: `A list of scholarly metadata retrieved via file or API. For example:
 
 	commonmeta list --number 10 --member 78 --type journal-article - f crossref,
 	commonmeta list --number 10 --client cern.zenodo --type dataset -f datacite,
 	commonmeta list --number 10 --from inveniordm --from-host rogue-scholar.org --community front_matter`,
 	Run: func(cmd *cobra.Command, args []string) {
-		var input string
-		var str string // a string, content loaded from a file
+		var input string // an identifier, content fetched via API
+		var str string   // a string, content loaded from a file
 		var err error
 		var data []commonmeta.Data
+		var orgdata []ror.ROR
 		var extension string
 
-		if len(args) > 0 {
-			input = args[0]
-		}
 		number, _ := cmd.Flags().GetInt("number")
 		page, _ := cmd.Flags().GetInt("page")
 		from, _ := cmd.Flags().GetString("from")
@@ -57,6 +54,7 @@ var listCmd = &cobra.Command{
 		member, _ := cmd.Flags().GetString("member")
 		type_, _ := cmd.Flags().GetString("type")
 		year, _ := cmd.Flags().GetString("year")
+		country, _ := cmd.Flags().GetString("country")
 		language, _ := cmd.Flags().GetString("language")
 		orcid, _ := cmd.Flags().GetString("orcid")
 		affiliation, _ := cmd.Flags().GetString("affiliation")
@@ -83,6 +81,18 @@ var listCmd = &cobra.Command{
 
 		cmd.SetOut(os.Stdout)
 		cmd.SetErr(os.Stderr)
+
+		// specify organization metadata as input
+		var orgflags = []string{"organization", "organizations", "org", "orgs"}
+		if len(args) > 0 && slices.Contains(orgflags, args[0]) {
+			args = args[1:]
+			if from == "" {
+				from = "ror"
+			}
+		}
+		if len(args) > 0 {
+			input = args[0]
+		}
 
 		// extract the file extension and check if output file should be zipped
 		// if the file name is empty, set it to the default value
@@ -117,6 +127,16 @@ var listCmd = &cobra.Command{
 			data, err = inveniordm.FetchAll(number, page, fromHost, community, subject, type_, year, language, orcid, affiliation, ror_, hasORCID, hasROR)
 		} else if from == "jsonfeed" {
 			data, err = jsonfeed.FetchAll(number, page, community, isArchived)
+		} else if str != "" && from == "ror" {
+			if type_ != "" && !slices.Contains(ror.RORTypes, type_) {
+				cmd.PrintErr("Please provide a valid type")
+				return
+			}
+			orgdata, err = ror.LoadAll(str)
+		} else if str == "" && from == "ror" {
+			// if no input is provided, return the built-in ROR vocabulary
+			orgdata, err = ror.LoadBuiltin()
+			input = "v1.63-2025-04-03-ror-data"
 		} else {
 			fmt.Println("Please provide a valid input format")
 			return
@@ -126,8 +146,13 @@ var listCmd = &cobra.Command{
 			return
 		}
 
+		// optionally filter orgdata by type, country, number and page
+		if len(orgdata) > 0 && (type_ != "" && !slices.Contains(ror.RORTypes, type_)) || country != "" || number != 0 {
+			orgdata, err = ror.FilterRecords(orgdata, type_, country, file, number, page)
+		}
 		if err != nil {
-			cmd.PrintErr(err)
+			fmt.Println("An error occurred:", err)
+			return
 		}
 
 		var output []byte
@@ -147,8 +172,15 @@ var listCmd = &cobra.Command{
 			output, err = crossrefxml.WriteAll(data, account)
 		} else if to == "schemaorg" {
 			output, err = schemaorg.WriteAll(data)
-		} else if to == "inveniordm" {
+		} else if data != nil && to == "inveniordm" {
 			output, err = inveniordm.WriteAll(data)
+		} else if len(orgdata) > 0 && to == "ror" {
+			output, err = ror.WriteAll(orgdata, extension)
+		} else if len(orgdata) > 0 && to == "inveniordm" {
+			output, err = ror.WriteAllInvenioRDM(orgdata, extension)
+		} else {
+			fmt.Println("Please provide a valid output format")
+			return
 		}
 
 		if to != "crossrefxml" && extension == ".json" {
@@ -158,6 +190,9 @@ var listCmd = &cobra.Command{
 		}
 
 		if file != "" {
+			if input != "" && extension == ".yaml" {
+				output = append([]byte("# file generated from "+input+"\n\n"), output...)
+			}
 			if compress {
 				err = fileutils.WriteZIPFile(file, output)
 			} else {

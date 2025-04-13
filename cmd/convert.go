@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"slices"
 
 	"github.com/front-matter/commonmeta/commonmeta"
 	"github.com/front-matter/commonmeta/crossrefxml"
@@ -15,6 +16,7 @@ import (
 	"github.com/front-matter/commonmeta/datacite"
 	"github.com/front-matter/commonmeta/inveniordm"
 	"github.com/front-matter/commonmeta/jsonfeed"
+	"github.com/front-matter/commonmeta/ror"
 	"github.com/front-matter/commonmeta/schemaorg"
 	"github.com/front-matter/commonmeta/utils"
 
@@ -33,13 +35,16 @@ supported output format and Commonmeta (default). Example usage:
 commonmeta 10.5555/12345678`,
 
 	Run: func(cmd *cobra.Command, args []string) {
+		var input string
 		var id string  // an identifier, content fetched via API
 		var str string // a string, content loaded from a file
 		var err error
 		var data commonmeta.Data
+		var orgdata ror.ROR
 
 		// loginID, _ := cmd.Flags().GetString("login_id")
 		// loginPassword, _ := cmd.Flags().GetString("login_passwd")
+		from, _ := cmd.Flags().GetString("from")
 		depositor, _ := cmd.Flags().GetString("depositor")
 		email, _ := cmd.Flags().GetString("email")
 		registrant, _ := cmd.Flags().GetString("registrant")
@@ -51,7 +56,19 @@ commonmeta 10.5555/12345678`,
 			fmt.Println("Please provide an input")
 			return
 		}
-		input := args[0]
+
+		// specify organization metadata as input
+		var orgflags = []string{"organization", "organizations", "org", "orgs"}
+		if len(args) > 0 && slices.Contains(orgflags, args[0]) {
+			args = args[1:]
+			if from == "" {
+				from = "ror"
+			}
+		}
+		if len(args) > 0 {
+			input = args[0]
+		}
+
 		id = utils.NormalizeID(input)
 		if id == "" {
 			_, err = os.Stat(input)
@@ -61,8 +78,6 @@ commonmeta 10.5555/12345678`,
 			}
 			str = input
 		}
-
-		from, _ := cmd.Flags().GetString("from")
 
 		if id != "" {
 			if from == "" {
@@ -80,6 +95,8 @@ commonmeta 10.5555/12345678`,
 				data, err = jsonfeed.Fetch(id)
 			} else if from == "schemaorg" {
 				data, err = schemaorg.Fetch(id)
+			} else if from == "ror" {
+				orgdata, err = ror.Fetch(id)
 			} else {
 				fmt.Println("Please provide a valid input")
 				return
@@ -133,8 +150,12 @@ commonmeta 10.5555/12345678`,
 				Registrant: registrant,
 			}
 			output, err = crossrefxml.Write(data, account)
-		} else if to == "inveniordm" {
+		} else if data.ID != "" && to == "inveniordm" {
 			output, err = inveniordm.Write(data)
+		} else if orgdata.ID != "" && to == "inveniordm" {
+			output, err = ror.WriteInvenioRDM(orgdata)
+		} else if orgdata.ID != "" && to == "ror" {
+			output, err = ror.Write(orgdata)
 		}
 
 		if err != nil {
