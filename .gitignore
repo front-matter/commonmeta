@@ -9,3 +9,5 @@ v1.*-ror-data_schema_v2.json
 
 citation/*
 test.*
+
+!v1.63-2025-04-03-ror-data.avro.zip
