@@ -94,10 +94,6 @@ var listCmd = &cobra.Command{
 			if to == "" || to == "commonmeta" {
 				to = "ror"
 			}
-		} else {
-			if number == 0 {
-				number = 10
-			}
 		}
 		if len(args) > 0 {
 			input = args[0]

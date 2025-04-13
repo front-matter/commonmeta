@@ -220,6 +220,9 @@ func QueryURL(number int, page int, community string, archived bool) string {
 	if community != "" {
 		values.Set("blog_slug", community)
 	}
+	if number <= 0 {
+		number = 10
+	}
 	values.Add("per_page", strconv.Itoa(number))
 	values.Add("page", strconv.Itoa(page))
 

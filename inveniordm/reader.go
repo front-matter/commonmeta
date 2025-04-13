@@ -620,7 +620,9 @@ func GetAll(number int, page int, host string, community string, subject string,
 	var response Query
 	var content []Content
 
-	if number > 500 {
+	if number <= 0 {
+		number = 10
+	} else if number > 500 {
 		number = 500
 	}
 	client := &http.Client{
