@@ -71,7 +71,7 @@ var transformCmd = &cobra.Command{
 				cmd.PrintErr("Please provide a valid type")
 				return
 			}
-			data, err = ror.LoadAll(str, type_, country)
+			data, err = ror.LoadAll(str)
 		} else {
 			// if no input is provided, return the built-in ROR vocabulary
 			data, err = ror.LoadBuiltin()
