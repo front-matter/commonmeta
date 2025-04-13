@@ -3,8 +3,6 @@ package ror
 import (
 	"encoding/json"
 	"errors"
-	"log"
-	"os"
 	"path"
 	"slices"
 
@@ -12,40 +10,38 @@ import (
 	"github.com/front-matter/commonmeta/fileutils"
 	"github.com/front-matter/commonmeta/utils"
 	"github.com/hamba/avro/v2"
+	"gopkg.in/yaml.v3"
 )
 
-// ROR represents the minimal ROR metadata record.
+// ROR represents the ROR metadata record.
 type ROR struct {
-	ID        string     `avro:"id" json:"id"`
-	Locations []Location `avro:"locations" json:"locations"`
-	Names     []Name     `avro:"names" json:"names"`
-	Types     []string   `avro:"types" json:"types"`
+	ID            string         `avro:"id" json:"id"`
+	Domains       []string       `avro:"domains,omitempty" json:"domains,omitempty" yaml:"domains,omitempty"`
+	Established   int            `avro:"established,omitempty" json:"established,omitempty" yaml:"established,omitempty"`
+	ExternalIDs   []ExternalID   `avro:"external_ids" json:"external_ids" yaml:"external_ids,omitempty"`
+	Links         []Link         `avro:"links" json:"links" yaml:"links,omitempty"`
+	Locations     []Location     `avro:"locations" json:"locations"`
+	Names         []Name         `avro:"names" json:"names"`
+	Relationships []Relationship `avro:"relationships" json:"relationships" yaml:"relationships,omitempty"`
+	Status        string         `avro:"status" json:"status"`
+	Types         []string       `avro:"types" json:"types"`
+	Admin         Admin          `avro:"admin" json:"admin"`
 }
 
-// Content represents the full ROR metadata record.
-type Content struct {
-	*ROR
-	Established   int            `json:"established"`
-	ExternalIDs   []ExternalID   `json:"external_ids"`
-	Links         []Link         `json:"links"`
-	Relationships []Relationship `json:"relationships"`
-	Status        string         `json:"status"`
-	Admin         struct {
-		Created struct {
-			Date          string `json:"date"`
-			SchemaVersion string `json:"schema_version"`
-		} `json:"created"`
-		LastModified struct {
-			Date          string `json:"date"`
-			SchemaVersion string `json:"schema_version"`
-		} `json:"last_modified"`
-	}
+type Admin struct {
+	Created      Date `avro:"created" json:"created"`
+	LastModified Date `avro:"last_modified" json:"last_modified"`
+}
+
+type Date struct {
+	Date          string `avro:"date" json:"date"`
+	SchemaVersion string `avro:"schema_version" json:"schema_version"`
 }
 
 type ExternalID struct {
-	Type      string   `json:"type"`
-	All       []string `json:"all"`
-	Preferred string   `json:"preferred"`
+	Type      string   `avro:"type" json:"type"`
+	All       []string `avro:"all" json:"all"`
+	Preferred string   `avro:"preferred,omitempty" json:"preferred,omitempty" yaml:"preferred,omitempty"`
 }
 
 type GeonamesDetails struct {
@@ -61,13 +57,13 @@ type GeonamesDetails struct {
 }
 
 type Link struct {
-	Type  string `json:"type"`
-	Value string `json:"value"`
+	Type  string `avro:"type" json:"type"`
+	Value string `avro:"value" json:"value"`
 }
 
 type Location struct {
-	GeonamesID      int             `avro:"geonames_id" json:"geonames_id"`
-	GeonamesDetails GeonamesDetails `avro:"geonames_details" json:"geonames_details"`
+	GeonamesID      int             `avro:"geonames_id" json:"geonames_id" yaml:"geonames_id"`
+	GeonamesDetails GeonamesDetails `avro:"geonames_details" json:"geonames_details" yaml:"geonames_details"`
 }
 
 type Name struct {
@@ -77,9 +73,9 @@ type Name struct {
 }
 
 type Relationship struct {
-	Type  string `json:"type"`
-	Label string `json:"label"`
-	ID    string `json:"id"`
+	Type  string `avro:"type" json:"type"`
+	Label string `avro:"label" json:"label"`
+	ID    string `avro:"id" json:"id"`
 }
 
 // RORSchema is the Avro schema for the minimal ROR metadata.
@@ -90,6 +86,63 @@ var RORSchema = `{
     "type": "record",
     "fields": [
       { "name": "id", "type": "string" },
+      { "name": "established", "type": ["null", "int"], "default": null },
+      {
+        "name": "external_ids",
+        "type": {
+          "type": "array",
+          "items": {
+            "name": "external_id",
+            "type": "record",
+            "fields": [
+              {
+                "name": "type",
+                "type": {
+                  "name": "external_id_type",
+                  "type": "enum",
+                  "symbols": ["fundref", "grid", "isni", "wikidata"]
+                }
+              },
+              {
+                "name": "all",
+                "type": {
+                  "type": "array",
+                  "items": {
+                    "name": "external_id",
+                    "type": "string"
+                  }
+                }
+              },
+              {
+                "name": "preferred",
+                "type": ["null", "string"],
+                "default": null
+              }
+            ]
+          }
+        }
+      },
+      {
+        "name": "links",
+        "type": {
+          "type": "array",
+          "items": {
+            "name": "link",
+            "type": "record",
+            "fields": [
+              {
+                "name": "type",
+                "type": {
+                  "name": "link_type",
+                  "type": "enum",
+                  "symbols": ["website", "wikipedia"]
+                }
+              },
+              { "name": "value", "type": "string" }
+            ]
+          }
+        }
+      },
       {
         "name": "locations",
         "type": {
@@ -149,163 +202,8 @@ var RORSchema = `{
                   }
                 }
               },
-              {
-                "name": "lang",
-                "type": ["null", "string"], "default": null
-              }
+              { "name": "lang", "type": ["null", "string"], "default": null }
             ]
-          }
-        }
-      },
-      {
-        "name": "types",
-        "type": {
-          "type": "array",
-          "items": {
-            "name": "type",
-            "type": "enum",
-            "symbols": [
-              "archive",
-              "company",
-              "education",
-              "facility",
-              "funder",
-              "government",
-              "healthcare",
-              "nonprofit",
-              "other"
-            ]
-          }
-        }
-      }
-    ]
-  }
-}`
-
-// ContentSchema is the Avro schema for the complete ROR metadata.
-var ContentSchema = `{
-  "type": "array",
-  "items": {
-    "name": "ROR",
-    "type": "record",
-    "fields": [
-      { "name": "established", "type": "int" },
-      {
-        "name": "external_ids",
-        "type": {
-          "type": "array",
-          "items": {
-            "type": [
-              {
-                "name": "external_id",
-                "type": {
-                  "name": "external_id",
-                  "type": "record",
-                  "fields": [
-                    {
-                      "type": "enum",
-                      "name": "type",
-                      "symbols": ["fundref", "grid", "isni", "wikidata"]
-                    },
-                    {
-                      "name": "all",
-                      "type": {
-                        "type": "array",
-                        "items": {
-                          "name": "external_id",
-                          "type": "string"
-                        }
-                      }
-                    },
-                    { "name": "preferred", "type": "string" }
-                  ]
-                }
-              }
-            ]
-          }
-        }
-      },
-      { "name": "id", "type": "string" },
-      {
-        "name": "links",
-        "type": {
-          "type": "array",
-          "items": {
-            "name": "link",
-            "type": {
-              "name": "link",
-              "type": "record",
-              "fields": [
-                {
-                  "type": "enum",
-                  "name": "type",
-                  "symbols": ["website", "wikipedia"]
-                },
-                { "name": "value", "type": "string" }
-              ]
-            }
-          }
-        }
-      },
-      {
-        "name": "locations",
-        "type": {
-          "type": "array",
-          "items": {
-            "name": "location",
-            "type": {
-              "name": "location",
-              "type": "record",
-              "fields": [
-                { "name": "geonames_id", "type": "long" },
-                {
-                  "name": "geonames_details",
-                  "type": {
-                    "name": "geonames_details",
-                    "type": "record",
-                    "fields": [
-                      { "name": "continent_code", "type": "string" },
-                      { "name": "continent_name", "type": "string" },
-                      { "name": "country_code", "type": "string" },
-                      { "name": "country_name", "type": "string" },
-                      {
-                        "name": "country_subdivision_code",
-                        "type": ["null", "string"]
-                      },
-                      {
-                        "name": "country_subdivision_name",
-                        "type": ["null", "string"]
-                      },
-                      { "name": "lat", "type": ["null", "double"] },
-                      { "name": "lng", "type": ["null", "double"] },
-                      { "name": "name", "type": "string" }
-                    ]
-                  }
-                }
-              ]
-            }
-          }
-        }
-      },
-      {
-        "name": "names",
-        "type": {
-          "type": "array",
-          "items": {
-            "name": "name",
-            "type": {
-              "name": "name",
-              "type": "record",
-              "fields": [
-                { "name": "value", "type": "string" },
-                {
-                  "type": "enum",
-                  "name": "type",
-                  "symbols": ["acronym", "alias", "label", "ror_display"]
-                },
-                { "name": "lang", "type": ["null", "string"], "default": null }
-              ]
-            }
           }
         }
       },
@@ -315,26 +213,36 @@ var ContentSchema = `{
           "type": "array",
           "items": {
             "name": "relationship",
-            "type": {
-              "name": "relationship",
-              "type": "record",
-              "fields": [
-                {
+            "type": "record",
+            "fields": [
+              {
+                "name": "type",
+                "type": {
+                  "name": "relationship_type",
                   "type": "enum",
-                  "name": "type",
-                  "symbols": ["child", "parent", "related"]
-                },
-                { "name": "label", "type": "string" },
-                { "name": "id", "type": "string" }
-              ]
-            }
+                  "symbols": [
+                    "child",
+                    "parent",
+                    "related",
+                    "predecessor",
+                    "successor"
+                  ]
+                }
+              },
+              { "name": "label", "type": "string" },
+              { "name": "id", "type": "string" }
+            ]
           }
         }
       },
-      { "name": "status", "type": "enum", "symbols": ["active"] },
+      {
+        "name": "status",
+        "type": "string"
+      },
       {
         "name": "types",
         "type": {
+          "name": "type",
           "type": "array",
           "items": {
             "name": "type",
@@ -416,37 +324,42 @@ var RORVersions = map[string]string{
 }
 
 var RORTypes = []string{"archive", "company", "education", "facility", "funder", "government", "healthcare", "nonprofit", "other"}
+var Extensions = []string{".avro", ".yaml", ".json"}
 
 // LoadAll loads the metadata for a list of organizations from a ROR JSON file
-func LoadAll(filename string, type_ string, country string) ([]ROR, error) {
+func LoadAll(filename string) ([]ROR, error) {
 	var data []ROR
-	var content []Content
-	var err error
 
 	extension := path.Ext(filename)
-	if extension == ".json" {
-		file, err := os.Open(filename)
-		if err != nil {
-			return data, errors.New("error reading file")
-		}
-		defer file.Close()
-
-		decoder := json.NewDecoder(file)
-		err = decoder.Decode(&content)
-		if err != nil {
-			return data, err
-		}
-	} else if extension != ".json" {
+	if !slices.Contains(Extensions, extension) {
 		return data, errors.New("invalid file extension")
-	} else {
-		return data, errors.New("unsupported file format")
+	}
+	output, err := fileutils.ReadFile(filename)
+	if err != nil {
+		return data, errors.New("error reading file")
 	}
 
-	data, err = ReadAll(content)
-	if err != nil {
-		return data, err
+	if extension == ".avro" {
+		schema, err := avro.Parse(RORSchema)
+		if err != nil {
+			return nil, err
+		}
+		err = avro.Unmarshal(schema, output, &data)
+		if err != nil {
+			return data, errors.New("error unmarshalling avro file")
+		}
+	} else if extension == ".json" {
+		err = json.Unmarshal(output, &data)
+		if err != nil {
+			return data, errors.New("error unmarshalling json file")
+		}
+	} else if extension == ".yaml" {
+		err = yaml.Unmarshal(output, &data)
+		if err != nil {
+			return data, errors.New("error unmarshalling yaml file")
+		}
 	}
-	return data, nil
+	return data, err
 }
 
 // LoadBuiltin loads the embedded ROR metadata from the ZIP file with all ROR records.
@@ -467,32 +380,6 @@ func LoadBuiltin() ([]ROR, error) {
 		return nil, err
 	}
 	return data, err
-}
-
-// Read reads ROR full metadata and converts it into InvenioRDM metadata.
-func Read(content Content) (ROR, error) {
-	var data ROR
-
-	data.ID = content.ID
-	data.Locations = content.Locations
-	data.Names = content.Names
-	data.Types = content.Types
-
-	return data, nil
-}
-
-// ReadAll reads a list of ROR JSON organizations
-func ReadAll(content []Content) ([]ROR, error) {
-	var data []ROR
-
-	for _, v := range content {
-		d, err := Read(v)
-		if err != nil {
-			log.Println(err)
-		}
-		data = append(data, d)
-	}
-	return data, nil
 }
 
 // ExtractAll extracts ROR metadata from a JSON file in commonmeta format.

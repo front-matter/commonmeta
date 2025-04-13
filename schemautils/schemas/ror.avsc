@@ -5,7 +5,7 @@
     "type": "record",
     "fields": [
       { "name": "id", "type": "string" },
-      { "name": "established", "type": "int" },
+      { "name": "established", "type": ["null", "int"], "default": null },
       {
         "name": "external_ids",
         "type": {
@@ -16,8 +16,11 @@
             "fields": [
               {
                 "name": "type",
-                "type": "enum",
-                "symbols": ["fundref", "grid", "isni", "wikidata"]
+                "type": {
+                  "name": "external_id_type",
+                  "type": "enum",
+                  "symbols": ["fundref", "grid", "isni", "wikidata"]
+                }
               },
               {
                 "name": "all",
@@ -29,7 +32,11 @@
                   }
                 }
               },
-              { "name": "preferred", "type": ["null", "string"] }
+              {
+                "name": "preferred",
+                "type": ["null", "string"],
+                "default": null
+              }
             ]
           }
         }
@@ -40,18 +47,18 @@
           "type": "array",
           "items": {
             "name": "link",
-            "type": {
-              "name": "link",
-              "type": "record",
-              "fields": [
-                {
-                  "name": "type",
+            "type": "record",
+            "fields": [
+              {
+                "name": "type",
+                "type": {
+                  "name": "link_type",
                   "type": "enum",
                   "symbols": ["website", "wikipedia"]
-                },
-                { "name": "value", "type": "string" }
-              ]
-            }
+                }
+              },
+              { "name": "value", "type": "string" }
+            ]
           }
         }
       },
@@ -61,37 +68,36 @@
           "type": "array",
           "items": {
             "name": "location",
-            "type": {
-              "name": "location",
-              "type": "record",
-              "fields": [
-                { "name": "geonames_id", "type": "long" },
-                {
+            "type": "record",
+            "fields": [
+              { "name": "geonames_id", "type": "long" },
+              {
+                "name": "geonames_details",
+                "type": {
                   "name": "geonames_details",
-                  "type": {
-                    "name": "geonames_details",
-                    "type": "record",
-                    "fields": [
-                      { "name": "continent_code", "type": "string" },
-                      { "name": "continent_name", "type": "string" },
-                      { "name": "country_code", "type": "string" },
-                      { "name": "country_name", "type": "string" },
-                      {
-                        "name": "country_subdivision_code",
-                        "type": ["null", "string"]
-                      },
-                      {
-                        "name": "country_subdivision_name",
-                        "type": ["null", "string"]
-                      },
-                      { "name": "lat", "type": ["null", "double"] },
-                      { "name": "lng", "type": ["null", "double"] },
-                      { "name": "name", "type": "string" }
-                    ]
-                  }
+                  "type": "record",
+                  "fields": [
+                    { "name": "continent_code", "type": "string" },
+                    { "name": "continent_name", "type": "string" },
+                    { "name": "country_code", "type": "string" },
+                    { "name": "country_name", "type": "string" },
+                    {
+                      "name": "country_subdivision_code",
+                      "type": ["null", "string"],
+                      "default": null
+                    },
+                    {
+                      "name": "country_subdivision_name",
+                      "type": ["null", "string"],
+                      "default": null
+                    },
+                    { "name": "lat", "type": "double" },
+                    { "name": "lng", "type": "double" },
+                    { "name": "name", "type": "string" }
+                  ]
                 }
-              ]
-            }
+              }
+            ]
           }
         }
       },
@@ -101,19 +107,22 @@
           "type": "array",
           "items": {
             "name": "name",
-            "type": {
-              "name": "name",
-              "type": "record",
-              "fields": [
-                { "name": "value", "type": "string" },
-                {
-                  "name": "type",
-                  "type": "enum",
-                  "symbols": ["acronym", "alias", "label", "ror_display"]
-                },
-                { "name": "lang", "type": ["null", "string"] }
-              ]
-            }
+            "type": "record",
+            "fields": [
+              { "name": "value", "type": "string" },
+              {
+                "name": "types",
+                "type": {
+                  "type": "array",
+                  "items": {
+                    "name": "name_type",
+                    "type": "enum",
+                    "symbols": ["acronym", "alias", "label", "ror_display"]
+                  }
+                }
+              },
+              { "name": "lang", "type": ["null", "string"], "default": null }
+            ]
           }
         }
       },
@@ -123,12 +132,12 @@
           "type": "array",
           "items": {
             "name": "relationship",
-            "type": {
-              "name": "relationship",
-              "type": "record",
-              "fields": [
-                {
-                  "name": "type",
+            "type": "record",
+            "fields": [
+              {
+                "name": "type",
+                "type": {
+                  "name": "relationship_type",
                   "type": "enum",
                   "symbols": [
                     "child",
@@ -137,29 +146,17 @@
                     "predecessor",
                     "successor"
                   ]
-                },
-                { "name": "label", "type": "string" },
-                { "name": "id", "type": "string" }
-              ]
-            }
+                }
+              },
+              { "name": "label", "type": "string" },
+              { "name": "id", "type": "string" }
+            ]
           }
         }
       },
       {
         "name": "status",
-        "type": "enum",
-        "symbols": ["active", "inactive"],
-        "default": "active"
-      },
-      {
-        "name": "country_codes",
-        "type": {
-          "type": "array",
-          "items": {
-            "name": "country_code",
-            "type": "string"
-          }
-        }
+        "type": "string"
       },
       {
         "name": "types",
