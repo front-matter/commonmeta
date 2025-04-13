@@ -36,8 +36,8 @@ func ReadFile(filename string) ([]byte, error) {
 // ReadZIPFile opens a zip archive for reading
 func ReadZIPFile(filename string) ([]byte, error) {
 	var zipfile *zip.Reader
-	if filename == "affiliations_ror.yaml.zip" {
-		file, err := Files.ReadFile(filepath.Join("affiliations_ror.yaml.zip"))
+	if filename == "v1.63-2025-04-03-ror-data.avro.zip" {
+		file, err := Files.ReadFile(filepath.Join("v1.63-2025-04-03-ror-data.avro.zip"))
 		if err != nil {
 			return nil, err
 		}
@@ -153,8 +153,8 @@ func GetExtension(filename string, ext string) (string, string, bool) {
 			compress = false
 		}
 		return filename, extension, compress
-	} 
-	
+	}
+
 	if ext == "" {
 		ext = ".json"
 	}
