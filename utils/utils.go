@@ -5,10 +5,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"net/url"
 	"regexp"
+	"slices"
 	"strconv"
 	"strings"
 	"time"
@@ -51,16 +51,10 @@ func NormalizeID(pid string) string {
 		return uuid
 	}
 
-	// check for valid ORCID
-	orcid, ok := ValidateORCID(pid)
+	// check for valid Wikidata item ID
+	wikidata, ok := ValidateWikidata(pid)
 	if ok {
-		return orcid
-	}
-
-	// check for valid ROR ID
-	ror, ok := ValidateROR(pid)
-	if ok {
-		return ror
+		return "https://www.wikidata.org/wiki/" + wikidata
 	}
 
 	// check for valid URL
@@ -83,6 +77,63 @@ func NormalizeID(pid string) string {
 	}
 
 	return pid
+}
+
+// NormalizeWorkID normalizes work ID
+func NormalizeWorkID(id string) string {
+	pid, type_, category := ValidateIDCategory(id)
+	var allowedCategories = []string{"Work", "All"}
+	if !slices.Contains(allowedCategories, category) {
+		return ""
+	}
+	if type_ == "DOI" {
+		return doiutils.NormalizeDOI(pid)
+	} else if type_ == "UUID" {
+		return pid
+	} else if type_ == "URL" {
+		return pid
+	} else if type_ == "Wikidata" {
+		return "https://www.wikidata.org/wiki/" + pid
+	}
+	return ""
+}
+
+// NormalizeOrganizationID normalizes organization ID
+func NormalizeOrganizationID(id string) string {
+	pid, type_, category := ValidateIDCategory(id)
+	var allowedCategories = []string{"Organization", "Contributor", "All"}
+	if !slices.Contains(allowedCategories, category) {
+		return ""
+	}
+	if type_ == "ROR" {
+		return "https://ror.org/" + pid
+	} else if type_ == "Crossref Funder ID" {
+		return "https://doi.org/" + pid
+	} else if type_ == "GRID" {
+		return "https://grid.ac/institutes/" + pid
+	} else if type_ == "Wikidata" {
+		return "https://www.wikidata.org/wiki/" + pid
+	} else if type_ == "ISNI" {
+		return "https://isni.org/isni/" + pid
+	}
+	return ""
+}
+
+// NormalizePersonID normalizes person ID
+func NormalizePersonID(id string) string {
+	pid, type_, category := ValidateIDCategory(id)
+	var allowedCategories = []string{"Person", "Contributor", "All"}
+	if !slices.Contains(allowedCategories, category) {
+		return ""
+	}
+	if type_ == "ORCID" {
+		return "https://orcid.org/" + pid
+	} else if type_ == "ISNI" {
+		return "https://isni.org/isni/" + pid
+	} else if type_ == "Wikidata" {
+		return "https://www.wikidata.org/wiki/" + pid
+	}
+	return ""
 }
 
 // NormalizeURL normalizes URL
@@ -379,11 +430,7 @@ func ISSNAsURL(issn string) string {
 
 // ValidateISSN validates an ISSN
 func ValidateISSN(issn string) (string, bool) {
-	r, err := regexp.Compile(`^(?:https://portal\.issn\.org/resource/ISSN/)?(\d{4}\-\d{3}(\d|x|X))$`)
-	if err != nil {
-		log.Printf("Error compiling regex: %v", err)
-		return "", false
-	}
+	r := regexp.MustCompile(`^(?:https://portal\.issn\.org/resource/ISSN/)?(\d{4}\-\d{3}(\d|x|X))$`)
 	matched := r.FindStringSubmatch(issn)
 	if len(matched) == 0 {
 		return "", false
@@ -455,12 +502,61 @@ func NormalizeORCID(orcid string) string {
 // 0000-0001-5000-0007 and 0000-0003-5000-0001,
 // or between 0009-0000-0000-0000 and 0009-0010-0000-0000.
 func ValidateORCID(orcid string) (string, bool) {
-	r, err := regexp.Compile(`^(?:(?:http|https)://(?:(?:www|sandbox)?\.)?orcid\.org/)?(000[09][ -]00\d{2}[ -]\d{4}[ -]\d{3}[0-9X]+)$`)
-	if err != nil {
-		log.Printf("Error compiling regex: %v", err)
+	r := regexp.MustCompile(`^(?:(?:http|https)://(?:(?:www|sandbox)?\.)?orcid\.org/)?(000[09][ -]000[123][ -]\d{4}[ -]\d{3}[0-9X]+)$`)
+	matched := r.FindStringSubmatch(orcid)
+	if len(matched) == 0 {
 		return "", false
 	}
-	matched := r.FindStringSubmatch(orcid)
+	return matched[1], CheckORCIDNumberRange(matched[1])
+}
+
+// ValidateISNI validates an ISNI
+// ISNI is a 16-character string in blocks of four
+// optionally separated by hyphens or spaces and NOT
+// between 0000-0001-5000-0007 and 0000-0003-5000-0001,
+// or between 0009-0000-0000-0000 and 0009-0010-0000-0000
+// (the ranged reserved for ORCID).
+func ValidateISNI(isni string) (string, bool) {
+	r := regexp.MustCompile(`^(?:(?:http|https)://(?:(?:www)?\.)?isni\.org/)?(?:isni/)?(0000[ -]?00\d{2}[ -]?\d{4}[ -]?\d{3}[0-9X]+)$`)
+	matched := r.FindStringSubmatch(isni)
+	if len(matched) == 0 {
+		return "", false
+	}
+	// workaround until regex capture group is fixed
+	match := strings.ReplaceAll(matched[1], " ", "")
+	match = strings.ReplaceAll(match, "-", "")
+	return match, !CheckORCIDNumberRange(match)
+}
+
+// check if ORCID is in the range 0000-0001-5000-0007 and 0000-0003-5000-0001
+// or between 0009-0000-0000-0000 and 0009-0010-0000-0000
+func CheckORCIDNumberRange(orcid string) bool {
+	number := strings.ReplaceAll(orcid, "-", "")
+	if number >= "0000000150000007" && number <= "0000000350000001" {
+		return true
+	}
+	if number >= "0009000000000000" && number <= "0009001000000000" {
+		return true
+	}
+	return false
+}
+
+// ValidateWikidata validates a Wikidata item ID
+// Wikidata item ID is a string prefixed with Q followed by a number
+func ValidateWikidata(wikidata string) (string, bool) {
+	r := regexp.MustCompile(`^(?:(?:http|https)://(?:(?:www)?\.)?wikidata\.org/wiki/)?(Q\d+)$`)
+	matched := r.FindStringSubmatch(wikidata)
+	if len(matched) == 0 {
+		return "", false
+	}
+	return matched[1], true
+}
+
+// ValidateGRID validates a GRID ID
+// GRID ID is a string prefixed with grid followed by dot number dot string
+func ValidateGRID(grid string) (string, bool) {
+	r := regexp.MustCompile(`^(?:(?:http|https)://(?:(?:www)?\.)?grid\.ac/)?(?:institutes/)?(grid\.[0-9]+\.[a-f0-9]{1,2})$`)
+	matched := r.FindStringSubmatch(grid)
 	if len(matched) == 0 {
 		return "", false
 	}
@@ -479,11 +575,7 @@ func NormalizeROR(ror string) string {
 // ValidateROR validates a ROR ID. The ROR ID starts with 0 followed by a 6-character
 // alphanumeric string which is base32-encoded and a 2-digit checksum.
 func ValidateROR(ror string) (string, bool) {
-	r, err := regexp.Compile(`^(?:(?:http|https)://ror\.org/)?(0[0-9a-z]{6}\d{2})$`)
-	if err != nil {
-		log.Printf("Error compiling regex: %v", err)
-		return "", false
-	}
+	r := regexp.MustCompile(`^(?:(?:http|https)://ror\.org/)?(0[0-9a-z]{6}\d{2})$`)
 	matched := r.FindStringSubmatch(ror)
 	if len(matched) == 0 {
 		return "", false
@@ -517,8 +609,18 @@ func GetROR(ror string) (ROR, error) {
 	return content, err
 }
 
+func ValidateCrossrefFunderID(fundref string) (string, bool) {
+	r := regexp.MustCompile(`^(?:(?:http|https):/(?:/)?(dx\.)?(doi\.org/))?(?:10\.13039/)?((501)?1000(0|1)[0-9]{4})$`)
+	matched := r.FindStringSubmatch(fundref)
+	if len(matched) == 0 {
+		return "", false
+	}
+	return matched[1], true
+}
+
 // ValidateID validates an identifier and returns the type
-// Can be DOI, UUID, ISSN, ORCID, ROR, URL, RID
+// Can be DOI, UUID, ISSN, ORCID, ROR, URL, RID, Wikidata, ISNI
+// or GRID
 func ValidateID(id string) (string, string) {
 	doi, ok := doiutils.ValidateDOI(id)
 	if ok {
@@ -544,6 +646,18 @@ func ValidateID(id string) (string, string) {
 	if ok {
 		return ror, "ROR"
 	}
+	grid, ok := ValidateGRID(id)
+	if ok {
+		return grid, "GRID"
+	}
+	wikidata, ok := ValidateWikidata(id)
+	if ok {
+		return wikidata, "Wikidata"
+	}
+	isni, ok := ValidateISNI(id)
+	if ok {
+		return isni, "ISNI"
+	}
 	issn, ok := ValidateISSN(id)
 	if ok {
 		return issn, "ISSN"
@@ -553,6 +667,28 @@ func ValidateID(id string) (string, string) {
 		return id, url
 	}
 	return "", ""
+}
+
+// ValidateIDCategory validates an identifier and returns the identifier,
+// type, and category
+// Category can be work, person, organization, contributor (person or organization),
+// or all
+func ValidateIDCategory(id string) (string, string, string) {
+	id, type_ := ValidateID(id)
+	switch type_ {
+	case "ROR", "Crossref Funder ID", "GRID":
+		return id, type_, "Organization"
+	case "ORCID":
+		return id, type_, "Person"
+	case "ISNI":
+		return id, type_, "Contributor"
+	case "DOI":
+		return id, type_, "Work"
+	case "Wikidata", "URL", "UUID":
+		return id, type_, "All"
+	default:
+		return id, type_, ""
+	}
 }
 
 // ValidateURL validates a URL and checks if it is a DOI
@@ -677,6 +813,23 @@ func NormalizeString(s string) (string, error) {
 	}
 
 	return result, nil
+}
+
+// func SplitString adds a hyphen every n characters
+func SplitString(str string, n int, s string) string {
+	if n <= 0 {
+		return str
+	}
+
+	var splits []string
+	for i := 0; i < len(str); i += n {
+		nn := i + n
+		if nn > len(str) {
+			nn = len(str)
+		}
+		splits = append(splits, string(str[i:nn]))
+	}
+	return strings.Join(splits, s)
 }
 
 func GetLanguage(lang string, format string) string {

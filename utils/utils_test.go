@@ -237,6 +237,154 @@ func ExampleValidateORCID() {
 	// 0000-0002-1825-0097
 }
 
+func TestORCIDNumberRange(t *testing.T) {
+	t.Parallel()
+	type testCase struct {
+		input string
+		want  bool
+	}
+	testCases := []testCase{
+		{input: "0000-0002-1825-0097", want: true},
+		{input: "0000-0002-2590-225X", want: true},
+		{input: "0000 0001 2112 2291", want: false}, // ISNI
+		{input: "0000000121122291", want: false},    // ISNI
+	}
+	for _, tc := range testCases {
+		got := utils.CheckORCIDNumberRange(tc.input)
+		if tc.want != got {
+			t.Errorf("ORCID Number Range(%v): want %v, got %v",
+				tc.input, tc.want, got)
+		}
+	}
+}
+
+func TestValidateISNI(t *testing.T) {
+	t.Parallel()
+	type testCase struct {
+		input string
+		want  string
+		ok    bool
+	}
+	testCases := []testCase{
+		{input: "https://isni.org/isni/0000000121122291", want: "0000000121122291", ok: true},
+		{input: "https://isni.org/isni/0000 0001 2112 2291", want: "0000000121122291", ok: true},
+		{input: "https://isni.org/isni/0000-0001-2112-2291", want: "0000000121122291", ok: true},
+		{input: "0000 0001 2112 2291", want: "0000000121122291", ok: true},
+		{input: "0000-0001-2112-2291", want: "0000000121122291", ok: true},
+		{input: "https://isni.org/isni/000000021825009", want: "", ok: false}, // invalid ISNI
+	}
+	for _, tc := range testCases {
+		got, ok := utils.ValidateISNI(tc.input)
+		if tc.want != got || tc.ok != ok {
+			t.Errorf("Validate ISNI(%v): want %v, got %v, ok %v",
+				tc.input, tc.want, got, ok)
+		}
+	}
+}
+
+func ExampleValidateISNI() {
+	s, _ := utils.ValidateISNI("https://isni.org/isni/000000012146438X")
+	fmt.Println(s)
+	// Output:
+	// 000000012146438X
+}
+
+func TestValidateWikidata(t *testing.T) {
+	t.Parallel()
+	type testCase struct {
+		input string
+		want  string
+	}
+	testCases := []testCase{
+		{input: "https://www.wikidata.org/wiki/Q7186", want: "Q7186"},     // Marie Curie (person)
+		{input: "https://www.wikidata.org/wiki/Q251061", want: "Q251061"}, // Potsdam Institute for Climate Impact Research (organization)
+		{input: "Q251061", want: "Q251061"},
+		{input: "https://www.wikidata.org/wiki/Property:P610", want: ""}, // Wikidata property not item
+	}
+	for _, tc := range testCases {
+		got, ok := utils.ValidateWikidata(tc.input)
+		if tc.want != got {
+			t.Errorf("Validate Wikidata(%v): want %v, got %v, ok %v",
+				tc.input, tc.want, got, ok)
+		}
+	}
+}
+
+func ExampleValidateWikidata() {
+	s, _ := utils.ValidateWikidata("https://www.wikidata.org/wiki/Q7186")
+	fmt.Println(s)
+	// Output:
+	// Q7186
+}
+
+func TestValidateGRID(t *testing.T) {
+	t.Parallel()
+	type testCase struct {
+		input string
+		want  string
+	}
+	testCases := []testCase{
+		{input: "https://www.grid.ac/institutes/grid.1017.7", want: "grid.1017.7"}, // Royal Melbourne Institute of Technology University
+		{input: "https://grid.ac/institutes/grid.1017.7", want: "grid.1017.7"},
+		{input: "grid.1017.7", want: "grid.1017.7"},
+		{input: "1017.7", want: ""}, // invalid GRID
+	}
+	for _, tc := range testCases {
+		got, ok := utils.ValidateGRID(tc.input)
+		if tc.want != got {
+			t.Errorf("Validate GRID(%v): want %v, got %v, ok %v",
+				tc.input, tc.want, got, ok)
+		}
+	}
+}
+
+func ExampleValidateGRID() {
+	s, _ := utils.ValidateGRID("https://www.grid.ac/institutes/grid.1017.7")
+	fmt.Println(s)
+	// Output:
+	// grid.1017.7
+}
+
+func ExampleValidateIDCategory() {
+	_, _, s := utils.ValidateIDCategory("https://ror.org/0342dzm54")
+	fmt.Println(s)
+	// Output:
+	// Organization
+}
+
+func TestNormalizeOrganizationID(t *testing.T) {
+	t.Parallel()
+	type testCase struct {
+		input string
+		want  string
+	}
+	testCases := []testCase{
+		{input: "https://ror.org/0342dzm54", want: "https://ror.org/0342dzm54"},
+		{input: "0342dzm54", want: "https://ror.org/0342dzm54"},
+		{input: "grid.1017.7", want: "https://grid.ac/institutes/grid.1017.7"},
+		{input: "https://grid.ac/institutes/grid.1017.7", want: "https://grid.ac/institutes/grid.1017.7"},
+		{input: "Q7186", want: "https://www.wikidata.org/wiki/Q7186"},
+		{input: "https://www.wikidata.org/wiki/Q7186", want: "https://www.wikidata.org/wiki/Q7186"},
+		{input: "0000000121122291", want: "https://isni.org/isni/0000000121122291"},
+		{input: "0000-0001-2112-2291", want: "https://isni.org/isni/0000000121122291"},
+		{input: "https://isni.org/isni/0000000121122291", want: "https://isni.org/isni/0000000121122291"},
+	}
+	for _, tc := range testCases {
+		got := utils.NormalizeOrganizationID(tc.input)
+		if tc.want != got {
+			t.Errorf("Normalize Organization ID(%v): want %v, got %v",
+				tc.input, tc.want, got)
+		}
+	}
+}
+
+func ExampleNormalizeOrganizationID() {
+	s := utils.NormalizeOrganizationID("https://ror.org/0342dzm54")
+	fmt.Println(s)
+	// Output:
+	// https://ror.org/0342dzm54
+}
+
 func TestNormalizeROR(t *testing.T) {
 	t.Parallel()
 	type testCase struct {
@@ -317,6 +465,33 @@ func ExampleValidateROR() {
 	// 0342dzm54
 }
 
+func TestValidateCrossrefFunderID(t *testing.T) {
+	t.Parallel()
+	type testCase struct {
+		input string
+		want  string
+	}
+	testCases := []testCase{
+		{input: "https://doi.org/10.13039/501100000155", want: "501100000155"},
+		{input: "10.13039/501100000155/", want: "501100000155"},
+		{input: "100010540/", want: "100010540"},
+	}
+	for _, tc := range testCases {
+		got, ok := utils.ValidateCrossrefFunderID(tc.input)
+		if tc.want != got {
+			t.Errorf("Validate Crossref Funder ID(%v): want %v, got %v, ok %v",
+				tc.input, tc.want, got, ok)
+		}
+	}
+}
+
+func ExampleValidateCrossrefFunderID() {
+	s, _ := utils.ValidateCrossrefFunderID("https://doi.org/10.13039/501100001659")
+	fmt.Println(s)
+	// Output:
+	// 501100001659
+}
+
 func ExampleValidateUUID() {
 	s, _ := utils.ValidateUUID("2491b2d5-7daf-486b-b78b-e5aab48064c1")
 	fmt.Println(s)
@@ -393,6 +568,12 @@ func TestValidateID(t *testing.T) {
 		{input: "2491b2d5-7daf-486b-b78b-e5aab48064c1", want: "UUID"},
 		{input: "nryd8-14284", want: "RID"},
 		{input: "https://ror.org/0342dzm54", want: "ROR"},
+		{input: "https://grid.ac/institutes/grid.1017.7", want: "GRID"},
+		{input: "grid.1017.7", want: "GRID"},
+		{input: "https://www.wikidata.org/wiki/Q7186", want: "Wikidata"},
+		{input: "Q7186", want: "Wikidata"},
+		{input: "https://isni.org/isni/0000000121122291", want: "ISNI"},
+		{input: "0000-0001-2112-2291", want: "ISNI"},
 		{input: "https://orcid.org/0000-0002-1825-0097", want: "ORCID"},
 		{input: "https://datadryad.org/stash/dataset/doi:10.5061/dryad.8515", want: "URL"},
 		// {input: "https://archive.softwareheritage.org/swh:1:dir:44641d8369477d44432fdf50b2eae38e5d079742;origin=https://github.com/murrayds/sci-text-disagreement;visit=swh:1:snp:5695398f6bd0811d67792e16a2684052abe9dc37;anchor=swh:1:rev:b361157a9cfeb536ca255422280e154855b4e9a3", want: "URL"},
@@ -512,4 +693,11 @@ func ExampleCommunitySlugAsURL() {
 	fmt.Println(s)
 	// Output:
 	// https://rogue-scholar.org/api/communities/irights
+}
+
+func ExampleSplitString() {
+	s := utils.SplitString("0000000121122291", 4, " ")
+	fmt.Println(s)
+	// Output:
+	// 0000 0001 2112 2291
 }
