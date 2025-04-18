@@ -4,13 +4,47 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"reflect"
 	"slices"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/front-matter/commonmeta/utils"
 	"github.com/hamba/avro/v2"
+	"github.com/jszwec/csvutil"
 	"gopkg.in/yaml.v3"
 )
+
+type RORCSV struct {
+	ID                           string `csv:"id"`
+	Name                         string `csv:"name"`
+	Types                        string `csv:"types"`
+	Status                       string `csv:"status"`
+	Links                        string `csv:"links,omitempty"`
+	Aliases                      string `csv:"aliases,omitempty"`
+	Labels                       string `csv:"labels,omitempty"`
+	Acronyms                     string `csv:"acronyms,omitempty"`
+	WikipediaURL                 string `csv:"wikipedia_url,omitempty"`
+	Established                  string `csv:"established,omitempty"`
+	Latitude                     string `csv:"addresses[0].lat"`
+	Longitude                    string `csv:"addresses[0].lng"`
+	Place                        string `csv:"addresses[0].geonames_city.name"`
+	GeonamesID                   string `csv:"addresses[0].geonames_city.id"`
+	CountrySubdivisionName       string `csv:"addresses[0].geonames_city.geonames_admin1.name,omitempty"`
+	CountrySubdivisionCode       string `csv:"addresses[0].geonames_city.geonames_admin1.code,omitempty"`
+	CountryCode                  string `csv:"country.country_code"`
+	CountryName                  string `csv:"country.country_name"`
+	ExternalIDsGRIDPreferred     string `csv:"external_ids.GRID.preferred,omitempty"`
+	ExternalIDsGRIDAll           string `csv:"external_ids.GRID.all,omitempty"`
+	ExternalIDsISNIPreferred     string `csv:"external_ids.ISNI.preferred,omitempty"`
+	ExternalIDsISNIAll           string `csv:"external_ids.ISNI.all,omitempty"`
+	ExternalIDsFundrefPreferred  string `csv:"external_ids.FundRef.preferred,omitempty"`
+	ExternalIDsFundrefAll        string `csv:"external_ids.FundRef.all,omitempty"`
+	ExternalIDsWikidataPreferred string `csv:"external_ids.Wikidata.preferred,omitempty"`
+	ExternalIDsWikidataAll       string `csv:"external_ids.Wikidata.all,omitempty"`
+	Relationships                string `csv:"relationships,omitempty"`
+}
 
 // InvenioRDM represents the ROR metadata record in InvenioRDM format.
 type InvenioRDM struct {
@@ -317,7 +351,7 @@ var InvenioRDMSchema = `{
 }`
 
 // Convert converts ROR metadata into InvenioRDM format.
-func Convert(data ROR) (InvenioRDM, error) {
+func ConvertInvenioRDM(data ROR) (InvenioRDM, error) {
 	var inveniordm InvenioRDM
 
 	id, _ := utils.ValidateROR(data.ID)
@@ -342,6 +376,90 @@ func Convert(data ROR) (InvenioRDM, error) {
 	return inveniordm, nil
 }
 
+// ConvertRORCSV converts ROR metadata into RORCSV format.
+func ConvertRORCSV(data ROR) (RORCSV, error) {
+	var rorcsv RORCSV
+	var acronyms, aliases, labels, types, child, parent, related []string
+
+	rorcsv.ID = data.ID
+	for _, name := range data.Names {
+		if slices.Contains(name.Types, "ror_display") {
+			rorcsv.Name = name.Value
+		} else if slices.Contains(name.Types, "acronym") && name.Value != "" {
+			acronyms = append(acronyms, name.Value)
+		} else if slices.Contains(name.Types, "alias") {
+			aliases = append(aliases, name.Value)
+		} else if slices.Contains(name.Types, "label") {
+			if name.Lang != "" {
+				labels = append(labels, fmt.Sprintf("%s: %s", name.Lang, name.Value))
+			} else {
+				labels = append(labels, name.Value)
+			}
+		}
+	}
+	for _, type_ := range data.Types {
+		types = append(types, type_)
+	}
+	rorcsv.Types = strings.Join(slices.Compact(types), "; ")
+	rorcsv.Status = data.Status
+	for _, link := range data.Links {
+		if link.Type == "website" {
+			rorcsv.Links = link.Value
+		} else if link.Type == "wikipedia" {
+			rorcsv.WikipediaURL = link.Value
+		}
+	}
+	rorcsv.Aliases = strings.Join(aliases, "; ")
+	rorcsv.Labels = strings.Join(labels, "; ")
+	rorcsv.Acronyms = strings.Join(acronyms, "; ")
+	if data.Established != 0 {
+		rorcsv.Established = strconv.Itoa(data.Established)
+	}
+	rorcsv.Latitude = fmt.Sprintf("%f", data.Locations[0].GeonamesDetails.Lat)
+	rorcsv.Longitude = fmt.Sprintf("%f", data.Locations[0].GeonamesDetails.Lng)
+	rorcsv.Place = data.Locations[0].GeonamesDetails.Name
+	rorcsv.GeonamesID = strconv.Itoa(data.Locations[0].GeonamesID)
+	rorcsv.CountrySubdivisionName = data.Locations[0].GeonamesDetails.CountrySubdivisionName
+	rorcsv.CountrySubdivisionCode = data.Locations[0].GeonamesDetails.CountrySubdivisionCode
+	rorcsv.CountryCode = data.Locations[0].GeonamesDetails.CountryCode
+	rorcsv.CountryName = data.Locations[0].GeonamesDetails.CountryName
+	for _, ext := range data.ExternalIDs {
+		if ext.Type == "grid" {
+			rorcsv.ExternalIDsGRIDPreferred = ext.Preferred
+			rorcsv.ExternalIDsGRIDAll = strings.Join(ext.All, ";")
+		} else if ext.Type == "isni" {
+			rorcsv.ExternalIDsISNIPreferred = ext.Preferred
+			rorcsv.ExternalIDsISNIAll = strings.Join(ext.All, ";")
+		} else if ext.Type == "fundref" {
+			rorcsv.ExternalIDsFundrefPreferred = ext.Preferred
+			rorcsv.ExternalIDsFundrefAll = strings.Join(ext.All, ";")
+		} else if ext.Type == "wikidata" {
+			rorcsv.ExternalIDsWikidataPreferred = ext.Preferred
+			rorcsv.ExternalIDsWikidataAll = strings.Join(ext.All, ";")
+		}
+	}
+
+	for _, relation := range data.Relationships {
+		if relation.Type == "child" {
+			child = append(child, relation.ID)
+		} else if relation.Type == "parent" {
+			parent = append(parent, relation.ID)
+		} else if relation.Type == "related" {
+			related = append(related, relation.ID)
+		}
+	}
+	if len(child) > 0 {
+		rorcsv.Relationships += "Child: " + strings.Join(child, ", ")
+	}
+	if len(parent) > 0 {
+		rorcsv.Relationships += "Parent: " + strings.Join(parent, ", ")
+	}
+	if len(related) > 0 {
+		rorcsv.Relationships += "Related: " + strings.Join(related, ", ")
+	}
+	return rorcsv, nil
+}
+
 // Write writes ROR metadata.
 func Write(data ROR) ([]byte, error) {
 	var err error
@@ -360,6 +478,20 @@ func WriteAll(list []ROR, extension string) ([]byte, error) {
 		output, err = yaml.Marshal(list)
 	} else if extension == ".json" {
 		output, err = json.Marshal(list)
+	} else if extension == ".csv" {
+		var rorcsvList []RORCSV
+		// convert ROR to RORCSV, a custom lossy mapping to CSV
+		for _, data := range list {
+			rorcsv, err := ConvertRORCSV(data)
+			if err != nil {
+				fmt.Println(err)
+			}
+			rorcsvList = append(rorcsvList, rorcsv)
+		}
+		output, err = csvutil.Marshal(rorcsvList)
+		if err != nil {
+			fmt.Println(err, "csvutil.Marshal")
+		}
 	} else if extension == ".avro" {
 		schema, err := avro.Parse(RORSchema)
 		if err != nil {
@@ -384,11 +516,11 @@ func WriteInvenioRDM(data ROR) ([]byte, error) {
 	var err error
 	var output []byte
 
-	inveniordm, err := Convert(data)
+	inveniordm, err := ConvertInvenioRDM(data)
 	if err != nil {
 		fmt.Println(err)
 	}
-	output, err = json.Marshal(inveniordm)
+	output, err = yaml.Marshal(inveniordm)
 	return output, err
 }
 
@@ -399,7 +531,7 @@ func WriteAllInvenioRDM(list []ROR, extension string) ([]byte, error) {
 	var output []byte
 
 	for _, data := range list {
-		inveniordm, err := Convert(data)
+		inveniordm, err := ConvertInvenioRDM(data)
 		if err != nil {
 			fmt.Println(err)
 		}
@@ -495,265 +627,27 @@ func FilterRecords(list []ROR, type_ string, country string, dateUpdated string,
 // GetTitle extracts the title from a list of names.
 func GetTitle(names []Name) Title {
 	var title Title
+
+	titleValue := reflect.ValueOf(&title).Elem()
+
 	for _, name := range names {
 		if slices.Contains(name.Types, "label") {
-			switch name.Lang {
-			case "aa":
-				title.Aa = name.Value
-			case "ab":
-				title.Aa = name.Value
-			case "af":
-				title.Af = name.Value
-			case "am":
-				title.Am = name.Value
-			case "ar":
-				title.Ar = name.Value
-			case "as":
-				title.As = name.Value
-			case "az":
-				title.Az = name.Value
-			case "ba":
-				title.Ba = name.Value
-			case "be":
-				title.Be = name.Value
-			case "bg":
-				title.Bg = name.Value
-			case "bi":
-				title.Bi = name.Value
-			case "bn":
-				title.Bn = name.Value
-			case "bs":
-				title.Bs = name.Value
-			case "ca":
-				title.Ca = name.Value
-			case "ch":
-				title.Ch = name.Value
-			case "co":
-				title.Co = name.Value
-			case "cs":
-				title.Cs = name.Value
-			case "cu":
-				title.Cu = name.Value
-			case "cy":
-				title.Cy = name.Value
-			case "da":
-				title.Da = name.Value
-			case "de":
-				title.De = name.Value
-			case "dv":
-				title.Dv = name.Value
-			case "dz":
-				title.Dz = name.Value
-			case "el":
-				title.El = name.Value
-			case "en":
-				title.En = name.Value
-			case "es":
-				title.Es = name.Value
-			case "et":
-				title.Et = name.Value
-			case "eu":
-				title.Eu = name.Value
-			case "fa":
-				title.Fa = name.Value
-			case "fi":
-				title.Fi = name.Value
-			case "fo":
-				title.Fo = name.Value
-			case "fr":
-				title.Fr = name.Value
-			case "fy":
-				title.Fy = name.Value
-			case "ga":
-				title.Ga = name.Value
-			case "gd":
-				title.Gd = name.Value
-			case "gl":
-				title.Gl = name.Value
-			case "gu":
-				title.Gu = name.Value
-			case "gv":
-				title.Gv = name.Value
-			case "ha":
-				title.Ha = name.Value
-			case "he":
-				title.He = name.Value
-			case "hi":
-				title.Hi = name.Value
-			case "hr":
-				title.Hr = name.Value
-			case "ht":
-				title.Ht = name.Value
-			case "hu":
-				title.Hu = name.Value
-			case "hy":
-				title.Hy = name.Value
-			case "id":
-				title.Id = name.Value
-			case "is":
-				title.Is = name.Value
-			case "it":
-				title.It = name.Value
-			case "iu":
-				title.Iu = name.Value
-			case "ja":
-				title.Ja = name.Value
-			case "jv":
-				title.Jv = name.Value
-			case "ka":
-				title.Ka = name.Value
-			case "kg":
-				title.Kg = name.Value
-			case "ki":
-				title.Ki = name.Value
-			case "kk":
-				title.Kk = name.Value
-			case "kl":
-				title.Kl = name.Value
-			case "km":
-				title.Km = name.Value
-			case "kn":
-				title.Kn = name.Value
-			case "ko":
-				title.Ko = name.Value
-			case "kr":
-				title.Kr = name.Value
-			case "ku":
-				title.Ku = name.Value
-			case "ky":
-				title.Ky = name.Value
-			case "la":
-				title.La = name.Value
-			case "lb":
-				title.Lb = name.Value
-			case "lo":
-				title.Lo = name.Value
-			case "lt":
-				title.Lt = name.Value
-			case "lv":
-				title.Lv = name.Value
-			case "lu":
-				title.Lu = name.Value
-			case "mg":
-				title.Mg = name.Value
-			case "mi":
-				title.Mi = name.Value
-			case "mk":
-				title.Mk = name.Value
-			case "ml":
-				title.Ml = name.Value
-			case "mn":
-				title.Mn = name.Value
-			case "mr":
-				title.Mr = name.Value
-			case "ms":
-				title.Ms = name.Value
-			case "mt":
-				title.Mt = name.Value
-			case "my":
-				title.My = name.Value
-			case "na":
-				title.Na = name.Value
-			case "nb":
-				title.Nb = name.Value
-			case "ne":
-				title.Ne = name.Value
-			case "nl":
-				title.Nl = name.Value
-			case "nn":
-				title.Nn = name.Value
-			case "no":
-				title.No = name.Value
-			case "oc":
-				title.Oc = name.Value
-			case "om":
-				title.Om = name.Value
-			case "or":
-				title.Or = name.Value
-			case "pa":
-				title.Pa = name.Value
-			case "pl":
-				title.Pl = name.Value
-			case "ps":
-				title.Ps = name.Value
-			case "pt":
-				title.Pt = name.Value
-			case "rm":
-				title.Rm = name.Value
-			case "ro":
-				title.Ro = name.Value
-			case "ru":
-				title.Ru = name.Value
-			case "rw":
-				title.Rw = name.Value
-			case "sa":
-				title.Sa = name.Value
-			case "sd":
-				title.Sd = name.Value
-			case "se":
-				title.Se = name.Value
-			case "sh":
-				title.Sh = name.Value
-			case "si":
-				title.Si = name.Value
-			case "sk":
-				title.Sk = name.Value
-			case "sl":
-				title.Sl = name.Value
-			case "sm":
-				title.Sm = name.Value
-			case "so":
-				title.So = name.Value
-			case "sq":
-				title.Sq = name.Value
-			case "sr":
-				title.Sr = name.Value
-			case "st":
-				title.St = name.Value
-			case "sv":
-				title.Sv = name.Value
-			case "sw":
-				title.Sw = name.Value
-			case "ta":
-				title.Ta = name.Value
-			case "te":
-				title.Te = name.Value
-			case "tg":
-				title.Tg = name.Value
-			case "th":
-				title.Th = name.Value
-			case "ti":
-				title.Ti = name.Value
-			case "tk":
-				title.Tk = name.Value
-			case "tl":
-				title.Tl = name.Value
-			case "tr":
-				title.Tr = name.Value
-			case "tt":
-				title.Tt = name.Value
-			case "ug":
-				title.Ug = name.Value
-			case "uk":
-				title.Uk = name.Value
-			case "ur":
-				title.Ur = name.Value
-			case "uz":
-				title.Uz = name.Value
-			case "vi":
-				title.Vi = name.Value
-			case "xh":
-				title.Xh = name.Value
-			case "yo":
-				title.Yo = name.Value
-			case "zh":
-				title.Zh = name.Value
-			case "zu":
-				title.Zu = name.Value
-			default:
-				title.En = name.Value
+			lang := name.Lang
+
+			field := titleValue.FieldByNameFunc(func(fieldName string) bool {
+				return strings.EqualFold(fieldName, lang)
+			})
+
+			if field.IsValid() && field.CanSet() {
+				field.SetString(name.Value)
+				// } else if lang != "en" {
+				// 	enField := titleValue.FieldByName("En")
+				// 	if enField.IsValid() && enField.CanSet() && enField.String() == "" {
+				// 		enField.SetString(name.Value)
+				// 	}
 			}
 		}
 	}
+
 	return title
 }
