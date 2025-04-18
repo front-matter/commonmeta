@@ -6,8 +6,10 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 	"path"
 	"slices"
+	"strings"
 	"time"
 
 	"github.com/front-matter/commonmeta/commonmeta"
@@ -19,18 +21,25 @@ import (
 
 // ROR represents the ROR metadata record.
 type ROR struct {
-	ID            string         `avro:"id" json:"id"`
-	Domains       []string       `avro:"domains,omitempty" json:"domains,omitempty" yaml:"domains,omitempty"`
-	Established   int            `avro:"established,omitempty" json:"established,omitempty" yaml:"established,omitempty"`
-	ExternalIDs   []ExternalID   `avro:"external_ids" json:"external_ids" yaml:"external_ids,omitempty"`
-	Links         []Link         `avro:"links" json:"links" yaml:"links,omitempty"`
-	Locations     []Location     `avro:"locations" json:"locations"`
-	Names         []Name         `avro:"names" json:"names"`
-	Relationships []Relationship `avro:"relationships" json:"relationships" yaml:"relationships,omitempty"`
-	Status        string         `avro:"status" json:"status"`
-	Types         []string       `avro:"types" json:"types"`
-	Admin         Admin          `avro:"admin" json:"admin"`
+	ID            string        `avro:"id" json:"id" csv:"id"`
+	Domains       Strings       `avro:"domains,omitempty" json:"domains,omitempty" yaml:"domains,omitempty"`
+	Established   int           `avro:"established,omitempty" json:"established,omitempty" yaml:"established,omitempty"`
+	ExternalIDs   ExternalIDS   `avro:"external_ids" json:"external_ids" yaml:"external_ids,omitempty"`
+	Links         Links         `avro:"links" json:"links" yaml:"links,omitempty"`
+	Locations     Locations     `avro:"locations" json:"locations"`
+	Names         Names         `avro:"names" json:"names"`
+	Relationships Relationships `avro:"relationships" json:"relationships" yaml:"relationships,omitempty"`
+	Status        string        `avro:"status" json:"status"`
+	Types         Strings       `avro:"types" json:"types"`
+	Admin         Admin         `avro:"admin" json:"admin"`
 }
+
+type Strings []string
+type ExternalIDS []ExternalID
+type Links []Link
+type Locations []Location
+type Names []Name
+type Relationships []Relationship
 
 type Admin struct {
 	Created      Date `avro:"created" json:"created"`
@@ -43,9 +52,9 @@ type Date struct {
 }
 
 type ExternalID struct {
-	Type      string   `avro:"type" json:"type"`
-	All       []string `avro:"all" json:"all"`
-	Preferred string   `avro:"preferred,omitempty" json:"preferred,omitempty" yaml:"preferred,omitempty"`
+	Type      string  `avro:"type" json:"type"`
+	All       Strings `avro:"all" json:"all"`
+	Preferred string  `avro:"preferred,omitempty" json:"preferred,omitempty" yaml:"preferred,omitempty"`
 }
 
 type GeonamesDetails struct {
@@ -71,9 +80,9 @@ type Location struct {
 }
 
 type Name struct {
-	Value string   `avro:"value" json:"value"`
-	Types []string `avro:"types" json:"types"`
-	Lang  string   `avro:"lang,omitempty" json:"lang,omitempty" yaml:"lang,omitempty"`
+	Value string  `avro:"value" json:"value"`
+	Types Strings `avro:"types" json:"types"`
+	Lang  string  `avro:"lang,omitempty" json:"lang,omitempty" yaml:"lang,omitempty"`
 }
 
 type Relationship struct {
@@ -327,6 +336,7 @@ var RORVersions = map[string]string{
 	"v1.63": "2025-04-03",
 }
 
+var SupportedTypes = []string{"ROR", "Wikidata", "Crossref Funder ID", "GRID", "ISNI"}
 var RORTypes = []string{"archive", "company", "education", "facility", "funder", "government", "healthcare", "nonprofit", "other"}
 var Extensions = []string{".avro", ".yaml", ".json"}
 
@@ -369,17 +379,94 @@ func Get(id string) (ROR, error) {
 	return data, err
 }
 
-// Search searches local ROR metadata for a given ror id.
+// MatchAffiliation searches ROR metadata for a given affiliation name, using their
+// matching strategies.
+func MatchAffiliation(name string) (ROR, error) {
+	type Response struct {
+		Substring    string  `json:"substring"`
+		Score        float32 `json:"score"`
+		MatchingType string  `json:"matching_type"`
+		Chosen       bool    `json:"chosen"`
+		Organization ROR     `json:"organization"`
+	}
+
+	// Content is the wrapper around the response from the ROR API
+	type Content struct {
+		NumberOfResults int        `json:"number_of_results"`
+		Items           []Response `json:"items"`
+	}
+
+	var content Content
+	var data ROR
+
+	url := "https://api.ror.org/v2/organizations?affiliation=" + url.QueryEscape(name)
+	client := &http.Client{
+		Timeout: time.Second * 10,
+	}
+	resp, err := client.Get(url)
+	if err != nil {
+		return data, err
+	}
+	if resp.StatusCode >= 400 {
+		return data, errors.New(resp.Status)
+	}
+	defer resp.Body.Close()
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return data, err
+	}
+	err = json.Unmarshal(body, &content)
+	if err != nil {
+		fmt.Println(err)
+		return data, errors.New("error unmarshalling response")
+	}
+
+	// Check if there is a chosen organization in the response
+	chosen := slices.IndexFunc(content.Items, func(d Response) bool { return d.Chosen })
+	if chosen != -1 {
+		// fmt.Println("Chosen:", content.Items[chosen].MatchingType, content.Items[chosen].Score, content.Items[chosen].Organization.Names[0].Value)
+		data = content.Items[chosen].Organization
+		return data, nil
+	}
+	return data, err
+}
+
+// Search searches local ROR metadata for a given ror id,
+// Crossref Funder ID, grid ID, or Wikidata ID.
 func Search(id string) (ROR, error) {
+	var idx int
 	var ror ROR
+
+	pid, type_ := utils.ValidateID(id)
+	if !slices.Contains(SupportedTypes, type_) {
+		return ror, errors.New("not a supported organization id")
+	}
 
 	data, err := LoadBuiltin()
 	if err != nil {
 		return ror, err
 	}
-	idx := slices.IndexFunc(data, func(d ROR) bool { return d.ID == utils.NormalizeROR(id) })
+	if type_ == "ISNI" {
+		// ROR expects ISNI IDs to be in the form of 0000 0002 1234 5678
+		pid = utils.SplitString(pid, 4, " ")
+		pid = strings.ReplaceAll(pid, "-", " ")
+	}
+	if type_ == "ROR" {
+		idx = slices.IndexFunc(data, func(d ROR) bool { return d.ID == utils.NormalizeROR(pid) })
+	} else {
+		idx = slices.IndexFunc(data, func(d ROR) bool {
+			for _, e := range d.ExternalIDs {
+				for _, all := range e.All {
+					if all == pid {
+						return true
+					}
+				}
+			}
+			return false
+		})
+	}
 	if idx == -1 {
-		return ror, errors.New("ror id not found")
+		return ror, errors.New("no organization found")
 	}
 
 	ror = data[idx]
