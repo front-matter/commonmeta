@@ -13,7 +13,7 @@ import (
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:     "commonmeta",
-	Version: "v0.18.2",
+	Version: "v0.18.3",
 	Short:   "Convert scholarly metadata between formats",
 	Long: `Convert scholarly metadata between formats. Currently
 supported formats include Crossref, DataCite, Schema.org, CSL, InvenioRDM, 
@@ -53,6 +53,7 @@ func init() {
 	rootCmd.PersistentFlags().StringP("community", "", "", "InvenioRDM community slug")
 	rootCmd.PersistentFlags().StringP("subject", "", "", "subject area")
 	rootCmd.PersistentFlags().StringP("country", "", "", "country code")
+	rootCmd.PersistentFlags().StringP("date-updated", "", "", "date-updated")
 	rootCmd.PersistentFlags().BoolP("sample", "", false, "random sample")
 	rootCmd.PersistentFlags().BoolP("has-orcid", "", false, "has one or more ORCID IDs")
 	rootCmd.PersistentFlags().BoolP("has-ror-id", "", false, "has one or more ROR IDs")

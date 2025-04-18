@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"slices"
+	"time"
 
 	"github.com/front-matter/commonmeta/utils"
 	"github.com/hamba/avro/v2"
@@ -430,7 +431,7 @@ func WriteAllInvenioRDM(list []ROR, extension string) ([]byte, error) {
 }
 
 // FilterRecords filters a list of ROR records by type and/or country.
-func FilterRecords(list []ROR, type_ string, country string, file string, number int, page int) ([]ROR, error) {
+func FilterRecords(list []ROR, type_ string, country string, dateUpdated string, file string, number int, page int) ([]ROR, error) {
 	var filtered []ROR
 
 	if file == "funders.yaml" {
@@ -463,6 +464,18 @@ func FilterRecords(list []ROR, type_ string, country string, file string, number
 		}
 	} else {
 		filtered = append(filtered, list...)
+	}
+
+	// optionally filter by date updated
+	if dateUpdated != "" {
+		// validate date format
+		_, err := time.Parse("2006-01-02", dateUpdated)
+		if err != nil {
+			return nil, fmt.Errorf("invalid date format: %v", err)
+		}
+		filtered = slices.DeleteFunc(filtered, func(r ROR) bool {
+			return r.Admin.LastModified.Date < dateUpdated
+		})
 	}
 
 	// optionally filter by number and page

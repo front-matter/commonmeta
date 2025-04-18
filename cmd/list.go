@@ -57,6 +57,7 @@ var listCmd = &cobra.Command{
 		type_, _ := cmd.Flags().GetString("type")
 		year, _ := cmd.Flags().GetString("year")
 		country, _ := cmd.Flags().GetString("country")
+		dateUpdated, _ := cmd.Flags().GetString("date-updated")
 		language, _ := cmd.Flags().GetString("language")
 		orcid, _ := cmd.Flags().GetString("orcid")
 		affiliation, _ := cmd.Flags().GetString("affiliation")
@@ -84,17 +85,6 @@ var listCmd = &cobra.Command{
 		cmd.SetOut(os.Stdout)
 		cmd.SetErr(os.Stderr)
 
-		// specify organization metadata as input
-		var orgflags = []string{"organization", "organizations", "org", "orgs"}
-		if len(args) > 0 && slices.Contains(orgflags, args[0]) {
-			args = args[1:]
-			if from == "" {
-				from = "ror"
-			}
-			if to == "" || to == "commonmeta" {
-				to = "ror"
-			}
-		}
 		if len(args) > 0 {
 			input = args[0]
 		}
@@ -152,8 +142,8 @@ var listCmd = &cobra.Command{
 		}
 
 		// optionally filter orgdata by type, country, number and page
-		if len(orgdata) > 0 && (type_ != "" && !slices.Contains(ror.RORTypes, type_)) || country != "" || number != 0 {
-			orgdata, err = ror.FilterRecords(orgdata, type_, country, file, number, page)
+		if len(orgdata) > 0 && (type_ != "" && !slices.Contains(ror.RORTypes, type_)) || country != "" || dateUpdated != "" || number != 0 {
+			orgdata, err = ror.FilterRecords(orgdata, type_, country, dateUpdated, file, number, page)
 		}
 		if err != nil {
 			fmt.Println("An error occurred:", err)
