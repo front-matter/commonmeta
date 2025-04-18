@@ -28,16 +28,12 @@ import (
 var convertCmd = &cobra.Command{
 	Use:   "convert",
 	Short: "Convert scholarly metadata from one format to another",
-	Long: `Convert scholarly metadata between formats. Currently
-supported input formats are Crossref (default) and DataCite DOIs, currently
-supported output format and Commonmeta (default). Example usage:
+	Long: `Convert scholarly metadata between formats. Example usage:
 
 commonmeta 10.5555/12345678`,
 
 	Run: func(cmd *cobra.Command, args []string) {
-		var input string
-		var id string  // an identifier, content fetched via API
-		var str string // a string, content loaded from a file
+		var input, id, identifierType, str string
 		var err error
 		var data commonmeta.Data
 		var orgdata ror.ROR
@@ -59,22 +55,28 @@ commonmeta 10.5555/12345678`,
 			return
 		}
 
-		// specify organization metadata as input
-		var orgflags = []string{"organization", "organizations", "org", "orgs"}
-		if len(args) > 0 && slices.Contains(orgflags, args[0]) {
-			args = args[1:]
-			if from == "" {
-				from = "ror"
-			}
-			if to == "" || to == "commonmeta" {
-				to = "ror"
-			}
-		}
 		if len(args) > 0 {
 			input = args[0]
+			id, identifierType = utils.ValidateID(input)
+			if slices.Contains(ror.SupportedTypes, identifierType) {
+				id = utils.NormalizeOrganizationID(input)
+				if from == "" {
+					from = "ror"
+				}
+				if to == "" || to == "commonmeta" {
+					to = "ror"
+				}
+			} else {
+				id = utils.NormalizeWorkID(input)
+				if from == "" {
+					from = "commonmeta"
+				}
+				if to == "" || to == "commonmeta" {
+					to = "commonmeta"
+				}
+			}
 		}
 
-		id = utils.NormalizeID(input)
 		if id == "" {
 			_, err = os.Stat(input)
 			if err != nil {
@@ -100,7 +102,7 @@ commonmeta 10.5555/12345678`,
 				data, err = jsonfeed.Fetch(id)
 			} else if from == "schemaorg" {
 				data, err = schemaorg.Fetch(id)
-			} else if from == "ror" {
+			} else if slices.Contains(ror.SupportedTypes, identifierType) && from == "ror" {
 				orgdata, err = ror.Search(id)
 			} else {
 				fmt.Println("Please provide a valid input")
@@ -165,7 +167,7 @@ commonmeta 10.5555/12345678`,
 			cmd.PrintErr(err)
 		}
 
-		if to == "crossrefxml" {
+		if to == "crossrefxml" || to == "inveniordm" {
 			cmd.Printf("%s\n", output)
 		} else {
 			var out bytes.Buffer
