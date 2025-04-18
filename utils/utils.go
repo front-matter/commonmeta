@@ -610,7 +610,12 @@ func GetROR(ror string) (ROR, error) {
 }
 
 func ValidateCrossrefFunderID(fundref string) (string, bool) {
-	r := regexp.MustCompile(`^(?:(?:http|https):/(?:/)?(dx\.)?(doi\.org/))?(?:10\.13039/)?((501)?1000(0|1)[0-9]{4})$`)
+	r, err := regexp.Compile(`^(?:https?://doi\.org/)?(?:10\.13039/)?((501)?1000[0-9]{5})$`)
+	if err != nil {
+		fmt.Println("error:", err)
+		return "", false
+	}
+	// r := regexp.MustCompile(`^(?:(http|https):/(/)?(dx\.)?(doi\.org/))?(?:10\.13039/)?((501)?1000[0-1]+[0-9]{4})$`)
 	matched := r.FindStringSubmatch(fundref)
 	if len(matched) == 0 {
 		return "", false
@@ -622,12 +627,12 @@ func ValidateCrossrefFunderID(fundref string) (string, bool) {
 // Can be DOI, UUID, ISSN, ORCID, ROR, URL, RID, Wikidata, ISNI
 // or GRID
 func ValidateID(id string) (string, string) {
+	fundref, ok := ValidateCrossrefFunderID(id)
+	if ok {
+		return fundref, "Crossref Funder ID"
+	}
 	doi, ok := doiutils.ValidateDOI(id)
 	if ok {
-		prefix, _ := doiutils.ValidatePrefix(doi)
-		if prefix == "10.13039" {
-			return doi, "Crossref Funder ID"
-		}
 		return doi, "DOI"
 	}
 	uuid, ok := ValidateUUID(id)

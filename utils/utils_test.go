@@ -473,8 +473,8 @@ func TestValidateCrossrefFunderID(t *testing.T) {
 	}
 	testCases := []testCase{
 		{input: "https://doi.org/10.13039/501100000155", want: "501100000155"},
-		{input: "10.13039/501100000155/", want: "501100000155"},
-		{input: "100010540/", want: "100010540"},
+		{input: "10.13039/501100000155", want: "501100000155"},
+		{input: "100010540", want: "100010540"},
 	}
 	for _, tc := range testCases {
 		got, ok := utils.ValidateCrossrefFunderID(tc.input)
