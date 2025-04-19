@@ -18,6 +18,7 @@ import (
 	"github.com/front-matter/commonmeta/commonmeta"
 	"github.com/front-matter/commonmeta/dateutils"
 	"github.com/front-matter/commonmeta/doiutils"
+	"github.com/front-matter/commonmeta/ror"
 
 	"github.com/front-matter/commonmeta/utils"
 )
@@ -306,7 +307,7 @@ var CMToDataciteRelationTypeMappings = map[string]string{
 }
 
 // Fetch fetches DataCite metadata for a given DOI and returns Commonmeta metadata.
-func Fetch(str string) (commonmeta.Data, error) {
+func Fetch(str string, match bool) (commonmeta.Data, error) {
 	var data commonmeta.Data
 	id, ok := doiutils.ValidateDOI(str)
 	if !ok {
@@ -316,7 +317,7 @@ func Fetch(str string) (commonmeta.Data, error) {
 	if err != nil {
 		return data, err
 	}
-	data, err = Read(content)
+	data, err = Read(content, match)
 	if err != nil {
 		return data, err
 	}
@@ -324,7 +325,7 @@ func Fetch(str string) (commonmeta.Data, error) {
 }
 
 // FetchAll gets the metadata for a list of works from the DataCite API and returns Commonmeta metadata.
-func FetchAll(number int, page int, client_ string, type_ string, sample bool, year string, language string, orcid string, ror string, hasORCID bool, hasROR bool, hasReferences bool, hasRelation bool, hasAbstract bool, hasAward bool, hasLicense bool) ([]commonmeta.Data, error) {
+func FetchAll(number int, page int, client_ string, type_ string, sample bool, year string, language string, orcid string, ror string, hasORCID bool, hasROR bool, hasReferences bool, hasRelation bool, hasAbstract bool, hasAward bool, hasLicense bool, match bool) ([]commonmeta.Data, error) {
 	var data []commonmeta.Data
 
 	// check format of client ID
@@ -351,7 +352,7 @@ func FetchAll(number int, page int, client_ string, type_ string, sample bool, y
 		return data, err
 	}
 	for _, v := range content {
-		d, err := Read(v)
+		d, err := Read(v, match)
 		if err != nil {
 			log.Println(err)
 		}
@@ -361,14 +362,14 @@ func FetchAll(number int, page int, client_ string, type_ string, sample bool, y
 }
 
 // Load loads the metadata for a single work from a JSON file
-func Load(filename string) (commonmeta.Data, error) {
+func Load(filename string, match bool) (commonmeta.Data, error) {
 	var data commonmeta.Data
 
 	content, err := ReadJSON(filename)
 	if err != nil {
 		return data, err
 	}
-	data, err = Read(content)
+	data, err = Read(content, match)
 	if err != nil {
 		return data, err
 	}
@@ -376,7 +377,7 @@ func Load(filename string) (commonmeta.Data, error) {
 }
 
 // LoadAll loads a list of DataCite metadata from a JSON string and returns Commonmeta metadata.
-func LoadAll(filename string) ([]commonmeta.Data, error) {
+func LoadAll(filename string, match bool) ([]commonmeta.Data, error) {
 	var data []commonmeta.Data
 	var content []Content
 	var err error
@@ -395,7 +396,7 @@ func LoadAll(filename string) ([]commonmeta.Data, error) {
 	} else {
 		return data, errors.New("unsupported file format")
 	}
-	data, err = ReadAll(content)
+	data, err = ReadAll(content, match)
 	if err != nil {
 		return data, err
 	}
@@ -414,7 +415,7 @@ func Get(id string) (Content, error) {
 	if !ok {
 		return response.Data.Attributes, errors.New("invalid DOI")
 	}
-	url := "https://api.datacite.org/dois/" + doi
+	url := "https://api.datacite.org/dois/" + doi + "?affiliation=true"
 	client := &http.Client{
 		Timeout: time.Second * 10,
 	}
@@ -438,7 +439,7 @@ func Get(id string) (Content, error) {
 }
 
 // Read reads DataCite JSON response and return work struct in Commonmeta format
-func Read(content Content) (commonmeta.Data, error) {
+func Read(content Content, match bool) (commonmeta.Data, error) {
 	var data = commonmeta.Data{}
 	var err error
 
@@ -468,7 +469,7 @@ func Read(content Content) (commonmeta.Data, error) {
 
 	for _, v := range content.Creators {
 		if v.Name != "" || v.GivenName != "" || v.FamilyName != "" {
-			contributor := GetContributor(v)
+			contributor := GetContributor(v, match)
 			containsID := slices.ContainsFunc(data.Contributors, func(e commonmeta.Contributor) bool {
 				return e.ID != "" && e.ID == contributor.ID
 			})
@@ -481,7 +482,7 @@ func Read(content Content) (commonmeta.Data, error) {
 	// merge creators and contributors
 	for _, v := range content.Contributors {
 		if v.Name != "" || v.GivenName != "" || v.FamilyName != "" {
-			contributor := GetContributor(v)
+			contributor := GetContributor(v, match)
 			containsID := slices.ContainsFunc(data.Contributors, func(e commonmeta.Contributor) bool {
 				return e.ID != "" && e.ID == contributor.ID
 			})
@@ -729,7 +730,7 @@ func Read(content Content) (commonmeta.Data, error) {
 }
 
 // GetContributor converts DataCite contributor metadata into the Commonmeta format
-func GetContributor(v ContentContributor) commonmeta.Contributor {
+func GetContributor(v ContentContributor, match bool) commonmeta.Contributor {
 	var t string
 	if len(v.NameType) > 2 {
 		t = v.NameType[:len(v.NameType)-2]
@@ -777,10 +778,19 @@ func GetContributor(v ContentContributor) commonmeta.Contributor {
 	}
 	if len(affiliationStructs) > 0 {
 		for _, v := range affiliationStructs {
-			id := utils.NormalizeROR(v.AffiliationIdentifier)
+			var assertedBy string
+			ID := utils.NormalizeROR(v.AffiliationIdentifier)
+			if ID != "" {
+				assertedBy = "publisher"
+			}
+			ID, name, assertedBy, err := ror.MapROR(ID, v.Name, assertedBy, match)
+			if err != nil {
+				fmt.Println("error mapping ROR:", err)
+			}
 			af := commonmeta.Affiliation{
-				ID:   id,
-				Name: v.Name,
+				ID:         ID,
+				Name:       name,
+				AssertedBy: assertedBy,
 			}
 			affiliations = append(affiliations, &af)
 		}
@@ -851,10 +861,10 @@ func GetAll(number int, page int, client_ string, type_ string, sample bool, yea
 }
 
 // ReadAll reads a list of DataCite JSON responses and returns a list of works in Commonmeta format
-func ReadAll(content []Content) ([]commonmeta.Data, error) {
+func ReadAll(content []Content, match bool) ([]commonmeta.Data, error) {
 	var data []commonmeta.Data
 	for _, v := range content {
-		d, err := Read(v)
+		d, err := Read(v, match)
 		if err != nil {
 			log.Println(err)
 		}

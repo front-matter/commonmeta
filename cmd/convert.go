@@ -46,6 +46,7 @@ commonmeta 10.5555/12345678`,
 		depositor, _ := cmd.Flags().GetString("depositor")
 		email, _ := cmd.Flags().GetString("email")
 		registrant, _ := cmd.Flags().GetString("registrant")
+		match, _ := cmd.Flags().GetBool("match")
 
 		cmd.SetOut(os.Stdout)
 		cmd.SetErr(os.Stderr)
@@ -91,19 +92,23 @@ commonmeta 10.5555/12345678`,
 				from = utils.FindFromFormatByID(id)
 			}
 			if from == "crossref" {
-				data, err = crossref.Fetch(id)
+				data, err = crossref.Fetch(id, match)
 			} else if from == "crossrefxml" {
 				data, err = crossrefxml.Fetch(id)
 			} else if from == "datacite" {
-				data, err = datacite.Fetch(id)
+				data, err = datacite.Fetch(id, match)
 			} else if from == "inveniordm" {
-				data, err = inveniordm.Fetch(id)
+				data, err = inveniordm.Fetch(id, match)
 			} else if from == "jsonfeed" {
 				data, err = jsonfeed.Fetch(id)
 			} else if from == "schemaorg" {
-				data, err = schemaorg.Fetch(id)
+				data, err = schemaorg.Fetch(id, match)
 			} else if slices.Contains(ror.SupportedTypes, identifierType) && from == "ror" {
 				orgdata, err = ror.Search(id)
+				if orgdata.ID == "" {
+					cmd.Println("No match found")
+					return
+				}
 			} else {
 				fmt.Println("Please provide a valid input")
 				return
@@ -119,17 +124,17 @@ commonmeta 10.5555/12345678`,
 			if from == "commonmeta" {
 				data, err = commonmeta.Load(str)
 			} else if from == "crossref" {
-				data, err = crossref.Load(str)
+				data, err = crossref.Load(str, match)
 			} else if from == "crossrefxml" {
 				data, err = crossrefxml.Load(str)
 			} else if from == "datacite" {
-				data, err = datacite.Load(str)
+				data, err = datacite.Load(str, match)
 			} else if from == "inveniordm" {
-				data, err = inveniordm.Load(str)
+				data, err = inveniordm.Load(str, match)
 			} else if from == "csl" {
 				data, err = csl.Load(str)
 			} else if from == "schemaorg" {
-				data, err = schemaorg.Load(str)
+				data, err = schemaorg.Load(str, match)
 			} else {
 				cmd.PrintErr("Please provide a valid input")
 				return

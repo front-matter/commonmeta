@@ -17,6 +17,7 @@ import (
 	"github.com/front-matter/commonmeta/commonmeta"
 	"github.com/front-matter/commonmeta/dateutils"
 	"github.com/front-matter/commonmeta/doiutils"
+	"github.com/front-matter/commonmeta/ror"
 	"github.com/front-matter/commonmeta/utils"
 )
 
@@ -1404,19 +1405,18 @@ func GetContributors(contrib Contributors) ([]commonmeta.Contributor, error) {
 				var affiliations []*commonmeta.Affiliation
 				if v.Affiliations != nil {
 					for _, i := range v.Affiliations.Institution {
-						if i.InstitutionName != "" {
-							if i.InstitutionID != nil && i.InstitutionID.Text != "" {
-								InstitutionID := utils.NormalizeROR(i.InstitutionID.Text)
-								affiliations = append(affiliations, &commonmeta.Affiliation{
-									ID:   InstitutionID,
-									Name: i.InstitutionName,
-								})
-							} else {
-								affiliations = append(affiliations, &commonmeta.Affiliation{
-									Name: i.InstitutionName,
-								})
-							}
+						var ID string
+						if i.InstitutionID != nil && i.InstitutionID.Text != "" {
+							ID = utils.NormalizeROR(i.InstitutionID.Text)
 						}
+						ID, name, _, err := ror.MapROR(ID, i.InstitutionName, "", false)
+						if err != nil {
+							fmt.Println("error mapping ROR:", err)
+						}
+						affiliations = append(affiliations, &commonmeta.Affiliation{
+							ID:   ID,
+							Name: name,
+						})
 					}
 				} else if v.Affiliation != "" {
 					affiliations = append(affiliations, &commonmeta.Affiliation{

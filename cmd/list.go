@@ -77,6 +77,7 @@ var listCmd = &cobra.Command{
 		isArchived, _ := cmd.Flags().GetBool("is-archived")
 		sample, _ := cmd.Flags().GetBool("sample")
 		file, _ := cmd.Flags().GetString("file")
+		match, _ := cmd.Flags().GetBool("match")
 
 		depositor, _ := cmd.Flags().GetString("depositor")
 		email, _ := cmd.Flags().GetString("email")
@@ -105,21 +106,21 @@ var listCmd = &cobra.Command{
 		if from == "commonmeta" {
 			data, err = commonmeta.LoadAll(str)
 		} else if str != "" && from == "crossref" {
-			data, err = crossref.LoadAll(str)
+			data, err = crossref.LoadAll(str, match)
 		} else if str != "" && from == "crossrefxml" {
 			data, err = crossrefxml.LoadAll(str)
 		} else if str != "" && from == "datacite" {
-			data, err = datacite.LoadAll(str)
+			data, err = datacite.LoadAll(str, match)
 		} else if str != "" && from == "jsonfeed" {
 			data, err = jsonfeed.LoadAll(str)
 		} else if str != "" && from == "csl" {
 			data, err = csl.LoadAll(str)
 		} else if from == "crossref" {
-			data, err = crossref.FetchAll(number, page, member, type_, sample, year, orcid, ror_, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
+			data, err = crossref.FetchAll(number, page, member, type_, sample, year, orcid, ror_, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive, match)
 		} else if from == "datacite" {
-			data, err = datacite.FetchAll(number, page, client_, type_, sample, year, language, orcid, ror_, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense)
+			data, err = datacite.FetchAll(number, page, client_, type_, sample, year, language, orcid, ror_, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, match)
 		} else if from == "inveniordm" {
-			data, err = inveniordm.FetchAll(number, page, fromHost, community, subject, type_, year, language, orcid, affiliation, ror_, hasORCID, hasROR)
+			data, err = inveniordm.FetchAll(number, page, fromHost, community, subject, type_, year, language, orcid, affiliation, ror_, hasORCID, hasROR, match)
 		} else if from == "jsonfeed" {
 			data, err = jsonfeed.FetchAll(number, page, community, isArchived)
 		} else if str != "" && from == "ror" {

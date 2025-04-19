@@ -24,6 +24,7 @@ import (
 	"github.com/front-matter/commonmeta/commonmeta"
 	"github.com/front-matter/commonmeta/dateutils"
 	"github.com/front-matter/commonmeta/doiutils"
+	"github.com/front-matter/commonmeta/ror"
 	"github.com/front-matter/commonmeta/utils"
 )
 
@@ -52,8 +53,9 @@ type Content struct {
 		Sequence    string `json:"sequence"`
 		Affiliation []struct {
 			ID []struct {
-				ID     string `json:"id"`
-				IDType string `json:"id-type"`
+				ID         string `json:"id"`
+				IDType     string `json:"id-type"`
+				AssertedBy string `json:"asserted-by"`
 			} `json:"id"`
 			Name string `json:"name"`
 		} `json:"affiliation"`
@@ -112,6 +114,7 @@ type Content struct {
 		ArticleTitle string `json:"article-title"`
 		Year         string `json:"year"`
 		Unstructured string `json:"unstructured"`
+		AssertedBy   string `json:"doi-asserted-by"`
 	} `json:"reference"`
 	Relation struct {
 		IsNewVersionOf []struct {
@@ -275,7 +278,7 @@ var CRToCMContainerTranslations = map[string]string{
 var relationTypes = []string{"IsPartOf", "HasPart", "IsVariantFormOf", "IsOriginalFormOf", "IsIdenticalTo", "IsTranslationOf", "IsReviewOf", "HasReview", "IsPreprintOf", "HasPreprint", "IsSupplementTo", "IsSupplementedBy"}
 
 // Fetch gets the metadata for a single work from the Crossref API and converts it to the Commonmeta format
-func Fetch(str string) (commonmeta.Data, error) {
+func Fetch(str string, match bool) (commonmeta.Data, error) {
 	var data commonmeta.Data
 	id, ok := doiutils.ValidateDOI(str)
 	if !ok {
@@ -285,7 +288,7 @@ func Fetch(str string) (commonmeta.Data, error) {
 	if err != nil {
 		return data, err
 	}
-	data, err = Read(content)
+	data, err = Read(content, match)
 	if err != nil {
 		return data, err
 	}
@@ -293,7 +296,7 @@ func Fetch(str string) (commonmeta.Data, error) {
 }
 
 // FetchAll gets the metadata for a list of works from the Crossref API and converts it to the Commonmeta format
-func FetchAll(number int, page int, member string, type_ string, sample bool, year string, ror string, orcid string, hasORCID bool, hasROR bool, hasReferences bool, hasRelation bool, hasAbstract bool, hasAward bool, hasLicense bool, hasArchive bool) ([]commonmeta.Data, error) {
+func FetchAll(number int, page int, member string, type_ string, sample bool, year string, ror string, orcid string, hasORCID bool, hasROR bool, hasReferences bool, hasRelation bool, hasAbstract bool, hasAward bool, hasLicense bool, hasArchive bool, match bool) ([]commonmeta.Data, error) {
 
 	var data []commonmeta.Data
 	content, err := GetAll(number, page, member, type_, sample, year, orcid, ror, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
@@ -301,7 +304,7 @@ func FetchAll(number int, page int, member string, type_ string, sample bool, ye
 		return data, err
 	}
 
-	data, err = ReadAll(content)
+	data, err = ReadAll(content, match)
 	if err != nil {
 		return data, err
 	}
@@ -364,7 +367,7 @@ func GetAll(number int, page int, member string, type_ string, sample bool, year
 		Message        struct {
 			TotalResults int       `json:"total-results"`
 			Items        []Content `json:"items"`
-		} `json:"message`
+		}
 	}
 	var response Response
 	if number > 100 {
@@ -403,7 +406,7 @@ func GetAll(number int, page int, member string, type_ string, sample bool, year
 }
 
 // Load loads the metadata for a single work from a JSON file
-func Load(filename string) (commonmeta.Data, error) {
+func Load(filename string, match bool) (commonmeta.Data, error) {
 	var data commonmeta.Data
 	var content Content
 
@@ -422,7 +425,7 @@ func Load(filename string) (commonmeta.Data, error) {
 	if err != nil {
 		return data, err
 	}
-	data, err = Read(content)
+	data, err = Read(content, match)
 	if err != nil {
 		return data, err
 	}
@@ -430,7 +433,7 @@ func Load(filename string) (commonmeta.Data, error) {
 }
 
 // LoadAll loads the metadata for a list of works from a JSON file and converts it to the Commonmeta format
-func LoadAll(filename string) ([]commonmeta.Data, error) {
+func LoadAll(filename string, match bool) ([]commonmeta.Data, error) {
 	var data []commonmeta.Data
 	var content []Content
 	var err error
@@ -476,7 +479,7 @@ func LoadAll(filename string) ([]commonmeta.Data, error) {
 		return data, errors.New("unsupported file format")
 	}
 
-	data, err = ReadAll(content)
+	data, err = ReadAll(content, match)
 	if err != nil {
 		return data, err
 	}
@@ -484,7 +487,7 @@ func LoadAll(filename string) ([]commonmeta.Data, error) {
 }
 
 // Read Crossref JSON response and return work struct in Commonmeta format
-func Read(content Content) (commonmeta.Data, error) {
+func Read(content Content, match bool) (commonmeta.Data, error) {
 	var data = commonmeta.Data{}
 
 	data.ID = doiutils.NormalizeDOI(content.DOI)
@@ -565,14 +568,20 @@ func Read(content Content) (commonmeta.Data, error) {
 			var affiliations []*commonmeta.Affiliation
 			if len(v.Affiliation) > 0 {
 				for _, a := range v.Affiliation {
-					var ID string
+					var ID, assertedBy string
 					if len(a.ID) > 0 && a.ID[0].IDType == "ROR" {
 						ID = utils.NormalizeROR(a.ID[0].ID)
+						assertedBy = a.ID[0].AssertedBy
 					}
-					if a.Name != "" {
+					ID, name, assertedBy, err := ror.MapROR(ID, a.Name, assertedBy, match)
+					if err != nil {
+						fmt.Println("error mapping ROR:", err)
+					}
+					if ID != "" || name != "" {
 						affiliations = append(affiliations, &commonmeta.Affiliation{
-							ID:   ID,
-							Name: a.Name,
+							ID:         ID,
+							Name:       name,
+							AssertedBy: assertedBy,
 						})
 					}
 				}
@@ -711,6 +720,7 @@ func Read(content Content) (commonmeta.Data, error) {
 			Title:           v.ArticleTitle,
 			PublicationYear: v.Year,
 			Unstructured:    v.Unstructured,
+			AssertedBy:      v.AssertedBy,
 		}
 		containsKey := slices.ContainsFunc(data.References, func(e commonmeta.Reference) bool {
 			return e.Key != "" && e.Key == reference.Key
@@ -811,10 +821,10 @@ func Read(content Content) (commonmeta.Data, error) {
 }
 
 // ReadAll reads a list of Crossref JSON responses and returns a list of works in Commonmeta format
-func ReadAll(content []Content) ([]commonmeta.Data, error) {
+func ReadAll(content []Content, match bool) ([]commonmeta.Data, error) {
 	var data []commonmeta.Data
 	for _, v := range content {
-		d, err := Read(v)
+		d, err := Read(v, match)
 		if err != nil {
 			log.Println(err)
 		}

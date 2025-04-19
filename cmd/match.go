@@ -36,6 +36,10 @@ var matchCmd = &cobra.Command{
 			return
 		}
 
+		if to == "" || to == "commonmeta" {
+			to = "ror"
+		}
+
 		input = args[0]
 
 		if from == "ror" {

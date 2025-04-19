@@ -31,10 +31,11 @@ func TestWrite(t *testing.T) {
 	for _, tc := range testCases {
 		var data commonmeta.Data
 		var err error
+		match := true
 		if tc.from == "crossref" {
-			data, err = crossref.Fetch(tc.id)
+			data, err = crossref.Fetch(tc.id, match)
 		} else if tc.from == "datacite" {
-			data, err = datacite.Fetch(tc.id)
+			data, err = datacite.Fetch(tc.id, match)
 		}
 		if err != nil {
 			t.Errorf("Crossref Fetch (%v): error %v", tc.id, err)

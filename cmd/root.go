@@ -66,6 +66,7 @@ func init() {
 	rootCmd.PersistentFlags().BoolP("has-archive", "", false, "has archive")
 	rootCmd.PersistentFlags().BoolP("is-archived", "", true, "is archived")
 	rootCmd.PersistentFlags().BoolP("vocabulary", "", false, "with vocabulary")
+	rootCmd.PersistentFlags().BoolP("match", "", true, "enable matching")
 
 	// needed for DOI registration
 	rootCmd.PersistentFlags().StringP("prefix", "", "", "DOI prefix")

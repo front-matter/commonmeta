@@ -85,8 +85,9 @@ func TestFetch(t *testing.T) {
 		{pid: publication.ID, want: publication.Metadata.Title, err: nil},
 		{pid: preprint.ID, want: preprint.Metadata.Title, err: nil},
 	}
+	match := true
 	for _, tc := range testCases {
-		got, err := inveniordm.Fetch(tc.pid)
+		got, err := inveniordm.Fetch(tc.pid, match)
 		if tc.want != got.Titles[0].Title {
 			t.Errorf("InvenioRDM ID(%v): want %v, got %v, error %v",
 				tc.pid, tc.want, got, err)

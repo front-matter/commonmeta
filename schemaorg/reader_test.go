@@ -57,9 +57,9 @@ func TestFetch(t *testing.T) {
 		{id: "10.5061/dryad.8515", url: "https://datadryad.org/stash/dataset/doi:10.5061/dryad.8515"},
 		{id: "10.7554/eLife.93170.2", url: "https://elifesciences.org/reviewed-preprints/93170"},
 	}
-
+	match := true
 	for _, tc := range testCases {
-		got, err := schemaorg.Fetch(tc.url)
+		got, err := schemaorg.Fetch(tc.url, match)
 		if err != nil {
 			t.Errorf("Schemaorg Fetch (%v): error %v", tc.url, err)
 			got = commonmeta.Data{}

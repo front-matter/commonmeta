@@ -67,8 +67,9 @@ func TestFetch(t *testing.T) {
 		{name: "with ror id", id: "https://doi.org/10.1364/oe.490112"},
 		{name: "archived", id: "10.5694/j.1326-5377.1943.tb44329.x"},
 	}
+	match := true
 	for _, tc := range testCases {
-		got, err := crossref.Fetch(tc.id)
+		got, err := crossref.Fetch(tc.id, match)
 		if err != nil {
 			t.Errorf("Crossref Metadata(%v): error %v", tc.id, err)
 		}

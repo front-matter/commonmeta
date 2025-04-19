@@ -29,14 +29,14 @@ func TestWrite(t *testing.T) {
 		//{name: "preprint", id: "https://doi.org/10.1101/097196", from: "crossref"},
 		{name: "dataset", id: "https://doi.org/10.5061/dryad.8515", from: "datacite"},
 	}
-
+	match := true
 	for _, tc := range testCases {
 		var data commonmeta.Data
 		var err error
 		if tc.from == "crossref" {
-			data, err = crossref.Fetch(tc.id)
+			data, err = crossref.Fetch(tc.id, match)
 		} else if tc.from == "datacite" {
-			data, err = datacite.Fetch(tc.id)
+			data, err = datacite.Fetch(tc.id, match)
 		}
 		if err != nil {
 			t.Errorf("Crossref Fetch (%v): error %v", tc.id, err)

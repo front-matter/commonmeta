@@ -171,7 +171,7 @@ var SOToCMMappings = map[string]string{
 }
 
 // Fetch fetches Schemaorg metadata for a given URL and returns Commonmeta metadata.
-func Fetch(url string) (commonmeta.Data, error) {
+func Fetch(url string, match bool) (commonmeta.Data, error) {
 	var data commonmeta.Data
 
 	content, err := Get(url)
@@ -180,9 +180,9 @@ func Fetch(url string) (commonmeta.Data, error) {
 	}
 	// if url represents (Crossref or DataCite) DOI, fetch metadata from Crossref or DataCite API
 	if content.Provider.Name == "Crossref" {
-		data, err = crossref.Fetch(content.ID)
+		data, err = crossref.Fetch(content.ID, match)
 	} else if content.Provider.Name == "DataCite" {
-		data, err = datacite.Fetch(content.ID)
+		data, err = datacite.Fetch(content.ID, match)
 	} else {
 		data, err = Read(content)
 	}
@@ -335,7 +335,7 @@ func Get(url string) (Content, error) {
 }
 
 // Load loads the metadata for a single work from a JSON file
-func Load(filename string) (commonmeta.Data, error) {
+func Load(filename string, match bool) (commonmeta.Data, error) {
 	var data commonmeta.Data
 	var content Content
 

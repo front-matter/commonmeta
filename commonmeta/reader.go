@@ -238,13 +238,14 @@ type Data struct {
 
 // Affiliation represents the affiliation of a contributor, defined in the commonmeta JSON Schema.
 type Affiliation struct {
-	ID   string `avro:"id,omitempty json:"id,omitempty"`
-	Name string `avro:"name,omitempty json:"name,omitempty"`
+	ID         string `avro:"id,omitempty" json:"id,omitempty"`
+	Name       string `avro:"name,omitempty" json:"name,omitempty"`
+	AssertedBy string `avro:"assertedBy,omitempty" json:"assertedBy,omitempty"`
 }
 
 // Container represents the container of a publication, defined in the commonmeta JSON Schema.
 type Container struct {
-	Identifier     string  `avro:"identifier,omitempty json:"identifier,omitempty"`
+	Identifier     string  `avro:"identifier,omitempty" json:"identifier,omitempty"`
 	IdentifierType string  `avro:"identifierType,omitempty" json:"identifierType,omitempty"`
 	Type           string  `avro:"type,omitempty" json:"type,omitempty"`
 	Title          string  `avro:"title,omitempty" json:"title,omitempty"`
@@ -366,6 +367,7 @@ type Reference struct {
 	Title           string `json:"title,omitempty"`
 	PublicationYear string `json:"publicationYear,omitempty"`
 	Unstructured    string `json:"unstructured,omitempty"`
+	AssertedBy      string `json:"assertedBy,omitempty"`
 }
 
 // Relation represents the relation of a publication, defined in the commonmeta JSON Schema.

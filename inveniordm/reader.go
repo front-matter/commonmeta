@@ -20,6 +20,7 @@ import (
 	"github.com/front-matter/commonmeta/authorutils"
 	"github.com/front-matter/commonmeta/commonmeta"
 	"github.com/front-matter/commonmeta/doiutils"
+	"github.com/front-matter/commonmeta/ror"
 	"github.com/front-matter/commonmeta/utils"
 )
 
@@ -525,37 +526,37 @@ var CommunityTranslations = map[string]string{
 }
 
 // Fetch fetches InvenioRDM metadata and returns Commonmeta metadata.
-func Fetch(str string) (commonmeta.Data, error) {
+func Fetch(str string, match bool) (commonmeta.Data, error) {
 	var data commonmeta.Data
 	id, _ := utils.ValidateID(str)
 	content, err := Get(id)
 	if err != nil {
 		return data, err
 	}
-	data, err = Read(content)
+	data, err = Read(content, match)
 	return data, err
 }
 
 // FetchAll gets the metadata for a list of records from a InvenioRDM community and returns Commonmeta metadata.
-func FetchAll(number int, page int, host string, community string, subject string, type_ string, year string, language string, orcid string, affiliation string, ror string, hasORCID bool, hasROR bool) ([]commonmeta.Data, error) {
+func FetchAll(number int, page int, host string, community string, subject string, type_ string, year string, language string, orcid string, affiliation string, ror string, hasORCID bool, hasROR bool, match bool) ([]commonmeta.Data, error) {
 	var data []commonmeta.Data
 	content, err := GetAll(number, page, host, community, subject, type_, year, language, orcid, affiliation, ror, hasORCID, hasROR)
 	if err != nil {
 		return data, err
 	}
-	data, err = ReadAll(content)
+	data, err = ReadAll(content, match)
 	return data, err
 }
 
 // Load loads the metadata for a single work from a JSON file
-func Load(filename string) (commonmeta.Data, error) {
+func Load(filename string, match bool) (commonmeta.Data, error) {
 	var data commonmeta.Data
 
 	content, err := ReadJSON(filename)
 	if err != nil {
 		return data, err
 	}
-	data, err = Read(content)
+	data, err = Read(content, match)
 	if err != nil {
 		return data, err
 	}
@@ -563,7 +564,7 @@ func Load(filename string) (commonmeta.Data, error) {
 }
 
 // LoadAll loads a list of Inveniordm metadata from a JSON file and returns Commonmeta metadata.
-func LoadAll(filename string) ([]commonmeta.Data, error) {
+func LoadAll(filename string, match bool) ([]commonmeta.Data, error) {
 	var data []commonmeta.Data
 	var content []Content
 	var err error
@@ -582,7 +583,7 @@ func LoadAll(filename string) ([]commonmeta.Data, error) {
 	} else {
 		return data, errors.New("unsupported file format")
 	}
-	data, err = ReadAll(content)
+	data, err = ReadAll(content, match)
 	if err != nil {
 		return data, err
 	}
@@ -803,7 +804,7 @@ func SearchBySlug(slug string, type_ string, client *InvenioRDMClient, cache *ca
 }
 
 // Read reads InvenioRDM JSON API response and converts it into Commonmeta metadata.
-func Read(content Content) (commonmeta.Data, error) {
+func Read(content Content, match bool) (commonmeta.Data, error) {
 	var data commonmeta.Data
 
 	if content.DOI != "" {
@@ -866,7 +867,7 @@ func Read(content Content) (commonmeta.Data, error) {
 	for _, v := range content.Metadata.Creators {
 		var contributor commonmeta.Contributor
 		if v.PersonOrOrg.Name != "" {
-			contributor = GetContributor(v)
+			contributor = GetContributor(v, match)
 		} else if v.Name != "" {
 			contributor = GetZenodoContributor(v)
 		}
@@ -1160,10 +1161,10 @@ func Read(content Content) (commonmeta.Data, error) {
 }
 
 // ReadAll reads a list of Inveniordm JSON responses and returns a list of works in Commonmeta format
-func ReadAll(content []Content) ([]commonmeta.Data, error) {
+func ReadAll(content []Content, match bool) ([]commonmeta.Data, error) {
 	var data []commonmeta.Data
 	for _, v := range content {
-		d, err := Read(v)
+		d, err := Read(v, match)
 		if err != nil {
 			log.Println(err)
 		}
@@ -1238,7 +1239,7 @@ func ReadJSONLines(filename string) ([]Content, error) {
 }
 
 // GetContributor converts Inveniordm contributor metadata into the Commonmeta format
-func GetContributor(v Creator) commonmeta.Contributor {
+func GetContributor(v Creator, match bool) commonmeta.Contributor {
 	var t string
 	if v.PersonOrOrg.Type == "personal" {
 		t = "Person"
@@ -1274,13 +1275,19 @@ func GetContributor(v Creator) commonmeta.Contributor {
 
 	var affiliations []*commonmeta.Affiliation
 	for _, a := range v.Affiliations {
-		id, identifierType := utils.ValidateID(a.ID)
-		if identifierType == "ROR" {
-			id = utils.NormalizeROR(id)
+		var assertedBy string
+		ID, _ := utils.ValidateROR(a.ID)
+		if ID != "" {
+			assertedBy = "publisher"
+		}
+		ID, name, assertedBy, err := ror.MapROR(ID, v.Name, assertedBy, match)
+		if err != nil {
+			fmt.Println("error mapping ROR:", err)
 		}
 		affiliations = append(affiliations, &commonmeta.Affiliation{
-			ID:   id,
-			Name: a.Name,
+			ID:         ID,
+			Name:       name,
+			AssertedBy: assertedBy,
 		})
 	}
 

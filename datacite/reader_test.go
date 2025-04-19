@@ -64,8 +64,9 @@ func TestFetch(t *testing.T) {
 		{name: "subject scheme FOR", id: "https://doi.org/10.6084/m9.figshare.1449060"},
 		{name: "geolocation box", id: "https://doi.org/10.6071/z7wc73"},
 	}
+	match := true
 	for _, tc := range testCases {
-		got, err := datacite.Fetch(tc.id)
+		got, err := datacite.Fetch(tc.id, match)
 		if err != nil {
 			t.Errorf("DataCite Metadata(%v): error %v", tc.id, err)
 		}

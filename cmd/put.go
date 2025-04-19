@@ -53,6 +53,7 @@ commonmeta put 10.5555/12345678 -f crossref -t inveniordm -h rogue-scholar.org -
 		client_, _ := cmd.Flags().GetString("client")
 		password, _ := cmd.Flags().GetString("password")
 		development, _ := cmd.Flags().GetBool("development")
+		match, _ := cmd.Flags().GetBool("match")
 
 		cmd.SetOut(os.Stdout)
 		cmd.SetErr(os.Stderr)
@@ -79,17 +80,16 @@ commonmeta put 10.5555/12345678 -f crossref -t inveniordm -h rogue-scholar.org -
 				from = utils.FindFromFormatByID(id)
 			}
 			if from == "crossref" {
-				data, err = crossref.Fetch(id)
+				data, err = crossref.Fetch(id, match)
 			} else if from == "crossrefxml" {
 				data, err = crossrefxml.Fetch(id)
 			} else if from == "datacite" {
-				data, err = datacite.Fetch(id)
-			} else if from == "inveniordm" {
-				data, err = inveniordm.Fetch(id)
+				data, err = datacite.Fetch(id, match)
+				data, err = inveniordm.Fetch(id, match)
 			} else if from == "jsonfeed" {
 				data, err = jsonfeed.Fetch(id)
 			} else if from == "schemaorg" {
-				data, err = schemaorg.Fetch(id)
+				data, err = schemaorg.Fetch(id, match)
 			} else {
 				fmt.Println("Please provide a valid input")
 				return
@@ -105,11 +105,11 @@ commonmeta put 10.5555/12345678 -f crossref -t inveniordm -h rogue-scholar.org -
 			if from == "commonmeta" {
 				data, err = commonmeta.Load(str)
 			} else if from == "crossref" {
-				data, err = crossref.Load(str)
+				data, err = crossref.Load(str, match)
 			} else if from == "crossrefxml" {
 				data, err = crossrefxml.Load(str)
 			} else if from == "datacite" {
-				data, err = datacite.Load(str)
+				data, err = datacite.Load(str, match)
 			} else if from == "csl" {
 				data, err = csl.Load(str)
 			} else {

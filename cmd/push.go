@@ -77,6 +77,7 @@ commonmeta push --sample -f crossref -t inveniordm -h rogue-scholar.org --token 
 		legacyKey, _ := cmd.Flags().GetString("legacyKey")
 		password, _ := cmd.Flags().GetString("password")
 		development, _ := cmd.Flags().GetBool("development")
+		match, _ := cmd.Flags().GetBool("match")
 
 		cmd.SetOut(os.Stdout)
 		cmd.SetErr(os.Stderr)
@@ -91,23 +92,23 @@ commonmeta push --sample -f crossref -t inveniordm -h rogue-scholar.org --token 
 		}
 
 		if from == "crossref" {
-			data, err = crossref.FetchAll(number, page, member, type_, sample, year, orcid, ror, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
+			data, err = crossref.FetchAll(number, page, member, type_, sample, year, orcid, ror, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive, match)
 		} else if from == "datacite" {
-			data, err = datacite.FetchAll(number, page, client_, type_, sample, year, language, orcid, ror, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense)
+			data, err = datacite.FetchAll(number, page, client_, type_, sample, year, language, orcid, ror, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, match)
 		} else if from == "inveniordm" {
-			data, err = inveniordm.FetchAll(number, page, fromHost, community, subject, type_, year, language, orcid, affiliation, ror, hasORCID, hasROR)
+			data, err = inveniordm.FetchAll(number, page, fromHost, community, subject, type_, year, language, orcid, affiliation, ror, hasORCID, hasROR, match)
 		} else if from == "jsonfeed" {
 			data, err = jsonfeed.FetchAll(number, page, community, isArchived)
 		} else if str != "" && from == "commonmeta" {
 			data, err = commonmeta.LoadAll(str)
 		} else if str != "" && from == "crossref" {
-			data, err = crossref.LoadAll(str)
+			data, err = crossref.LoadAll(str, match)
 		} else if str != "" && from == "crossrefxml" {
 			data, err = crossrefxml.LoadAll(str)
 		} else if str != "" && from == "datacite" {
-			data, err = datacite.LoadAll(str)
+			data, err = datacite.LoadAll(str, match)
 		} else if str != "" && from == "inveniordm" {
-			data, err = inveniordm.LoadAll(str)
+			data, err = inveniordm.LoadAll(str, match)
 		} else if str != "" && from == "jsonfeed" {
 			data, err = jsonfeed.LoadAll(str)
 		} else if str != "" && from == "csl" {

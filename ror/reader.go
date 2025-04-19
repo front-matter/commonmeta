@@ -82,7 +82,7 @@ type Location struct {
 type Name struct {
 	Value string  `avro:"value" json:"value"`
 	Types Strings `avro:"types" json:"types"`
-	Lang  string  `avro:"lang,omitempty" json:"lang,omitempty" yaml:"lang,omitempty"`
+	Lang  string  `avro:"lang" json:"lang,omitempty" yaml:"lang,omitempty"`
 }
 
 type Relationship struct {
@@ -215,7 +215,7 @@ var RORSchema = `{
                   }
                 }
               },
-              { "name": "lang", "type": ["null", "string"], "default": null }
+              { "name": "lang", "type": "string", "default": "" }
             ]
           }
         }
@@ -342,41 +342,61 @@ var Extensions = []string{".avro", ".yaml", ".json"}
 
 // Fetch fetches ROR metadata for a given ror id.
 func Fetch(str string) (ROR, error) {
-	var data ROR
-	id, ok := utils.ValidateROR(str)
-	if !ok {
-		return data, errors.New("invalid ror id")
-	}
-	data, err := Get(id)
-	return data, err
+	var ror ROR
+
+	ror, err := Get(str)
+	return ror, err
 }
 
 // Get gets ROR metadata for a given ror id.
-func Get(id string) (ROR, error) {
-	var data ROR
-
-	id, ok := utils.ValidateROR(id)
-	if !ok {
-		return data, errors.New("invalid ror id")
+func Get(str string) (ROR, error) {
+	// Content is the wrapper around the response from the ROR API
+	type Content struct {
+		NumberOfResults int   `json:"number_of_results"`
+		Items           []ROR `json:"items"`
 	}
-	url := "https://api.ror.org/v2/organizations/" + id
+
+	var ror ROR
+	var content Content
+	var url_ string
+
+	id, type_ := utils.ValidateID(str)
+	if !slices.Contains(SupportedTypes, type_) {
+		return ror, errors.New("not a supported organization id")
+	}
+	if type_ == "ROR" {
+		url_ = "https://api.ror.org/v2/organizations/" + id
+	} else {
+		url_ = "https://api.ror.org/v2/organizations?query=" + url.QueryEscape(id)
+	}
+
 	client := &http.Client{
 		Timeout: time.Second * 10,
 	}
-	resp, err := client.Get(url)
+	resp, err := client.Get(url_)
 	if err != nil {
-		return data, err
+		return ror, err
 	}
 	if resp.StatusCode >= 400 {
-		return data, errors.New(resp.Status)
+		return ror, errors.New(resp.Status)
 	}
 	defer resp.Body.Close()
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return data, err
+		return ror, err
 	}
-	err = json.Unmarshal(body, &data)
-	return data, err
+	if type_ == "ROR" {
+		err = json.Unmarshal(body, &ror)
+	} else {
+		err = json.Unmarshal(body, &content)
+		if content.NumberOfResults == 1 {
+			ror = content.Items[0]
+		}
+	}
+	if err != nil {
+		return ror, errors.New("error unmarshalling response")
+	}
+	return ror, err
 }
 
 // MatchAffiliation searches ROR metadata for a given affiliation name, using their
@@ -420,6 +440,8 @@ func MatchAffiliation(name string) (ROR, error) {
 		fmt.Println(err)
 		return data, errors.New("error unmarshalling response")
 	}
+
+	// fmt.Println("Number of results:", content.NumberOfResults)
 
 	// Check if there is a chosen organization in the response
 	chosen := slices.IndexFunc(content.Items, func(d Response) bool { return d.Chosen })
@@ -510,6 +532,45 @@ func LoadAll(filename string) ([]ROR, error) {
 	return data, err
 }
 
+// MapROR maps between a ROR ID and organization name
+//
+// The function accepts a ROR ID and/or name and returns both values if possible:
+// - If both ID and name are provided, they are returned unchanged
+// - If only ID is provided, the name is fetched from ROR API
+// - If only name is provided and match=true, attempts to find a matching ROR ID
+func MapROR(id string, name string, assertedBy string, match bool) (string, string, string, error) {
+	// Both ID and name provided, nothing to do
+	if id != "" && name != "" {
+		return id, name, assertedBy, nil
+	}
+
+	// Only ID provided, fetch the name
+	if id != "" {
+		ror, err := Fetch(id)
+		if err != nil {
+			return id, "", assertedBy, err
+		}
+		return id, GetDisplayName(ror), assertedBy, nil
+	}
+
+	// Only name provided and matching requested
+	// Do not match against ROR for names that are known to be missing
+	exceptions := []string{"Front Matter"}
+	if name != "" && !slices.Contains(exceptions, name) && match {
+		ror, err := MatchAffiliation(name)
+		if err != nil {
+			return "", name, assertedBy, err
+		}
+		if ror.ID == "" {
+			return "", name, assertedBy, nil
+		}
+		return ror.ID, name, "ror", nil
+	}
+
+	// No useful input or matching not requested
+	return id, name, assertedBy, nil
+}
+
 // LoadBuiltin loads the embedded ROR metadata from the ZIP file with all ROR records.
 func LoadBuiltin() ([]ROR, error) {
 	var data []ROR
@@ -528,6 +589,16 @@ func LoadBuiltin() ([]ROR, error) {
 		return nil, err
 	}
 	return data, err
+}
+
+// GetDisplayName returns the display name of the organization
+func GetDisplayName(ror ROR) string {
+	for _, name := range ror.Names {
+		if slices.Contains(name.Types, "ror_display") {
+			return name.Value
+		}
+	}
+	return ""
 }
 
 // ExtractAll extracts ROR metadata from a JSON file in commonmeta format.
