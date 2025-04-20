@@ -24,7 +24,7 @@ type ROR struct {
 	ID            string        `avro:"id" json:"id" csv:"id"`
 	Domains       Strings       `avro:"domains,omitempty" json:"domains,omitempty" yaml:"domains,omitempty"`
 	Established   int           `avro:"established" json:"established,omitempty" yaml:"established,omitempty"`
-	ExternalIDs   ExternalIDS   `avro:"external_ids" json:"external_ids" yaml:"external_ids,omitempty"`
+	ExternalIDs   ExternalIDS   `avro:"external_ids" json:"external_ids,omitempty" yaml:"external_ids,omitempty"`
 	Links         Links         `avro:"links" json:"links" yaml:"links,omitempty"`
 	Locations     Locations     `avro:"locations" json:"locations"`
 	Names         Names         `avro:"names" json:"names"`
