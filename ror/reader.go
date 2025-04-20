@@ -62,8 +62,8 @@ type GeonamesDetails struct {
 	ContinentName          string  `avro:"continent_name" json:"continent_name" yaml:"continent_name"`
 	CountryCode            string  `avro:"country_code" json:"country_code" yaml:"country_code"`
 	CountryName            string  `avro:"country_name" json:"country_name" yaml:"country_name"`
-	CountrySubdivisionCode string  `avro:"country_subdivision_code,omitempty" json:"country_subdivision_code,omitempty" yaml:"country_subdivision_code,omitempty"`
-	CountrySubdivisionName string  `avro:"country_subdivision_name,omitempty" json:"country_subdivision_name,omitempty" yaml:"country_subdivision_name,omitempty"`
+	CountrySubdivisionCode string  `avro:"country_subdivision_code" json:"country_subdivision_code,omitempty" yaml:"country_subdivision_code,omitempty"`
+	CountrySubdivisionName string  `avro:"country_subdivision_name" json:"country_subdivision_name,omitempty" yaml:"country_subdivision_name,omitempty"`
 	Lat                    float64 `avro:"lat" json:"lat"`
 	Lng                    float64 `avro:"lng" json:"lng"`
 	Name                   string  `avro:"name" json:"name"`
@@ -177,13 +177,13 @@ var RORSchema = `{
                     { "name": "country_name", "type": "string" },
                     {
                       "name": "country_subdivision_code",
-                      "type": ["null", "string"],
-                      "default": null
+                      "type": "string",
+                      "default": ""
                     },
                     {
                       "name": "country_subdivision_name",
-                      "type": ["null", "string"],
-                      "default": null
+                      "type": "string",
+                      "default": ""
                     },
                     { "name": "lat", "type": "double" },
                     { "name": "lng", "type": "double" },
