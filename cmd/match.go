@@ -48,6 +48,9 @@ var matchCmd = &cobra.Command{
 				cmd.Println(err)
 				return
 			}
+		} else {
+			cmd.Println("No valid input format. Currently only 'ror' is supported.")
+			return
 		}
 
 		if orgdata.ID == "" {
