@@ -103,6 +103,10 @@ var listCmd = &cobra.Command{
 			str = input
 		}
 
+		if from == "ror" || to == "commonmeta" {
+			to = "ror"
+		}
+
 		if from == "commonmeta" {
 			data, err = commonmeta.LoadAll(str)
 		} else if str != "" && from == "crossref" {

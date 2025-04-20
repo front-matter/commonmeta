@@ -72,9 +72,6 @@ commonmeta 10.5555/12345678`,
 				if from == "" {
 					from = "commonmeta"
 				}
-				if to == "" || to == "commonmeta" {
-					to = "commonmeta"
-				}
 			}
 		}
 
