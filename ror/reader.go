@@ -54,7 +54,7 @@ type Date struct {
 type ExternalID struct {
 	Type      string  `avro:"type" json:"type"`
 	All       Strings `avro:"all" json:"all"`
-	Preferred string  `avro:"preferred,omitempty" json:"preferred,omitempty" yaml:"preferred,omitempty"`
+	Preferred string  `avro:"preferred" json:"preferred,omitempty" yaml:"preferred,omitempty"`
 }
 
 type GeonamesDetails struct {
@@ -128,8 +128,8 @@ var RORSchema = `{
               },
               {
                 "name": "preferred",
-                "type": ["null", "string"],
-                "default": null
+                "type": "string",
+                "default": ""
               }
             ]
           }
