@@ -501,19 +501,28 @@ func Search(id string) (ROR, error) {
 	return ror, err
 }
 
-// LoadAll loads the metadata for a list of organizations from a ROR JSON file
+// LoadAll loads the metadata for a list of organizations from a ROR file
 func LoadAll(filename string) ([]ROR, error) {
 	var data []ROR
+	var output []byte
+	var err error
 
-	extension := path.Ext(filename)
+	filename, extension, compress := fileutils.GetExtension(filename, ".json")
+
 	if !slices.Contains(Extensions, extension) {
 		return data, errors.New("invalid file extension")
 	}
-	output, err := fileutils.ReadFile(filename)
-	if err != nil {
-		return data, errors.New("error reading file")
+	if compress {
+		output, err = fileutils.ReadZIPFile(filename+".zip", path.Base(filename))
+		if err != nil {
+			return data, errors.New("error reading zip file")
+		}
+	} else {
+		output, err = fileutils.ReadFile(filename)
+		if err != nil {
+			return data, errors.New("error reading file")
+		}
 	}
-
 	if extension == ".avro" {
 		schema, err := avro.Parse(RORSchema)
 		if err != nil {
