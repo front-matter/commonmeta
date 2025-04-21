@@ -43,7 +43,7 @@ var matchCmd = &cobra.Command{
 		input = args[0]
 
 		if from == "ror" {
-			orgdata, err = ror.MatchAffiliation(input)
+			orgdata, err = ror.MatchOrganization(input)
 			if err != nil {
 				cmd.Println(err)
 				return
