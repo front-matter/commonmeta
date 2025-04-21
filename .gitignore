@@ -5,9 +5,7 @@ cover.html
 cover.out
 affiliations_ror*
 v1.*-ror-data.avro.zip
-v1.*-ror-data_schema_v2.json
-
+v1.*-ror-data.zip
+countryInfo.txt
 citation/*
 test.*
-
-!v1.63-2025-04-03-ror-data.avro.zip
