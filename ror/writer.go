@@ -1,6 +1,7 @@
 package ror
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -478,6 +479,16 @@ func WriteAll(list []ROR, extension string) ([]byte, error) {
 		output, err = yaml.Marshal(list)
 	} else if extension == ".json" {
 		output, err = json.Marshal(list)
+	} else if extension == ".jsonl" {
+		buffer := &bytes.Buffer{}
+		encoder := json.NewEncoder(buffer)
+		for _, data := range list {
+			err = encoder.Encode(data)
+			if err != nil {
+				fmt.Println(err)
+			}
+		}
+		output = buffer.Bytes()
 	} else if extension == ".csv" {
 		var rorcsvList []RORCSV
 		// convert ROR to RORCSV, a custom lossy mapping to CSV
@@ -577,7 +588,7 @@ func FilterRecords(list []ROR, type_ string, country string, dateUpdated string,
 				continue
 			}
 			if country != "" && !slices.ContainsFunc(v.Locations, func(l Location) bool {
-				return l.GeonamesDetails.CountryCode == country
+				return l.GeonamesDetails.CountryCode == strings.ToUpper(country)
 			}) {
 				continue
 			}
