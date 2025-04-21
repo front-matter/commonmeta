@@ -75,8 +75,8 @@ func ExampleGetFormattedDateStruct() {
 }
 
 func ExampleGetDateParts() {
-	m := dateutils.GetDateParts("2023-12-06")
-	fmt.Println(m)
+	s := dateutils.GetDateParts("2023-12-06")
+	fmt.Println(s)
 	// Output:
 	// [[2023 12 6]]
 }

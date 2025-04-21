@@ -372,8 +372,7 @@ func ReadAll(content []Content) ([]commonmeta.Data, error) {
 	for _, v := range content {
 		d, err := Read(v)
 		if err != nil {
-			fmt.Println(v.ID)
-			fmt.Println(err)
+			fmt.Println(v.ID, err)
 		}
 		data = append(data, d)
 	}

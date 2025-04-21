@@ -432,8 +432,8 @@ func TestGetROR(t *testing.T) {
 }
 
 func ExampleGetROR() {
-	ror, _ := utils.GetROR("https://ror.org/0342dzm54")
-	fmt.Println(ror.Name)
+	s, _ := utils.GetROR("https://ror.org/0342dzm54")
+	fmt.Println(s.Name)
 	// Output:
 	// Liberate Science
 }
@@ -630,10 +630,7 @@ func ExampleDecodeID() {
 }
 
 func ExampleUnescapeUTF8() {
-	s, err := utils.UnescapeUTF8("capable of signi\"cance.")
-	if err != nil {
-		fmt.Println(err)
-	}
+	s, _ := utils.UnescapeUTF8("capable of signi\"cance.")
 	fmt.Println(s)
 	// Output:
 	// capable of signi"cance.
@@ -682,8 +679,8 @@ func ExampleNormalizeString() {
 }
 
 func ExampleGetLanguage() {
-	i := utils.GetLanguage("de", "iso639-3")
-	fmt.Println(i)
+	s := utils.GetLanguage("de", "iso639-3")
+	fmt.Println(s)
 	// Output:
 	// deu
 }

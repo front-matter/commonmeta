@@ -608,7 +608,6 @@ func Get(id string) (Content, error) {
 	if err != nil {
 		return content, err
 	}
-	fmt.Println(string(body))
 	err = json.Unmarshal(body, &content)
 	if err != nil {
 		fmt.Println("error:", err)
