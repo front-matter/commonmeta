@@ -103,7 +103,7 @@ var listCmd = &cobra.Command{
 			str = input
 		}
 
-		if from == "ror" || to == "commonmeta" {
+		if from == "ror" && (to == "" || to == "commonmeta") {
 			to = "ror"
 		}
 
@@ -134,9 +134,9 @@ var listCmd = &cobra.Command{
 			}
 			orgdata, err = ror.LoadAll(str)
 		} else if str == "" && from == "ror" {
-			// if no input is provided, return the built-in ROR vocabulary
+			// if no input is provided, use ROR data dump
 			orgdata, err = ror.LoadBuiltin()
-			input = "v1.63-2025-04-03-ror-data"
+			input = ror.RORFilename
 		} else {
 			fmt.Println("Please provide a valid input format")
 			return
@@ -147,7 +147,7 @@ var listCmd = &cobra.Command{
 		}
 
 		// optionally filter orgdata by type, country, number and page
-		if len(orgdata) > 0 && (type_ != "" && !slices.Contains(ror.RORTypes, type_)) || country != "" || dateUpdated != "" || number != 0 {
+		if len(orgdata) > 0 && ((type_ != "" && !slices.Contains(ror.RORTypes, type_)) || country != "" || dateUpdated != "" || number != 0) {
 			orgdata, err = ror.FilterRecords(orgdata, type_, country, dateUpdated, file, number, page)
 		}
 		if err != nil {
