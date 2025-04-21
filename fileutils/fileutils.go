@@ -4,15 +4,13 @@ package fileutils
 import (
 	"archive/zip"
 	"bytes"
-	"embed"
+	"fmt"
 	"io"
+	"net/http"
 	"os"
 	"path"
-	"path/filepath"
+	"time"
 )
-
-//go:embed *.zip
-var Files embed.FS
 
 func ReadFile(filename string) ([]byte, error) {
 	file, err := os.Open(filename)
@@ -33,31 +31,25 @@ func ReadFile(filename string) ([]byte, error) {
 	return output, nil
 }
 
-// ReadZIPFile opens a zip archive for reading
-func ReadZIPFile(filename string) ([]byte, error) {
-	var zipfile *zip.Reader
-	if filename == "v1.63-2025-04-03-ror-data.avro.zip" {
-		file, err := Files.ReadFile(filepath.Join("v1.63-2025-04-03-ror-data.avro.zip"))
-		if err != nil {
-			return nil, err
-		}
-		reader := bytes.NewReader(file)
-		len := len(file)
-		zipfile, err = zip.NewReader(reader, int64(len))
-		if err != nil {
-			return nil, err
-		}
-	} else {
-		zipfile, err := zip.OpenReader(filename)
-		if err != nil {
-			return nil, err
-		}
-		defer zipfile.Close()
-	}
+// UnzipContent extracts the content from a zip archive,
+// optionally only extract the content with filename
+func UnzipContent(input []byte, filename string) ([]byte, error) {
 	var output []byte
 
-	// Iterate through the files in the archive,
+	reader := bytes.NewReader(input)
+	len := len(input)
+	zipfile, err := zip.NewReader(reader, int64(len))
+	if err != nil {
+		return nil, err
+	}
+
+	// extract the files from the zip archive
+	// optionally only extract the content with filename
 	for _, file := range zipfile.File {
+		if filename != "" && file.Name != filename {
+			continue
+		}
+		// Open the zip file for reading
 		reader, err := file.Open()
 		if err != nil {
 			return nil, err
@@ -73,8 +65,44 @@ func ReadZIPFile(filename string) ([]byte, error) {
 	return output, nil
 }
 
+// ReadZIPFile opens a zip archive for reading
+func ReadZIPFile(filename string, name string) ([]byte, error) {
+	var input, output []byte
+	var err error
+
+	input, err = ReadFile(filename)
+	if err != nil {
+		return nil, err
+	}
+
+	output, err = UnzipContent(input, name)
+	return output, err
+}
+
+// DownloadFile downloads content from the given URL and saves it as a file.
+func DownloadFile(url string, filename string) error {
+	client := &http.Client{
+		Timeout: time.Second * 10,
+	}
+	resp, err := client.Get(url)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != 200 {
+		return fmt.Errorf("status code error: %d %s", resp.StatusCode, resp.Status)
+	}
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return err
+	}
+	err = WriteFile(filename, body)
+	return err
+}
+
+// WriteFile saves content as a file.
 func WriteFile(filename string, output []byte) error {
-	file, err := os.Create(filename)
+	file, err := os.Create(path.Base(filename))
 	if err != nil {
 		panic(err)
 	}
@@ -87,6 +115,7 @@ func WriteFile(filename string, output []byte) error {
 	return nil
 }
 
+// WriteZIPFile saves content as a zip file.
 func WriteZIPFile(filename string, output []byte) error {
 	zipfile, err := os.Create(filename + ".zip")
 	if err != nil {
@@ -97,40 +126,23 @@ func WriteZIPFile(filename string, output []byte) error {
 	zipWriter := zip.NewWriter(zipfile)
 	defer zipWriter.Close()
 
-	err = WriteFile(filename, output)
-	if err != nil {
-		panic(err)
+	// create zip header
+	header := &zip.FileHeader{
+		Name:     path.Base(filename),
+		Method:   zip.Deflate,
+		Modified: time.Now(),
 	}
-
-	fileToZip, err := os.Open(filename)
-	if err != nil {
-		panic(err)
-	}
-	defer fileToZip.Close()
-
-	// Get the file info to create a zip header.
-	fileInfo, err := fileToZip.Stat()
-	if err != nil {
-		panic(err)
-	}
-	header, err := zip.FileInfoHeader(fileInfo)
-	if err != nil {
-		panic(err)
-	}
-
-	header.Name = filename
-	header.Method = zip.Deflate
 
 	// Add the file header to the zip archive.
 	writer, err := zipWriter.CreateHeader(header)
 	if err != nil {
-		panic(err)
+		return err
 	}
 
-	// Write the file contents to the zip archive.
-	_, err = io.Copy(writer, fileToZip)
+	// Write the output to the zip archive.
+	_, err = writer.Write(output)
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	return nil

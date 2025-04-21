@@ -158,8 +158,8 @@ func ExampleEncodeDOI() {
 }
 
 func ExampleDecodeDOI() {
-	i := doiutils.DecodeDOI("https://doi.org/10.59350/v2gec-5xt36")
-	fmt.Println(i)
+	s := doiutils.DecodeDOI("https://doi.org/10.59350/v2gec-5xt36")
+	fmt.Println(s)
 	// Output:
 	// 930412369850
 }

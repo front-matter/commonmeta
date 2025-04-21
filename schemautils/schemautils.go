@@ -41,8 +41,7 @@ func JSONSchemaErrors(document []byte, schema ...string) error {
 			panic(err)
 		}
 		exPath := filepath.Dir(ex)
-		fmt.Println(exPath)
-		fmt.Print(err)
+		fmt.Print(err, exPath)
 	}
 	schemaLoader := gojsonschema.NewStringLoader(string(data))
 	documentLoader := gojsonschema.NewBytesLoader(document)
