@@ -15,10 +15,10 @@ import (
 	"time"
 
 	"github.com/front-matter/commonmeta/commonmeta"
-	"github.com/front-matter/commonmeta/crossrefxml"
 	"github.com/front-matter/commonmeta/dateutils"
 	"github.com/front-matter/commonmeta/doiutils"
 	"github.com/front-matter/commonmeta/roguescholar"
+	"github.com/front-matter/commonmeta/ror"
 	"github.com/front-matter/commonmeta/schemautils"
 	"github.com/front-matter/commonmeta/utils"
 	"github.com/muesli/cache2go"
@@ -204,9 +204,10 @@ func Convert(data commonmeta.Data) (Inveniordm, error) {
 		for _, v := range data.FundingReferences {
 			id, identifierType := utils.ValidateID(v.FunderIdentifier)
 
-			// convert Open Funder Registry DOI to ROR using mapping file
+			// convert Open Funder Registry DOI to ROR
 			if identifierType == "Crossref Funder ID" {
-				id = crossrefxml.OFRToRORMappings[v.FunderIdentifier]
+				r, _ := ror.Fetch(v.FunderIdentifier)
+				id = r.ID
 			}
 			if id != "" {
 				id, _ = utils.ValidateROR(id)
