@@ -177,3 +177,10 @@ func ExampleGenerateWordpressDOI() {
 	// Output:
 	// https://doi.org/10.59350/svpow.23496
 }
+
+func ExampleGenerateSubstackDOI() {
+	s := doiutils.GenerateSubstackDOI("10.59350", "161006169")
+	fmt.Println(s)
+	// Output:
+	// https://doi.org/10.59350/4shg-js75
+}

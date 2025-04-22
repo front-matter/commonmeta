@@ -307,6 +307,8 @@ func Read(content Content) (commonmeta.Data, error) {
 		switch content.Blog.Generator {
 		case "WordPress", "WordPress.com":
 			data.ID = doiutils.GenerateWordpressDOI(content.Blog.Prefix, content.Blog.Slug, content.GUID)
+		case "Substack":
+			data.ID = doiutils.GenerateSubstackDOI(content.Blog.Prefix, content.GUID)
 		default:
 			data.ID = doiutils.GenerateDOIFromGUID(content.Blog.Prefix, content.GUID)
 		}

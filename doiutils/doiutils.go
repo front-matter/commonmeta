@@ -10,6 +10,7 @@ import (
 	"net/url"
 	"regexp"
 	"slices"
+	"strconv"
 	"strings"
 	"time"
 
@@ -222,6 +223,7 @@ func IsRogueScholarDOI(doi string, ra string) bool {
 	return isCrossref || isDatacite
 }
 
+// GenerateWordpressDOI generates a DOI from a Wordpress GUID and slug
 func GenerateWordpressDOI(prefix string, slug string, guid string) string {
 	if prefix == "" || guid == "" {
 		return ""
@@ -235,6 +237,7 @@ func GenerateWordpressDOI(prefix string, slug string, guid string) string {
 	return doi
 }
 
+// GenerateDOIFromGUID validates a GUID that is a DOI
 func GenerateDOIFromGUID(prefix string, guid string) string {
 	if prefix == "" {
 		return ""
@@ -247,4 +250,20 @@ func GenerateDOIFromGUID(prefix string, guid string) string {
 		return doi
 	}
 	return ""
+}
+
+// GenerateSubstackDOI generates a DOI from a Substack GUID
+func GenerateSubstackDOI(prefix string, guid string) string {
+	if prefix == "" || guid == "" {
+		return ""
+	}
+	i, err := strconv.ParseInt(guid, 10, 64)
+	if err != nil {
+		return ""
+	}
+	// encode the number using crockford base32 with a length of 4,
+	// a split every 8 characters and a checksum
+	suffix := crockford.Encode(i, 4, 8, true)
+	doi := fmt.Sprintf("https://doi.org/%s/%s", prefix, suffix)
+	return doi
 }
