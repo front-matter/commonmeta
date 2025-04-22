@@ -163,3 +163,17 @@ func ExampleDecodeDOI() {
 	// Output:
 	// 930412369850
 }
+
+func ExampleGenerateDOIFromGUID() {
+	s := doiutils.GenerateDOIFromGUID("10.59350", "https://doi.org/10.59350/v2gec-5xt36")
+	fmt.Println(s)
+	// Output:
+	// https://doi.org/10.59350/v2gec-5xt36
+}
+
+func ExampleGenerateWordpressDOI() {
+	s := doiutils.GenerateWordpressDOI("10.59350", "svpow", "https://svpow.com/?p=23496")
+	fmt.Println(s)
+	// Output:
+	// https://doi.org/10.59350/svpow.23496
+}

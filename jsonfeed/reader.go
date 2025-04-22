@@ -85,6 +85,7 @@ type Blog struct {
 	Slug        string           `json:"slug"`
 	Status      string           `json:"status"`
 	Title       string           `json:"title"`
+	DOIReg      bool             `json:"doi_reg"`
 }
 
 // FundingReference represents the funding reference of a publication, defined in the commonmeta JSON Schema.
@@ -302,14 +303,12 @@ func Read(content Content) (commonmeta.Data, error) {
 
 	if content.DOI != "" {
 		data.ID = doiutils.NormalizeDOI(content.DOI)
-	} else if content.GUID != "" {
-		// use GUID as DOI string if prefix matches blog prefix
-		// and suffix is base32 encoded number with checksum
-		doi := doiutils.NormalizeDOI(content.GUID)
-		prefix, ok := doiutils.ValidatePrefix(doi)
-		number, err := utils.DecodeID(doi)
-		if ok && prefix == content.Blog.Prefix && number != 0 && err == nil {
-			data.ID = doi
+	} else if content.GUID != "" && content.Blog.DOIReg {
+		switch content.Blog.Generator {
+		case "WordPress", "WordPress.com":
+			data.ID = doiutils.GenerateWordpressDOI(content.Blog.Prefix, content.Blog.Slug, content.GUID)
+		default:
+			data.ID = doiutils.GenerateDOIFromGUID(content.Blog.Prefix, content.GUID)
 		}
 	}
 	if data.ID == "" && content.Blog.Prefix != "" {

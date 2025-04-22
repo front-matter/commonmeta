@@ -221,3 +221,30 @@ func IsRogueScholarDOI(doi string, ra string) bool {
 	}
 	return isCrossref || isDatacite
 }
+
+func GenerateWordpressDOI(prefix string, slug string, guid string) string {
+	if prefix == "" || guid == "" {
+		return ""
+	}
+	r := regexp.MustCompile(`p=(\d+)$`)
+	matched := r.FindStringSubmatch(guid)
+	if len(matched) == 0 {
+		return ""
+	}
+	doi := fmt.Sprintf("https://doi.org/%s/%s.%s", prefix, slug, matched[1])
+	return doi
+}
+
+func GenerateDOIFromGUID(prefix string, guid string) string {
+	if prefix == "" {
+		return ""
+	}
+	doi := NormalizeDOI(guid)
+	p, ok := ValidatePrefix(doi)
+	suffix := doi[strings.LastIndex(doi, "/")+1:]
+	number, err := crockford.Decode(suffix, true)
+	if ok && p == prefix && number != 0 && err == nil {
+		return doi
+	}
+	return ""
+}
