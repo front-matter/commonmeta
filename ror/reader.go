@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"maps"
 	"net/http"
 	"net/url"
 	"os"
@@ -17,6 +18,7 @@ import (
 	"github.com/front-matter/commonmeta/commonmeta"
 	"github.com/front-matter/commonmeta/fileutils"
 	"github.com/front-matter/commonmeta/utils"
+	"github.com/front-matter/commonmeta/vocabularies"
 	"github.com/hamba/avro/v2"
 	"gopkg.in/yaml.v3"
 )
@@ -95,8 +97,8 @@ type Relationship struct {
 
 // RORSchema is the Avro schema for the minimal ROR metadata.
 var RORSchema = `{
-  "type": "array",
-  "items": {
+  "type": "map",
+  "values": {
     "name": "ROR",
     "type": "record",
     "fields": [
@@ -470,7 +472,7 @@ func Search(id string) (ROR, error) {
 		return ror, errors.New("not a supported organization id")
 	}
 
-	data, err := LoadBuiltin()
+	catalog, err := LoadBuiltin()
 	if err != nil {
 		return ror, err
 	}
@@ -480,30 +482,31 @@ func Search(id string) (ROR, error) {
 		pid = strings.ReplaceAll(pid, "-", " ")
 	}
 	if type_ == "ROR" {
-		idx = slices.IndexFunc(data, func(d ROR) bool { return d.ID == utils.NormalizeROR(pid) })
-	} else {
-		idx = slices.IndexFunc(data, func(d ROR) bool {
-			for _, e := range d.ExternalIDs {
-				for _, all := range e.All {
-					if all == pid {
-						return true
-					}
+		return catalog[utils.NormalizeROR(pid)], nil
+	}
+	// convert map into a slice to search for value
+	list := slices.Collect(maps.Values(catalog))
+	idx = slices.IndexFunc(list, func(d ROR) bool {
+		for _, e := range d.ExternalIDs {
+			for _, all := range e.All {
+				if all == pid {
+					return true
 				}
 			}
-			return false
-		})
-	}
+		}
+		return false
+	})
 	if idx == -1 {
 		return ror, errors.New("no organization found")
 	}
 
-	ror = data[idx]
+	ror = list[idx]
 	return ror, err
 }
 
 // LoadAll loads the metadata for a list of organizations from a ROR file
-func LoadAll(filename string) ([]ROR, error) {
-	var data []ROR
+func LoadAll(filename string) (map[string]ROR, error) {
+	var data map[string]ROR
 	var output []byte
 	var err error
 
@@ -547,7 +550,7 @@ func LoadAll(filename string) ([]ROR, error) {
 			} else if err != nil {
 				return data, errors.New("error unmarshalling jsonl file")
 			}
-			data = append(data, item)
+			data[item.ID] = item
 		}
 	} else if extension == ".yaml" {
 		err = yaml.Unmarshal(output, &data)
@@ -597,66 +600,75 @@ func MapROR(id string, name string, assertedBy string, match bool) (string, stri
 	return id, name, assertedBy, nil
 }
 
-// LoadBuiltin loads the ROR metadata from the local ZIP file with all ROR records.
-func LoadBuiltin() ([]ROR, error) {
+// LoadBuiltin loads the ROR metadata from the embedded ROR catalog in zipped avro format.
+func LoadBuiltin() (map[string]ROR, error) {
 	var output []byte
-	var list []ROR
+	var catalog map[string]ROR
 
 	// check that local avro ZIP exists and is large enough
-	list, err := TryLoadAvroFile()
-	if err != nil && len(list) > 0 {
-		return list, nil
+	catalog, err := TryLoadAvroFile()
+	if err != nil && len(catalog) > 0 {
+		return catalog, nil
 	}
 
 	// alternatively, check that local json ZIP exists and is large enough
 	// if not, download the latest ROR data dump from Zenodo
-	list, err = TryLoadJSONFile()
+	list, err := TryLoadJSONFile()
 	if err != nil {
-		return list, err
+		return catalog, err
+	}
+
+	// convert slices into map
+	catalog = make(map[string]ROR, len(list))
+	for _, item := range list {
+		catalog[item.ID] = item
 	}
 
 	// convert ROR data dump into avro format and store in zipped local file
 	schema, _ := avro.Parse(RORSchema)
-	output, err = avro.Marshal(schema, list)
+	output, err = avro.Marshal(schema, catalog)
 	if err != nil {
 		fmt.Println("error converting to avro format", err)
 	}
 	err = fileutils.WriteZIPFile(RORAvroFilename, output)
-	return list, err
+	return catalog, err
 }
 
 // TryLoadAvroFile tries to load a local ROR avro ZIP file
-func TryLoadAvroFile() ([]ROR, error) {
-	var data []ROR
+func TryLoadAvroFile() (map[string]ROR, error) {
+	var catalog map[string]ROR
 
-	// check that local avro ZIP exists and is large enough
-	info, err := os.Stat(RORAvroFilename + ".zip")
-	if err != nil || (info.Size()/1048576) < 10 {
-		return nil, fmt.Errorf("no valid avro ZIP file found")
-	}
+	// // check that local avro ZIP exists and is large enough
+	// info, err := os.Stat(RORAvroFilename + ".zip")
+	// if err != nil || (info.Size()/1048576) < 10 {
+	// 	return nil, fmt.Errorf("no valid avro ZIP file found")
+	// }
 
-	// read avro ZIP file
-	bytes, err := fileutils.ReadZIPFile(RORAvroFilename+".zip", path.Base(RORAvroFilename))
-	if err != nil {
-		return nil, fmt.Errorf("error reading avro file: %w", err)
-	}
+	// // read avro ZIP file
+	// bytes, err := fileutils.ReadZIPFile(RORAvroFilename+".zip", path.Base(RORAvroFilename))
+	// if err != nil {
+	// 	return nil, fmt.Errorf("error reading avro file: %w", err)
+	// }
+
+	// read embedded avro file
+	bytes, err := vocabularies.LoadVocabulary("ROR.Organizations")
 
 	schema, err := avro.Parse(RORSchema)
 	if err != nil {
 		return nil, fmt.Errorf("error parsing avro schema: %w", err)
 	}
 
-	err = avro.Unmarshal(schema, bytes, &data)
+	err = avro.Unmarshal(schema, bytes, &catalog)
 	if err != nil {
 		return nil, fmt.Errorf("error parsing avro data: %w", err)
 	}
 
-	return data, nil
+	return catalog, nil
 }
 
 // TryLoadJSONFile tries to load a local ROR json ZIP file
 func TryLoadJSONFile() ([]ROR, error) {
-	var data []ROR
+	var list []ROR
 
 	// check that local json ZIP exists and is large enough
 	info, err := os.Stat(RORFilename)
@@ -673,12 +685,12 @@ func TryLoadJSONFile() ([]ROR, error) {
 		return nil, fmt.Errorf("error reading json ZIP file: %w", err)
 	}
 
-	err = json.Unmarshal(bytes, &data)
+	err = json.Unmarshal(bytes, &list)
 	if err != nil {
 		return nil, fmt.Errorf("error parsing json data: %w", err)
 	}
 
-	return data, nil
+	return list, nil
 }
 
 // GetDisplayName returns the display name of the organization
@@ -693,8 +705,7 @@ func GetDisplayName(ror ROR) string {
 
 // ExtractAll extracts ROR metadata from a JSON file in commonmeta format.
 func ExtractAll(content []commonmeta.Data) ([]byte, error) {
-	var data []ROR
-	var extracted []ROR
+	var extracted map[string]ROR
 	var ids []string
 
 	schema, err := avro.Parse(RORSchema)
@@ -703,7 +714,7 @@ func ExtractAll(content []commonmeta.Data) ([]byte, error) {
 	}
 
 	// Load the ROR metadata from the embedded ZIP file with all ROR records
-	data, err = LoadBuiltin()
+	catalog, err := LoadBuiltin()
 	if err != nil {
 		return nil, err
 	}
@@ -716,10 +727,9 @@ func ExtractAll(content []commonmeta.Data) ([]byte, error) {
 					for _, a := range c.Affiliations {
 						if a.ID != "" && !slices.Contains(ids, a.ID) {
 							id, _ := utils.ValidateROR(a.ID)
-							idx := slices.IndexFunc(data, func(d ROR) bool { return d.ID == id })
-							if idx != -1 {
-								ids = append(ids, a.ID)
-								extracted = append(extracted, data[idx])
+							item, ok := catalog[id]
+							if ok {
+								extracted[id] = item
 							}
 						}
 					}

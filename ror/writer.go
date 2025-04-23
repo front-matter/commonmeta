@@ -5,8 +5,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"maps"
 	"reflect"
 	"slices"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -471,19 +473,19 @@ func Write(data ROR) ([]byte, error) {
 }
 
 // WriteAll writes a list of ROR metadata, optionally filtered by type and/or country.
-func WriteAll(list []ROR, extension string) ([]byte, error) {
+func WriteAll(catalog map[string]ROR, extension string) ([]byte, error) {
 	var err error
 	var output []byte
 
 	if extension == ".yaml" {
-		output, err = yaml.Marshal(list)
+		output, err = yaml.Marshal(catalog)
 	} else if extension == ".json" {
-		output, err = json.Marshal(list)
+		output, err = json.Marshal(catalog)
 	} else if extension == ".jsonl" {
 		buffer := &bytes.Buffer{}
 		encoder := json.NewEncoder(buffer)
-		for _, data := range list {
-			err = encoder.Encode(data)
+		for _, item := range catalog {
+			err = encoder.Encode(item)
 			if err != nil {
 				fmt.Println(err)
 			}
@@ -492,8 +494,8 @@ func WriteAll(list []ROR, extension string) ([]byte, error) {
 	} else if extension == ".csv" {
 		var rorcsvList []RORCSV
 		// convert ROR to RORCSV, a custom lossy mapping to CSV
-		for _, data := range list {
-			rorcsv, err := ConvertRORCSV(data)
+		for _, item := range catalog {
+			rorcsv, err := ConvertRORCSV(item)
 			if err != nil {
 				fmt.Println(err)
 			}
@@ -509,7 +511,7 @@ func WriteAll(list []ROR, extension string) ([]byte, error) {
 			fmt.Println(err, "avro.Parse")
 			return nil, err
 		}
-		output, err = avro.Marshal(schema, list)
+		output, err = avro.Marshal(schema, catalog)
 		if err != nil {
 			fmt.Println(err, "avro.Marshal")
 		}
@@ -535,32 +537,32 @@ func WriteInvenioRDM(data ROR) ([]byte, error) {
 	return output, err
 }
 
-// WriteAllInvenioRDM writes a list of ROR metadata in InvenioRDM format.
-func WriteAllInvenioRDM(list []ROR, extension string) ([]byte, error) {
-	var inveniordmList []InvenioRDM
+// WriteAllInvenioRDM writes a ROR catalog in InvenioRDM format.
+func WriteAllInvenioRDM(catalog map[string]ROR, extension string) ([]byte, error) {
+	var inveniordmCatalog map[string]InvenioRDM
 	var err error
 	var output []byte
 
-	for _, data := range list {
-		inveniordm, err := ConvertInvenioRDM(data)
+	for _, item := range catalog {
+		inveniordm, err := ConvertInvenioRDM(item)
 		if err != nil {
 			fmt.Println(err)
 		}
 		if inveniordm.ID != "" {
-			inveniordmList = append(inveniordmList, inveniordm)
+			inveniordmCatalog[inveniordm.ID] = inveniordm
 		}
 	}
 	if extension == ".yaml" {
-		output, err = yaml.Marshal(inveniordmList)
+		output, err = yaml.Marshal(inveniordmCatalog)
 	} else if extension == ".json" {
-		output, err = json.Marshal(inveniordmList)
+		output, err = json.Marshal(inveniordmCatalog)
 	} else if extension == ".avro" {
 		schema, err := avro.Parse(InvenioRDMSchema)
 		if err != nil {
 			fmt.Println(err, "avro.Parse")
 			return nil, err
 		}
-		output, err = avro.Marshal(schema, inveniordmList)
+		output, err = avro.Marshal(schema, inveniordmCatalog)
 		if err != nil {
 			fmt.Println(err, "avro.Marshal")
 		}
@@ -573,9 +575,9 @@ func WriteAllInvenioRDM(list []ROR, extension string) ([]byte, error) {
 	return output, err
 }
 
-// FilterRecords filters a list of ROR records by type and/or country.
-func FilterRecords(list []ROR, type_ string, country string, dateUpdated string, file string, number int, page int) ([]ROR, error) {
-	var filtered []ROR
+// FilterCatalog filters a ROR catalog by type and/or country.
+func FilterCatalog(catalog map[string]ROR, type_ string, country string, dateUpdated string, file string, number int, page int) (map[string]ROR, error) {
+	var filtered map[string]ROR
 
 	if file == "funders.yaml" {
 		type_ = "funder"
@@ -583,7 +585,7 @@ func FilterRecords(list []ROR, type_ string, country string, dateUpdated string,
 
 	// optionally filter by type and/or country
 	if type_ != "" || country != "" || file != "" {
-		for _, v := range list {
+		for _, v := range catalog {
 			if type_ != "" && !slices.Contains(v.Types, type_) {
 				continue
 			}
@@ -603,11 +605,14 @@ func FilterRecords(list []ROR, type_ string, country string, dateUpdated string,
 				// remove country
 				v.Locations = nil
 			}
-			filtered = append(filtered, v)
+			filtered[v.ID] = v
 		}
 	} else {
-		filtered = append(filtered, list...)
+		filtered = catalog
 	}
+
+	// convert map to slice
+	list := slices.Collect(maps.Values(filtered))
 
 	// optionally filter by date updated
 	if dateUpdated != "" {
@@ -616,7 +621,7 @@ func FilterRecords(list []ROR, type_ string, country string, dateUpdated string,
 		if err != nil {
 			return nil, fmt.Errorf("invalid date format: %v", err)
 		}
-		filtered = slices.DeleteFunc(filtered, func(r ROR) bool {
+		list = slices.DeleteFunc(list, func(r ROR) bool {
 			return r.Admin.LastModified.Date < dateUpdated
 		})
 	}
@@ -629,9 +634,17 @@ func FilterRecords(list []ROR, type_ string, country string, dateUpdated string,
 		if start > len(filtered) {
 			start = len(filtered)
 		}
-		filtered = filtered[start:end]
+		list = list[start:end]
 	}
 
+	// convert slice back to map and sort by IDBu
+	filtered = make(map[string]ROR)
+	for _, v := range list {
+		filtered[v.ID] = v
+	}
+	sort.Slice(list, func(i, j int) bool {
+		return list[i].ID < list[j].ID
+	})
 	return filtered, nil
 }
 

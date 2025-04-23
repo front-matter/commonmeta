@@ -43,7 +43,7 @@ var listCmd = &cobra.Command{
 		var str string   // a string, content loaded from a file
 		var err error
 		var data []commonmeta.Data
-		var orgdata []ror.ROR
+		var orgdata map[string]ror.ROR
 		var extension string
 		var output []byte
 
@@ -148,7 +148,7 @@ var listCmd = &cobra.Command{
 
 		// optionally filter orgdata by type, country, number and page
 		if len(orgdata) > 0 && ((type_ != "" && !slices.Contains(ror.RORTypes, type_)) || country != "" || dateUpdated != "" || number != 0) {
-			orgdata, err = ror.FilterRecords(orgdata, type_, country, dateUpdated, file, number, page)
+			orgdata, err = ror.FilterCatalog(orgdata, type_, country, dateUpdated, file, number, page)
 		}
 		if err != nil {
 			fmt.Println("An error occurred:", err)
