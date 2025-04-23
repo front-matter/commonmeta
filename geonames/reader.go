@@ -70,18 +70,13 @@ const (
 // LoadGeonamesCountries loads countries from geonamesnames
 func LoadGeonamesCountries() (map[string]Country, error) {
 	url := geonamesURL + countryInfoURL
-	err := fileutils.DownloadFile(url, countryInfoURL)
+	bytes, err := fileutils.DownloadFile(url)
 	if err != nil {
 		return nil, fmt.Errorf("error downloading country info: %w", err)
 	}
 	countries := make(map[string]Country)
 
-	// parse the file
-	data, err := fileutils.ReadFile(countryInfoURL)
-	if err != nil {
-		return nil, fmt.Errorf("error reading country info: %w", err)
-	}
-	parse(data, 0, func(fields [][]byte) bool {
+	parse(bytes, 0, func(fields [][]byte) bool {
 		fmt.Println(len(fields))
 		if len(fields) < 18 {
 			return true
