@@ -5,7 +5,7 @@
     "type": "record",
     "fields": [
       { "name": "id", "type": "string" },
-      { "name": "established", "type": ["null", "int"], "default": null },
+      { "name": "established", "type": "int", "default": 0 },
       {
         "name": "external_ids",
         "type": {
@@ -34,8 +34,8 @@
               },
               {
                 "name": "preferred",
-                "type": ["null", "string"],
-                "default": null
+                "type": "string",
+                "default": ""
               }
             ]
           }
@@ -83,13 +83,13 @@
                     { "name": "country_name", "type": "string" },
                     {
                       "name": "country_subdivision_code",
-                      "type": ["null", "string"],
-                      "default": null
+                      "type": "string",
+                      "default": ""
                     },
                     {
                       "name": "country_subdivision_name",
-                      "type": ["null", "string"],
-                      "default": null
+                      "type": "string",
+                      "default": ""
                     },
                     { "name": "lat", "type": "double" },
                     { "name": "lng", "type": "double" },
@@ -121,7 +121,7 @@
                   }
                 }
               },
-              { "name": "lang", "type": ["null", "string"], "default": null }
+              { "name": "lang", "type": "string", "default": "" }
             ]
           }
         }
