@@ -6,6 +6,7 @@ cover.out
 affiliations_ror.yaml
 funders.yaml
 v1.*-ror-data.avro.zip
+!vocabularies/v1.63-2025-04-03-ror-data.avro.zip
 v1.*-ror-data.zip
 countryInfo.txt
 citation/*
