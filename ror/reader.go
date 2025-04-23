@@ -325,20 +325,22 @@ var RORSchema = `{
 // according to both schema v1 and schema v2. Version 2 files have _schema_v2 appended to the end of
 // the filename, e.g., v1.45-2024-04-11-ror-data_schema_v2.json.
 var RORVersions = map[string]string{
-	"v1.50": "2024-07-29",
-	"v1.51": "2024-08-21",
-	"v1.52": "2024-09-16",
-	"v1.53": "2023-10-14",
-	"v1.54": "2024-10-21",
-	"v1.55": "2024-10-31",
-	"v1.56": "2024-11-19",
-	"v1.58": "2024-12-11",
 	"v1.59": "2025-01-23",
 	"v1.60": "2025-02-27",
 	"v1.61": "2025-03-18",
 	"v1.62": "2025-03-27",
 	"v1.63": "2025-04-03",
 }
+
+// RORZenodoIDs contains the Zenodo IDs for the ROR data releases.
+var RORZenodoIDs = map[string]string{
+	"v1.59": "14728473",
+	"v1.60": "14797924",
+	"v1.61": "15047759",
+	"v1.62": "15098078",
+	"v1.63": "15132361",
+}
+
 var ArchivedFilename = "v1.63-2025-04-03-ror-data_schema_v2.json"
 var RORFilename = "v1.63-2025-04-03-ror-data.zip"
 var RORDownloadURL = fmt.Sprintf("https://zenodo.org/records/15132361/files/%s?download=1", RORFilename)
@@ -504,26 +506,85 @@ func Search(id string) (ROR, error) {
 	return ror, err
 }
 
-// LoadAll loads the metadata for a list of organizations from a ROR file
+// Basename returns the basename of the ROR data dump file for a given version.
+func Basename(version string) string {
+	date := RORVersions[version]
+	if date == "" {
+		return ""
+	}
+	basename := fmt.Sprintf("%s-%s-ror-data", version, date)
+	return basename
+}
+
+// FetchAll fetches the ROR Data dump from Zenodo.
+func FetchAll(version string) (map[string]ROR, error) {
+	var input, output []byte
+	var list []ROR
+	var err error
+
+	// constuct the URL for the ROR data dump
+	basename := Basename(version)
+	if basename == "" {
+		return nil, fmt.Errorf("invalid version: %s", version)
+	}
+	zenodoID := RORZenodoIDs[version]
+	zipname := fmt.Sprintf("%s.zip", basename)
+	jsonname := fmt.Sprintf("%s_schema_v2.json", basename)
+	url := fmt.Sprintf("https://zenodo.org/records/%s/files/%s?download=1", zenodoID, zipname)
+
+	// download the ROR data zip file
+	input, err = fileutils.DownloadFile(url)
+	if err != nil {
+		fmt.Println(err)
+		return nil, fmt.Errorf("error downloading zip file")
+	}
+
+	// unzip the json version 2 in the ROR data zip file
+	output, err = fileutils.UnzipContent(input, jsonname)
+	if err != nil {
+		return nil, fmt.Errorf("error unzipping file: %w", err)
+	}
+
+	// write the unzipped json file to disk
+	err = fileutils.WriteFile(jsonname, output)
+	if err != nil {
+		return nil, fmt.Errorf("error writing json file: %w", err)
+	}
+
+	err = json.Unmarshal(output, &list)
+	if err != nil {
+		return nil, fmt.Errorf("error parsing json data: %w", err)
+	}
+
+	// convert to map
+	catalog := make(map[string]ROR)
+	for _, v := range list {
+		catalog[v.ID] = v
+	}
+	return catalog, nil
+}
+
+// LoadAll loads the metadata for a list of organizations from a ROR file.
 func LoadAll(filename string) (map[string]ROR, error) {
-	var data map[string]ROR
+	var list []ROR
+	var catalog = make(map[string]ROR)
 	var output []byte
 	var err error
 
 	filename, extension, compress := fileutils.GetExtension(filename, ".json")
 
 	if !slices.Contains(Extensions, extension) {
-		return data, errors.New("invalid file extension")
+		return catalog, errors.New("invalid file extension")
 	}
 	if compress {
 		output, err = fileutils.ReadZIPFile(filename+".zip", path.Base(filename))
 		if err != nil {
-			return data, errors.New("error reading zip file")
+			return catalog, errors.New("error reading zip file")
 		}
 	} else {
 		output, err = fileutils.ReadFile(filename)
 		if err != nil {
-			return data, errors.New("error reading file")
+			return catalog, errors.New("error reading file")
 		}
 	}
 	if extension == ".avro" {
@@ -531,15 +592,26 @@ func LoadAll(filename string) (map[string]ROR, error) {
 		if err != nil {
 			return nil, err
 		}
-		err = avro.Unmarshal(schema, output, &data)
+		err = avro.Unmarshal(schema, output, &catalog)
 		if err != nil {
 			fmt.Println(err)
-			return data, errors.New("error unmarshalling avro file")
+			return catalog, errors.New("error unmarshalling avro file")
 		}
 	} else if extension == ".json" {
-		err = json.Unmarshal(output, &data)
+		err = json.Unmarshal(output, &list)
 		if err != nil {
-			return data, errors.New("error unmarshalling json file")
+			return catalog, errors.New("error unmarshalling json file")
+		}
+		for _, v := range list {
+			catalog[v.ID] = v
+		}
+	} else if extension == ".yaml" {
+		err = yaml.Unmarshal(output, &list)
+		if err != nil {
+			return catalog, errors.New("error unmarshalling yaml file")
+		}
+		for _, v := range list {
+			catalog[v.ID] = v
 		}
 	} else if extension == ".jsonl" {
 		decoder := json.NewDecoder(bytes.NewReader(output))
@@ -548,17 +620,12 @@ func LoadAll(filename string) (map[string]ROR, error) {
 			if err := decoder.Decode(&item); err == io.EOF {
 				break
 			} else if err != nil {
-				return data, errors.New("error unmarshalling jsonl file")
+				return catalog, errors.New("error unmarshalling jsonl file")
 			}
-			data[item.ID] = item
-		}
-	} else if extension == ".yaml" {
-		err = yaml.Unmarshal(output, &data)
-		if err != nil {
-			return data, errors.New("error unmarshalling yaml file")
+			catalog[item.ID] = item
 		}
 	}
-	return data, err
+	return catalog, err
 }
 
 // MapROR maps between a ROR ID and organization name
@@ -617,23 +684,31 @@ func LoadBuiltin() (map[string]ROR, error) {
 	return catalog, nil
 }
 
-// TryLoadJSONFile tries to load a local ROR json ZIP file
-func TryLoadJSONFile() ([]ROR, error) {
+// LoadJSON loads a local ROR json file with the specified version.
+// If the file does not exist or is smaller than 50 MB, it will be downloaded from Zenodo.
+func LoadJSON(version string) ([]ROR, error) {
+	var bytes []byte
 	var list []ROR
 
-	// check that local json ZIP exists and is large enough
-	info, err := os.Stat(RORFilename)
-	if err != nil || (info.Size()/1048576) < 50 {
-		err = fileutils.DownloadFile(RORDownloadURL, RORFilename)
+	date := RORVersions[version]
+	if date == "" {
+		return nil, fmt.Errorf("invalid version: %s", version)
+	}
+	filename := fmt.Sprintf("%s-%s-ror-data_schema_v2.json", version, date)
+
+	// check that local ROR data json exists and is large enough
+	info, err := os.Stat(filename)
+	if err == nil && (info.Size()/1048576) > 50 {
+		// read json ZIP file
+		bytes, err = fileutils.ReadFile(filename)
+		if err != nil {
+			return nil, fmt.Errorf("error reading json file: %w", err)
+		}
+	} else {
+		bytes, err = fileutils.DownloadFile(RORDownloadURL)
 		if err != nil {
 			return nil, fmt.Errorf("error downloading json file")
 		}
-	}
-
-	// read json ZIP file
-	bytes, err := fileutils.ReadZIPFile(RORFilename, ArchivedFilename)
-	if err != nil {
-		return nil, fmt.Errorf("error reading json ZIP file: %w", err)
 	}
 
 	err = json.Unmarshal(bytes, &list)

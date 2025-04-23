@@ -65,6 +65,7 @@ var listCmd = &cobra.Command{
 		fromHost, _ := cmd.Flags().GetString("from-host")
 		community, _ := cmd.Flags().GetString("community")
 		subject, _ := cmd.Flags().GetString("subject")
+		version, _ := cmd.Flags().GetString("version")
 		vocabulary, _ := cmd.Flags().GetBool("vocabulary")
 		hasORCID, _ := cmd.Flags().GetBool("has-orcid")
 		hasROR, _ := cmd.Flags().GetBool("has-ror-id")
@@ -133,10 +134,14 @@ var listCmd = &cobra.Command{
 				return
 			}
 			orgdata, err = ror.LoadAll(str)
+		} else if str == "" && version != "" && from == "ror" {
+			// download the ROR data dump with the specified version
+			orgdata, err = ror.FetchAll(version)
+			input = ror.Basename(version)
 		} else if str == "" && from == "ror" {
 			// if no input is provided, use ROR data dump
 			orgdata, err = ror.LoadBuiltin()
-			input = ror.RORFilename
+			input = ror.Basename("v1.63")
 		} else {
 			fmt.Println("Please provide a valid input format")
 			return

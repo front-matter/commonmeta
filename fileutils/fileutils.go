@@ -79,25 +79,23 @@ func ReadZIPFile(filename string, name string) ([]byte, error) {
 	return output, err
 }
 
-// DownloadFile downloads content from the given URL and saves it as a file.
-func DownloadFile(url string, filename string) error {
+// DownloadFile downloads content from the given URL.
+func DownloadFile(url string) ([]byte, error) {
+	var output []byte
+
 	client := &http.Client{
-		Timeout: time.Second * 10,
+		Timeout: time.Second * 60,
 	}
 	resp, err := client.Get(url)
 	if err != nil {
-		return err
+		return output, err
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != 200 {
-		return fmt.Errorf("status code error: %d %s", resp.StatusCode, resp.Status)
+		return output, fmt.Errorf("status code error: %d %s", resp.StatusCode, resp.Status)
 	}
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return err
-	}
-	err = WriteFile(filename, body)
-	return err
+	output, err = io.ReadAll(resp.Body)
+	return output, err
 }
 
 // WriteFile saves content as a file.
