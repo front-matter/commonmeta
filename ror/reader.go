@@ -602,62 +602,13 @@ func MapROR(id string, name string, assertedBy string, match bool) (string, stri
 
 // LoadBuiltin loads the ROR metadata from the embedded ROR catalog in zipped avro format.
 func LoadBuiltin() (map[string]ROR, error) {
-	var output []byte
 	var catalog map[string]ROR
 
-	// check that local avro ZIP exists and is large enough
-	catalog, err := TryLoadAvroFile()
-	if err != nil && len(catalog) > 0 {
-		return catalog, nil
-	}
-
-	// alternatively, check that local json ZIP exists and is large enough
-	// if not, download the latest ROR data dump from Zenodo
-	list, err := TryLoadJSONFile()
-	if err != nil {
-		return catalog, err
-	}
-
-	// convert slices into map
-	catalog = make(map[string]ROR, len(list))
-	for _, item := range list {
-		catalog[item.ID] = item
-	}
-
-	// convert ROR data dump into avro format and store in zipped local file
-	schema, _ := avro.Parse(RORSchema)
-	output, err = avro.Marshal(schema, catalog)
-	if err != nil {
-		fmt.Println("error converting to avro format", err)
-	}
-	err = fileutils.WriteZIPFile(RORAvroFilename, output)
-	return catalog, err
-}
-
-// TryLoadAvroFile tries to load a local ROR avro ZIP file
-func TryLoadAvroFile() (map[string]ROR, error) {
-	var catalog map[string]ROR
-
-	// // check that local avro ZIP exists and is large enough
-	// info, err := os.Stat(RORAvroFilename + ".zip")
-	// if err != nil || (info.Size()/1048576) < 10 {
-	// 	return nil, fmt.Errorf("no valid avro ZIP file found")
-	// }
-
-	// // read avro ZIP file
-	// bytes, err := fileutils.ReadZIPFile(RORAvroFilename+".zip", path.Base(RORAvroFilename))
-	// if err != nil {
-	// 	return nil, fmt.Errorf("error reading avro file: %w", err)
-	// }
-
-	// read embedded avro file
 	bytes, err := vocabularies.LoadVocabulary("ROR.Organizations")
-
 	schema, err := avro.Parse(RORSchema)
 	if err != nil {
 		return nil, fmt.Errorf("error parsing avro schema: %w", err)
 	}
-
 	err = avro.Unmarshal(schema, bytes, &catalog)
 	if err != nil {
 		return nil, fmt.Errorf("error parsing avro data: %w", err)

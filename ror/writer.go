@@ -11,7 +11,6 @@ import (
 	"sort"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/front-matter/commonmeta/utils"
 	"github.com/hamba/avro/v2"
@@ -490,7 +489,11 @@ func WriteAll(catalog map[string]ROR, extension string) ([]byte, error) {
 		return output, nil
 	}
 
+	// convert map to slice and sort by ID
 	inveniordmList := slices.Collect(maps.Values(catalog))
+	sort.Slice(inveniordmList, func(i, j int) bool {
+		return inveniordmList[i].ID < inveniordmList[j].ID
+	})
 	if extension == ".yaml" {
 		output, err = yaml.Marshal(inveniordmList)
 	} else if extension == ".json" {
@@ -576,14 +579,14 @@ func WriteAllInvenioRDM(catalog map[string]ROR, extension string) ([]byte, error
 
 // FilterCatalog filters a ROR catalog by type and/or country.
 func FilterCatalog(catalog map[string]ROR, type_ string, country string, dateUpdated string, file string, number int, page int) (map[string]ROR, error) {
-	var filtered map[string]ROR
+	filtered := make(map[string]ROR)
 
 	if file == "funders.yaml" {
 		type_ = "funder"
 	}
 
-	// optionally filter by type and/or country
-	if type_ != "" || country != "" || file != "" {
+	// optionally filter by type, country, and/or date updated
+	if type_ != "" || country != "" || file != "" || dateUpdated != "" {
 		for _, v := range catalog {
 			if type_ != "" && !slices.Contains(v.Types, type_) {
 				continue
@@ -591,6 +594,9 @@ func FilterCatalog(catalog map[string]ROR, type_ string, country string, dateUpd
 			if country != "" && !slices.ContainsFunc(v.Locations, func(l Location) bool {
 				return l.GeonamesDetails.CountryCode == strings.ToUpper(country)
 			}) {
+				continue
+			}
+			if dateUpdated != "" && v.Admin.LastModified.Date < dateUpdated {
 				continue
 			}
 			if file == "funders.yaml" {
@@ -610,40 +616,31 @@ func FilterCatalog(catalog map[string]ROR, type_ string, country string, dateUpd
 		filtered = catalog
 	}
 
-	// convert map to slice
-	list := slices.Collect(maps.Values(filtered))
-
-	// optionally filter by date updated
-	if dateUpdated != "" {
-		// validate date format
-		_, err := time.Parse("2006-01-02", dateUpdated)
-		if err != nil {
-			return nil, fmt.Errorf("invalid date format: %v", err)
-		}
-		list = slices.DeleteFunc(list, func(r ROR) bool {
-			return r.Admin.LastModified.Date < dateUpdated
-		})
-	}
-
 	// optionally filter by number and page
 	if number > 0 {
+		// convert filtered map to slice and sort by ID
+		list := slices.Collect(maps.Values(filtered))
+		sort.Slice(list, func(i, j int) bool {
+			return list[i].ID < list[j].ID
+		})
+
 		page = max(page, 1)
 		start := (page - 1) * number
-		end := min(start+number, len(filtered))
-		if start > len(filtered) {
-			start = len(filtered)
-		}
-		list = list[start:end]
-	}
+		end := min(start+number, len(list))
 
-	// convert slice back to map and sort by IDBu
-	filtered = make(map[string]ROR)
-	for _, v := range list {
-		filtered[v.ID] = v
+		// check if start is greater than the length of keys
+		if start >= len(list) {
+			return make(map[string]ROR), nil
+		}
+
+		// convert back to map
+		result := make(map[string]ROR, end-start)
+		for i := start; i < end; i++ {
+			key := list[i].ID
+			result[key] = filtered[key]
+		}
+		return result, nil
 	}
-	sort.Slice(list, func(i, j int) bool {
-		return list[i].ID < list[j].ID
-	})
 	return filtered, nil
 }
 
