@@ -193,8 +193,8 @@ type Title struct {
 }
 
 var InvenioRDMSchema = `{
-  "type": "array",
-  "items": {
+  "type": "map",
+  "values": {
     "name": "InvenioRDM",
     "type": "record",
     "fields": [
@@ -477,10 +477,24 @@ func WriteAll(catalog map[string]ROR, extension string) ([]byte, error) {
 	var err error
 	var output []byte
 
+	if extension == ".avro" {
+		schema, err := avro.Parse(RORSchema)
+		if err != nil {
+			fmt.Println(err, "avro.Parse")
+			return nil, err
+		}
+		output, err = avro.Marshal(schema, catalog)
+		if err != nil {
+			fmt.Println(err, "avro.Marshal")
+		}
+		return output, nil
+	}
+
+	inveniordmList := slices.Collect(maps.Values(catalog))
 	if extension == ".yaml" {
-		output, err = yaml.Marshal(catalog)
+		output, err = yaml.Marshal(inveniordmList)
 	} else if extension == ".json" {
-		output, err = json.Marshal(catalog)
+		output, err = json.Marshal(inveniordmList)
 	} else if extension == ".jsonl" {
 		buffer := &bytes.Buffer{}
 		encoder := json.NewEncoder(buffer)
@@ -494,7 +508,7 @@ func WriteAll(catalog map[string]ROR, extension string) ([]byte, error) {
 	} else if extension == ".csv" {
 		var rorcsvList []RORCSV
 		// convert ROR to RORCSV, a custom lossy mapping to CSV
-		for _, item := range catalog {
+		for _, item := range inveniordmList {
 			rorcsv, err := ConvertRORCSV(item)
 			if err != nil {
 				fmt.Println(err)
@@ -505,21 +519,8 @@ func WriteAll(catalog map[string]ROR, extension string) ([]byte, error) {
 		if err != nil {
 			fmt.Println(err, "csvutil.Marshal")
 		}
-	} else if extension == ".avro" {
-		schema, err := avro.Parse(RORSchema)
-		if err != nil {
-			fmt.Println(err, "avro.Parse")
-			return nil, err
-		}
-		output, err = avro.Marshal(schema, catalog)
-		if err != nil {
-			fmt.Println(err, "avro.Marshal")
-		}
 	} else {
 		return output, errors.New("unsupported file format")
-	}
-	if err != nil {
-		return nil, err
 	}
 	return output, err
 }
@@ -539,38 +540,36 @@ func WriteInvenioRDM(data ROR) ([]byte, error) {
 
 // WriteAllInvenioRDM writes a ROR catalog in InvenioRDM format.
 func WriteAllInvenioRDM(catalog map[string]ROR, extension string) ([]byte, error) {
-	var inveniordmCatalog map[string]InvenioRDM
+	var inveniordmList []InvenioRDM
 	var err error
 	var output []byte
+
+	if extension == ".avro" {
+		schema, err := avro.Parse(InvenioRDMSchema)
+		if err != nil {
+			fmt.Println(err, "avro.Parse")
+			return nil, err
+		}
+		output, err = avro.Marshal(schema, catalog)
+		if err != nil {
+			fmt.Println(err, "avro.Marshal")
+		}
+		return output, err
+	}
 
 	for _, item := range catalog {
 		inveniordm, err := ConvertInvenioRDM(item)
 		if err != nil {
 			fmt.Println(err)
 		}
-		if inveniordm.ID != "" {
-			inveniordmCatalog[inveniordm.ID] = inveniordm
-		}
+		inveniordmList = append(inveniordmList, inveniordm)
 	}
 	if extension == ".yaml" {
-		output, err = yaml.Marshal(inveniordmCatalog)
+		output, err = yaml.Marshal(inveniordmList)
 	} else if extension == ".json" {
-		output, err = json.Marshal(inveniordmCatalog)
-	} else if extension == ".avro" {
-		schema, err := avro.Parse(InvenioRDMSchema)
-		if err != nil {
-			fmt.Println(err, "avro.Parse")
-			return nil, err
-		}
-		output, err = avro.Marshal(schema, inveniordmCatalog)
-		if err != nil {
-			fmt.Println(err, "avro.Marshal")
-		}
+		output, err = json.Marshal(inveniordmList)
 	} else {
 		return output, errors.New("unsupported file format")
-	}
-	if err != nil {
-		return nil, err
 	}
 	return output, err
 }

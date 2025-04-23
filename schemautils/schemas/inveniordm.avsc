@@ -1,6 +1,6 @@
 {
-  "type": "array",
-  "items": {
+  "type": "map",
+  "values": {
     "name": "InvenioRDM",
     "type": "record",
     "fields": [
