@@ -1,5 +1,5 @@
 /*
-Copyright © 2024 Front Matter <info@front-matter.io>
+Copyright © 2024-2025 Front Matter <info@front-matter.io>
 */
 package cmd
 
@@ -43,7 +43,7 @@ var listCmd = &cobra.Command{
 		var str string   // a string, content loaded from a file
 		var err error
 		var data []commonmeta.Data
-		var orgdata map[string]ror.ROR
+		var orgdata []ror.ROR
 		var extension string
 		var output []byte
 
@@ -65,7 +65,7 @@ var listCmd = &cobra.Command{
 		fromHost, _ := cmd.Flags().GetString("from-host")
 		community, _ := cmd.Flags().GetString("community")
 		subject, _ := cmd.Flags().GetString("subject")
-		version, _ := cmd.Flags().GetString("version")
+		dataVersion, _ := cmd.Flags().GetString("data-version")
 		vocabulary, _ := cmd.Flags().GetBool("vocabulary")
 		hasORCID, _ := cmd.Flags().GetBool("has-orcid")
 		hasROR, _ := cmd.Flags().GetBool("has-ror-id")
@@ -134,14 +134,14 @@ var listCmd = &cobra.Command{
 				return
 			}
 			orgdata, err = ror.LoadAll(str)
-		} else if str == "" && version != "" && from == "ror" {
+		} else if str == "" && dataVersion != "" && from == "ror" {
 			// download the ROR data dump with the specified version
-			orgdata, err = ror.FetchAll(version)
-			input = ror.Basename(version)
+			orgdata, err = ror.FetchAll(dataVersion)
+			input = ror.Basename(dataVersion)
 		} else if str == "" && from == "ror" {
 			// if no input is provided, use ROR data dump
 			orgdata, err = ror.LoadBuiltin()
-			input = ror.Basename("v1.63")
+			input = ror.Basename("v1.64")
 		} else {
 			fmt.Println("Please provide a valid input format")
 			return
@@ -152,8 +152,8 @@ var listCmd = &cobra.Command{
 		}
 
 		// optionally filter orgdata by type, country, number and page
-		if len(orgdata) > 0 && ((type_ != "" && !slices.Contains(ror.RORTypes, type_)) || country != "" || dateUpdated != "" || number != 0) {
-			orgdata, err = ror.FilterCatalog(orgdata, type_, country, dateUpdated, file, number, page)
+		if len(orgdata) > 0 && (type_ != "" && !slices.Contains(ror.RORTypes, type_) || country != "" || file != "" || dateUpdated != "" || number != 0) {
+			orgdata, err = ror.FilterList(orgdata, type_, country, dateUpdated, file, number, page)
 		}
 		if err != nil {
 			fmt.Println("An error occurred:", err)
