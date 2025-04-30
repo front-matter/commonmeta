@@ -10,6 +10,8 @@ import (
 	"os"
 	"path"
 	"time"
+
+	"github.com/schollz/progressbar/v3"
 )
 
 func ReadFile(filename string) ([]byte, error) {
@@ -80,22 +82,39 @@ func ReadZIPFile(filename string, name string) ([]byte, error) {
 }
 
 // DownloadFile downloads content from the given URL.
-func DownloadFile(url string) ([]byte, error) {
+func DownloadFile(url string, progress bool) ([]byte, error) {
 	var output []byte
 
-	client := &http.Client{
-		Timeout: time.Second * 60,
-	}
+	client := &http.Client{}
 	resp, err := client.Get(url)
 	if err != nil {
 		return output, err
 	}
 	defer resp.Body.Close()
+
 	if resp.StatusCode != 200 {
 		return output, fmt.Errorf("status code error: %d %s", resp.StatusCode, resp.Status)
 	}
-	output, err = io.ReadAll(resp.Body)
-	return output, err
+
+	// Create a buffer to store the response body
+	buf := new(bytes.Buffer)
+
+	// If progress is enabled, copy response body to both the buffer and the progress bar
+	if progress {
+		bar := progressbar.DefaultBytes(
+			resp.ContentLength,
+			"downloading",
+		)
+		_, err = io.Copy(io.MultiWriter(buf, bar), resp.Body)
+	} else {
+		_, err = io.Copy(buf, resp.Body)
+	}
+	if err != nil {
+		return output, err
+	}
+
+	output = buf.Bytes()
+	return output, nil
 }
 
 // WriteFile saves content as a file.
