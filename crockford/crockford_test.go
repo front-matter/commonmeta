@@ -21,7 +21,7 @@ func TestEncode(t *testing.T) {
 		{input: 1234, want: "16-j", splitEvery: 2, length: 0, checksum: false},
 		{input: 1234, want: "01-6j", splitEvery: 2, length: 4, checksum: false},
 		{input: 538751765283013, want: "f9zqn-sf065", splitEvery: 5, length: 10, checksum: false},
-		{input: 736381604818, want: "9ed5m-ytn30", splitEvery: 5, length: 10, checksum: true},
+		{input: 736381604818, want: "ndsw7-4yj20", splitEvery: 5, length: 10, checksum: true},
 		{input: 258706475165200172, want: "75rw5cg-n1bsc64", splitEvery: 7, length: 14, checksum: true},
 		{input: 161006169, want: "4shg-js75", splitEvery: 4, length: 8, checksum: true},
 	}

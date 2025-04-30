@@ -70,7 +70,7 @@ const (
 // LoadGeonamesCountries loads countries from geonamesnames
 func LoadGeonamesCountries() (map[string]Country, error) {
 	url := geonamesURL + countryInfoURL
-	bytes, err := fileutils.DownloadFile(url)
+	bytes, err := fileutils.DownloadFile(url, false)
 	if err != nil {
 		return nil, fmt.Errorf("error downloading country info: %w", err)
 	}

@@ -21,6 +21,7 @@ import (
 	"github.com/front-matter/commonmeta/commonmeta"
 	"github.com/front-matter/commonmeta/doiutils"
 	"github.com/front-matter/commonmeta/ror"
+	"github.com/front-matter/commonmeta/spdx"
 	"github.com/front-matter/commonmeta/utils"
 )
 
@@ -1064,8 +1065,12 @@ func Read(content Content, match bool) (commonmeta.Data, error) {
 			URL: licenseURL,
 		}
 	} else if content.Metadata.License.ID != "" {
+		var licenseURL string
 		licenseID := LicenseMappings[content.Metadata.License.ID]
-		licenseURL := utils.SPDXToURL(licenseID)
+		license, _ := spdx.Search(licenseID)
+		if len(license.SeeAlso) == 0 {
+			licenseURL = license.SeeAlso[0]
+		}
 		data.License = commonmeta.License{
 			ID:  licenseID,
 			URL: licenseURL,
