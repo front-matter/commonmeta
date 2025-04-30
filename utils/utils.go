@@ -17,6 +17,7 @@ import (
 	iso639_3 "github.com/barbashov/iso639-3"
 	"github.com/front-matter/commonmeta/crockford"
 	"github.com/front-matter/commonmeta/doiutils"
+	"github.com/front-matter/commonmeta/spdx"
 	"github.com/microcosm-cc/bluemonday"
 	"github.com/pkosilo/iso7064"
 	"golang.org/x/text/runes"
@@ -145,10 +146,6 @@ func NormalizeURL(str string, secure bool, lower bool) (string, error) {
 	if u.Host == "" {
 		return "", nil
 	}
-	// strip trailing slash if no query
-	if u.Path != "" && len(u.RawQuery) == 0 && u.Path[len(u.Path)-1] == '/' {
-		u.Path = u.Path[:len(u.Path)-1]
-	}
 	if secure && u.Scheme == "http" {
 		u.Scheme = "https"
 	}
@@ -159,7 +156,7 @@ func NormalizeURL(str string, secure bool, lower bool) (string, error) {
 }
 
 // NormalizeCCUrl returns the normalized Creative Commons License URL
-func NormalizeCCUrl(url string) (string, bool) {
+func NormalizeCCUrl(url_ string) (string, bool) {
 	NormalizedLicenses := map[string]string{
 		"https://creativecommons.org/licenses/by/1.0":          "https://creativecommons.org/licenses/by/1.0/legalcode",
 		"https://creativecommons.org/licenses/by/2.0":          "https://creativecommons.org/licenses/by/2.0/legalcode",
@@ -202,70 +199,45 @@ func NormalizeCCUrl(url string) (string, bool) {
 		"https://creativecommons.org/publicdomain/zero/1.0":    "https://creativecommons.org/publicdomain/zero/1.0/legalcode",
 	}
 
-	if url == "" {
+	if url_ == "" {
 		return "", false
 	}
 	var err error
-	url, err = NormalizeURL(url, true, false)
+	url_, err = NormalizeURL(url_, true, false)
 	if err != nil {
 		return "", false
 	}
-	normalizedURL, ok := NormalizedLicenses[url]
-	if !ok {
-		return url, false
+	u, err := url.Parse(url_)
+	if err != nil {
+		return "", false
 	}
-	return normalizedURL, true
+	// strip trailing slash if no query
+	if u.Path != "" && len(u.RawQuery) == 0 && u.Path[len(u.Path)-1] == '/' {
+		u.Path = u.Path[:len(u.Path)-1]
+	}
+	normalizedURL, ok := NormalizedLicenses[u.String()]
+	return normalizedURL, ok
 }
 
 // URLToSPDX provides the SPDX license ID given a Creative Commons URL
 func URLToSPDX(url string) string {
-	// appreviated list from https://spdx.org/licenses/
-	SPDXLicenses := map[string]string{
-		"https://creativecommons.org/licenses/by/3.0/legalcode":       "CC-BY-3.0",
-		"https://creativecommons.org/licenses/by/4.0/legalcode":       "CC-BY-4.0",
-		"https://creativecommons.org/licenses/by-nc/3.0/legalcode":    "CC-BY-NC-3.0",
-		"https://creativecommons.org/licenses/by-nc/4.0/legalcode":    "CC-BY-NC-4.0",
-		"https://creativecommons.org/licenses/by-nc-nd/3.0/legalcode": "CC-BY-NC-ND-3.0",
-		"https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode": "CC-BY-NC-ND-4.0",
-		"https://creativecommons.org/licenses/by-nc-sa/3.0/legalcode": "CC-BY-NC-SA-3.0",
-		"https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode": "CC-BY-NC-SA-4.0",
-		"https://creativecommons.org/licenses/by-nd/3.0/legalcode":    "CC-BY-ND-3.0",
-		"https://creativecommons.org/licenses/by-nd/4.0/legalcode":    "CC-BY-ND-4.0",
-		"https://creativecommons.org/licenses/by-sa/3.0/legalcode":    "CC-BY-SA-3.0",
-		"https://creativecommons.org/licenses/by-sa/4.0/legalcode":    "CC-BY-SA-4.0",
-		"https://creativecommons.org/publicdomain/zero/1.0/legalcode": "CC0-1.0",
-		"https://creativecommons.org/licenses/publicdomain/":          "CC0-1.0",
-		"https://opensource.org/licenses/MIT":                         "MIT",
-		"https://opensource.org/licenses/Apache-2.0":                  "Apache-2.0",
-		"https://opensource.org/licenses/GPL-3.0":                     "GPL-3.0",
+	license, err := spdx.Search(url)
+	if err != nil {
+		return ""
 	}
-	id := SPDXLicenses[url]
-	return id
+	return license.LicenseID
 }
 
 // SPDXToURL provides the SPDX license URL given a Creative Commons SPDX ID
 func SPDXToURL(id string) string {
-	// appreviated list from https://spdx.org/licenses/
-	SPDXLicenses := map[string]string{
-		"CC-BY-3.0":       "https://creativecommons.org/licenses/by/3.0/legalcode",
-		"CC-BY-4.0":       "https://creativecommons.org/licenses/by/4.0/legalcode",
-		"CC-BY-NC-3.0":    "https://creativecommons.org/licenses/by-nc/3.0/legalcode",
-		"CC-BY-NC-4.0":    "https://creativecommons.org/licenses/by-nc/4.0/legalcode",
-		"CC-BY-NC-ND-3.0": "https://creativecommons.org/licenses/by-nc-nd/3.0/legalcode",
-		"CC-BY-NC-ND-4.0": "https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode",
-		"CC-BY-NC-SA-3.0": "https://creativecommons.org/licenses/by-nc-sa/3.0/legalcode",
-		"CC-BY-NC-SA-4.0": "https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode",
-		"CC-BY-ND-3.0":    "https://creativecommons.org/licenses/by-nd/3.0/legalcode",
-		"CC-BY-ND-4.0":    "https://creativecommons.org/licenses/by-nd/4.0/legalcode",
-		"CC-BY-SA-3.0":    "https://creativecommons.org/licenses/by-sa/3.0/legalcode",
-		"CC-BY-SA-4.0":    "https://creativecommons.org/licenses/by-sa/4.0/legalcode",
-		"CC0-1.0":         "https://creativecommons.org/publicdomain/zero/1.0/legalcode",
-		"MIT":             "https://opensource.org/licenses/MIT",
-		"Apache-2.0":      "https://opensource.org/licenses/Apache-2.0",
-		"GPL-3.0":         "https://opensource.org/licenses/GPL-3.0",
+	license, err := spdx.Search(id)
+	if err != nil {
+		return ""
 	}
-	url := SPDXLicenses[id]
-	return url
+	if license.SeeAlso == nil || len(license.SeeAlso) == 0 {
+		return ""
+	}
+	return license.SeeAlso[0]
 }
 
 type Params struct {

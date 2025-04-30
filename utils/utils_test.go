@@ -45,13 +45,13 @@ func TestNormalizeURL(t *testing.T) {
 		want   string
 	}
 	testCases := []testCase{
-		{input: "http://elifesciences.org/articles/91729/", secure: true, lower: true, want: "https://elifesciences.org/articles/91729"},
+		{input: "http://elifesciences.org/articles/91729", secure: true, lower: true, want: "https://elifesciences.org/articles/91729"},
 		{input: "https://api.crossref.org/works/10.1101/097196", secure: true, lower: true, want: "https://api.crossref.org/works/10.1101/097196"},
-		{input: "http://elifesciences.org/articles/91729/", secure: false, lower: true, want: "http://elifesciences.org/articles/91729"},
-		{input: "https://elifesciences.org/Articles/91729/", secure: true, lower: false, want: "https://elifesciences.org/Articles/91729"},
-		{input: "http://elifesciences.org/Articles/91729/", secure: false, lower: false, want: "http://elifesciences.org/Articles/91729"},
+		{input: "http://elifesciences.org/articles/91729/", secure: false, lower: true, want: "http://elifesciences.org/articles/91729/"},
+		{input: "https://elifesciences.org/Articles/91729", secure: true, lower: false, want: "https://elifesciences.org/Articles/91729"},
+		{input: "http://elifesciences.org/Articles/91729", secure: false, lower: false, want: "http://elifesciences.org/Articles/91729"},
 		{input: "https://www.ch.ic.ac.uk/rzepa/blog/?p=27133", secure: true, lower: true, want: "https://www.ch.ic.ac.uk/rzepa/blog/?p=27133"},
-		{input: "https://infomgnt.org/posts/2024-07-01-Vorstellung-OA-Datenpraxis/", secure: true, lower: false, want: "https://infomgnt.org/posts/2024-07-01-Vorstellung-OA-Datenpraxis"},
+		{input: "https://infomgnt.org/posts/2024-07-01-Vorstellung-OA-Datenpraxis", secure: true, lower: false, want: "https://infomgnt.org/posts/2024-07-01-Vorstellung-OA-Datenpraxis"},
 	}
 	for _, tc := range testCases {
 		got, err := utils.NormalizeURL(tc.input, tc.secure, tc.lower)
@@ -63,7 +63,7 @@ func TestNormalizeURL(t *testing.T) {
 }
 
 func ExampleNormalizeURL() {
-	s, _ := utils.NormalizeURL("http://elifesciences.org/Articles/91729/", true, true)
+	s, _ := utils.NormalizeURL("http://elifesciences.org/Articles/91729", true, true)
 	fmt.Println(s)
 	// Output:
 	// https://elifesciences.org/articles/91729
@@ -81,6 +81,13 @@ func ExampleURLToSPDX() {
 	fmt.Println(s)
 	// Output:
 	// CC-BY-4.0
+}
+
+func ExampleSPDXToURL() {
+	s := utils.SPDXToURL("CC-BY-4.0")
+	fmt.Println(s)
+	// Output:
+	// https://creativecommons.org/licenses/by/4.0/legalcode
 }
 
 func TestFindFromFormatByID(t *testing.T) {
