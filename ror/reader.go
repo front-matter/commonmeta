@@ -6,7 +6,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"maps"
 	"net/http"
 	"net/url"
 	"os"
@@ -97,8 +96,8 @@ type Relationship struct {
 
 // RORSchema is the Avro schema for the minimal ROR metadata.
 var RORSchema = `{
-  "type": "map",
-  "values": {
+  "type": "array",
+  "items": {
     "name": "ROR",
     "type": "record",
     "fields": [
@@ -330,7 +329,9 @@ var RORVersions = map[string]string{
 	"v1.61": "2025-03-18",
 	"v1.62": "2025-03-27",
 	"v1.63": "2025-04-03",
+	"v1.64": "2025-04-28",
 }
+var DefaultVersion = "v1.64"
 
 // RORZenodoIDs contains the Zenodo IDs for the ROR data releases.
 var RORZenodoIDs = map[string]string{
@@ -339,12 +340,12 @@ var RORZenodoIDs = map[string]string{
 	"v1.61": "15047759",
 	"v1.62": "15098078",
 	"v1.63": "15132361",
+	"v1.64": "15298417",
 }
 
-var ArchivedFilename = "v1.63-2025-04-03-ror-data_schema_v2.json"
-var RORFilename = "v1.63-2025-04-03-ror-data.zip"
-var RORDownloadURL = fmt.Sprintf("https://zenodo.org/records/15132361/files/%s?download=1", RORFilename)
-var RORAvroFilename = "v1.63-2025-04-03-ror-data.avro"
+var ArchivedFilename = fmt.Sprintf("%s-%s-ror-data_schema_v2.json", DefaultVersion, RORVersions[DefaultVersion])
+var RORFilename = fmt.Sprintf("%s-%s-ror-data.zip", DefaultVersion, RORVersions[DefaultVersion])
+var RORDownloadURL = fmt.Sprintf("https://github.com/ror-community/ror-data/blob/main/%s", RORFilename)
 
 var SupportedTypes = []string{"ROR", "Wikidata", "Crossref Funder ID", "GRID", "ISNI"}
 var RORTypes = []string{"archive", "company", "education", "facility", "funder", "government", "healthcare", "nonprofit", "other"}
@@ -474,7 +475,7 @@ func Search(id string) (ROR, error) {
 		return ror, errors.New("not a supported organization id")
 	}
 
-	catalog, err := LoadBuiltin()
+	list, err := LoadBuiltin()
 	if err != nil {
 		return ror, err
 	}
@@ -484,20 +485,19 @@ func Search(id string) (ROR, error) {
 		pid = strings.ReplaceAll(pid, "-", " ")
 	}
 	if type_ == "ROR" {
-		return catalog[utils.NormalizeROR(pid)], nil
-	}
-	// convert map into a slice to search for value
-	list := slices.Collect(maps.Values(catalog))
-	idx = slices.IndexFunc(list, func(d ROR) bool {
-		for _, e := range d.ExternalIDs {
-			for _, all := range e.All {
-				if all == pid {
-					return true
+		idx = slices.IndexFunc(list, func(d ROR) bool { return d.ID == utils.NormalizeROR(pid) })
+	} else {
+		idx = slices.IndexFunc(list, func(d ROR) bool {
+			for _, e := range d.ExternalIDs {
+				for _, all := range e.All {
+					if all == pid {
+						return true
+					}
 				}
 			}
-		}
-		return false
-	})
+			return false
+		})
+	}
 	if idx == -1 {
 		return ror, errors.New("no organization found")
 	}
@@ -517,7 +517,7 @@ func Basename(version string) string {
 }
 
 // FetchAll fetches the ROR Data dump from Zenodo.
-func FetchAll(version string) (map[string]ROR, error) {
+func FetchAll(version string) ([]ROR, error) {
 	var input, output []byte
 	var list []ROR
 	var err error
@@ -533,7 +533,7 @@ func FetchAll(version string) (map[string]ROR, error) {
 	url := fmt.Sprintf("https://zenodo.org/records/%s/files/%s?download=1", zenodoID, zipname)
 
 	// download the ROR data zip file
-	input, err = fileutils.DownloadFile(url)
+	input, err = fileutils.DownloadFile(url, true)
 	if err != nil {
 		fmt.Println(err)
 		return nil, fmt.Errorf("error downloading zip file")
@@ -555,36 +555,29 @@ func FetchAll(version string) (map[string]ROR, error) {
 	if err != nil {
 		return nil, fmt.Errorf("error parsing json data: %w", err)
 	}
-
-	// convert to map
-	catalog := make(map[string]ROR)
-	for _, v := range list {
-		catalog[v.ID] = v
-	}
-	return catalog, nil
+	return list, nil
 }
 
 // LoadAll loads the metadata for a list of organizations from a ROR file.
-func LoadAll(filename string) (map[string]ROR, error) {
+func LoadAll(filename string) ([]ROR, error) {
 	var list []ROR
-	var catalog = make(map[string]ROR)
 	var output []byte
 	var err error
 
 	filename, extension, compress := fileutils.GetExtension(filename, ".json")
 
 	if !slices.Contains(Extensions, extension) {
-		return catalog, errors.New("invalid file extension")
+		return list, errors.New("invalid file extension")
 	}
 	if compress {
 		output, err = fileutils.ReadZIPFile(filename+".zip", path.Base(filename))
 		if err != nil {
-			return catalog, errors.New("error reading zip file")
+			return list, errors.New("error reading zip file")
 		}
 	} else {
 		output, err = fileutils.ReadFile(filename)
 		if err != nil {
-			return catalog, errors.New("error reading file")
+			return list, errors.New("error reading file")
 		}
 	}
 	if extension == ".avro" {
@@ -592,26 +585,20 @@ func LoadAll(filename string) (map[string]ROR, error) {
 		if err != nil {
 			return nil, err
 		}
-		err = avro.Unmarshal(schema, output, &catalog)
+		err = avro.Unmarshal(schema, output, &list)
 		if err != nil {
 			fmt.Println(err)
-			return catalog, errors.New("error unmarshalling avro file")
+			return list, errors.New("error unmarshalling avro file")
 		}
 	} else if extension == ".json" {
 		err = json.Unmarshal(output, &list)
 		if err != nil {
-			return catalog, errors.New("error unmarshalling json file")
-		}
-		for _, v := range list {
-			catalog[v.ID] = v
+			return list, errors.New("error unmarshalling json file")
 		}
 	} else if extension == ".yaml" {
 		err = yaml.Unmarshal(output, &list)
 		if err != nil {
-			return catalog, errors.New("error unmarshalling yaml file")
-		}
-		for _, v := range list {
-			catalog[v.ID] = v
+			return list, errors.New("error unmarshalling yaml file")
 		}
 	} else if extension == ".jsonl" {
 		decoder := json.NewDecoder(bytes.NewReader(output))
@@ -620,12 +607,12 @@ func LoadAll(filename string) (map[string]ROR, error) {
 			if err := decoder.Decode(&item); err == io.EOF {
 				break
 			} else if err != nil {
-				return catalog, errors.New("error unmarshalling jsonl file")
+				return list, errors.New("error unmarshalling jsonl file")
 			}
-			catalog[item.ID] = item
+			list = append(list, item)
 		}
 	}
-	return catalog, err
+	return list, err
 }
 
 // MapROR maps between a ROR ID and organization name
@@ -667,21 +654,17 @@ func MapROR(id string, name string, assertedBy string, match bool) (string, stri
 	return id, name, assertedBy, nil
 }
 
-// LoadBuiltin loads the ROR metadata from the embedded ROR catalog in zipped avro format.
-func LoadBuiltin() (map[string]ROR, error) {
-	var catalog map[string]ROR
+// LoadBuiltin loads the ROR metadata from the embedded ROR catalog in zipped json format.
+func LoadBuiltin() ([]ROR, error) {
+	var list []ROR
 
 	bytes, err := vocabularies.LoadVocabulary("ROR.Organizations")
-	schema, err := avro.Parse(RORSchema)
+	err = json.Unmarshal(bytes, &list)
 	if err != nil {
-		return nil, fmt.Errorf("error parsing avro schema: %w", err)
-	}
-	err = avro.Unmarshal(schema, bytes, &catalog)
-	if err != nil {
-		return nil, fmt.Errorf("error parsing avro data: %w", err)
+		return nil, fmt.Errorf("error parsing json data: %w", err)
 	}
 
-	return catalog, nil
+	return list, nil
 }
 
 // LoadJSON loads a local ROR json file with the specified version.
@@ -705,7 +688,7 @@ func LoadJSON(version string) ([]ROR, error) {
 			return nil, fmt.Errorf("error reading json file: %w", err)
 		}
 	} else {
-		bytes, err = fileutils.DownloadFile(RORDownloadURL)
+		bytes, err = fileutils.DownloadFile(RORDownloadURL, true)
 		if err != nil {
 			return nil, fmt.Errorf("error downloading json file")
 		}
@@ -731,7 +714,7 @@ func GetDisplayName(ror ROR) string {
 
 // ExtractAll extracts ROR metadata from a JSON file in commonmeta format.
 func ExtractAll(content []commonmeta.Data) ([]byte, error) {
-	var extracted map[string]ROR
+	var extracted []ROR
 	var ids []string
 
 	schema, err := avro.Parse(RORSchema)
@@ -740,7 +723,7 @@ func ExtractAll(content []commonmeta.Data) ([]byte, error) {
 	}
 
 	// Load the ROR metadata from the embedded ZIP file with all ROR records
-	catalog, err := LoadBuiltin()
+	list, err := LoadBuiltin()
 	if err != nil {
 		return nil, err
 	}
@@ -753,9 +736,10 @@ func ExtractAll(content []commonmeta.Data) ([]byte, error) {
 					for _, a := range c.Affiliations {
 						if a.ID != "" && !slices.Contains(ids, a.ID) {
 							id, _ := utils.ValidateROR(a.ID)
-							item, ok := catalog[id]
-							if ok {
-								extracted[id] = item
+							idx := slices.IndexFunc(list, func(d ROR) bool { return d.ID == id })
+							if idx != -1 {
+								ids = append(ids, a.ID)
+								extracted = append(extracted, list[idx])
 							}
 						}
 					}
