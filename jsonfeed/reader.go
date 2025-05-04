@@ -527,7 +527,7 @@ func GetContributors(contrib Authors) ([]commonmeta.Contributor, error) {
 			if v.Given == "" && v.Family == "" && v.Name != "" {
 				GivenName, FamilyName, Name = authorutils.ParseName(v.Name)
 			}
-			if Name == "" {
+			if GivenName != "" {
 				Type = "Person"
 			} else {
 				Type = "Organization"

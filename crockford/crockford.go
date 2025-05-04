@@ -90,6 +90,9 @@ func Decode(str string, checksum bool) (int64, error) {
 	encoded = Normalize(str)
 	if checksum {
 		// checksum is the last two characters
+		if len(encoded) < 3 {
+			return 0, fmt.Errorf("invalid checksum: %s", encoded)
+		}
 		cs, err = strconv.ParseInt(encoded[len(encoded)-2:], 10, 64)
 		if err != nil {
 			return 0, fmt.Errorf("invalid checksum: %s", encoded[len(encoded)-2:])
