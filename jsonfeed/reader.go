@@ -65,6 +65,8 @@ type Affiliation struct {
 
 // Authors represents the authors in the JSON Feed item.
 type Authors []struct {
+	Given       string        `json:"given"`
+	Family      string        `json:"family"`
 	Name        string        `json:"name"`
 	URL         string        `json:"url"`
 	Affiliation []Affiliation `json:"affiliation"`
@@ -517,15 +519,20 @@ func GetContributors(contrib Authors) ([]commonmeta.Contributor, error) {
 
 	if len(contrib) > 0 {
 		for _, v := range contrib {
-			ID := utils.NormalizeORCID(v.URL)
-			GivenName, FamilyName, Name := authorutils.ParseName(v.Name)
-			var Type string
+			var GivenName, FamilyName, Name, Type string
+			GivenName = v.Given
+			FamilyName = v.Family
+
+			// fallback if personal names are not provided
+			if v.Given == "" && v.Family == "" && v.Name != "" {
+				GivenName, FamilyName, Name = authorutils.ParseName(v.Name)
+			}
 			if Name == "" {
 				Type = "Person"
 			} else {
 				Type = "Organization"
 			}
-
+			ID := utils.NormalizeORCID(v.URL)
 			var affiliations []*commonmeta.Affiliation
 			if len(v.Affiliation) > 0 {
 				for _, a := range v.Affiliation {
