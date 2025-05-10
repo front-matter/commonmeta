@@ -31,14 +31,15 @@ Commonmeta reads and/or writes these metadata formats:
 | [RIS](http://en.wikipedia.org/wiki/RIS_(file_format))                                            | ris           | application/x-research-info-systems    | planned | planned |
 | [InvenioRDM](https://inveniordm.docs.cern.ch/reference/metadata/)                                | inveniordm    | application/vnd.inveniordm.v1+json     | yes | yes   |
 | [JSON Feed](https://www.jsonfeed.org/)                                                           | jsonfeed     | application/feed+json    | yes | later     |
+| [OpenAlex](https://www.openalex.org/)                                                           | openalex     |    | yes | no     |
 
 _commonmeta_: the Commonmeta format is the native format for the library and used internally.
-_Planned_: we plan to implement this format for the v1.0 public release.  
+_Planned_: we plan to implement this format for the v1.0 public release.
 _Later_: we plan to implement this format in a later release.
 
 ## Installation
 
-Commonmeta is a single Go binary, available for download from the [releases page](https://github.com/front-matter/commonmeta/releases). Download the binary for your platform (Linux, Mac, Windows; X86 or ARM architecture), and place it in your PATH. Linux packages in deb, rpm and apk formats are also available from the releases page. 
+Commonmeta is a single Go binary, available for download from the [releases page](https://github.com/front-matter/commonmeta/releases). Download the binary for your platform (Linux, Mac, Windows; X86 or ARM architecture), and place it in your PATH. Linux packages in deb, rpm and apk formats are also available from the releases page.
 
 ### Homebrew
 
@@ -59,6 +60,6 @@ go install github.com/front-matter/commonmeta@latest
 
 ## Meta
 
-Please note that this project is released with a [Contributor Code of Conduct](https://github.com/front-matter/commonmeta/blob/main/CODE_OF_CONDUCT.md). By participating in this project you agree to abide by its terms.  
+Please note that this project is released with a [Contributor Code of Conduct](https://github.com/front-matter/commonmeta/blob/main/CODE_OF_CONDUCT.md). By participating in this project you agree to abide by its terms.
 
 License: [MIT](https://github.com/front-matter/commonmeta/blob/main/LICENSE)
