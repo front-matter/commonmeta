@@ -610,20 +610,17 @@ func FilterList(list []ROR, type_ string, country string, dateUpdated string, fi
 	}
 
 	// optionally filter by number and page
-	// if number > 0 {
-	// 	page = max(page, 1)
-	// 	start := (page - 1) * number
-	// 	end := min(start+number, len(list))
+	if number > 0 {
+		page = max(page, 1)
+		start := (page - 1) * number
+		end := min(start+number, len(filtered))
 
-	// 	// check if start is greater than the length of keys
-	// 	if start >= len(list) {
-	// 		return list, nil
-	// 	}
-	// 	if end > len(list) {
-	// 		end = len(list)
-	// 	}
-	// 	filtered = filtered[start:end]
-	// }
+		// check if start is greater than the length of keys
+		if start >= len(filtered) {
+			return filtered, nil
+		}
+		filtered = filtered[start:end]
+	}
 	return filtered, nil
 }
 
