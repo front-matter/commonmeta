@@ -1,5 +1,5 @@
 /*
-Copyright © 2024 Front Matter <info@front-matter.io>
+Copyright © 2024-2025 Front Matter <info@front-matter.io>
 */
 package cmd
 
@@ -16,6 +16,7 @@ import (
 	"github.com/front-matter/commonmeta/datacite"
 	"github.com/front-matter/commonmeta/inveniordm"
 	"github.com/front-matter/commonmeta/jsonfeed"
+	"github.com/front-matter/commonmeta/openalex"
 	"github.com/front-matter/commonmeta/ror"
 	"github.com/front-matter/commonmeta/schemaorg"
 	"github.com/front-matter/commonmeta/utils"
@@ -59,18 +60,19 @@ commonmeta 10.5555/12345678`,
 		if len(args) > 0 {
 			input = args[0]
 			id, identifierType = utils.ValidateID(input)
-			if slices.Contains(ror.SupportedTypes, identifierType) {
-				id = utils.NormalizeOrganizationID(input)
+			fmt.Println(id, identifierType)
+			if slices.Contains(commonmeta.WorkTypes, identifierType) {
+				if from == "" {
+					from = "commonmeta"
+				}
+			} else if slices.Contains(commonmeta.PersonTypes, identifierType) {
+				// TODO
+			} else if slices.Contains(commonmeta.OrganizationTypes, identifierType) {
 				if from == "" {
 					from = "ror"
 				}
 				if to == "" || to == "commonmeta" {
 					to = "ror"
-				}
-			} else {
-				id = utils.NormalizeWorkID(input)
-				if from == "" {
-					from = "commonmeta"
 				}
 			}
 		}
@@ -98,9 +100,12 @@ commonmeta 10.5555/12345678`,
 				data, err = inveniordm.Fetch(id, match)
 			} else if from == "jsonfeed" {
 				data, err = jsonfeed.Fetch(id)
+			} else if from == "openalex" {
+				r := openalex.NewReader(email)
+				data, err = r.Fetch(id)
 			} else if from == "schemaorg" {
 				data, err = schemaorg.Fetch(id, match)
-			} else if slices.Contains(ror.SupportedTypes, identifierType) && from == "ror" {
+			} else if slices.Contains(commonmeta.OrganizationTypes, identifierType) && from == "ror" {
 				orgdata, err = ror.Search(id)
 				if orgdata.ID == "" {
 					cmd.Println("No match found")

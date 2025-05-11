@@ -1,5 +1,5 @@
 /*
-Copyright © 2024 Front Matter <info@front-matter.io>
+Copyright © 2024-2025 Front Matter <info@front-matter.io>
 */
 package cmd
 
@@ -15,7 +15,7 @@ var encodeCmd = &cobra.Command{
 	Use:   "encode",
 	Short: "Generate a random DOI string given a prefix",
 	Long: `Generate a random DOI string given a prefix. Example usage:
-	
+
 	commonmeta encode 10.5555`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 0 {

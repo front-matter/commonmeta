@@ -1,5 +1,5 @@
 /*
-Copyright © 2024 Front Matter <info@front-matter.io>
+Copyright © 2024-2025 Front Matter <info@front-matter.io>
 */
 package cmd
 

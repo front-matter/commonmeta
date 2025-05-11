@@ -1,5 +1,5 @@
 /*
-Copyright © 2024 Front Matter <info@front-matter.io>
+Copyright © 2024-2025 Front Matter <info@front-matter.io>
 */
 package cmd
 
@@ -14,12 +14,12 @@ import (
 var decodeCmd = &cobra.Command{
 	Use:   "decode",
 	Short: "Decode an identifier.",
-	Long: `Decode a DOI, ROR or ORCID identifier. For DOIs only Crockford 
+	Long: `Decode a DOI, ROR or ORCID identifier. For DOIs only Crockford
 	base32-encoding is supported, used by Rogue Scholar and some DataCite
 	members.
-	
+
 	Example usage:
-	
+
 	commonmeta decode 10.54900/d3ck1-skq19`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 0 {

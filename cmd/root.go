@@ -1,5 +1,5 @@
 /*
-Copyright © 2024 Front Matter <info@front-matter.io>
+Copyright © 2024-2025 Front Matter <info@front-matter.io>
 */
 package cmd
 
@@ -16,7 +16,7 @@ var rootCmd = &cobra.Command{
 	Version: "v0.24.0",
 	Short:   "Convert scholarly metadata between formats",
 	Long: `Convert scholarly metadata between formats. Currently
-supported formats include Crossref, DataCite, Schema.org, CSL, InvenioRDM, 
+supported formats include Crossref, DataCite, Schema.org, CSL, InvenioRDM,
 JSON Feed, and ROR. Example usage:
 
 commonmeta convert 10.5555/12345678
@@ -76,7 +76,7 @@ func init() {
 	rootCmd.PersistentFlags().StringP("login_id", "", "", "Crossref account login")
 	rootCmd.PersistentFlags().StringP("login_passwd", "", "", "Crossref account password")
 	rootCmd.PersistentFlags().StringP("depositor", "", "", "Crossref account depositor")
-	rootCmd.PersistentFlags().StringP("email", "", "", "Crossref account email")
+	rootCmd.PersistentFlags().StringP("email", "", "info@front-matter.io", "Account email")
 	rootCmd.PersistentFlags().StringP("registrant", "", "", "Crossref account registrant")
 	rootCmd.PersistentFlags().StringP("host", "", "", "InvenioRDM host")
 	rootCmd.PersistentFlags().StringP("token", "", "", "API token")

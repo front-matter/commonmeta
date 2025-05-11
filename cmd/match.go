@@ -1,5 +1,5 @@
 /*
-Copyright © 2024 Front Matter <info@front-matter.io>
+Copyright © 2024-2025 Front Matter <info@front-matter.io>
 */
 package cmd
 
@@ -18,9 +18,9 @@ var matchCmd = &cobra.Command{
 	Short: "Match a string to an identifier.",
 	Long: `Match a string to an identifier. Supports affiliation
   matching for ROR.
-	
+
 	Example usage:
-	
+
 	commonmeta match "Leibniz Universität Hannover"`,
 	Run: func(cmd *cobra.Command, args []string) {
 		var input string
