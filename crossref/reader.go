@@ -330,9 +330,8 @@ func Get(pid string) (Content, error) {
 	}
 	url := "https://api.crossref.org/works/" + doi
 	req, err := http.NewRequest(http.MethodGet, url, nil)
-	v := "0.24"
 	u := "info@front-matter.io"
-	userAgent := fmt.Sprintf("commonmeta/%s (https://commonmeta.org/; mailto: %s)", v, u)
+	userAgent := fmt.Sprintf("commonmeta/%s (https://commonmeta.org/; mailto: %s)", commonmeta.Version, u)
 	req.Header.Set("User-Agent", userAgent)
 	if err != nil {
 		log.Fatalln(err)
@@ -377,9 +376,8 @@ func GetAll(number int, page int, member string, type_ string, sample bool, year
 	}
 	url := QueryURL(number, page, member, type_, sample, year, orcid, ror, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
 	req, err := http.NewRequest(http.MethodGet, url, nil)
-	v := "0.24"
 	u := "info@front-matter.io"
-	userAgent := fmt.Sprintf("commonmeta/%s (https://commonmeta.org; mailto: %s)", v, u)
+	userAgent := fmt.Sprintf("commonmeta/%s (https://commonmeta.org; mailto: %s)", commonmeta.Version, u)
 	req.Header.Set("User-Agent", userAgent)
 	req.Header.Set("Cache-Control", "private")
 	if err != nil {

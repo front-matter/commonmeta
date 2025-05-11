@@ -7,13 +7,14 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/front-matter/commonmeta/commonmeta"
 	"github.com/spf13/cobra"
 )
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:     "commonmeta",
-	Version: "v0.24.2",
+	Version: commonmeta.Version,
 	Short:   "Convert scholarly metadata between formats",
 	Long: `Convert scholarly metadata between formats. Currently
 supported formats include Crossref, DataCite, Schema.org, OpenAlex, CSL, InvenioRDM,
