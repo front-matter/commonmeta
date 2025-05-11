@@ -602,7 +602,7 @@ func Get(id string) (Content, error) {
 		return content, err
 	}
 	defer resp.Body.Close()
-	if resp.StatusCode != 200 {
+	if resp.StatusCode != http.StatusOK {
 		return content, fmt.Errorf("status code error: %d %s", resp.StatusCode, resp.Status)
 	}
 	body, err := io.ReadAll(resp.Body)
@@ -639,7 +639,7 @@ func GetAll(number int, page int, host string, community string, subject string,
 		return content, err
 	}
 	defer resp.Body.Close()
-	if resp.StatusCode != 200 {
+	if resp.StatusCode != http.StatusOK {
 		return content, fmt.Errorf("status code error: %d %s", resp.StatusCode, resp.Status)
 	}
 	body, err := io.ReadAll(resp.Body)

@@ -165,7 +165,7 @@ func Get(id string) (Content, error) {
 	if err != nil {
 		return content, err
 	}
-	if resp.StatusCode != 200 {
+	if resp.StatusCode != http.StatusOK {
 		return content, fmt.Errorf("status code error: %d %s", resp.StatusCode, resp.Status)
 	}
 	defer resp.Body.Close()
@@ -198,7 +198,7 @@ func GetAll(number int, page int, community string, archived bool) ([]Content, e
 		return content, err
 	}
 	defer resp.Body.Close()
-	if resp.StatusCode != 200 {
+	if resp.StatusCode != http.StatusOK {
 		return content, fmt.Errorf("status code error: %d %s", resp.StatusCode, resp.Status)
 	}
 	body, err := io.ReadAll(resp.Body)
