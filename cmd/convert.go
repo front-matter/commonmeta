@@ -60,7 +60,6 @@ commonmeta 10.5555/12345678`,
 		if len(args) > 0 {
 			input = args[0]
 			id, identifierType = utils.ValidateID(input)
-			fmt.Println(id, identifierType)
 			if slices.Contains(commonmeta.WorkTypes, identifierType) {
 				if from == "" {
 					from = "commonmeta"

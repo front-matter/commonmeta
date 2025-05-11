@@ -13,17 +13,15 @@ import (
 	"time"
 
 	"github.com/front-matter/commonmeta/commonmeta"
-	"github.com/front-matter/commonmeta/csl"
-	"github.com/front-matter/commonmeta/fileutils"
-	"github.com/front-matter/commonmeta/inveniordm"
-	"github.com/front-matter/commonmeta/ror"
-
 	"github.com/front-matter/commonmeta/crossref"
 	"github.com/front-matter/commonmeta/crossrefxml"
-	"github.com/front-matter/commonmeta/jsonfeed"
-
+	"github.com/front-matter/commonmeta/csl"
 	"github.com/front-matter/commonmeta/datacite"
-
+	"github.com/front-matter/commonmeta/fileutils"
+	"github.com/front-matter/commonmeta/inveniordm"
+	"github.com/front-matter/commonmeta/jsonfeed"
+	"github.com/front-matter/commonmeta/openalex"
+	"github.com/front-matter/commonmeta/ror"
 	"github.com/front-matter/commonmeta/schemaorg"
 
 	"github.com/spf13/cobra"
@@ -124,6 +122,9 @@ var listCmd = &cobra.Command{
 			data, err = crossref.FetchAll(number, page, member, type_, sample, year, orcid, ror_, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive, match)
 		} else if from == "datacite" {
 			data, err = datacite.FetchAll(number, page, client_, type_, sample, year, language, orcid, ror_, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, match)
+		} else if from == "openalex" {
+			r := openalex.NewReader(email)
+			data, err = r.FetchAll(number, page, member, type_, sample, "", year, orcid, ror_, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
 		} else if from == "inveniordm" {
 			data, err = inveniordm.FetchAll(number, page, fromHost, community, subject, type_, year, language, orcid, affiliation, ror_, hasORCID, hasROR, match)
 		} else if from == "jsonfeed" {

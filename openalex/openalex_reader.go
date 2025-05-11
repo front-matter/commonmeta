@@ -1,4 +1,4 @@
-// Package openalex provides functions to convert OpenAlex metadata to the commonmeta metadata format.
+// Package openalex provides functions to convert Openalex metadata to the commonmeta metadata format.
 package openalex
 
 import (
@@ -7,18 +7,20 @@ import (
 	"net/http"
 	"net/url"
 	"path"
+	"slices"
+	"strconv"
 	"strings"
 	"sync"
 
-	"github.com/front-matter/commonmeta/authorutils"
 	"github.com/front-matter/commonmeta/commonmeta"
 	"github.com/front-matter/commonmeta/doiutils"
+	"github.com/front-matter/commonmeta/spdx"
 	"github.com/front-matter/commonmeta/utils"
 )
 
 const openAlexBaseURL = "https://api.openalex.org"
 
-// Reader struct to hold any configuration for the OpenAlex reader
+// Reader struct to hold any configuration for the Openalex reader
 type Reader struct {
 	Email string // Email for polite pool of OpenAlex API
 }
@@ -93,7 +95,7 @@ type Work struct {
 	Language              string            `json:"language"`
 	Version               string            `json:"version"`
 	AbstractInvertedIndex map[string][]int  `json:"abstract_inverted_index"`
-	AuthorShips           []AuthorShip      `json:"authorships"`
+	AuthorShips           []Authorship      `json:"authorships"`
 	Ids                   map[string]string `json:"ids"`
 	PrimaryLocation       Location          `json:"primary_location"`
 	BestOALocation        Location          `json:"best_oa_location"`
@@ -104,8 +106,8 @@ type Work struct {
 	Grants                []Grant           `json:"grants"`
 }
 
-// AuthorShip represents author information in OpenAlex
-type AuthorShip struct {
+// Authorship represents author information in OpenAlex
+type Authorship struct {
 	Author       Author        `json:"author"`
 	Institutions []Institution `json:"institutions"`
 }
@@ -155,7 +157,7 @@ type Location struct {
 	License        string `json:"license"`
 }
 
-// Source represents a source in OpenAlex
+// Source represents an OpenAlex source
 type Source struct {
 	ID                   string `json:"id"`
 	DisplayName          string `json:"display_name"`
@@ -177,42 +179,105 @@ type Topic struct {
 }
 
 // QueryURL constructs a URL for querying the OpenAlex API
-func (r *Reader) QueryURL(query url.Values) string {
-	u, err := url.Parse(openAlexBaseURL)
-	if err != nil {
-		return ""
+func (r *Reader) QueryURL(number int, page int, publisher string, type_ string, sample bool, ids string, year string, orcid string, ror string, hasORCID bool, hasROR bool, hasReferences bool, hasRelation bool, hasAbstract bool, hasAward bool, hasLicense bool, hasArchive bool) string {
+	types := []string{
+		"article",
+		"book-chapter",
+		"dataset",
+		"preprint",
+		"dissertation",
+		"book",
+		"review",
+		"paratext",
+		"libguides",
+		"letter",
+		"other",
+		"reference-entry",
+		"report",
+		"editorial",
+		"peer-review",
+		"erratum",
+		"standard",
+		"grant",
+		"supplementary-materials",
+		"retraction",
 	}
-	u.Path = path.Join(u.Path, "works")
-	if r.Email != "" {
-		query.Add("mailto", r.Email)
-	}
-	u.RawQuery = query.Encode()
-	return u.String()
-}
 
-// SampleURL constructs a URL for getting a random sample from OpenAlex API
-func (r *Reader) SampleURL(count int) string {
-	u, err := url.Parse(openAlexBaseURL)
-	if err != nil {
-		return ""
+	u, _ := url.Parse("https://api.openalex.org")
+	u.Path = path.Join(u.Path, "works")
+	values := u.Query()
+	if number <= 0 {
+		number = 10
 	}
-	u.Path = path.Join(u.Path, "works", "random")
-	query := url.Values{}
-	query.Add("per-page", fmt.Sprintf("%d", count))
-	if r.Email != "" {
-		query.Add("mailto", r.Email)
+	if number > 1000 {
+		number = 1000
 	}
-	u.RawQuery = query.Encode()
+	if page <= 0 {
+		page = 1
+	}
+	if sample {
+		values.Add("sample", strconv.Itoa(number))
+	} else {
+		values.Add("per-page", strconv.Itoa(number))
+		values.Add("page", strconv.Itoa(page))
+
+		// sort results by published date in descending order
+		values.Add("sort", "publication_date:desc")
+	}
+
+	var filters []string
+	if ids != "" {
+		filters = append(filters, "member:"+ids)
+	}
+	if type_ != "" && slices.Contains(types, type_) {
+		filters = append(filters, "type:"+type_)
+	}
+	if ror != "" {
+		r, _ := utils.ValidateROR(ror)
+		if r != "" {
+			filters = append(filters, "authorships.institutions.ror:"+r)
+		}
+	}
+	if orcid != "" {
+		o, _ := utils.ValidateORCID(orcid)
+		if o != "" {
+			filters = append(filters, "authorships.author.orcid:"+o)
+		}
+	}
+	if year != "" {
+		filters = append(filters, "publication_year:"+year)
+	}
+	if hasORCID {
+		filters = append(filters, "has-orcid:true")
+	}
+	// if hasROR {
+	// 	filters = append(filters, "has-ror-id:true")
+	// }
+	if hasReferences {
+		filters = append(filters, "has-references:true")
+	}
+	if hasAbstract {
+		filters = append(filters, "has-abstract:true")
+	}
+	// if hasAward {
+	// 	filters = append(filters, "has-award:true")
+	// }
+	// if hasLicense {
+	// 	filters = append(filters, "has-license:true")
+	// }
+	// if hasArchive {
+	// 	filters = append(filters, "has-archive:true")
+	// }
+	if len(filters) > 0 {
+		values.Add("filter", strings.Join(filters[:], ","))
+	}
+	u.RawQuery = values.Encode()
 	return u.String()
 }
 
 // APIURL constructs a URL for accessing the OpenAlex API with a specific ID
 func (r *Reader) APIURL(id string, idType string) string {
-	u, err := url.Parse(openAlexBaseURL)
-	if err != nil {
-		return ""
-	}
-
+	u, _ := url.Parse(openAlexBaseURL)
 	var query = url.Values{}
 	if r.Email != "" {
 		query.Add("mailto", r.Email)
@@ -221,6 +286,8 @@ func (r *Reader) APIURL(id string, idType string) string {
 	// Different paths based on ID type
 	if idType == "OpenAlex" {
 		u.Path = path.Join(u.Path, "works", id)
+	} else if idType == "DOI" {
+		u.Path = path.Join(u.Path, "works", doiutils.NormalizeDOI(id))
 	} else {
 		u.Path = path.Join(u.Path, "works")
 		filter := fmt.Sprintf("ids.%s:%s", strings.ToLower(idType), id)
@@ -232,25 +299,22 @@ func (r *Reader) APIURL(id string, idType string) string {
 }
 
 // GetAll gets the metadata for a list of works from the OpenAlex API
-func (r *Reader) GetAll(query url.Values) ([]Work, error) {
-	url := r.QueryURL(query)
+func (r *Reader) GetAll(number int, page int, publisher string, type_ string, sample bool, ids string, year string, ror string, orcid string, hasORCID bool, hasROR bool, hasReferences bool, hasRelation bool, hasAbstract bool, hasAward bool, hasLicense bool, hasArchive bool) ([]Work, error) {
+	var response struct {
+		Results []Work `json:"results"`
+	}
+	url := r.QueryURL(number, page, publisher, type_, sample, ids, year, orcid, ror, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
 	resp, err := http.Get(url)
 	if err != nil {
 		return nil, err
 	}
 	defer resp.Body.Close()
-
 	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("OpenAlex API returned status %d", resp.StatusCode)
-	}
-
-	var response struct {
-		Results []Work `json:"results"`
 	}
 	if err := json.NewDecoder(resp.Body).Decode(&response); err != nil {
 		return nil, err
 	}
-
 	return response.Results, nil
 }
 
@@ -260,14 +324,13 @@ func (r *Reader) Get(pid string) (*Work, error) {
 	if idType == "" || (idType != "DOI" && idType != "MAG" && idType != "OpenAlex" && idType != "PMID" && idType != "PMCID") {
 		return nil, fmt.Errorf("invalid identifier: %s", pid)
 	}
-
 	url := r.APIURL(id, idType)
 	resp, err := http.Get(url)
 	if err != nil {
+		fmt.Println(err, url)
 		return nil, err
 	}
 	defer resp.Body.Close()
-
 	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("OpenAlex API returned status %d", resp.StatusCode)
 	}
@@ -292,7 +355,6 @@ func (r *Reader) Get(pid string) (*Work, error) {
 	if err := json.NewDecoder(resp.Body).Decode(&work); err != nil {
 		return nil, err
 	}
-
 	return &work, nil
 }
 
@@ -327,14 +389,14 @@ func GetAbstract(invertedIndex map[string][]int) string {
 }
 
 // GetContributors extracts contributor information from authorships
-func GetContributors(authorships []AuthorShip) []commonmeta.Contributor {
+func GetContributors(authorships []Authorship) []commonmeta.Contributor {
 	var contributors []commonmeta.Contributor
 
 	for _, authorship := range authorships {
-		var affiliations []commonmeta.Affiliation
+		var affiliations []*commonmeta.Affiliation
 		for _, inst := range authorship.Institutions {
 			if inst.DisplayName != "" || inst.ROR != "" {
-				affiliations = append(affiliations, commonmeta.Affiliation{
+				affiliations = append(affiliations, &commonmeta.Affiliation{
 					ID:   inst.ROR,
 					Name: inst.DisplayName,
 				})
@@ -357,40 +419,29 @@ func GetContributors(authorships []AuthorShip) []commonmeta.Contributor {
 func (r *Reader) GetWorks(ids []string) ([]Work, error) {
 	var works []Work
 
-	// Process in batches of 49 to respect API limits
+	// Parse in batches of 49 to respect API limits
 	for i := 0; i < len(ids); i += 49 {
-		end := i + 49
-		if end > len(ids) {
-			end = len(ids)
-		}
+		end := min(i+49, len(ids))
 
 		batch := ids[i:end]
 		idsString := strings.Join(batch, "|")
 
-		query := url.Values{}
-		query.Add("filter", fmt.Sprintf("ids.openalex:%s", idsString))
-
-		batchWorks, err := r.GetList(query)
+		batchWorks, err := r.GetAll(end, 1, "", "", false, idsString, "", "", "", false, false, false, false, false, false, false, false)
 		if err != nil {
 			return nil, err
 		}
-
 		works = append(works, batchWorks...)
 	}
-
 	return works, nil
 }
 
-// GetFunders fetches funders from OpenAlex based on IDs
+// GetFunders fetches multiple funders from OpenAlex based on IDs
 func (r *Reader) GetFunders(ids []string) ([]Funder, error) {
 	var funders []Funder
 
 	// Process in batches of 49 to respect API limits
 	for i := 0; i < len(ids); i += 49 {
-		end := i + 49
-		if end > len(ids) {
-			end = len(ids)
-		}
+		end := min(i+49, len(ids))
 
 		batch := ids[i:end]
 		idsString := strings.Join(batch, "|")
@@ -479,7 +530,7 @@ func (r *Reader) GetContainer(work *Work) commonmeta.Container {
 	source, err := r.GetSource(work.PrimaryLocation.Source.ID)
 	if err != nil {
 		// Fall back to basic information in the work
-		container.Type = OpenAlexToCommonmetaContainerTypes[work.PrimaryLocation.Source.Type]
+		container.Type = OpenAlexContainerTypes[work.PrimaryLocation.Source.Type]
 		container.Title = work.PrimaryLocation.Source.DisplayName
 
 		if work.PrimaryLocation.Source.ISSN != "" {
@@ -491,7 +542,7 @@ func (r *Reader) GetContainer(work *Work) commonmeta.Container {
 		}
 	} else {
 		// Use extended source information
-		container.Type = OpenAlexToCommonmetaContainerTypes[source.Type]
+		container.Type = OpenAlexContainerTypes[source.Type]
 		container.Title = source.DisplayName
 
 		if source.ISSN != "" {
@@ -526,14 +577,6 @@ func GetFiles(work *Work) []commonmeta.File {
 	}
 }
 
-// ValidateOpenAlex checks if a string is a valid OpenAlex ID
-func ValidateOpenAlex(id string) string {
-	if strings.HasPrefix(id, "https://openalex.org/") {
-		return strings.TrimPrefix(id, "https://openalex.org/")
-	}
-	return ""
-}
-
 // GetRelated converts an OpenAlex work to a reference
 func GetRelated(work *Work) commonmeta.Reference {
 	if work == nil {
@@ -551,7 +594,7 @@ func GetRelated(work *Work) commonmeta.Reference {
 	}
 
 	if work.PrimaryLocation.Source.DisplayName != "" {
-		ref.ContainerTitle = work.PrimaryLocation.Source.DisplayName
+		ref.Title = work.PrimaryLocation.Source.DisplayName
 	}
 
 	if work.PrimaryLocation.Source.HostOrganizationName != "" {
@@ -561,8 +604,8 @@ func GetRelated(work *Work) commonmeta.Reference {
 	return ref
 }
 
-// ProcessReferences fetches and processes references for a work
-func (r *Reader) ProcessReferences(referencedWorks []string) ([]commonmeta.Reference, error) {
+// ParseReferences fetches and processes references for a work
+func (r *Reader) ParseReferences(referencedWorks []string) ([]commonmeta.Reference, error) {
 	if len(referencedWorks) == 0 {
 		return nil, nil
 	}
@@ -570,11 +613,10 @@ func (r *Reader) ProcessReferences(referencedWorks []string) ([]commonmeta.Refer
 	// Extract OpenAlex IDs from the reference URLs
 	var openAlexIDs []string
 	for _, refWork := range referencedWorks {
-		if id := ValidateOpenAlex(refWork); id != "" {
+		if id, _ := utils.ValidateOpenalex(refWork); id != "" {
 			openAlexIDs = append(openAlexIDs, id)
 		}
 	}
-
 	if len(openAlexIDs) == 0 {
 		return nil, nil
 	}
@@ -595,8 +637,8 @@ func (r *Reader) ProcessReferences(referencedWorks []string) ([]commonmeta.Refer
 	return references, nil
 }
 
-// ProcessFunding processes funding information from a work
-func (r *Reader) ProcessFunding(grants []Grant) ([]commonmeta.FundingReference, error) {
+// ParseFunding processes funding information from a work
+func (r *Reader) ParseFunding(grants []Grant) ([]commonmeta.FundingReference, error) {
 	if len(grants) == 0 {
 		return nil, nil
 	}
@@ -604,11 +646,10 @@ func (r *Reader) ProcessFunding(grants []Grant) ([]commonmeta.FundingReference, 
 	// Extract funder IDs
 	var funderIDs []string
 	for _, grant := range grants {
-		if id := ValidateOpenAlex(grant.Funder); id != "" {
+		if id, _ := utils.ValidateOpenalex(grant.Funder); id != "" {
 			funderIDs = append(funderIDs, id)
 		}
 	}
-
 	if len(funderIDs) == 0 {
 		return nil, nil
 	}
@@ -646,84 +687,57 @@ func (r *Reader) ProcessFunding(grants []Grant) ([]commonmeta.FundingReference, 
 	return fundingRefs, nil
 }
 
-// GetRandomIDs fetches random IDs from OpenAlex
-func (r *Reader) GetRandomIDs(count int) ([]Work, error) {
-	if count > 20 {
-		count = 20 // Limit to 20 to be reasonable
-	}
-
-	url := r.SampleURL(count)
-	resp, err := http.Get(url)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("OpenAlex API returned status %d", resp.StatusCode)
-	}
-
-	var response struct {
-		Results []Work `json:"results"`
-	}
-	if err := json.NewDecoder(resp.Body).Decode(&response); err != nil {
-		return nil, err
-	}
-
-	return response.Results, nil
-}
-
-// Read processes an OpenAlex work into CommonMeta format
-func (r *Reader) Read(work *Work, options map[string]interface{}) (commonmeta.Data, error) {
-	if work == nil {
-		return commonmeta.Data{}, fmt.Errorf("no work data provided")
-	}
-
-	// Create a CommonMeta data object
+// Read OpenAlex response and return work struct in Commonmeta format
+func (r *Reader) Read(work *Work) (commonmeta.Data, error) {
 	var data commonmeta.Data
+	if work == nil {
+		return data, fmt.Errorf("no work data provided")
+	}
 
-	// Process ID - prefer DOI if available
 	if work.DOI != "" {
 		data.ID = doiutils.NormalizeDOI(work.DOI)
 	} else if work.ID != "" {
 		data.ID = work.ID
 	}
 
-	// Process type
 	data.Type = "Other"
-	if work.TypeCrossref != "" && OpenAlexToCommonmetaTypes[work.TypeCrossref] != "" {
-		data.Type = OpenAlexToCommonmetaTypes[work.TypeCrossref]
-	} else if work.Type != "" && OpenAlexToCommonmetaTypes[work.Type] != "" {
-		data.Type = OpenAlexToCommonmetaTypes[work.Type]
+	if work.TypeCrossref != "" && OAToCMMappings[work.TypeCrossref] != "" {
+		data.Type = OAToCMMappings[work.TypeCrossref]
+	} else if work.Type != "" && OAToCMMappings[work.Type] != "" {
+		data.Type = OAToCMMappings[work.Type]
 	}
 
-	// Process additional type if different from main type
-	if work.Type != "" && OpenAlexToCommonmetaTypes[work.Type] != "" &&
-		OpenAlexToCommonmetaTypes[work.Type] != data.Type {
-		data.AdditionalType = OpenAlexToCommonmetaTypes[work.Type]
+	// Parse additional type if different from type
+	if work.Type != "" && OAToCMMappings[work.Type] != "" &&
+		OAToCMMappings[work.Type] != data.Type {
+		data.AdditionalType = OAToCMMappings[work.Type]
 	}
 
-	// Process title
 	title := work.Title
 	if title != "" {
 		data.Titles = []commonmeta.Title{{Title: utils.Sanitize(title)}}
 	}
 
-	// Process URL
 	if work.PrimaryLocation.LandingPageURL != "" {
-		data.URL = utils.NormalizeURL(work.PrimaryLocation.LandingPageURL)
+		url, err := utils.NormalizeURL(work.PrimaryLocation.LandingPageURL, true, true)
+		if err != nil {
+			fmt.Println(err)
+		}
+		data.URL = url
 	} else if work.ID != "" {
-		data.URL = utils.NormalizeURL(work.ID)
+		url, err := utils.NormalizeURL(work.ID, true, true)
+		if err != nil {
+			fmt.Println(err)
+		}
+		data.URL = url
 	}
 
-	// Process publisher
 	if work.PrimaryLocation.Source.HostOrganizationName != "" {
-		data.Publisher = commonmeta.Publisher{
+		data.Publisher = &commonmeta.Publisher{
 			Name: work.PrimaryLocation.Source.HostOrganizationName,
 		}
 	}
 
-	// Process date
 	if work.PublicationDate != "" || work.CreatedDate != "" {
 		data.Date = commonmeta.Date{
 			Published: work.PublicationDate,
@@ -733,7 +747,6 @@ func (r *Reader) Read(work *Work, options map[string]interface{}) (commonmeta.Da
 		}
 	}
 
-	// Process identifiers
 	for idType, idValue := range work.Ids {
 		if standardType, ok := OpenAlexIdentifierTypes[idType]; ok {
 			data.Identifiers = append(data.Identifiers, commonmeta.Identifier{
@@ -743,26 +756,33 @@ func (r *Reader) Read(work *Work, options map[string]interface{}) (commonmeta.Da
 		}
 	}
 
-	// Process license
 	if work.BestOALocation.License != "" {
+		var ID, URL string
 		licenseID := work.BestOALocation.License
 		if spdxID, ok := OpenAlexLicenses[licenseID]; ok {
 			licenseID = spdxID
 		}
-		data.License = utils.URLToSPDX(licenseID)
+		license, err := spdx.Search(licenseID)
+		if err != nil {
+			fmt.Println(err)
+		}
+		ID = license.LicenseID
+		if len(license.SeeAlso) > 0 {
+			URL = license.SeeAlso[0]
+		}
+		data.License = &commonmeta.License{
+			ID:  ID,
+			URL: URL,
+		}
 	}
 
-	// Process container
 	data.Container = r.GetContainer(work)
 
-	// Process contributors
 	contributors := GetContributors(work.AuthorShips)
 	if len(contributors) > 0 {
-		processedContributors, _ := authorutils.ProcessContributors(contributors)
-		data.Contributors = processedContributors
+		data.Contributors = contributors
 	}
 
-	// Process abstract
 	if len(work.AbstractInvertedIndex) > 0 {
 		abstract := GetAbstract(work.AbstractInvertedIndex)
 		if abstract != "" {
@@ -773,34 +793,18 @@ func (r *Reader) Read(work *Work, options map[string]interface{}) (commonmeta.Da
 		}
 	}
 
-	// Process subjects
 	for _, topic := range work.Topics {
-		if topic.Subfield.DisplayName != "" {
-			data.Subjects = append(data.Subjects, commonmeta.Subject{
-				Subject: topic.Subfield.DisplayName,
-			})
+		subject := commonmeta.Subject{
+			Subject: topic.Subfield.DisplayName,
+		}
+		if topic.Subfield.DisplayName != "" && !slices.Contains(data.Subjects, subject) {
+			data.Subjects = append(data.Subjects, subject)
 		}
 	}
 
-	// Remove duplicate subjects
-	if len(data.Subjects) > 0 {
-		subjectMap := make(map[string]bool)
-		var uniqueSubjects []commonmeta.Subject
-
-		for _, subj := range data.Subjects {
-			if !subjectMap[subj.Subject] {
-				subjectMap[subj.Subject] = true
-				uniqueSubjects = append(uniqueSubjects, subj)
-			}
-		}
-
-		data.Subjects = uniqueSubjects
-	}
-
-	// Process files
 	data.Files = GetFiles(work)
 
-	// Process references and funding asynchronously
+	// parse references and funding asynchronously
 	var wg sync.WaitGroup
 	var references []commonmeta.Reference
 	var fundingRefs []commonmeta.FundingReference
@@ -809,16 +813,15 @@ func (r *Reader) Read(work *Work, options map[string]interface{}) (commonmeta.Da
 	wg.Add(2)
 	go func() {
 		defer wg.Done()
-		references, refErr = r.ProcessReferences(work.ReferencedWorks)
+		references, refErr = r.ParseReferences(work.ReferencedWorks)
 	}()
 
 	go func() {
 		defer wg.Done()
-		fundingRefs, fundErr = r.ProcessFunding(work.Grants)
+		fundingRefs, fundErr = r.ParseFunding(work.Grants)
 	}()
 
 	wg.Wait()
-
 	if refErr == nil && len(references) > 0 {
 		data.References = references
 	}
@@ -827,48 +830,50 @@ func (r *Reader) Read(work *Work, options map[string]interface{}) (commonmeta.Da
 		data.FundingReferences = fundingRefs
 	}
 
-	// Set language and version
 	data.Language = work.Language
 	data.Version = work.Version
-
-	// Set provider
 	data.Provider = "OpenAlex"
-
-	// Apply any options
-	for k, v := range options {
-		switch k {
-		case "validate":
-			// Validation would be applied here
-		}
-	}
 
 	return data, nil
 }
 
-// Fetch retrieves and processes metadata from OpenAlex by ID
-func (r *Reader) Fetch(pid string, options map[string]interface{}) (commonmeta.Data, error) {
+// ReadAll reads a list of OpenAlex JSON responses and returns a list of works in Commonmeta format
+func (r *Reader) ReadAll(works []Work) ([]commonmeta.Data, error) {
+	var data []commonmeta.Data
+	for _, v := range works {
+		d, err := r.Read(&v)
+		if err != nil {
+			fmt.Println(err)
+		}
+		data = append(data, d)
+	}
+	return data, nil
+}
+
+// Fetch retrieves and parses metadata from OpenAlex by ID
+func (r *Reader) Fetch(pid string) (commonmeta.Data, error) {
+	var data commonmeta.Data
 	work, err := r.Get(pid)
 	if err != nil {
-		return commonmeta.Data{}, err
+		return data, err
 	}
 
-	return r.Read(work, options)
+	return r.Read(work)
 }
 
-// FetchRandom retrieves and processes random metadata from OpenAlex
-func (r *Reader) FetchRandom(count int, options map[string]interface{}) ([]commonmeta.Data, error) {
-	works, err := r.GetRandomIDs(count)
+// FetchAll retrieves and parses metadata from OpenAlex by query
+func (r *Reader) FetchAll(number int, page int, publisher string, type_ string, sample bool, ids string, year string, ror string, orcid string, hasORCID bool, hasROR bool, hasReferences bool, hasRelation bool, hasAbstract bool, hasAward bool, hasLicense bool, hasArchive bool) ([]commonmeta.Data, error) {
+	var data []commonmeta.Data
+	content, err := r.GetAll(number, page, publisher, type_, sample, ids, year, orcid, ror, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
 	if err != nil {
-		return nil, err
+		return data, err
 	}
 
-	results := make([]commonmeta.Data, 0, len(works))
-	for _, work := range works {
-		data, err := r.Read(&work, options)
-		if err == nil {
-			results = append(results, data)
-		}
+	data, err = r.ReadAll(content)
+	if err != nil {
+		return data, err
 	}
-
-	return results, nil
+	return data, nil
 }
+
+// FetchRandom retrieves and parses random metadata from OpenAlex

@@ -1060,7 +1060,7 @@ func Read(content Content, match bool) (commonmeta.Data, error) {
 	if len(content.Metadata.Rights) > 0 {
 		licenseID := LicenseMappings[content.Metadata.Rights[0].ID]
 		licenseURL := content.Metadata.Rights[0].Props.URL
-		data.License = commonmeta.License{
+		data.License = &commonmeta.License{
 			ID:  licenseID,
 			URL: licenseURL,
 		}
@@ -1071,7 +1071,7 @@ func Read(content Content, match bool) (commonmeta.Data, error) {
 		if len(license.SeeAlso) == 0 {
 			licenseURL = license.SeeAlso[0]
 		}
-		data.License = commonmeta.License{
+		data.License = &commonmeta.License{
 			ID:  licenseID,
 			URL: licenseURL,
 		}
@@ -1082,7 +1082,7 @@ func Read(content Content, match bool) (commonmeta.Data, error) {
 	}
 
 	if content.Metadata.Publisher != "" {
-		data.Publisher = commonmeta.Publisher{
+		data.Publisher = &commonmeta.Publisher{
 			Name: content.Metadata.Publisher,
 		}
 	}

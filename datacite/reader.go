@@ -622,12 +622,12 @@ func Read(content Content, match bool) (commonmeta.Data, error) {
 	}
 	if publisher.Name != "" {
 		id := utils.NormalizeROR(publisher.PublisherIdentifier)
-		data.Publisher = commonmeta.Publisher{
+		data.Publisher = &commonmeta.Publisher{
 			ID:   id,
 			Name: publisher.Name,
 		}
 	} else if publisherName != "" {
-		data.Publisher = commonmeta.Publisher{
+		data.Publisher = &commonmeta.Publisher{
 			Name: publisherName,
 		}
 	}
@@ -646,7 +646,7 @@ func Read(content Content, match bool) (commonmeta.Data, error) {
 	if len(content.RightsList) > 0 {
 		url, _ := utils.NormalizeCCUrl(content.RightsList[0].RightsURI)
 		id := utils.URLToSPDX(url)
-		data.License = commonmeta.License{
+		data.License = &commonmeta.License{
 			ID:  id,
 			URL: url,
 		}

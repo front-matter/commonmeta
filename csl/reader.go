@@ -307,7 +307,7 @@ func Read(content Content) (commonmeta.Data, error) {
 			return data, err
 		}
 		licenseID := utils.URLToSPDX(licenseURL)
-		data.License = commonmeta.License{
+		data.License = &commonmeta.License{
 			ID:  licenseID,
 			URL: licenseURL,
 		}
@@ -326,11 +326,11 @@ func Read(content Content) (commonmeta.Data, error) {
 			fmt.Println(2, err)
 		}
 		if publisher.Name != "" {
-			data.Publisher = commonmeta.Publisher{
+			data.Publisher = &commonmeta.Publisher{
 				Name: publisher.Name,
 			}
 		} else if publisherName != "" {
-			data.Publisher = commonmeta.Publisher{
+			data.Publisher = &commonmeta.Publisher{
 				Name: publisherName,
 			}
 		}

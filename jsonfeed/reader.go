@@ -344,7 +344,7 @@ func Read(content Content) (commonmeta.Data, error) {
 		Title:          content.Blog.Title,
 		Description:    content.Blog.Description,
 		Language:       content.Blog.Language,
-		License:        commonmeta.License{URL: content.Blog.License},
+		License:        &commonmeta.License{URL: content.Blog.License},
 		Favicon:        content.Blog.Favicon,
 		Platform:       content.Blog.Generator,
 		Identifier:     identifier,
@@ -423,12 +423,12 @@ func Read(content Content) (commonmeta.Data, error) {
 		return data, err
 	}
 	licenseID := utils.URLToSPDX(licenseURL)
-	data.License = commonmeta.License{
+	data.License = &commonmeta.License{
 		ID:  licenseID,
 		URL: licenseURL,
 	}
 
-	data.Publisher = commonmeta.Publisher{
+	data.Publisher = &commonmeta.Publisher{
 		Name: "Front Matter",
 	}
 	for _, v := range content.Relationships {

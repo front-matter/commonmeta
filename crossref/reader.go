@@ -297,7 +297,6 @@ func Fetch(str string, match bool) (commonmeta.Data, error) {
 
 // FetchAll gets the metadata for a list of works from the Crossref API and converts it to the Commonmeta format
 func FetchAll(number int, page int, member string, type_ string, sample bool, year string, ror string, orcid string, hasORCID bool, hasROR bool, hasReferences bool, hasRelation bool, hasAbstract bool, hasAward bool, hasLicense bool, hasArchive bool, match bool) ([]commonmeta.Data, error) {
-
 	var data []commonmeta.Data
 	content, err := GetAll(number, page, member, type_, sample, year, orcid, ror, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
 	if err != nil {
@@ -680,7 +679,7 @@ func Read(content Content, match bool) (commonmeta.Data, error) {
 	if len(content.License) > 0 {
 		url, _ := utils.NormalizeCCUrl(content.License[0].URL)
 		id := utils.URLToSPDX(url)
-		data.License = commonmeta.License{
+		data.License = &commonmeta.License{
 			ID:  id,
 			URL: url,
 		}
@@ -693,7 +692,7 @@ func Read(content Content, match bool) (commonmeta.Data, error) {
 		if content.Member != "" {
 			id = fmt.Sprintf("https://api.crossref.org/members/%s", content.Member)
 		}
-		data.Publisher = commonmeta.Publisher{
+		data.Publisher = &commonmeta.Publisher{
 			ID:   id,
 			Name: content.Publisher,
 		}
@@ -912,7 +911,6 @@ func QueryURL(number int, page int, member string, type_ string, sample bool, ye
 		filters = append(filters, "from-pub-date:"+year+"-01-01")
 		filters = append(filters, "until-pub-date:"+year+"-12-31")
 	}
-
 	if hasORCID {
 		filters = append(filters, "has-orcid:true")
 	}
