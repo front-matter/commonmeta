@@ -92,7 +92,7 @@ func DownloadFile(url string, progress bool) ([]byte, error) {
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode != 200 {
+	if resp.StatusCode != http.StatusOK {
 		return output, fmt.Errorf("status code error: %d %s", resp.StatusCode, resp.Status)
 	}
 

@@ -137,7 +137,7 @@ func UpdateGhostPost(id string, apiKey string, apiURL string) (string, error) {
 		return "", err
 	}
 	defer resp.Body.Close()
-	if resp.StatusCode != 200 {
+	if resp.StatusCode != http.StatusOK {
 		return "", errors.New("error updating post: " + resp.Status)
 	}
 	message := fmt.Sprintf("Canonical URL %s updated for GUID %s at %s", doi, guid, updatedAt)
