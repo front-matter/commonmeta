@@ -347,7 +347,6 @@ var ArchivedFilename = fmt.Sprintf("%s-%s-ror-data_schema_v2.json", DefaultVersi
 var RORFilename = fmt.Sprintf("%s-%s-ror-data.zip", DefaultVersion, RORVersions[DefaultVersion])
 var RORDownloadURL = fmt.Sprintf("https://github.com/ror-community/ror-data/blob/main/%s", RORFilename)
 
-var SupportedTypes = []string{"ROR", "Wikidata", "Crossref Funder ID", "GRID", "ISNI"}
 var RORTypes = []string{"archive", "company", "education", "facility", "funder", "government", "healthcare", "nonprofit", "other"}
 var Extensions = []string{".avro", ".yaml", ".json", ".jsonl", ".csv"}
 
@@ -372,7 +371,7 @@ func Get(str string) (ROR, error) {
 	var url_ string
 
 	id, type_ := utils.ValidateID(str)
-	if !slices.Contains(SupportedTypes, type_) {
+	if !slices.Contains(commonmeta.OrganizationTypes, type_) {
 		return ror, errors.New("not a supported organization id")
 	}
 	if type_ == "ROR" {
@@ -471,7 +470,7 @@ func Search(id string) (ROR, error) {
 	var ror ROR
 
 	pid, type_ := utils.ValidateID(id)
-	if !slices.Contains(SupportedTypes, type_) {
+	if !slices.Contains(commonmeta.OrganizationTypes, type_) {
 		return ror, errors.New("not a supported organization id")
 	}
 
