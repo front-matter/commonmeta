@@ -99,9 +99,10 @@ func TestQueryURL(t *testing.T) {
 	type testCase struct {
 		number        int
 		page          int
-		ids           string
+		publisher     string
 		type_         string
 		sample        bool
+		ids           string
 		year          string
 		orcid         string
 		ror           string
@@ -140,7 +141,7 @@ func TestQueryURL(t *testing.T) {
 		} else if tc.number > 0 {
 			query.Set("number", strconv.Itoa(tc.number))
 		}
-		got := r.QueryURL(tc.number, tc.page, tc.ids, tc.type_, tc.sample, tc.year, tc.orcid, tc.ror, tc.hasORCID, tc.hasROR, tc.hasReferences, tc.hasRelation, tc.hasAbstract, tc.hasAward, tc.hasLicense, tc.hasArchive)
+		got := r.QueryURL(tc.number, tc.page, tc.publisher, tc.type_, tc.sample, tc.ids, tc.year, tc.orcid, tc.ror, tc.hasORCID, tc.hasROR, tc.hasReferences, tc.hasRelation, tc.hasAbstract, tc.hasAward, tc.hasLicense, tc.hasArchive)
 		if diff := cmp.Diff(tc.want, got); diff != "" {
 			t.Errorf("CrossrefQueryUrl mismatch (-want +got):\n%s", diff)
 		}
@@ -153,9 +154,10 @@ func TestGetAll(t *testing.T) {
 	type testCase struct {
 		number        int
 		page          int
-		ids           string
+		publisher     string
 		type_         string
 		sample        bool
+		ids           string
 		year          string
 		ror           string
 		orcid         string
@@ -182,7 +184,7 @@ func TestGetAll(t *testing.T) {
 		} else if tc.number > 0 {
 			query.Set("number", strconv.Itoa(tc.number))
 		}
-		got, err := r.GetAll(tc.number, tc.page, tc.ids, tc.type_, tc.sample, tc.year, tc.orcid, tc.ror, tc.hasORCID, tc.hasROR, tc.hasReferences, tc.hasRelation, tc.hasAbstract, tc.hasAward, tc.hasLicense, tc.hasArchive)
+		got, err := r.GetAll(tc.number, tc.page, tc.publisher, tc.type_, tc.sample, tc.ids, tc.year, tc.orcid, tc.ror, tc.hasORCID, tc.hasROR, tc.hasReferences, tc.hasRelation, tc.hasAbstract, tc.hasAward, tc.hasLicense, tc.hasArchive)
 		if err != nil {
 			t.Errorf("GetAll (%v): error %v", tc.sample, err)
 		}
