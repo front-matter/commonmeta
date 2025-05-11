@@ -91,6 +91,7 @@ var IdentifierTypes = []string{
 	"Handle",
 	"ISBN",
 	"ISSN",
+	"OpenAlex",
 	"PMID",
 	"PMCID",
 	"PURL",
@@ -100,6 +101,15 @@ var IdentifierTypes = []string{
 	"UUID",
 	"Other",
 }
+
+// WorkTypes are the types Commonmeta supports for works
+var WorkTypes = []string{"DOI", "Wikidata", "Openalex", "PMID", "PMCID", "UUID"}
+
+// PersonTypes are the types Commonmeta supports for people
+var PersonTypes = []string{"ORCID", "ISNI", "Openalex", "Wikidata"}
+
+// OrganizationTypes are the types Commonmeta supports for organizations
+var OrganizationTypes = []string{"ROR", "Wikidata", "Openalex", "Crossref Funder ID", "GRID", "ISNI"}
 
 // FOSKeyMappings maps OECD FOS keys to OECD FOS strings
 var FOSKeyMappings = map[string]string{
@@ -365,7 +375,12 @@ type Reference struct {
 	ID              string `json:"id,omitempty"`
 	Type            string `json:"type,omitempty"`
 	Title           string `json:"title,omitempty"`
+	Publisher       string `json:"publisher,omitempty"`
 	PublicationYear string `json:"publicationYear,omitempty"`
+	Volume          string `json:"volume,omitempty"`
+	Issue           string `json:"issue,omitempty"`
+	FirstPage       string `json:"first_page,omitempty"`
+	LastPage        string `json:"last_page,omitempty"`
 	Unstructured    string `json:"unstructured,omitempty"`
 	AssertedBy      string `json:"assertedBy,omitempty"`
 }
