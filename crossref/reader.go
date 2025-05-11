@@ -541,7 +541,7 @@ func Read(content Content, match bool) (commonmeta.Data, error) {
 	if len(pages) > 1 {
 		lastPage = pages[1]
 	}
-	data.Container = commonmeta.Container{
+	data.Container = &commonmeta.Container{
 		Identifier:     identifier,
 		IdentifierType: identifierType,
 		Type:           containerType,

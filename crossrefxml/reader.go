@@ -1032,7 +1032,7 @@ func Read(query Query) (commonmeta.Data, error) {
 		identifierType = "ISBN"
 	}
 
-	data.Container = commonmeta.Container{
+	data.Container = &commonmeta.Container{
 		Identifier:     identifier,
 		IdentifierType: identifierType,
 		Type:           containerType,

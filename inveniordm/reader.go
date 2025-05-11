@@ -836,7 +836,7 @@ func Read(content Content, match bool) (commonmeta.Data, error) {
 				if type_ == "" {
 					type_ = "Community"
 				}
-				data.Container = commonmeta.Container{
+				data.Container = &commonmeta.Container{
 					Identifier:     identifier,
 					IdentifierType: identifierType,
 					Type:           type_,

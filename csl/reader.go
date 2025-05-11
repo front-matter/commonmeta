@@ -221,7 +221,7 @@ func Read(content Content) (commonmeta.Data, error) {
 		}
 	}
 
-	data.Container = commonmeta.Container{
+	data.Container = &commonmeta.Container{
 		Type:           "Periodical",
 		Title:          content.ContainerTitle,
 		Identifier:     identifier,

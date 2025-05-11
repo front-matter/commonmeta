@@ -456,7 +456,7 @@ func Read(content Content, match bool) (commonmeta.Data, error) {
 		data.AdditionalType = content.Types.ResourceType
 	}
 
-	data.Container = commonmeta.Container{
+	data.Container = &commonmeta.Container{
 		Identifier:     content.Container.Identifier,
 		IdentifierType: content.Container.IdentifierType,
 		Type:           content.Container.Type,
@@ -585,7 +585,7 @@ func Read(content Content, match bool) (commonmeta.Data, error) {
 				NorthBoundLatitude: northBoundLatitude,
 			},
 		}
-		data.GeoLocations = append(data.GeoLocations, geoLocation)
+		data.GeoLocations = append(data.GeoLocations, &geoLocation)
 	}
 
 	if len(content.AlternateIdentifiers) > 0 {

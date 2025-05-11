@@ -339,7 +339,7 @@ func Read(content Content) (commonmeta.Data, error) {
 			Type: "IsPartOf",
 		})
 	}
-	data.Container = commonmeta.Container{
+	data.Container = &commonmeta.Container{
 		Type:           "Blog",
 		Title:          content.Blog.Title,
 		Description:    content.Blog.Description,

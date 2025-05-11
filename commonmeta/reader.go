@@ -224,15 +224,15 @@ type Data struct {
 	// optional fields
 	AdditionalType    string             `avro:"additional_type,omitempty" json:"additionalType,omitempty"`
 	ArchiveLocations  []string           `avro:"archive_locations,omitempty" json:"archiveLocations,omitempty"`
-	Container         Container          `avro:"container,omitempty" json:"container,omitempty"`
+	Container         *Container         `avro:"container,omitempty" json:"container,omitempty"`
 	ContentHTML       string             `avro:"content_html,omitempty" json:"content_html,omitempty"`
 	Contributors      []Contributor      `avro:"contributors,omitempty" json:"contributors,omitempty"`
-	Date              Date               `avro:"date,omitempty" json:"date,omitempty"`
+	Date              Date               `avro:"date" json:"date"`
 	Descriptions      []Description      `avro:"descriptions,omitempty" json:"descriptions,omitempty"`
 	FeatureImage      string             `avro:"image,omitempty" json:"feature_image,omitempty"`
 	Files             []File             `avro:"files,omitempty" json:"files,omitempty"`
 	FundingReferences []FundingReference `avro:"funding_references,omitempty" json:"fundingReferences,omitempty"`
-	GeoLocations      []GeoLocation      `avro:"geo_locations,omitempty" json:"geoLocations,omitempty"`
+	GeoLocations      []*GeoLocation     `avro:"geo_locations,omitempty" json:"geoLocations,omitempty"`
 	Identifiers       []Identifier       `avro:"identifiers,omitempty" json:"identifiers,omitempty"`
 	Language          string             `avro:"language,omitempty" json:"language,omitempty"`
 	License           *License           `avro:"license,omitempty" json:"license,omitempty"`
