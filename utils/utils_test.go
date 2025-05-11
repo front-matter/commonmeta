@@ -188,6 +188,27 @@ func ExampleValidateISSN() {
 	// 2146-8427
 }
 
+func ExampleValidateOpenalex() {
+	s, _ := utils.ValidateOpenalex("https://openalex.org/W1964940342")
+	fmt.Println(s)
+	// Output:
+	// W1964940342
+}
+
+func ExampleValidatePMID() {
+	s, _ := utils.ValidatePMID("https://pubmed.ncbi.nlm.nih.gov/17160063")
+	fmt.Println(s)
+	// Output:
+	// 17160063
+}
+
+func ExampleValidatePMCID() {
+	s, _ := utils.ValidatePMCID("https://www.ncbi.nlm.nih.gov/pmc/articles/3917233")
+	fmt.Println(s)
+	// Output:
+	// 3917233
+}
+
 func TestNormalizeORCID(t *testing.T) {
 	t.Parallel()
 	type testCase struct {

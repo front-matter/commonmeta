@@ -555,6 +555,37 @@ func ValidateROR(ror string) (string, bool) {
 	return matched[1], true
 }
 
+// ValidateOpenalex validates an OpenAlex ID. The first letter indicates the type of resource
+// (A author, F funder, I institution, P publisher, S source W work), followed by 8-10 digits.
+func ValidateOpenalex(openalex string) (string, bool) {
+	r := regexp.MustCompile(`^(?:(?:http|https)://openalex\.org/)?([AFIPSW]\d{8,10})$`)
+	matched := r.FindStringSubmatch(openalex)
+	if len(matched) == 0 {
+		return "", false
+	}
+	return matched[1], true
+}
+
+// ValidatePMID validates a PubdMed ID
+func ValidatePMID(pmid string) (string, bool) {
+	r := regexp.MustCompile(`^(?:(?:http|https)://pubmed\.ncbi\.nlm\.nih\.gov/)?(\d{4,8})$`)
+	matched := r.FindStringSubmatch(pmid)
+	if len(matched) == 0 {
+		return "", false
+	}
+	return matched[1], true
+}
+
+// ValidatePMCID validates a PubMed Central ID
+func ValidatePMCID(pmcid string) (string, bool) {
+	r := regexp.MustCompile(`^(?:(?:http|https)://www\.ncbi\.nlm\.nih\.gov/pmc/articles/)?(\d{4,8})$`)
+	matched := r.FindStringSubmatch(pmcid)
+	if len(matched) == 0 {
+		return "", false
+	}
+	return matched[1], true
+}
+
 // GetROR
 func GetROR(ror string) (ROR, error) {
 	var content ROR
@@ -566,7 +597,7 @@ func GetROR(ror string) (ROR, error) {
 	if err != nil {
 		return content, err
 	}
-	if resp.StatusCode != 200 {
+	if resp.StatusCode != http.StatusOK {
 		return content, fmt.Errorf("status code error: %d %s", resp.StatusCode, resp.Status)
 	}
 	defer resp.Body.Close()
@@ -596,8 +627,8 @@ func ValidateCrossrefFunderID(fundref string) (string, bool) {
 }
 
 // ValidateID validates an identifier and returns the type
-// Can be DOI, UUID, ISSN, ORCID, ROR, URL, RID, Wikidata, ISNI
-// or GRID
+// Can be DOI, UUID, ISSN, ORCID, ROR, URL, RID, Wikidata, ISNI, OpenAlex,
+// PMID, PMCID or GRID
 func ValidateID(id string) (string, string) {
 	fundref, ok := ValidateCrossrefFunderID(id)
 	if ok {
@@ -611,9 +642,17 @@ func ValidateID(id string) (string, string) {
 	if ok {
 		return uuid, "UUID"
 	}
-	rid, ok := ValidateRID(id)
+	pmid, ok := ValidatePMID(id)
 	if ok {
-		return rid, "RID"
+		return pmid, "PMID"
+	}
+	pmcid, ok := ValidatePMCID(id)
+	if ok {
+		return pmcid, "OpenAlex"
+	}
+	openalex, ok := ValidateOpenalex(id)
+	if ok {
+		return openalex, "OpenAlex"
 	}
 	orcid, ok := ValidateORCID(id)
 	if ok {
@@ -626,6 +665,10 @@ func ValidateID(id string) (string, string) {
 	grid, ok := ValidateGRID(id)
 	if ok {
 		return grid, "GRID"
+	}
+	rid, ok := ValidateRID(id)
+	if ok {
+		return rid, "RID"
 	}
 	wikidata, ok := ValidateWikidata(id)
 	if ok {
@@ -659,9 +702,9 @@ func ValidateIDCategory(id string) (string, string, string) {
 		return id, type_, "Person"
 	case "ISNI":
 		return id, type_, "Contributor"
-	case "DOI":
+	case "DOI", "PMID", "PMCID":
 		return id, type_, "Work"
-	case "Wikidata", "URL", "UUID":
+	case "Wikidata", "OpenAlex", "URL", "UUID":
 		return id, type_, "All"
 	default:
 		return id, type_, ""
