@@ -1,0 +1,130 @@
+{
+  "id": "https://doi.org/10.7554/elife.01567",
+  "type": "Article",
+  "container": {
+    "identifier": "2050-084X",
+    "identifierType": "ISSN",
+    "type": "Journal",
+    "title": "eLife",
+    "volume": "3"
+  },
+  "contributors": [
+    {
+      "name": "Martial Sankar",
+      "affiliations": [
+        {
+          "id": "https://ror.org/019whta54",
+          "name": "University of Lausanne"
+        }
+      ]
+    },
+    {
+      "id": "https://orcid.org/0000-0001-7004-9422",
+      "name": "Kaisa Nieminen",
+      "affiliations": [
+        {
+          "id": "https://ror.org/019whta54",
+          "name": "University of Lausanne"
+        }
+      ]
+    },
+    {
+      "id": "https://orcid.org/0000-0002-3651-8966",
+      "name": "Laura Ragni",
+      "affiliations": [
+        {
+          "id": "https://ror.org/019whta54",
+          "name": "University of Lausanne"
+        }
+      ]
+    },
+    {
+      "id": "https://orcid.org/0000-0002-3413-6841",
+      "name": "Ioannis Xénarios",
+      "affiliations": [
+        {
+          "id": "https://ror.org/002n09z45",
+          "name": "SIB Swiss Institute of Bioinformatics"
+        }
+      ]
+    },
+    {
+      "id": "https://orcid.org/0000-0003-3203-1058",
+      "name": "Christian S. Hardtke",
+      "affiliations": [
+        {
+          "id": "https://ror.org/019whta54",
+          "name": "University of Lausanne"
+        }
+      ]
+    }
+  ],
+  "date": {
+    "published": "2014-02-11"
+  },
+  "descriptions": [
+    {
+      "description": "Among various advantages, their small size makes model organisms preferred subjects of investigation. Yet, even in model systems detailed analysis of numerous developmental processes at cellular level is severely hampered by their scale. For instance, secondary growth of Arabidopsis hypocotyls creates a radial pattern of highly specialized tissues that comprises several thousand cells starting from a few dozen. This dynamic process is difficult to follow because of its scale and because it can only be investigated invasively, precluding comprehensive understanding of the cell proliferation, differentiation, and patterning events involved. To overcome such limitation, we established an automated quantitative histology approach. We acquired hypocotyl cross-sections from tiled high-resolution images and extracted their information content using custom high-throughput image processing and segmentation. Coupled with automated cell type recognition through machine learning, we could establish a cellular resolution atlas that reveals vascular morphodynamics during secondary growth, for example equidistant phloem pole formation.",
+      "type": "Abstract"
+    }
+  ],
+  "fundingReferences": [
+    {
+      "funderIdentifier": "https://ror.org/00yjd3n13",
+      "funderIdentifierType": "ROR",
+      "funderName": "Schweizerischer Nationalfonds zur Förderung der Wissenschaftlichen Forschung"
+    },
+    {
+      "funderIdentifier": "https://ror.org/04wfr2810",
+      "funderIdentifierType": "ROR",
+      "funderName": "EMBO"
+    },
+    {
+      "funderIdentifier": "https://ror.org/019whta54",
+      "funderIdentifierType": "ROR",
+      "funderName": "Université de Lausanne"
+    }
+  ],
+  "identifiers": [
+    {
+      "identifier": "https://openalex.org/W2121398592",
+      "identifierType": "OpenAlex"
+    },
+    {
+      "identifier": "https://doi.org/10.7554/elife.01567",
+      "identifierType": "DOI"
+    },
+    {
+      "identifier": "2121398592",
+      "identifierType": "MAG"
+    },
+    {
+      "identifier": "https://pubmed.ncbi.nlm.nih.gov/24520159",
+      "identifierType": "PMID"
+    },
+    {
+      "identifier": "https://www.ncbi.nlm.nih.gov/pmc/articles/3917233",
+      "identifierType": "PMCID"
+    }
+  ],
+  "language": "en",
+  "license": {
+    "id": "CC-BY-4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/legalcode"
+  },
+  "provider": "OpenAlex",
+  "publisher": {
+    "name": "eLife Sciences Publications Ltd"
+  },
+  "subjects": [
+    {
+      "subject": "Plant Science"
+    }
+  ],
+  "titles": [
+    {
+      "title": "Automated quantitative histology reveals vascular morphodynamics during Arabidopsis hypocotyl secondary growth"
+    }
+  ],
+  "url": "https://doi.org/10.7554/elife.01567"
+}

@@ -1,0 +1,59 @@
+{
+  "id": "https://doi.org/10.14264/uql.2020.791",
+  "type": "Dissertation",
+  "container": {},
+  "contributors": [
+    {
+      "id": "https://orcid.org/0000-0003-3086-4443",
+      "name": "Patricia Collingwood"
+    }
+  ],
+  "date": {
+    "published": "2020-05-25"
+  },
+  "descriptions": [
+    {
+      "description": "Across many samples, scholars have observed negative life course correlates of truancy, but the best published evidence demonstrates that truancy prevention efforts have failed to return truant students to acceptable attendance levels. Meanwhile, concerns about the harms arising from truancy policies — including their role in the school to prison pipeline — have been recognised recently in several democratic nations worldwide. Within this context, my study contributes to the truancy prevention science literature nuance that has been lacking, in an effort to assist future truancy prevention efforts and, in time, evidence-based truancy policy. My study employs a life course perspective and draws upon elements of the age-graded theory of informal social control, interactional theory, and the concepts of turning points or snares to argue that truancy is associated with reduced life opportunities ­— or reduced capability set — as measured by one’s lack of financial independence. But, I argue that truants do not experience worse outcomes than non-truants uniformly; instead, subgroups of truants (and of young people), exist, and these subgroups may help to understand relationships more accurately than comparing the outcomes of “truants” and “non-truants”.  In doing so, my thesis explores the as-yet undocumented connection between two “knowns” in the literature: that truancy is a common adolescent behaviour, and that financial assistance is common, during emerging adulthood. I also seek to add granularity to the general concept that “the higher frequency the truancy, the worse the outcomes” by exploring how truanting frequency features in truants who share the same, and who have different, financial assistance pathways; my intention is to explore for the presence of thresholds at which truancy is not harmful.In this study I use a longitudinal panel survey that follows young Australians from age 15 or 16, until they are aged 20 or 21. I observe their truancy in late adolescence and their annual receipt and reliance upon cash transfers received from family and government in the year truancy is measured, and the subsequent five years. I create inverse probability of treatment weights using six empirically important variables — age, gender, ethnic composition, their family situation at 14, mother’s education level, and whether or not their household received government cash transfers in the year prior to the truancy — to reduce any confounding effect of those variables on this study’s results. My results show that about one in every five young people were truant in one year in late adolescence, and almost one-half of those are truanting once or twice in one year. And while Australian statute makes any act of truancy illegal, fines for truancy range widely (from $10 to $11,000), based on the circumstances of the truancy, and state education policies in Australia mostly do not require a response to truancy until a student truants more than six times in one calendar year.My study identified a positive association between truancy and lower financial independence. The nature of this association, however, differs according to the analytic method I used. The first method — cross-sectional analyses exploring truancy’s association with government transfer receipt and reliance at school-leaving age, and at the last year of the observation period — demonstrates that truancy is positively associated with government transfer receipt and reliance at three-years post truancy, but the association fades by five-years post truancy. The second method ­— longitudinal analyses that identified government transfer receipt and reliance trajectories ignorant of one’s truanting history, and then tested whether one’s level of truancy is associated with one’s trajectory group — leads to the conclusion that truancy is positively associated with being on one of the four identified government cash transfer receipt trajectory groups (those receiving a relatively low, steady dollar value of government cash transfers). Being a truant does not make a person more or less likely to be member of any of the three government transfer reliance trajectory groups. This demonstration illustrates that comparing outcomes by averaging across all non-truants, and all truants, appears to miss important nuance, compared to what I identified from a longitudinal, subgroup-based analysis. I found no association between truancy and a young person’s receipt of cash transfers from friends or family (private cash transfers). However, there are likely too few instances of private cash transfers in my study’s dataset to detect an effect.Finally, I explored what features appeared to discern which truants occupied each government cash transfer trajectory, finding that truants differed on a range of measures within the domains of truanting frequency; pre-truancy social-structural characteristics; timing of engagement in labour force, education, and training; and family and housing features. These results illustrated that truants are a varied group, and — as other results throughout my study demonstrate — truanting frequency may not be the most suitable way to account for that variation. It is true that young people’s truanting frequencies varied across the trajectories, but the differences did not fall in a predictable or expected pattern. That is, the differences across transfer trajectories do not accord with the principle of “the higher frequency the truancy, the worse the outcomes”. I discuss the implications of my study’s results for theory, truancy prevention and intervention science, policy and practice.",
+      "type": "Abstract"
+    }
+  ],
+  "files": [
+    {
+      "url": "https://espace.library.uq.edu.au/view/UQ:23a1e74/s43837034_final_thesis.pdf",
+      "mimeType": "application/pdf"
+    }
+  ],
+  "identifiers": [
+    {
+      "identifier": "https://doi.org/10.14264/uql.2020.791",
+      "identifierType": "DOI"
+    },
+    {
+      "identifier": "3038237952",
+      "identifierType": "MAG"
+    },
+    {
+      "identifier": "https://openalex.org/W3038237952",
+      "identifierType": "OpenAlex"
+    }
+  ],
+  "language": "en",
+  "provider": "OpenAlex",
+  "subjects": [
+    {
+      "subject": "Education"
+    },
+    {
+      "subject": "General Health Professions"
+    },
+    {
+      "subject": "Clinical Psychology"
+    }
+  ],
+  "titles": [
+    {
+      "title": "School truancy and financial independence during emerging adulthood: a longitudinal analysis of receipt of and reliance on cash transfers"
+    }
+  ],
+  "url": "https://doi.org/10.14264/uql.2020.791"
+}

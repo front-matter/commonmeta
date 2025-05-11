@@ -1,0 +1,165 @@
+{
+  "id": "https://doi.org/10.1101/097196",
+  "type": "Article",
+  "container": {
+    "identifier": "https://www.biorxiv.org",
+    "identifierType": "URL",
+    "type": "Repository",
+    "title": "bioRxiv (Cold Spring Harbor Laboratory)"
+  },
+  "contributors": [
+    {
+      "id": "https://orcid.org/0000-0003-1419-2405",
+      "name": "Martin Fenner"
+    },
+    {
+      "id": "https://orcid.org/0000-0003-1304-1939",
+      "name": "Mercè Crosas",
+      "affiliations": [
+        {
+          "id": "https://ror.org/010brsj79",
+          "name": "Quantitative BioSciences"
+        },
+        {
+          "id": "https://ror.org/03vek6s52",
+          "name": "Harvard University"
+        }
+      ]
+    },
+    {
+      "id": "https://orcid.org/0000-0001-5212-7052",
+      "name": "Jeffrey S. Grethe",
+      "affiliations": [
+        {
+          "id": "https://ror.org/0168r3w48",
+          "name": "University of California, San Diego"
+        }
+      ]
+    },
+    {
+      "id": "https://orcid.org/0000-0002-9377-0797",
+      "name": "David N. Kennedy"
+    },
+    {
+      "id": "https://orcid.org/0000-0001-8479-0262",
+      "name": "Henning Hermjakob",
+      "affiliations": [
+        {
+          "id": "https://ror.org/02catss52",
+          "name": "European Bioinformatics Institute"
+        }
+      ]
+    },
+    {
+      "id": "https://orcid.org/0000-0001-9853-5668",
+      "name": "Philippe Rocca‐Serra"
+    },
+    {
+      "id": "https://orcid.org/0000-0002-2188-2570",
+      "name": "Gustavo Durand",
+      "affiliations": [
+        {
+          "id": "https://ror.org/010brsj79",
+          "name": "Quantitative BioSciences"
+        },
+        {
+          "id": "https://ror.org/03vek6s52",
+          "name": "Harvard University"
+        }
+      ]
+    },
+    {
+      "id": "https://orcid.org/0000-0002-1731-5346",
+      "name": "Robin Berjon",
+      "affiliations": [
+        {
+          "id": "https://ror.org/013b0rk29",
+          "name": "American Standard (United States)"
+        }
+      ]
+    },
+    {
+      "id": "https://orcid.org/0000-0001-8249-7388",
+      "name": "Sebastian Karcher",
+      "affiliations": [
+        {
+          "id": "https://ror.org/014trz974",
+          "name": "Qualitative Data Repository"
+        },
+        {
+          "id": "https://ror.org/025r5qe02",
+          "name": "Syracuse University"
+        }
+      ]
+    },
+    {
+      "id": "https://orcid.org/0000-0002-8406-3871",
+      "name": "Maryann E. Martone",
+      "affiliations": [
+        {
+          "id": "https://ror.org/0168r3w48",
+          "name": "University of California, San Diego"
+        }
+      ]
+    },
+    {
+      "id": "https://orcid.org/0000-0003-4060-7360",
+      "name": "Tim W. Clark",
+      "affiliations": [
+        {
+          "id": "https://ror.org/03vek6s52",
+          "name": "Harvard University"
+        }
+      ]
+    }
+  ],
+  "date": {
+    "published": "2016-12-28"
+  },
+  "descriptions": [
+    {
+      "description": "Abstract This article presents a practical roadmap for scholarly data repositories to implement data citation in accordance with the Joint Declaration of Data Citation Principles, a synopsis and harmonization of the recommendations of major science policy bodies. The roadmap was developed by the Repositories Expert Group, as part of the Data Citation Implementation Pilot (DCIP) project, an initiative of FORCE11.org and the NIH BioCADDIE ( https://biocaddie.org ) program. The roadmap makes 11 specific recommendations, grouped into three phases of implementation: a) required steps needed to support the Joint Declaration of Data Citation Principles, b) recommended steps that facilitate article/data publication workflows, and c) optional steps that further improve data citation support provided by data repositories.",
+      "type": "Abstract"
+    }
+  ],
+  "identifiers": [
+    {
+      "identifier": "https://openalex.org/W3106684232",
+      "identifierType": "OpenAlex"
+    },
+    {
+      "identifier": "https://doi.org/10.1101/097196",
+      "identifierType": "DOI"
+    },
+    {
+      "identifier": "3106684232",
+      "identifierType": "MAG"
+    }
+  ],
+  "language": "en",
+  "license": {
+    "id": "CC-BY-4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/legalcode"
+  },
+  "provider": "OpenAlex",
+  "publisher": {
+    "name": "Cold Spring Harbor Laboratory"
+  },
+  "subjects": [
+    {
+      "subject": "Information Systems"
+    },
+    {
+      "subject": "Information Systems and Management"
+    },
+    {
+      "subject": "Molecular Biology"
+    }
+  ],
+  "titles": [
+    {
+      "title": "A Data Citation Roadmap for Scholarly Data Repositories"
+    }
+  ],
+  "url": "https://doi.org/10.1101/097196"
+}

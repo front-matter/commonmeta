@@ -1,0 +1,81 @@
+{
+  "id": "https://doi.org/10.5555/12345678",
+  "type": "Article",
+  "container": {
+    "identifier": "0264-3561",
+    "identifierType": "ISSN",
+    "type": "Journal",
+    "title": "Journal of Psychoceramics",
+    "firstPage": "1",
+    "lastPage": "3",
+    "volume": "5",
+    "issue": "11"
+  },
+  "contributors": [
+    {
+      "id": "https://orcid.org/0000-0002-1825-0097",
+      "name": "Josiah Carberry",
+      "affiliations": [
+        {
+          "id": "https://ror.org/02ct41q97",
+          "name": "John Brown University"
+        }
+      ]
+    }
+  ],
+  "date": {
+    "published": "2008-08-13"
+  },
+  "descriptions": [
+    {
+      "description": "The characteristic theme of the works of Stone is the bridge between culture and society. Several narratives concerning the fatal !aw, and subsequent dialectic, of semioticist class may be found. Thus, Debord uses the term ‘the subtextual paradigm of consensus’ to denote a cultural paradox. The subject is interpolated into a neocultural discourse that includes sexuality as a totality. But Marx’s critique of prepatriarchialist nihilism states that consciousness is capable of signi\u0026#34;cance. The main theme of Dietrich’s[1]model of cultural discourse is not construction, but neoconstruction. Thus, any number of narratives concerning the textual paradigm of narrative exist. Pretextual cultural theory suggests that context must come from the collective unconscious.",
+      "type": "Abstract"
+    }
+  ],
+  "fundingReferences": [
+    {
+      "funderIdentifier": "https://ror.org/021nxhr62",
+      "funderIdentifierType": "ROR",
+      "funderName": "National Science Foundation",
+      "awardNumber": "12345678"
+    },
+    {
+      "funderIdentifier": "https://ror.org/05mg91w61",
+      "funderIdentifierType": "ROR",
+      "funderName": "Basic Energy Sciences",
+      "awardNumber": "12345679"
+    }
+  ],
+  "identifiers": [
+    {
+      "identifier": "https://openalex.org/W2396441275",
+      "identifierType": "OpenAlex"
+    },
+    {
+      "identifier": "https://doi.org/10.5555/12345678",
+      "identifierType": "DOI"
+    },
+    {
+      "identifier": "2396441275",
+      "identifierType": "MAG"
+    },
+    {
+      "identifier": "https://pubmed.ncbi.nlm.nih.gov/531926",
+      "identifierType": "PMID"
+    }
+  ],
+  "language": "en",
+  "license": {},
+  "provider": "OpenAlex",
+  "subjects": [
+    {
+      "subject": "Communication"
+    }
+  ],
+  "titles": [
+    {
+      "title": "Toward a Unified Theory of High-Energy Metaphysics: Silly String Theory"
+    }
+  ],
+  "url": "https://doi.org/10.5555/12345678"
+}
