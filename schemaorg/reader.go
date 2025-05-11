@@ -202,7 +202,7 @@ func Get(url string) (Content, error) {
 		return content, err
 	}
 	defer resp.Body.Close()
-	if resp.StatusCode != 200 {
+	if resp.StatusCode != http.StatusOK {
 		return content, fmt.Errorf("HTTP status code: %d", resp.StatusCode)
 	}
 
