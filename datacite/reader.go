@@ -456,7 +456,7 @@ func Read(content Content, match bool) (commonmeta.Data, error) {
 		data.AdditionalType = content.Types.ResourceType
 	}
 
-	data.Container = &commonmeta.Container{
+	data.Container = commonmeta.Container{
 		Identifier:     content.Container.Identifier,
 		IdentifierType: content.Container.IdentifierType,
 		Type:           content.Container.Type,
@@ -554,10 +554,28 @@ func Read(content Content, match bool) (commonmeta.Data, error) {
 	// but can't be mapped directly
 
 	for _, v := range content.FundingReferences {
+		var funderIdentifier, funderIdentifierType, funderName string
+		if v.FunderIdentifierType == "ROR" {
+			var ok bool
+			funderIdentifier, ok = utils.ValidateROR(v.FunderIdentifier)
+			if !ok {
+				fmt.Println("error validating ROR", err)
+			}
+			funderIdentifierType = v.FunderIdentifierType
+			funderName = v.FunderName
+		} else if v.FunderIdentifierType == "Crossref Funder ID" || v.FunderIdentifierType == "Wikidata" || v.FunderIdentifierType == "ISNI" {
+			r, err := ror.Search(v.FunderIdentifier)
+			if err != nil {
+				fmt.Println("error looking up funder", err)
+			}
+			funderIdentifier = r.ID
+			funderIdentifierType = "ROR"
+			funderName = ror.GetDisplayName(r)
+		}
 		data.FundingReferences = append(data.FundingReferences, commonmeta.FundingReference{
-			FunderIdentifier:     v.FunderIdentifier,
-			FunderIdentifierType: v.FunderIdentifierType,
-			FunderName:           v.FunderName,
+			FunderIdentifier:     funderIdentifier,
+			FunderIdentifierType: funderIdentifierType,
+			FunderName:           funderName,
 			AwardNumber:          v.AwardNumber,
 			AwardTitle:           v.AwardTitle,
 			AwardURI:             v.AwardURI,
@@ -622,12 +640,12 @@ func Read(content Content, match bool) (commonmeta.Data, error) {
 	}
 	if publisher.Name != "" {
 		id := utils.NormalizeROR(publisher.PublisherIdentifier)
-		data.Publisher = &commonmeta.Publisher{
+		data.Publisher = commonmeta.Publisher{
 			ID:   id,
 			Name: publisher.Name,
 		}
 	} else if publisherName != "" {
-		data.Publisher = &commonmeta.Publisher{
+		data.Publisher = commonmeta.Publisher{
 			Name: publisherName,
 		}
 	}
@@ -646,7 +664,7 @@ func Read(content Content, match bool) (commonmeta.Data, error) {
 	if len(content.RightsList) > 0 {
 		url, _ := utils.NormalizeCCUrl(content.RightsList[0].RightsURI)
 		id := utils.URLToSPDX(url)
-		data.License = &commonmeta.License{
+		data.License = commonmeta.License{
 			ID:  id,
 			URL: url,
 		}
