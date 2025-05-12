@@ -144,7 +144,7 @@ commonmeta push --sample -f crossref -t inveniordm -h rogue-scholar.org --token 
 				fmt.Println("Please provide an inveniordm host and token")
 				return
 			}
-			records, err = inveniordm.UpsertAll(data, host, token, legacyKey)
+			records, err = inveniordm.UpsertAll(data, fromHost, host, token, legacyKey)
 		} else {
 			fmt.Println("Please provide a valid service")
 			return

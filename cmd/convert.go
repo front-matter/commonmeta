@@ -44,6 +44,7 @@ commonmeta 10.5555/12345678`,
 		// loginPassword, _ := cmd.Flags().GetString("login_passwd")
 		from, _ := cmd.Flags().GetString("from")
 		to, _ := cmd.Flags().GetString("to")
+		fromHost, _ := cmd.Flags().GetString("from-host")
 		depositor, _ := cmd.Flags().GetString("depositor")
 		email, _ := cmd.Flags().GetString("email")
 		registrant, _ := cmd.Flags().GetString("registrant")
@@ -162,7 +163,7 @@ commonmeta 10.5555/12345678`,
 			}
 			output, err = crossrefxml.Write(data, account)
 		} else if data.ID != "" && to == "inveniordm" {
-			output, err = inveniordm.Write(data)
+			output, err = inveniordm.Write(data, fromHost)
 		} else if orgdata.ID != "" && to == "inveniordm" {
 			output, err = ror.WriteInvenioRDM(orgdata)
 		} else if orgdata.ID != "" && to == "ror" {

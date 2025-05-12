@@ -177,7 +177,7 @@ var listCmd = &cobra.Command{
 		} else if to == "schemaorg" {
 			output, err = schemaorg.WriteAll(data)
 		} else if data != nil && to == "inveniordm" {
-			output, err = inveniordm.WriteAll(data)
+			output, err = inveniordm.WriteAll(data, fromHost)
 		} else if len(orgdata) > 0 && to == "ror" {
 			output, err = ror.WriteAll(orgdata, extension)
 		} else if len(orgdata) > 0 && to == "inveniordm" {
