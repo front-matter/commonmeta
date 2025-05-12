@@ -21,7 +21,7 @@ func NewReader(r io.Reader) *Reader {
 	}
 }
 
-const Version = "v0.24.3"
+const Version = "v0.24.4"
 
 // ContributorRoles list of contributor roles defined in commonmeta schema.
 //
@@ -226,7 +226,7 @@ type Data struct {
 	// optional fields
 	AdditionalType    string             `avro:"additional_type,omitempty" json:"additionalType,omitempty"`
 	ArchiveLocations  []string           `avro:"archive_locations,omitempty" json:"archiveLocations,omitempty"`
-	Container         *Container         `avro:"container,omitempty" json:"container,omitempty"`
+	Container         Container          `avro:"container" json:"container"`
 	ContentHTML       string             `avro:"content_html,omitempty" json:"content_html,omitempty"`
 	Contributors      []Contributor      `avro:"contributors,omitempty" json:"contributors,omitempty"`
 	Date              Date               `avro:"date" json:"date"`
@@ -237,9 +237,9 @@ type Data struct {
 	GeoLocations      []*GeoLocation     `avro:"geo_locations,omitempty" json:"geoLocations,omitempty"`
 	Identifiers       []Identifier       `avro:"identifiers,omitempty" json:"identifiers,omitempty"`
 	Language          string             `avro:"language,omitempty" json:"language,omitempty"`
-	License           *License           `avro:"license,omitempty" json:"license,omitempty"`
+	License           License            `avro:"license" json:"license"`
 	Provider          string             `avro:"provider,omitempty" json:"provider,omitempty"`
-	Publisher         *Publisher         `avro:"publisher,omitempty" json:"publisher,omitempty"`
+	Publisher         Publisher          `avro:"publisher" json:"publisher"`
 	References        []Reference        `avro:"references,omitempty" json:"references,omitempty"`
 	Relations         []Relation         `avro:"relations,omitempty" json:"relations,omitempty"`
 	Subjects          []Subject          `avro:"subjects,omitempty" json:"subjects,omitempty"`

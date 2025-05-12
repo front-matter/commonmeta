@@ -339,7 +339,7 @@ func Read(content Content) (commonmeta.Data, error) {
 			Type: "IsPartOf",
 		})
 	}
-	data.Container = &commonmeta.Container{
+	data.Container = commonmeta.Container{
 		Type:           "Blog",
 		Title:          content.Blog.Title,
 		Description:    content.Blog.Description,
@@ -423,12 +423,12 @@ func Read(content Content) (commonmeta.Data, error) {
 		return data, err
 	}
 	licenseID := utils.URLToSPDX(licenseURL)
-	data.License = &commonmeta.License{
+	data.License = commonmeta.License{
 		ID:  licenseID,
 		URL: licenseURL,
 	}
 
-	data.Publisher = &commonmeta.Publisher{
+	data.Publisher = commonmeta.Publisher{
 		Name: "Front Matter",
 	}
 	for _, v := range content.Relationships {

@@ -1032,7 +1032,7 @@ func Read(query Query) (commonmeta.Data, error) {
 		identifierType = "ISBN"
 	}
 
-	data.Container = &commonmeta.Container{
+	data.Container = commonmeta.Container{
 		Identifier:     identifier,
 		IdentifierType: identifierType,
 		Type:           containerType,
@@ -1134,7 +1134,7 @@ func Read(query Query) (commonmeta.Data, error) {
 		}
 		url, _ := utils.NormalizeCCUrl(accessIndicators.LicenseRef[i].Text)
 		id := utils.URLToSPDX(url)
-		data.License = &commonmeta.License{
+		data.License = commonmeta.License{
 			ID:  id,
 			URL: url,
 		}
@@ -1163,7 +1163,7 @@ func Read(query Query) (commonmeta.Data, error) {
 			data.Date.Updated = v.Text
 		}
 	}
-	data.Publisher = &commonmeta.Publisher{
+	data.Publisher = commonmeta.Publisher{
 		ID:   publisherID,
 		Name: publisherName,
 	}

@@ -539,7 +539,7 @@ func Read(content Content, match bool) (commonmeta.Data, error) {
 	if len(pages) > 1 {
 		lastPage = pages[1]
 	}
-	data.Container = &commonmeta.Container{
+	data.Container = commonmeta.Container{
 		Identifier:     identifier,
 		IdentifierType: identifierType,
 		Type:           containerType,
@@ -677,7 +677,7 @@ func Read(content Content, match bool) (commonmeta.Data, error) {
 	if len(content.License) > 0 {
 		url, _ := utils.NormalizeCCUrl(content.License[0].URL)
 		id := utils.URLToSPDX(url)
-		data.License = &commonmeta.License{
+		data.License = commonmeta.License{
 			ID:  id,
 			URL: url,
 		}
@@ -690,7 +690,7 @@ func Read(content Content, match bool) (commonmeta.Data, error) {
 		if content.Member != "" {
 			id = fmt.Sprintf("https://api.crossref.org/members/%s", content.Member)
 		}
-		data.Publisher = &commonmeta.Publisher{
+		data.Publisher = commonmeta.Publisher{
 			ID:   id,
 			Name: content.Publisher,
 		}

@@ -519,11 +519,11 @@ func (r *Reader) GetSource(sourceID string) (*Source, error) {
 }
 
 // GetContainer extracts container information from a work
-func (r *Reader) GetContainer(work *Work) *commonmeta.Container {
+func (r *Reader) GetContainer(work *Work) commonmeta.Container {
 	container := commonmeta.Container{}
 
 	if work.PrimaryLocation.Source.ID == "" {
-		return &container
+		return container
 	}
 
 	// Try to get extended source information
@@ -560,7 +560,7 @@ func (r *Reader) GetContainer(work *Work) *commonmeta.Container {
 	container.FirstPage = work.Biblio.FirstPage
 	container.LastPage = work.Biblio.LastPage
 
-	return &container
+	return container
 }
 
 // GetFiles extracts file information from a work
@@ -732,7 +732,7 @@ func (r *Reader) Read(work *Work) (commonmeta.Data, error) {
 	}
 
 	if work.PrimaryLocation.Source.HostOrganizationName != "" {
-		data.Publisher = &commonmeta.Publisher{
+		data.Publisher = commonmeta.Publisher{
 			Name: work.PrimaryLocation.Source.HostOrganizationName,
 		}
 	}
@@ -769,7 +769,7 @@ func (r *Reader) Read(work *Work) (commonmeta.Data, error) {
 		if len(license.SeeAlso) > 0 {
 			URL = license.SeeAlso[0]
 		}
-		data.License = &commonmeta.License{
+		data.License = commonmeta.License{
 			ID:  ID,
 			URL: URL,
 		}
