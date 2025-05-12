@@ -32,7 +32,7 @@ import (
 var Vocabularies embed.FS
 
 // Convert converts Commonmeta metadata to InvenioRDM metadata
-func Convert(data commonmeta.Data) (Inveniordm, error) {
+func Convert(data commonmeta.Data, fromHost string) (Inveniordm, error) {
 	var inveniordm Inveniordm
 
 	// load awards vocabulary
@@ -203,7 +203,6 @@ func Convert(data commonmeta.Data) (Inveniordm, error) {
 	if len(data.FundingReferences) > 0 {
 		for _, v := range data.FundingReferences {
 			id, identifierType := utils.ValidateID(v.FunderIdentifier)
-
 			// convert Open Funder Registry DOI to ROR
 			if identifierType == "Crossref Funder ID" {
 				r, _ := ror.Fetch(v.FunderIdentifier)
@@ -255,14 +254,13 @@ func Convert(data commonmeta.Data) (Inveniordm, error) {
 				}
 				if v.AwardURI != "" {
 					id, identifierType := utils.ValidateID(v.AwardURI)
-					if id == "" {
-						id = v.AwardURI
+					if id != "" && identifierType != "" {
+						identifier := Identifier{
+							Identifier: id,
+							Scheme:     strings.ToLower(identifierType),
+						}
+						award.Identifiers = append(award.Identifiers, identifier)
 					}
-					identifier := Identifier{
-						Identifier: id,
-						Scheme:     strings.ToLower(identifierType),
-					}
-					award.Identifiers = append(award.Identifiers, identifier)
 				}
 			}
 			funding := Funding{
@@ -360,7 +358,7 @@ func Convert(data commonmeta.Data) (Inveniordm, error) {
 			id, identifierType := utils.ValidateID(v.ID)
 			// skip IsPartOf relation with InvendioRDM community identifier
 			// skip IsPartOf relation with ISSN as that is already captured in the container
-			if v.Type == "IsPartOf" && (strings.HasPrefix(v.ID, "https://rogue-scholar.org/api/communities/") || identifierType == "ISSN") {
+			if v.Type == "IsPartOf" && (strings.HasPrefix(v.ID, fmt.Sprintf("https://%s/api/communities/", fromHost)) || identifierType == "ISSN") {
 				continue
 			}
 			scheme := CMToInvenioIdentifierMappings[identifierType]
@@ -377,13 +375,13 @@ func Convert(data commonmeta.Data) (Inveniordm, error) {
 	}
 
 	inveniordm.Metadata.Version = data.Version
-
+	fmt.Println(inveniordm.Metadata.Funding)
 	return inveniordm, nil
 }
 
 // Write writes inveniordm metadata.
-func Write(data commonmeta.Data) ([]byte, error) {
-	inveniordm, err := Convert(data)
+func Write(data commonmeta.Data, fromHost string) ([]byte, error) {
+	inveniordm, err := Convert(data, fromHost)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -396,10 +394,10 @@ func Write(data commonmeta.Data) ([]byte, error) {
 }
 
 // WriteAll writes a list of inveniordm metadata.
-func WriteAll(list []commonmeta.Data) ([]byte, error) {
+func WriteAll(list []commonmeta.Data, fromHost string) ([]byte, error) {
 	var inveniordmList []Inveniordm
 	for _, data := range list {
-		inveniordm, err := Convert(data)
+		inveniordm, err := Convert(data, fromHost)
 		if err != nil {
 			fmt.Println(err)
 		}
@@ -414,13 +412,13 @@ func WriteAll(list []commonmeta.Data) ([]byte, error) {
 }
 
 // Upsert updates or creates a record in InvenioRDM.
-func Upsert(record commonmeta.APIResponse, client *InvenioRDMClient, cache *cache2go.CacheTable, apiKey string, legacyKey string, data commonmeta.Data) (commonmeta.APIResponse, error) {
+func Upsert(record commonmeta.APIResponse, client *InvenioRDMClient, cache *cache2go.CacheTable, fromHost string, apiKey string, legacyKey string, data commonmeta.Data) (commonmeta.APIResponse, error) {
 	if client.Host == "rogue-scholar.org" && !doiutils.IsRogueScholarDOI(data.ID, "") {
 		record.Status = "failed_not_rogue_scholar_doi"
 		return record, nil
 	}
 
-	inveniordm, err := Convert(data)
+	inveniordm, err := Convert(data, fromHost)
 	if err != nil {
 		return record, err
 	}
@@ -538,7 +536,7 @@ func Upsert(record commonmeta.APIResponse, client *InvenioRDMClient, cache *cach
 }
 
 // UpsertAll updates or creates a list of records in InvenioRDM.
-func UpsertAll(list []commonmeta.Data, host string, apiKey string, legacyKey string) ([]commonmeta.APIResponse, error) {
+func UpsertAll(list []commonmeta.Data, fromHost string, host string, apiKey string, legacyKey string) ([]commonmeta.APIResponse, error) {
 	var records []commonmeta.APIResponse
 
 	// create a new cache for frequently accessed community queries
@@ -556,7 +554,7 @@ func UpsertAll(list []commonmeta.Data, host string, apiKey string, legacyKey str
 		} else if host == "rogue-scholar.org" && !doiutils.IsRogueScholarDOI(data.ID, "") {
 			record.Status = "failed_not_rogue_scholar_doi"
 		} else {
-			record, _ = Upsert(record, client, cache, apiKey, legacyKey, data)
+			record, _ = Upsert(record, client, cache, fromHost, apiKey, legacyKey, data)
 		}
 
 		records = append(records, record)

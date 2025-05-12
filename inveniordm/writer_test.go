@@ -40,7 +40,7 @@ func TestWrite(t *testing.T) {
 		if err != nil {
 			t.Errorf("Crossref Fetch (%v): error %v", tc.id, err)
 		}
-		got, err := inveniordm.Write(data)
+		got, err := inveniordm.Write(data, "")
 		if err != nil {
 			t.Errorf("InvenioRDM Write (%v): error %v", tc.id, err)
 		}
