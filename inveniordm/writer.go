@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 	"path/filepath"
 	"slices"
 	"strings"
@@ -356,11 +357,18 @@ func Convert(data commonmeta.Data, fromHost string) (Inveniordm, error) {
 	if len(data.Relations) > 0 {
 		for _, v := range data.Relations {
 			id, identifierType := utils.ValidateID(v.ID)
+			if id != "" && identifierType == "URL" {
+				u, _ := url.Parse(id)
+				if u.Host == fromHost {
+					u.Host = fromHost
+					id = u.String()
+				}
+			}
 			// skip IsPartOf relation with InvendioRDM community identifier
 			// skip IsPartOf relation with ISSN as that is already captured in the container
-			if v.Type == "IsPartOf" && (strings.HasPrefix(v.ID, fmt.Sprintf("https://%s/api/communities/", fromHost)) || identifierType == "ISSN") {
-				continue
-			}
+			// if v.Type == "IsPartOf" && (strings.HasPrefix(v.ID, fmt.Sprintf("https://%s/api/communities/", fromHost)) || identifierType == "ISSN") {
+			// 	continue
+			// }
 			scheme := CMToInvenioIdentifierMappings[identifierType]
 			relationType := CMToInvenioRelationTypeMappings[v.Type]
 			if id != "" && scheme != "" && relationType != "" {
@@ -375,7 +383,7 @@ func Convert(data commonmeta.Data, fromHost string) (Inveniordm, error) {
 	}
 
 	inveniordm.Metadata.Version = data.Version
-	fmt.Println(inveniordm.Metadata.Funding)
+
 	return inveniordm, nil
 }
 
@@ -469,7 +477,6 @@ func Upsert(record commonmeta.APIResponse, client *InvenioRDMClient, cache *cach
 	}
 	// check if record already exists in InvenioRDM
 	record.ID, _ = SearchByDOI(data.ID, client)
-
 	if record.ID == "" {
 		// create draft record
 		record, err = CreateDraftRecord(record, client, apiKey, inveniordm)
@@ -520,6 +527,22 @@ func Upsert(record commonmeta.APIResponse, client *InvenioRDMClient, cache *cach
 				record, err = AddRecordToCommunity(record, client, apiKey, communityID)
 				if err != nil {
 					return record, err
+				}
+			}
+		}
+	}
+
+	// add record to communities defined as IsPartOf relation in inveniordm.Metadata.RelatedIdentifiers
+	if len(inveniordm.Metadata.RelatedIdentifiers) > 0 {
+		for _, v := range inveniordm.Metadata.RelatedIdentifiers {
+			if v.RelationType.ID == "ispartof" {
+				u, _ := url.Parse(v.Identifier)
+				c := strings.Split(u.Path, "/")
+				if u.Host == fromHost && len(c) == 3 && c[1] == "communities" {
+					record, err = AddRecordToCommunity(record, client, apiKey, c[2])
+					if err != nil {
+						return record, err
+					}
 				}
 			}
 		}
