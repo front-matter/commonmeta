@@ -315,7 +315,7 @@ func Read(content Content) (commonmeta.Data, error) {
 			data.ID = doiutils.GenerateDOIFromGUID(content.Blog.Prefix, content.GUID)
 		}
 	}
-	if data.ID == "" && content.Blog.Prefix != "" {
+	if data.ID == "" && content.Blog.Prefix != "" && !content.Blog.DOIReg {
 		// optionally generate a DOI string if missing but a DOI prefix is provided
 		data.ID = doiutils.EncodeDOI(content.Blog.Prefix)
 	} else if data.ID == "" {

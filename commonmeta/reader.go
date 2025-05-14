@@ -21,7 +21,7 @@ func NewReader(r io.Reader) *Reader {
 	}
 }
 
-const Version = "v0.24.5"
+const Version = "v0.24.6"
 
 // ContributorRoles list of contributor roles defined in commonmeta schema.
 //
