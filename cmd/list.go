@@ -89,7 +89,7 @@ var listCmd = &cobra.Command{
 			input = args[0]
 		}
 
-		// extract the file extension and check if output file should be zipped
+		// extract the file extension and check if output file should be compressed
 		// if the file name is empty, set it to the default value
 		file, extension, compress := fileutils.GetExtension(file, ".json")
 
@@ -197,9 +197,12 @@ var listCmd = &cobra.Command{
 			if input != "" && extension == ".yaml" {
 				output = append([]byte("# file generated from "+input+"\n\n"), output...)
 			}
-			if compress {
+			switch compress {
+			case "gz":
+				err = fileutils.WriteGZFile(file, output)
+			case "zip":
 				err = fileutils.WriteZIPFile(file, output)
-			} else {
+			default:
 				err = fileutils.WriteFile(file, output)
 			}
 		} else {

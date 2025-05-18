@@ -4,11 +4,13 @@ package fileutils
 import (
 	"archive/zip"
 	"bytes"
+	"compress/gzip"
 	"fmt"
 	"io"
 	"net/http"
 	"os"
 	"path"
+	"strings"
 	"time"
 
 	"github.com/schollz/progressbar/v3"
@@ -30,6 +32,25 @@ func ReadFile(filename string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+	return output, nil
+}
+
+// UncompressContent extracts the content from a gz archive,
+func UncompressContent(input []byte) ([]byte, error) {
+	var output []byte
+
+	reader := bytes.NewReader(input)
+	file, err := gzip.NewReader(reader)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+
+	output, err = io.ReadAll(reader)
+	if err != nil {
+		return nil, err
+	}
+
 	return output, nil
 }
 
@@ -65,6 +86,20 @@ func UnzipContent(input []byte, filename string) ([]byte, error) {
 		output = append(output, out...)
 	}
 	return output, nil
+}
+
+// ReadGZFile opens a gz archive for reading
+func ReadGZFile(filename string) ([]byte, error) {
+	var input, output []byte
+	var err error
+
+	input, err = ReadFile(filename)
+	if err != nil {
+		return nil, err
+	}
+
+	output, err = UncompressContent(input)
+	return output, err
 }
 
 // ReadZIPFile opens a zip archive for reading
@@ -132,6 +167,26 @@ func WriteFile(filename string, output []byte) error {
 	return nil
 }
 
+// WriteGZFile saves content as a gz file.
+func WriteGZFile(filename string, output []byte) error {
+	gzfile, err := os.Create(filename + ".gz")
+	if err != nil {
+		panic(err)
+	}
+	defer gzfile.Close()
+
+	zw := gzip.NewWriter(gzfile)
+	defer zw.Close()
+
+	// Setting the Header fields is optional.
+	zw.Name = path.Base(filename)
+	zw.ModTime = time.Now()
+
+	// Write the output to the zip archive.
+	_, err = zw.Write(output)
+	return err
+}
+
 // WriteZIPFile saves content as a zip file.
 func WriteZIPFile(filename string, output []byte) error {
 	zipfile, err := os.Create(filename + ".zip")
@@ -165,21 +220,25 @@ func WriteZIPFile(filename string, output []byte) error {
 	return nil
 }
 
-// GetExtension extracts the file extension and checks if the output file should be zipped.
-func GetExtension(filename string, ext string) (string, string, bool) {
-	var extension string
-	var compress bool
+// GetExtension extracts the file extension and checks if the output file should be compressed.
+func GetExtension(filename string, ext string) (string, string, string) {
+	var extension, compress string
 
 	if filename != "" {
 		extension = path.Ext(filename)
-		if extension == ".zip" {
-			compress = true
-
-			// Remove the ".zip" extension from the filename
-			filename = filename[:len(filename)-4]
+		switch extension {
+		case ".gz":
+			compress = "gz"
+			// Remove the ".gz" extension from the filename
+			filename = strings.TrimSuffix(filename, ".gz")
 			extension = path.Ext(filename)
-		} else {
-			compress = false
+		case ".zip":
+			compress = "zip"
+			// Remove the ".zip" extension from the filename
+			filename = strings.TrimSuffix(filename, ".zip")
+			extension = path.Ext(filename)
+		default:
+			compress = ""
 		}
 		return filename, extension, compress
 	}
@@ -188,6 +247,6 @@ func GetExtension(filename string, ext string) (string, string, bool) {
 		ext = ".json"
 	}
 	extension = ext
-	compress = false
+	compress = ""
 	return filename, extension, compress
 }

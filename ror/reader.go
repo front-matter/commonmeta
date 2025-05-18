@@ -568,18 +568,25 @@ func LoadAll(filename string) ([]ROR, error) {
 	if !slices.Contains(Extensions, extension) {
 		return list, errors.New("invalid file extension")
 	}
-	if compress {
+	switch compress {
+	case "gz":
+		output, err = fileutils.ReadGZFile(filename + ".gz")
+		if err != nil {
+			return list, errors.New("error reading zip file")
+		}
+	case "zip":
 		output, err = fileutils.ReadZIPFile(filename+".zip", path.Base(filename))
 		if err != nil {
 			return list, errors.New("error reading zip file")
 		}
-	} else {
+	default:
 		output, err = fileutils.ReadFile(filename)
 		if err != nil {
 			return list, errors.New("error reading file")
 		}
 	}
-	if extension == ".avro" {
+	switch extension {
+	case ".avro":
 		schema, err := avro.Parse(RORSchema)
 		if err != nil {
 			return nil, err
@@ -589,17 +596,17 @@ func LoadAll(filename string) ([]ROR, error) {
 			fmt.Println(err)
 			return list, errors.New("error unmarshalling avro file")
 		}
-	} else if extension == ".json" {
+	case ".json":
 		err = json.Unmarshal(output, &list)
 		if err != nil {
 			return list, errors.New("error unmarshalling json file")
 		}
-	} else if extension == ".yaml" {
+	case ".yaml":
 		err = yaml.Unmarshal(output, &list)
 		if err != nil {
 			return list, errors.New("error unmarshalling yaml file")
 		}
-	} else if extension == ".jsonl" {
+	case ".jsonl":
 		decoder := json.NewDecoder(bytes.NewReader(output))
 		for {
 			var item ROR
