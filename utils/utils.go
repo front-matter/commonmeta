@@ -916,3 +916,8 @@ func ParseString(s interface{}) string {
 	}
 	return str
 }
+
+// EscapeSQL escapes single quotes in a string for SQL queries
+func EscapeSQL(s string) string {
+	return strings.ReplaceAll(s, "'", "''")
+}

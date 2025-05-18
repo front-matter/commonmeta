@@ -474,7 +474,8 @@ func WriteAll(list []ROR, extension string) ([]byte, error) {
 	var err error
 	var output []byte
 
-	if extension == ".avro" {
+	switch extension {
+	case ".avro":
 		schema, err := avro.Parse(RORSchema)
 		if err != nil {
 			fmt.Println(err, "avro.Parse")
@@ -486,11 +487,11 @@ func WriteAll(list []ROR, extension string) ([]byte, error) {
 		}
 		fmt.Println(len(output), "bytes")
 		return output, nil
-	} else if extension == ".yaml" {
+	case ".yaml":
 		output, err = yaml.Marshal(list)
-	} else if extension == ".json" {
+	case ".json":
 		output, err = json.Marshal(list)
-	} else if extension == ".jsonl" {
+	case ".jsonl":
 		buffer := &bytes.Buffer{}
 		encoder := json.NewEncoder(buffer)
 		for _, item := range list {
@@ -500,7 +501,7 @@ func WriteAll(list []ROR, extension string) ([]byte, error) {
 			}
 		}
 		output = buffer.Bytes()
-	} else if extension == ".csv" {
+	case ".csv":
 		var rorcsvList []RORCSV
 		// convert ROR to RORCSV, a custom lossy mapping to CSV
 		for _, item := range list {
@@ -514,7 +515,158 @@ func WriteAll(list []ROR, extension string) ([]byte, error) {
 		if err != nil {
 			fmt.Println(err, "csvutil.Marshal")
 		}
-	} else {
+	case ".sql":
+		buffer := &bytes.Buffer{}
+
+		// Create TABLE definitions
+		tableDef := `-- ROR Organizations SQL Schema
+CREATE TABLE IF NOT EXISTS organizations (
+    id VARCHAR(255) PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    status VARCHAR(50) NOT NULL,
+    established INTEGER,
+    types TEXT,
+    country_code CHAR(2),
+    country_name VARCHAR(255),
+    latitude FLOAT,
+    longitude FLOAT,
+    city VARCHAR(255),
+    wikipedia_url TEXT,
+    website_url TEXT,
+    created_at TIMESTAMP,
+    updated_at TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS organization_names (
+    id SERIAL PRIMARY KEY,
+    organization_id VARCHAR(255) REFERENCES organizations(id),
+    name TEXT NOT NULL,
+    name_type VARCHAR(50) NOT NULL,
+    lang VARCHAR(10),
+    UNIQUE(organization_id, name, name_type, lang)
+);
+
+CREATE TABLE IF NOT EXISTS organization_relationships (
+    id SERIAL PRIMARY KEY,
+    organization_id VARCHAR(255) REFERENCES organizations(id),
+    related_id VARCHAR(255) NOT NULL,
+    relationship_type VARCHAR(50) NOT NULL,
+    UNIQUE(organization_id, related_id, relationship_type)
+);
+
+CREATE TABLE IF NOT EXISTS organization_external_ids (
+    id SERIAL PRIMARY KEY,
+    organization_id VARCHAR(255) REFERENCES organizations(id),
+    external_id_type VARCHAR(50) NOT NULL,
+    external_id VARCHAR(255) NOT NULL,
+    is_preferred BOOLEAN DEFAULT FALSE,
+    UNIQUE(organization_id, external_id_type, external_id)
+);
+
+-- Indexes for faster queries
+CREATE INDEX IF NOT EXISTS idx_organizations_types ON organizations USING gin (types);
+CREATE INDEX IF NOT EXISTS idx_organizations_country_code ON organizations(country_code);
+CREATE INDEX IF NOT EXISTS idx_organization_names_name ON organization_names(name);
+CREATE INDEX IF NOT EXISTS idx_organization_external_ids_external_id ON organization_external_ids(external_id);
+
+`
+		buffer.WriteString(tableDef)
+		buffer.WriteString("\n-- Organizational Data\n")
+		buffer.WriteString("BEGIN;\n\n")
+
+		for _, item := range list {
+			var status, website, wikipedia string
+			var lat, lng float64
+			var countryCode, countryName, cityName string
+			var established int
+
+			status = item.Status
+			established = item.Established
+
+			for _, link := range item.Links {
+				if link.Type == "website" {
+					website = link.Value
+				} else if link.Type == "wikipedia" {
+					wikipedia = link.Value
+				}
+			}
+
+			if len(item.Locations) > 0 {
+				lat = item.Locations[0].GeonamesDetails.Lat
+				lng = item.Locations[0].GeonamesDetails.Lng
+				countryCode = item.Locations[0].GeonamesDetails.CountryCode
+				countryName = item.Locations[0].GeonamesDetails.CountryName
+				cityName = item.Locations[0].GeonamesDetails.Name
+			}
+
+			createdAt := item.Admin.Created.Date
+			updatedAt := item.Admin.LastModified.Date
+
+			types := strings.Join(item.Types, ",")
+
+			mainInsert := fmt.Sprintf("INSERT INTO organizations (id, name, status, established, types, country_code, country_name, latitude, longitude, city, wikipedia_url, website_url, created_at, updated_at) VALUES ('%s', '%s', '%s', %d, '%s', '%s', '%s', %f, %f, '%s', '%s', '%s', '%s', '%s');\n",
+				utils.EscapeSQL(item.ID),
+				utils.EscapeSQL(GetDisplayName(item)),
+				utils.EscapeSQL(status),
+				established,
+				utils.EscapeSQL(types),
+				utils.EscapeSQL(countryCode),
+				utils.EscapeSQL(countryName),
+				lat,
+				lng,
+				utils.EscapeSQL(cityName),
+				utils.EscapeSQL(wikipedia),
+				utils.EscapeSQL(website),
+				utils.EscapeSQL(createdAt),
+				utils.EscapeSQL(updatedAt))
+			buffer.WriteString(mainInsert)
+
+			// Insert names
+			for _, name := range item.Names {
+				nameType := strings.Join(name.Types, ",")
+				nameInsert := fmt.Sprintf("INSERT INTO organization_names (organization_id, name, name_type, lang) VALUES ('%s', '%s', '%s', '%s');\n",
+					utils.EscapeSQL(item.ID),
+					utils.EscapeSQL(name.Value),
+					utils.EscapeSQL(nameType),
+					utils.EscapeSQL(name.Lang))
+				buffer.WriteString(nameInsert)
+			}
+
+			for _, extID := range item.ExternalIDs {
+				if extID.Preferred != "" {
+					extIDInsert := fmt.Sprintf("INSERT INTO organization_external_ids (organization_id, external_id_type, external_id, is_preferred) VALUES ('%s', '%s', '%s', TRUE);\n",
+						utils.EscapeSQL(item.ID),
+						utils.EscapeSQL(extID.Type),
+						utils.EscapeSQL(extID.Preferred))
+					buffer.WriteString(extIDInsert)
+				}
+
+				for _, id := range extID.All {
+					if id == extID.Preferred {
+						continue
+					}
+					extIDInsert := fmt.Sprintf("INSERT INTO organization_external_ids (organization_id, external_id_type, external_id, is_preferred) VALUES ('%s', '%s', '%s', FALSE);\n",
+						utils.EscapeSQL(item.ID),
+						utils.EscapeSQL(extID.Type),
+						utils.EscapeSQL(id))
+					buffer.WriteString(extIDInsert)
+				}
+			}
+
+			for _, rel := range item.Relationships {
+				relInsert := fmt.Sprintf("INSERT INTO organization_relationships (organization_id, related_id, relationship_type) VALUES ('%s', '%s', '%s');\n",
+					utils.EscapeSQL(item.ID),
+					utils.EscapeSQL(rel.ID),
+					utils.EscapeSQL(rel.Type))
+				buffer.WriteString(relInsert)
+			}
+
+			buffer.WriteString("\n")
+		}
+
+		buffer.WriteString("COMMIT;\n")
+		output = buffer.Bytes()
+	default:
 		return output, errors.New("unsupported file format")
 	}
 	return output, err
