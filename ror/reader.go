@@ -18,23 +18,22 @@ import (
 	"github.com/front-matter/commonmeta/fileutils"
 	"github.com/front-matter/commonmeta/utils"
 	"github.com/front-matter/commonmeta/vocabularies"
-	"github.com/hamba/avro/v2"
 	"gopkg.in/yaml.v3"
 )
 
 // ROR represents the ROR metadata record.
 type ROR struct {
-	ID            string        `avro:"id" json:"id" csv:"id"`
-	Domains       Strings       `avro:"domains,omitempty" json:"domains,omitempty" yaml:"domains,omitempty"`
-	Established   int           `avro:"established" json:"established,omitempty" yaml:"established,omitempty"`
-	ExternalIDs   ExternalIDS   `avro:"external_ids" json:"external_ids,omitempty" yaml:"external_ids,omitempty"`
-	Links         Links         `avro:"links" json:"links" yaml:"links,omitempty"`
-	Locations     Locations     `avro:"locations" json:"locations"`
-	Names         Names         `avro:"names" json:"names"`
-	Relationships Relationships `avro:"relationships" json:"relationships,omitempty" yaml:"relationships,omitempty"`
-	Status        string        `avro:"status" json:"status"`
-	Types         Strings       `avro:"types" json:"types"`
-	Admin         Admin         `avro:"admin" json:"admin"`
+	ID            string        `json:"id" csv:"id"`
+	Domains       Strings       `json:"domains,omitempty" yaml:"domains,omitempty"`
+	Established   int           `json:"established,omitempty" yaml:"established,omitempty"`
+	ExternalIDs   ExternalIDS   `json:"external_ids,omitempty" yaml:"external_ids,omitempty"`
+	Links         Links         `json:"links" yaml:"links,omitempty"`
+	Locations     Locations     `json:"locations"`
+	Names         Names         `json:"names"`
+	Relationships Relationships `json:"relationships,omitempty" yaml:"relationships,omitempty"`
+	Status        string        `json:"status"`
+	Types         Strings       `json:"types"`
+	Admin         Admin         `json:"admin"`
 }
 
 type Strings []string
@@ -45,278 +44,54 @@ type Names []Name
 type Relationships []Relationship
 
 type Admin struct {
-	Created      Date `avro:"created" json:"created"`
-	LastModified Date `avro:"last_modified" json:"last_modified"`
+	Created      Date `json:"created"`
+	LastModified Date `json:"last_modified"`
 }
 
 type Date struct {
-	Date          string `avro:"date" json:"date"`
-	SchemaVersion string `avro:"schema_version" json:"schema_version"`
+	Date          string `json:"date"`
+	SchemaVersion string `json:"schema_version"`
 }
 
 type ExternalID struct {
-	Type      string  `avro:"type" json:"type"`
-	All       Strings `avro:"all" json:"all"`
-	Preferred string  `avro:"preferred" json:"preferred,omitempty" yaml:"preferred,omitempty"`
+	Type      string  `json:"type"`
+	All       Strings `json:"all"`
+	Preferred string  `json:"preferred,omitempty" yaml:"preferred,omitempty"`
 }
 
 type GeonamesDetails struct {
-	ContinentCode          string  `avro:"continent_code" json:"continent_code" yaml:"continent_code"`
-	ContinentName          string  `avro:"continent_name" json:"continent_name" yaml:"continent_name"`
-	CountryCode            string  `avro:"country_code" json:"country_code" yaml:"country_code"`
-	CountryName            string  `avro:"country_name" json:"country_name" yaml:"country_name"`
-	CountrySubdivisionCode string  `avro:"country_subdivision_code" json:"country_subdivision_code,omitempty" yaml:"country_subdivision_code,omitempty"`
-	CountrySubdivisionName string  `avro:"country_subdivision_name" json:"country_subdivision_name,omitempty" yaml:"country_subdivision_name,omitempty"`
-	Lat                    float64 `avro:"lat" json:"lat"`
-	Lng                    float64 `avro:"lng" json:"lng"`
-	Name                   string  `avro:"name" json:"name"`
+	ContinentCode          string  `json:"continent_code" yaml:"continent_code"`
+	ContinentName          string  `json:"continent_name" yaml:"continent_name"`
+	CountryCode            string  `json:"country_code" yaml:"country_code"`
+	CountryName            string  `json:"country_name" yaml:"country_name"`
+	CountrySubdivisionCode string  `json:"country_subdivision_code,omitempty" yaml:"country_subdivision_code,omitempty"`
+	CountrySubdivisionName string  `json:"country_subdivision_name,omitempty" yaml:"country_subdivision_name,omitempty"`
+	Lat                    float64 `json:"lat"`
+	Lng                    float64 `json:"lng"`
+	Name                   string  `json:"name"`
 }
 
 type Link struct {
-	Type  string `avro:"type" json:"type"`
-	Value string `avro:"value" json:"value"`
+	Type  string `json:"type"`
+	Value string `json:"value"`
 }
 
 type Location struct {
-	GeonamesID      int             `avro:"geonames_id" json:"geonames_id" yaml:"geonames_id"`
-	GeonamesDetails GeonamesDetails `avro:"geonames_details" json:"geonames_details" yaml:"geonames_details"`
+	GeonamesID      int             `json:"geonames_id" yaml:"geonames_id"`
+	GeonamesDetails GeonamesDetails `json:"geonames_details" yaml:"geonames_details"`
 }
 
 type Name struct {
-	Value string  `avro:"value" json:"value"`
-	Types Strings `avro:"types" json:"types"`
-	Lang  string  `avro:"lang" json:"lang,omitempty" yaml:"lang,omitempty"`
+	Value string  `json:"value"`
+	Types Strings `json:"types"`
+	Lang  string  `json:"lang,omitempty" yaml:"lang,omitempty"`
 }
 
 type Relationship struct {
-	Type  string `avro:"type" json:"type"`
-	Label string `avro:"label" json:"label"`
-	ID    string `avro:"id" json:"id"`
+	Type  string `json:"type"`
+	Label string `json:"label"`
+	ID    string `json:"id"`
 }
-
-// RORSchema is the Avro schema for the minimal ROR metadata.
-var RORSchema = `{
-  "type": "array",
-  "items": {
-    "name": "ROR",
-    "type": "record",
-    "fields": [
-      { "name": "id", "type": "string" },
-      { "name": "established", "type": "int", "default": 0 },
-      {
-        "name": "external_ids",
-        "type": {
-          "type": "array",
-          "items": {
-            "name": "external_id",
-            "type": "record",
-            "fields": [
-              {
-                "name": "type",
-                "type": {
-                  "name": "external_id_type",
-                  "type": "enum",
-                  "symbols": ["fundref", "grid", "isni", "wikidata"]
-                }
-              },
-              {
-                "name": "all",
-                "type": {
-                  "type": "array",
-                  "items": {
-                    "name": "external_id",
-                    "type": "string"
-                  }
-                }
-              },
-              {
-                "name": "preferred",
-                "type": "string",
-                "default": ""
-              }
-            ]
-          }
-        }
-      },
-      {
-        "name": "links",
-        "type": {
-          "type": "array",
-          "items": {
-            "name": "link",
-            "type": "record",
-            "fields": [
-              {
-                "name": "type",
-                "type": {
-                  "name": "link_type",
-                  "type": "enum",
-                  "symbols": ["website", "wikipedia"]
-                }
-              },
-              { "name": "value", "type": "string" }
-            ]
-          }
-        }
-      },
-      {
-        "name": "locations",
-        "type": {
-          "type": "array",
-          "items": {
-            "name": "location",
-            "type": "record",
-            "fields": [
-              { "name": "geonames_id", "type": "long" },
-              {
-                "name": "geonames_details",
-                "type": {
-                  "name": "geonames_details",
-                  "type": "record",
-                  "fields": [
-                    { "name": "continent_code", "type": "string" },
-                    { "name": "continent_name", "type": "string" },
-                    { "name": "country_code", "type": "string" },
-                    { "name": "country_name", "type": "string" },
-                    {
-                      "name": "country_subdivision_code",
-                      "type": "string",
-                      "default": ""
-                    },
-                    {
-                      "name": "country_subdivision_name",
-                      "type": "string",
-                      "default": ""
-                    },
-                    { "name": "lat", "type": "double" },
-                    { "name": "lng", "type": "double" },
-                    { "name": "name", "type": "string" }
-                  ]
-                }
-              }
-            ]
-          }
-        }
-      },
-      {
-        "name": "names",
-        "type": {
-          "type": "array",
-          "items": {
-            "name": "name",
-            "type": "record",
-            "fields": [
-              { "name": "value", "type": "string" },
-              {
-                "name": "types",
-                "type": {
-                  "type": "array",
-                  "items": {
-                    "name": "name_type",
-                    "type": "enum",
-                    "symbols": ["acronym", "alias", "label", "ror_display"]
-                  }
-                }
-              },
-              { "name": "lang", "type": "string", "default": "" }
-            ]
-          }
-        }
-      },
-      {
-        "name": "relationships",
-        "type": {
-          "type": "array",
-          "items": {
-            "name": "relationship",
-            "type": "record",
-            "fields": [
-              {
-                "name": "type",
-                "type": {
-                  "name": "relationship_type",
-                  "type": "enum",
-                  "symbols": [
-                    "child",
-                    "parent",
-                    "related",
-                    "predecessor",
-                    "successor"
-                  ]
-                }
-              },
-              { "name": "label", "type": "string" },
-              { "name": "id", "type": "string" }
-            ]
-          }
-        }
-      },
-      {
-        "name": "status",
-        "type": "string"
-      },
-      {
-        "name": "types",
-        "type": {
-          "name": "type",
-          "type": "array",
-          "items": {
-            "name": "type",
-            "type": "enum",
-            "symbols": [
-              "archive",
-              "company",
-              "education",
-              "facility",
-              "funder",
-              "government",
-              "healthcare",
-              "nonprofit",
-              "other"
-            ]
-          }
-        }
-      },
-      {
-        "name": "admin",
-        "type": {
-          "name": "admin",
-          "type": "record",
-          "fields": [
-            {
-              "name": "created",
-              "type": {
-                "name": "created",
-                "type": "record",
-                "fields": [
-                  { "name": "date", "type": "string" },
-                  {
-                    "name": "schema_version",
-                    "type": "string"
-                  }
-                ]
-              }
-            },
-            {
-              "name": "last_modified",
-              "type": {
-                "name": "last_modified",
-                "type": "record",
-                "fields": [
-                  { "name": "date", "type": "string" },
-                  {
-                    "name": "schema_version",
-                    "type": "string"
-                  }
-                ]
-              }
-            }
-          ]
-        }
-      }
-    ]
-  }
-}`
 
 // RORVersions contains the ROR versions and their release dates, published on Zenodo.
 // The ROR version is the first part of the filename, e.g., v1.63-2025-04-03-ror-data_schema_v2.json
@@ -565,14 +340,11 @@ func LoadAll(filename string) ([]ROR, error) {
 
 	filename, extension, compress := fileutils.GetExtension(filename, ".json")
 
-	if !slices.Contains(Extensions, extension) {
-		return list, errors.New("invalid file extension")
-	}
 	switch compress {
 	case "gz":
 		output, err = fileutils.ReadGZFile(filename + ".gz")
 		if err != nil {
-			return list, errors.New("error reading zip file")
+			return list, errors.New("error reading gz file")
 		}
 	case "zip":
 		output, err = fileutils.ReadZIPFile(filename+".zip", path.Base(filename))
@@ -585,17 +357,8 @@ func LoadAll(filename string) ([]ROR, error) {
 			return list, errors.New("error reading file")
 		}
 	}
+
 	switch extension {
-	case ".avro":
-		schema, err := avro.Parse(RORSchema)
-		if err != nil {
-			return nil, err
-		}
-		err = avro.Unmarshal(schema, output, &list)
-		if err != nil {
-			fmt.Println(err)
-			return list, errors.New("error unmarshalling avro file")
-		}
 	case ".json":
 		err = json.Unmarshal(output, &list)
 		if err != nil {
@@ -617,6 +380,10 @@ func LoadAll(filename string) ([]ROR, error) {
 			}
 			list = append(list, item)
 		}
+	case ".sql":
+
+	default:
+		return list, errors.New("unsupported file format")
 	}
 	return list, err
 }
@@ -723,11 +490,6 @@ func ExtractAll(content []commonmeta.Data) ([]byte, error) {
 	var extracted []ROR
 	var ids []string
 
-	schema, err := avro.Parse(RORSchema)
-	if err != nil {
-		return nil, err
-	}
-
 	// Load the ROR metadata from the embedded ZIP file with all ROR records
 	list, err := LoadBuiltin()
 	if err != nil {
@@ -754,6 +516,6 @@ func ExtractAll(content []commonmeta.Data) ([]byte, error) {
 		}
 	}
 
-	output, err := avro.Marshal(schema, extracted)
+	output, err := json.Marshal(extracted)
 	return output, err
 }

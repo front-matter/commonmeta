@@ -5,7 +5,6 @@ cover.html
 cover.out
 affiliations_ror.yaml
 funders.yaml
-v1.*-ror-data.avro.zip
 !vocabularies/*.json
 !vocabularies/*.zip
 v1.*-ror-data.zip
