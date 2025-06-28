@@ -127,7 +127,7 @@ func TestQueryURL(t *testing.T) {
 		{sample: true, want: "https://api.openalex.org/works?sample=10"},
 		{sample: true, number: 120, want: "https://api.openalex.org/works?sample=120"},
 		// {sample: true, year: "2022", want: "https://api.openalex.org/works?filter=from-pub-date%3A2022-01-01%2Cuntil-pub-date%3A2022-12-31&order=desc&sample=10"},
-		{sample: true, orcid: "0000-0002-8635-8390", want: "https://api.openalex.org/works?filter=authorships.author.id%3A0000-0002-8635-8390&sample=10"},
+		{sample: true, orcid: "0000-0002-8635-8390", want: "https://api.openalex.org/works?filter=authorships.author.orcid%3A0000-0002-8635-8390&sample=10"},
 		{sample: true, ror: "041kmwe10", want: "https://api.openalex.org/works?filter=authorships.institutions.ror%3A041kmwe10&sample=10"},
 		// {sample: true, hasORCID: true, want: "https://api.openalex.org/works?filter=has-orcid%3Atrue&order=desc&sample=10"},
 		// {sample: true, hasROR: true, want: "https://api.openalex.org/works?filter=has-ror-id%3Atrue&order=desc&sample=10"},
@@ -147,7 +147,7 @@ func TestQueryURL(t *testing.T) {
 		}
 		got := r.QueryURL(tc.number, tc.page, tc.publisher, tc.type_, tc.sample, tc.ids, tc.year, tc.orcid, tc.ror, tc.hasORCID, tc.hasROR, tc.hasReferences, tc.hasRelation, tc.hasAbstract, tc.hasAward, tc.hasLicense, tc.hasArchive)
 		if diff := cmp.Diff(tc.want, got); diff != "" {
-			t.Errorf("CrossrefQueryUrl mismatch (-want +got):\n%s", diff)
+			t.Errorf("OpenAlexQueryUrl mismatch (-want +got):\n%s", diff)
 		}
 	}
 }
