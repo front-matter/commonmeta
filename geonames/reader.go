@@ -120,13 +120,13 @@ func LoadGeonamesCountries() (map[string]Country, error) {
 
 // LoadGeonamesCities loads cities from geonameses
 func LoadGeonamesCities() (map[int]Feature, error) {
-	httpClient := &http.Client{
+	client := &http.Client{
 		Timeout:   60 * time.Second,
 		Transport: rtcache.NewRoundTripperCache(24 * time.Hour),
 	}
 
 	url := "http://download.geonames.org/export/dump/cities15000.zip"
-	resp, err := httpClient.Get(url)
+	resp, err := client.Get(url)
 	if err != nil {
 		return nil, err
 	}

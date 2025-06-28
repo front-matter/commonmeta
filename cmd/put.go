@@ -149,7 +149,7 @@ commonmeta put 10.5555/12345678 -f crossref -t inveniordm -h rogue-scholar.org -
 				fmt.Println("Please provide an inveniordm host and token")
 				return
 			}
-			rl := rate.NewLimiter(rate.Every(60*time.Second), 800) // 800 request every 60 seconds
+			rl := rate.NewLimiter(rate.Every(10*time.Second), 100) // 100 request every 10 seconds
 			client := inveniordm.NewClient(rl, host)
 			cache := cache2go.Cache("communities")
 			record, err = inveniordm.Upsert(record, client, cache, fromHost, token, legacyKey, data)

@@ -566,7 +566,7 @@ func UpsertAll(list []commonmeta.Data, fromHost string, host string, apiKey stri
 	cache := cache2go.Cache("communities")
 
 	// create a new http client with rate limiting
-	rl := rate.NewLimiter(rate.Every(60*time.Second), 800) // 800 request every 60 seconds
+	rl := rate.NewLimiter(rate.Every(10*time.Second), 100) // 100 request every 10 seconds
 	client := NewClient(rl, host)
 
 	for _, data := range list {
