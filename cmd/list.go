@@ -162,7 +162,7 @@ var listCmd = &cobra.Command{
 		}
 
 		if to == "commonmeta" {
-			output, err = commonmeta.WriteAll(data)
+			output, err = commonmeta.WriteAll(data, extension)
 		} else if to == "csl" {
 			output, err = csl.WriteAll(data)
 		} else if to == "datacite" {
