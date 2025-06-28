@@ -149,10 +149,10 @@ type CommunityMetadata struct {
 }
 
 type Creator struct {
-	Name         string        `json:"name"`
 	PersonOrOrg  PersonOrOrg   `json:"person_or_org"`
-	ORCID        string        `json:"orcid,omitempty"`
 	Affiliations []Affiliation `json:"affiliations,omitempty"`
+	Name         string        `json:"name"`
+	ORCID        string        `json:"orcid,omitempty"`
 	Affiliation  string        `json:"affiliation,omitempty"`
 }
 
@@ -571,17 +571,18 @@ func LoadAll(filename string, match bool) ([]commonmeta.Data, error) {
 	var err error
 
 	extension := path.Ext(filename)
-	if extension == ".jsonl" || extension == ".jsonlines" {
+	switch extension {
+	case ".jsonl", ".jsonlines":
 		content, err = ReadJSONLines(filename)
 		if err != nil {
 			return data, err
 		}
-	} else if extension == ".json" {
+	case ".json":
 		content, err = ReadJSONList(filename)
 		if err != nil {
 			return data, err
 		}
-	} else {
+	default:
 		return data, errors.New("unsupported file format")
 	}
 	data, err = ReadAll(content, match)
@@ -866,7 +867,7 @@ func Read(content Content, match bool) (commonmeta.Data, error) {
 
 	for _, v := range content.Metadata.Creators {
 		var contributor commonmeta.Contributor
-		if v.PersonOrOrg.Name != "" {
+		if v.PersonOrOrg.Name != "" || v.PersonOrOrg.FamilyName != "" {
 			contributor = GetContributor(v, match)
 		} else if v.Name != "" {
 			contributor = GetZenodoContributor(v)
@@ -1245,22 +1246,23 @@ func ReadJSONLines(filename string) ([]Content, error) {
 // GetContributor converts Inveniordm contributor metadata into the Commonmeta format
 func GetContributor(v Creator, match bool) commonmeta.Contributor {
 	var t string
-	if v.PersonOrOrg.Type == "personal" {
+	switch v.PersonOrOrg.Type {
+	case "personal":
 		t = "Person"
-	} else if v.PersonOrOrg.Type == "organizational" {
+	case "organizational":
 		t = "Organization"
-
 	}
 	var id string
 	if len(v.PersonOrOrg.Identifiers) > 0 {
 		ni := v.PersonOrOrg.Identifiers[0]
-		if ni.Scheme == "orcid" {
+		switch ni.Scheme {
+		case "orcid":
 			id = utils.NormalizeORCID(ni.Identifier)
 			t = "Person"
-		} else if ni.Scheme == "ROR" {
+		case "ROR":
 			id = utils.NormalizeROR(ni.Identifier)
 			t = "Organization"
-		} else {
+		default:
 			id = ni.Identifier
 		}
 	}
@@ -1284,15 +1286,17 @@ func GetContributor(v Creator, match bool) commonmeta.Contributor {
 		if ID != "" {
 			assertedBy = "publisher"
 		}
-		ID, name, assertedBy, err := ror.MapROR(ID, v.Name, assertedBy, match)
+		ID, name, assertedBy, err := ror.MapROR(ID, a.Name, assertedBy, match)
 		if err != nil {
 			fmt.Println("error mapping ROR:", err)
 		}
-		affiliations = append(affiliations, &commonmeta.Affiliation{
-			ID:         ID,
-			Name:       name,
-			AssertedBy: assertedBy,
-		})
+		if ID != "" || name != "" {
+			affiliations = append(affiliations, &commonmeta.Affiliation{
+				ID:         ID,
+				Name:       name,
+				AssertedBy: assertedBy,
+			})
+		}
 	}
 
 	var roles []string
