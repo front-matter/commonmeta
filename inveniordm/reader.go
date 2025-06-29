@@ -151,7 +151,7 @@ type CommunityMetadata struct {
 type Creator struct {
 	PersonOrOrg  PersonOrOrg   `json:"person_or_org"`
 	Affiliations []Affiliation `json:"affiliations,omitempty"`
-	Name         string        `json:"name"`
+	Name         string        `json:"name,omitempty"`
 	ORCID        string        `json:"orcid,omitempty"`
 	Affiliation  string        `json:"affiliation,omitempty"`
 }

@@ -94,7 +94,9 @@ func Convert(data commonmeta.Data, fromHost string) (Inveniordm, error) {
 					Name: a.Name,
 				}
 				// avoid duplicate affiliations
-				if !slices.Contains(affiliations, affiliation) {
+				if !slices.ContainsFunc(affiliations, func(e Affiliation) bool {
+					return e.ID != "" && e.ID == affiliation.ID
+				}) {
 					affiliations = append(affiliations, affiliation)
 				}
 			}
@@ -367,8 +369,9 @@ func Convert(data commonmeta.Data, fromHost string) (Inveniordm, error) {
 			// skip IsPartOf relation with InvendioRDM community identifier
 			// skip IsPartOf relation with ISSN as that is already captured in the container
 			// if v.Type == "IsPartOf" && (strings.HasPrefix(v.ID, fmt.Sprintf("https://%s/api/communities/", fromHost)) || identifierType == "ISSN") {
-			// 	continue
-			// }
+			if identifierType == "ISSN" {
+				continue
+			}
 			scheme := CMToInvenioIdentifierMappings[identifierType]
 			relationType := CMToInvenioRelationTypeMappings[v.Type]
 			if id != "" && scheme != "" && relationType != "" {
