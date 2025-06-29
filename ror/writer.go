@@ -553,6 +553,9 @@ func GetTitle(names []Name) Title {
 	for _, name := range names {
 		if slices.Contains(name.Types, "label") {
 			lang := name.Lang
+			if lang == "" {
+				lang = "en" // Default to English if no language is specified
+			}
 
 			field := titleValue.FieldByNameFunc(func(fieldName string) bool {
 				return strings.EqualFold(fieldName, lang)
@@ -560,11 +563,6 @@ func GetTitle(names []Name) Title {
 
 			if field.IsValid() && field.CanSet() {
 				field.SetString(name.Value)
-				// } else if lang != "en" {
-				// 	enField := titleValue.FieldByName("En")
-				// 	if enField.IsValid() && enField.CanSet() && enField.String() == "" {
-				// 		enField.SetString(name.Value)
-				// 	}
 			}
 		}
 	}
