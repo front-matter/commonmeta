@@ -551,7 +551,7 @@ func GetTitle(names []Name) Title {
 	titleValue := reflect.ValueOf(&title).Elem()
 
 	for _, name := range names {
-		if slices.Contains(name.Types, "label") {
+		if slices.Contains(name.Types, "ror_display") {
 			lang := name.Lang
 			if lang == "" {
 				lang = "en" // Default to English if no language is specified
