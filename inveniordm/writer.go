@@ -764,16 +764,90 @@ func DeleteDraftRecord(record commonmeta.APIResponse, client *InvenioRDMClient, 
 	return record, nil
 }
 
+// CreateSubjectCommunities creates communities for each subject in FOSKeyMappings
+func CreateSubjectCommunities(host string, apiKey string) ([]byte, error) {
+	var communities []Community
+	var id string
+	var err error
+	var output []byte
+
+	// create a new cache for frequently accessed community queries
+	cache := cache2go.Cache("communities")
+
+	// create a new http client with rate limiting
+	rl := rate.NewLimiter(rate.Every(10*time.Second), 100) // 100 request every 10 seconds
+	client := NewClient(rl, host)
+
+	for slug := range commonmeta.FOSKeyMappings {
+		title := commonmeta.FOSKeyMappings[slug]
+		community := Community{
+			Access: &CommunityAccess{
+				Visibility:   "public",
+				MemberPolicy: "open",
+				RecordPolicy: "open",
+				ReviewPolicy: "open",
+			},
+			Slug: slug,
+			Metadata: CommunityMetadata{
+				Title:       title,
+				Description: title + " subject area.",
+				Type: Type{
+					ID: "subject",
+				},
+			},
+		}
+		id, err = UpsertCommunity(community, client, apiKey, cache)
+		if err != nil {
+			return output, err
+		}
+		community.ID = id
+		communities = append(communities, community)
+	}
+
+	output, err = json.Marshal(communities)
+	return output, err
+}
+
+// UpsertCommunity updates or creates a community in InvenioRDM.
+func UpsertCommunity(community Community, client *InvenioRDMClient, apiKey string, cache *cache2go.CacheTable) (string, error) {
+	var err error
+	var communityID string
+
+	// check if community already exists
+	communityID, _ = SearchBySlug(community.Slug, community.Metadata.Type.ID, client, cache)
+	fmt.Println("Community ID:", communityID, "Slug:", community.Slug, "Type:", community.Metadata.Type.ID)
+	if communityID != "" {
+		communityID, err = UpdateCommunity(community, client, apiKey)
+		if err != nil {
+			return communityID, err
+		}
+	} else {
+		// Create the community if it doesn't exist
+		communityID, err = CreateCommunity(community, client, apiKey)
+		if err != nil {
+			return communityID, err
+		}
+	}
+	return communityID, nil
+}
+
 // CreateCommunity creates a community in InvenioRDM.
-func CreateCommunity(community string, client *InvenioRDMClient, apiKey string) (string, error) {
+func CreateCommunity(community Community, client *InvenioRDMClient, apiKey string) (string, error) {
 	type Response struct {
-		ID string `json:"id"`
+		*Community
+		Created string `json:"created,omitempty"`
+		Updated string `json:"updated,omitempty"`
 	}
 	var response Response
 	var requestURL string
 	var req *http.Request
+
+	jsonData, err := json.Marshal(community)
+	if err != nil {
+		return response.ID, err
+	}
 	requestURL = fmt.Sprintf("https://%s/api/communities", client.Host)
-	req, _ = http.NewRequest(http.MethodPost, requestURL, nil)
+	req, _ = http.NewRequest(http.MethodPost, requestURL, bytes.NewReader(jsonData))
 	req.Header = http.Header{
 		"Content-Type":  {"application/json"},
 		"Authorization": {"Bearer " + apiKey},
@@ -784,6 +858,47 @@ func CreateCommunity(community string, client *InvenioRDMClient, apiKey string) 
 	}
 	defer resp.Body.Close()
 	body, _ := io.ReadAll(resp.Body)
+	fmt.Println(string(body))
+	if resp.StatusCode != 201 {
+		return "", fmt.Errorf("failed to create community: %s", string(body))
+	}
+	err = json.Unmarshal(body, &response)
+	if err != nil {
+		return "", err
+	}
+	return response.ID, nil
+}
+
+// UpdateCommunity updates a community in InvenioRDM.
+func UpdateCommunity(community Community, client *InvenioRDMClient, apiKey string) (string, error) {
+	type Response struct {
+		*Community
+		Created string `json:"created,omitempty"`
+		Updated string `json:"updated,omitempty"`
+	}
+	var response Response
+	var requestURL string
+	var req *http.Request
+
+	jsonData, err := json.Marshal(community)
+	if err != nil {
+		return response.ID, err
+	}
+	requestURL = fmt.Sprintf("https://%s/api/communities/%s", client.Host, community.ID)
+	req, _ = http.NewRequest(http.MethodPut, requestURL, bytes.NewReader(jsonData))
+	req.Header = http.Header{
+		"Content-Type":  {"application/json"},
+		"Authorization": {"Bearer " + apiKey},
+	}
+	resp, err := client.Do(req)
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	if resp.StatusCode != 200 {
+		return "", fmt.Errorf("failed to update community: %s", string(body))
+	}
 	err = json.Unmarshal(body, &response)
 	if err != nil {
 		return "", err

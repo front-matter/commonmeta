@@ -107,8 +107,8 @@ func ExampleSearchBySlug() {
 	rl := rate.NewLimiter(rate.Every(10*time.Second), 100)
 	client := inveniordm.NewClient(rl, host)
 	cache := cache2go.Cache("communities")
-	s, _ := inveniordm.SearchBySlug("naturalSciences", "topic", client, cache)
+	s, _ := inveniordm.SearchBySlug("naturalSciences", "subject", client, cache)
 	fmt.Println(s)
 	// Output:
-	// 7d3b25fd-a4a8-4155-8e76-99d6be06706a
+	// f04b2ef6-257d-4aa1-8fcb-83039a3a9471
 }

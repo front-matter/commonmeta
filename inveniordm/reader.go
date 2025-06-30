@@ -123,14 +123,24 @@ type Communities struct {
 }
 
 type Community struct {
-	ID           string                `json:"id"`
-	Slug         string                `json:"slug"`
-	Created      string                `json:"created"`
-	Updated      string                `json:"updated"`
-	Metadata     CommunityMetadata     `json:"metadata"`
-	CustomFields CommunityCustomFields `json:"custom_fields"`
+	Access       *CommunityAccess       `json:"access,omitempty"`
+	ID           string                 `json:"id,omitempty"`
+	Slug         string                 `json:"slug"`
+	Created      string                 `json:"created,omitempty"`
+	Updated      string                 `json:"updated,omitempty"`
+	Metadata     CommunityMetadata      `json:"metadata"`
+	CustomFields *CommunityCustomFields `json:"custom_fields,omitempty"`
 }
 
+// CommunityAccess represents the access policies for a community.
+type CommunityAccess struct {
+	Visibility   string `json:"visibility"`
+	MemberPolicy string `json:"member_policy"`
+	RecordPolicy string `json:"record_policy"`
+	ReviewPolicy string `json:"review_policy"`
+}
+
+// CommunityCustomFields represents optional the custom fields for a community.
 type CommunityCustomFields struct {
 	ISSN     string `json:"rs:issn,omitempty"`
 	FeedURL  string `json:"rs:feed_url,omitempty"`
@@ -139,12 +149,13 @@ type CommunityCustomFields struct {
 	Category string `json:"rs:category,omitempty"`
 }
 
+// CommunityMetadata represents the metadata for a community.
 type CommunityMetadata struct {
-	Title       string `json:"title,omitempty"`
+	Title       string `json:"title"`
 	Description string `json:"description,omitempty"`
 	Type        struct {
 		ID string `json:"id"`
-	}
+	} `json:"type"`
 	Website string `json:"website,omitempty"`
 }
 
@@ -769,7 +780,7 @@ func SearchByDOI(doi string, client *InvenioRDMClient) (string, error) {
 }
 
 // SearchBySlug searches InvenioRDM communities by slug.
-// Specify type of community (blog or topic) in query, subject area communities are always queried.
+// Specify type of community (blog, topic or subject) in query, subject area communities are always queried.
 func SearchBySlug(slug string, type_ string, client *InvenioRDMClient, cache *cache2go.CacheTable) (string, error) {
 	// first check for cached community ID
 	res, _ := cache.Value(slug)
@@ -779,7 +790,10 @@ func SearchBySlug(slug string, type_ string, client *InvenioRDMClient, cache *ca
 	}
 
 	var query Query
-	requestURL := fmt.Sprintf("https://%s/api/communities?q=slug:%s&type=%s&type=subject", client.Host, slug, type_)
+	requestURL := fmt.Sprintf("https://%s/api/communities?q=slug:%s&type=%s", client.Host, slug, type_)
+	if type_ != "subject" {
+		requestURL += "&type=subject"
+	}
 	req, _ := http.NewRequest(http.MethodGet, requestURL, nil)
 	req.Header = http.Header{
 		"Content-Type": {"application/json"},
