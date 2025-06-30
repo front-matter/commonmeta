@@ -787,7 +787,7 @@ func CreateSubjectCommunities(host string, apiKey string) ([]byte, error) {
 				RecordPolicy: "open",
 				ReviewPolicy: "open",
 			},
-			Slug: slug,
+			Slug: utils.StringToSlug(slug),
 			Metadata: CommunityMetadata{
 				Title:       title,
 				Description: title + " subject area.",
@@ -815,8 +815,8 @@ func UpsertCommunity(community Community, client *InvenioRDMClient, apiKey strin
 
 	// check if community already exists
 	communityID, _ = SearchBySlug(community.Slug, community.Metadata.Type.ID, client, cache)
-	fmt.Println("Community ID:", communityID, "Slug:", community.Slug, "Type:", community.Metadata.Type.ID)
 	if communityID != "" {
+		community.ID = communityID
 		communityID, err = UpdateCommunity(community, client, apiKey)
 		if err != nil {
 			return communityID, err
@@ -884,7 +884,7 @@ func UpdateCommunity(community Community, client *InvenioRDMClient, apiKey strin
 	if err != nil {
 		return response.ID, err
 	}
-	requestURL = fmt.Sprintf("https://%s/api/communities/%s", client.Host, community.ID)
+	requestURL = fmt.Sprintf("https://%s/api/communities/%s", client.Host, community.Slug)
 	req, _ = http.NewRequest(http.MethodPut, requestURL, bytes.NewReader(jsonData))
 	req.Header = http.Header{
 		"Content-Type":  {"application/json"},

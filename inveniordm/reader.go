@@ -790,10 +790,7 @@ func SearchBySlug(slug string, type_ string, client *InvenioRDMClient, cache *ca
 	}
 
 	var query Query
-	requestURL := fmt.Sprintf("https://%s/api/communities?q=slug:%s&type=%s", client.Host, slug, type_)
-	if type_ != "subject" {
-		requestURL += "&type=subject"
-	}
+	requestURL := fmt.Sprintf("https://%s/api/communities?q=slug:%s&type=%s&type=subject", client.Host, slug, type_)
 	req, _ := http.NewRequest(http.MethodGet, requestURL, nil)
 	req.Header = http.Header{
 		"Content-Type": {"application/json"},
