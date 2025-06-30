@@ -128,7 +128,8 @@ commonmeta put 10.5555/12345678 -f crossref -t inveniordm -h rogue-scholar.org -
 		}
 
 		var record commonmeta.APIResponse
-		if to == "crossrefxml" {
+		switch to {
+		case "crossrefxml":
 			account := crossrefxml.Account{
 				Depositor:   depositor,
 				Email:       email,
@@ -137,14 +138,14 @@ commonmeta put 10.5555/12345678 -f crossref -t inveniordm -h rogue-scholar.org -
 				LoginPasswd: loginPasswd,
 			}
 			record, err = crossrefxml.Upsert(record, account, legacyKey, data)
-		} else if to == "datacite" {
+		case "datacite":
 			account := datacite.Account{
 				Client:      client_,
 				Password:    password,
 				Development: development,
 			}
 			record, err = datacite.Upsert(record, account, data)
-		} else if to == "inveniordm" {
+		case "inveniordm":
 			if host == "" || token == "" {
 				fmt.Println("Please provide an inveniordm host and token")
 				return
@@ -156,7 +157,7 @@ commonmeta put 10.5555/12345678 -f crossref -t inveniordm -h rogue-scholar.org -
 			if err != nil {
 				cmd.PrintErr(err)
 			}
-		} else {
+		default:
 			fmt.Println("Please provide a valid service")
 			return
 		}
