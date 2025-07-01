@@ -142,11 +142,15 @@ type CommunityAccess struct {
 
 // CommunityCustomFields represents optional the custom fields for a community.
 type CommunityCustomFields struct {
-	ISSN     string `json:"rs:issn,omitempty"`
-	FeedURL  string `json:"rs:feed_url,omitempty"`
-	Language string `json:"rs:language,omitempty"`
-	License  string `json:"rs:license,omitempty"`
-	Category string `json:"rs:category,omitempty"`
+	ISSN       string `json:"rs:issn,omitempty"`
+	FeedURL    string `json:"rs:feed_url,omitempty"`
+	FeedFormat string `json:"rs:feed_format,omitempty"`
+	Generator  string `json:"rs:generator,omitempty"`
+	Prefix     string `json:"rs:prefix,omitempty"`
+	License    string `json:"rs:license,omitempty"`
+	Joined     string `json:"rs:joined,omitempty"`
+	Language   string `json:"rs:language,omitempty"`
+	Category   string `json:"rs:category,omitempty"`
 }
 
 // CommunityMetadata represents the metadata for a community.
@@ -815,6 +819,43 @@ func SearchBySlug(slug string, type_ string, client *InvenioRDMClient, cache *ca
 	}
 }
 
+// SearchByType returns all InvenioRDM communities by host and type,
+// enables transfer of communities between InvenioRDM instances
+func SearchByType(fromHost string, type_ string) ([]Community, error) {
+	type Query struct {
+		Hits struct {
+			Total int         `json:"total"`
+			Hits  []Community `json:"hits"`
+		} `json:"hits"`
+	}
+	client := &http.Client{
+		Timeout: time.Second * 30,
+	}
+	var hits []Community
+	var query Query
+	requestURL := fmt.Sprintf("https://%s/api/communities?q=&type=%s&size=200", fromHost, type_)
+	req, _ := http.NewRequest(http.MethodGet, requestURL, nil)
+	req.Header = http.Header{
+		"Content-Type": {"application/json"},
+	}
+	resp, err := client.Do(req)
+	if err != nil {
+		return hits, err
+	}
+	defer resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+
+	err = json.Unmarshal(body, &query)
+	if err != nil {
+		return hits, err
+	}
+	if query.Hits.Total == 0 {
+		return hits, nil
+	} else {
+		return query.Hits.Hits, nil
+	}
+}
+
 // Read reads InvenioRDM JSON API response and converts it into Commonmeta metadata.
 func Read(content Content, match bool) (commonmeta.Data, error) {
 	var data commonmeta.Data
@@ -1364,5 +1405,37 @@ func GetZenodoContributor(v Creator) commonmeta.Contributor {
 		FamilyName:       familyName,
 		Affiliations:     affiliations,
 		ContributorRoles: roles,
+	}
+}
+
+// GetCommunityLogo returns the logo from a InvenioRDM community
+func GetCommunityLogo(host string, slug string) ([]byte, error) {
+	var logo []byte
+
+	client := &http.Client{
+		Timeout: time.Second * 10,
+	}
+	requestURL := fmt.Sprintf("https://%s/api/communities/%s/logo", host, slug)
+	req, err := http.NewRequest(http.MethodGet, requestURL, nil)
+	if err != nil {
+		return logo, err
+	}
+	resp, err := client.Do(req)
+	if err != nil {
+		return logo, err
+	}
+	defer resp.Body.Close()
+
+	switch resp.StatusCode {
+	case 404:
+		return logo, nil // No logo found, return empty byte slice
+	case 200:
+		logo, err = io.ReadAll(resp.Body)
+		if err != nil {
+			return logo, fmt.Errorf("failed to read logo data: %w", err)
+		}
+		return logo, nil
+	default:
+		return logo, fmt.Errorf("unexpected status code: %d %s", resp.StatusCode, resp.Status)
 	}
 }

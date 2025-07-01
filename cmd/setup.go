@@ -25,11 +25,16 @@ var setupCmd = &cobra.Command{
 
 		to, _ := cmd.Flags().GetString("to")
 
+		fromHost, _ := cmd.Flags().GetString("from-host")
 		host, _ := cmd.Flags().GetString("host")
 		token, _ := cmd.Flags().GetString("token")
+		action, _ := cmd.Flags().GetString("action")
 
 		if to == "" || to == "commonmeta" {
 			to = "inveniordm"
+		}
+		if action == "" {
+			action = "create_subject_communities"
 		}
 
 		if to == "inveniordm" {
@@ -37,7 +42,14 @@ var setupCmd = &cobra.Command{
 				fmt.Println("Please provide an inveniordm host and token")
 				return
 			}
-			output, err = inveniordm.CreateSubjectCommunities(host, token)
+			switch action {
+			case "create_subject_communities":
+				output, err = inveniordm.CreateSubjectCommunities(host, token)
+			case "transfer_blog_communities":
+				output, err = inveniordm.TransferCommunities(fromHost, host, "blog", token)
+			case "transfer_topic_communities":
+				output, err = inveniordm.TransferCommunities(fromHost, host, "topic", token)
+			}
 		}
 
 		var out bytes.Buffer

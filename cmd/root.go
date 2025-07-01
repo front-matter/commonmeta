@@ -83,4 +83,5 @@ func init() {
 	rootCmd.PersistentFlags().StringP("token", "", "", "API token")
 	rootCmd.PersistentFlags().StringP("password", "", "", "DataCite client password")
 	rootCmd.PersistentFlags().StringP("legacyKey", "", "", "Legacy API token")
+	rootCmd.PersistentFlags().StringP("action", "", "", "Action")
 }

@@ -112,3 +112,20 @@ func ExampleSearchBySlug() {
 	// Output:
 	// f04b2ef6-257d-4aa1-8fcb-83039a3a9471
 }
+
+func ExampleSearchByType() {
+	host := "rogue-scholar.org"
+	blogs, _ := inveniordm.SearchByType(host, "blog")
+	fmt.Println(blogs)
+	// Output:
+	// f04b2ef6-257d-4aa1-8fcb-83039a3a9471
+}
+
+func ExampleGetCommunityLogo() {
+	host := "rogue-scholar.org"
+	slug := "front_matter"
+	logo, _ := inveniordm.GetCommunityLogo(host, slug)
+	fmt.Println(len(logo))
+	// Output:
+	// 4026
+}

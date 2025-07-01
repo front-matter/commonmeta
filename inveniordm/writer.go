@@ -808,6 +808,52 @@ func CreateSubjectCommunities(host string, apiKey string) ([]byte, error) {
 	return output, err
 }
 
+// TransferCommunities transfers communities between InvenioRDM instances
+// Transfer is my community type, e.g. blog, topic or subject
+func TransferCommunities(fromHost string, host string, type_ string, apiKey string) ([]byte, error) {
+	var oldCommunities, communities []Community
+	var id string
+	var err error
+	var output []byte
+
+	// create a new cache for frequently accessed community queries
+	cache := cache2go.Cache("communities")
+
+	// create a new http client with rate limiting
+	rl := rate.NewLimiter(rate.Every(10*time.Second), 100) // 100 request every 10 seconds
+	client := NewClient(rl, host)
+
+	// get all communities by type from old InvenioRDM instance
+	oldCommunities, err = SearchByType(fromHost, type_)
+	if err != nil {
+		return output, err
+	}
+
+	for _, community := range oldCommunities {
+		id, err = UpsertCommunity(community, client, apiKey, cache)
+		if err != nil {
+			return output, err
+		}
+		community.ID = id
+		communities = append(communities, community)
+
+		// transfer optional logo if it exists
+		logo, err := GetCommunityLogo(fromHost, community.Slug)
+		if err != nil {
+			return output, err
+		}
+		if len(logo) > 0 {
+			_, err = UpdateCommunityLogo(community.Slug, logo, client, apiKey)
+			if err != nil {
+				return output, err
+			}
+		}
+	}
+
+	output, err = json.Marshal(communities)
+	return output, err
+}
+
 // UpsertCommunity updates or creates a community in InvenioRDM.
 func UpsertCommunity(community Community, client *InvenioRDMClient, apiKey string, cache *cache2go.CacheTable) (string, error) {
 	var err error
@@ -829,6 +875,41 @@ func UpsertCommunity(community Community, client *InvenioRDMClient, apiKey strin
 		}
 	}
 	return communityID, nil
+}
+
+// UpdateCommunityLogo updates a community logo in InvenioRDM.
+func UpdateCommunityLogo(slug string, logo []byte, client *InvenioRDMClient, apiKey string) (string, error) {
+	if len(logo) == 0 {
+		return "", fmt.Errorf("empty logo data")
+	}
+
+	// Store original timeout and restore it after upload
+	originalTimeout := client.client.Timeout
+	client.client.Timeout = time.Second * 30
+	defer func() {
+		client.client.Timeout = originalTimeout
+	}()
+
+	requestURL := fmt.Sprintf("https://%s/api/communities/%s/logo", client.Host, slug)
+	req, err := http.NewRequest(http.MethodPut, requestURL, bytes.NewReader(logo))
+	if err != nil {
+		return "", fmt.Errorf("failed to create request: %w", err)
+	}
+
+	req.Header = http.Header{
+		"Content-Type":  {"application/octet-stream"},
+		"Authorization": {"Bearer " + apiKey},
+	}
+
+	resp, _ := client.Do(req)
+	defer resp.Body.Close()
+
+	if resp.StatusCode != 200 && resp.StatusCode != 201 {
+		body, _ := io.ReadAll(resp.Body)
+		return "", fmt.Errorf("failed to upload logo (status %d): %s", resp.StatusCode, string(body))
+	}
+
+	return slug, nil
 }
 
 // CreateCommunity creates a community in InvenioRDM.
