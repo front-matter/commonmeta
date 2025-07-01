@@ -79,12 +79,14 @@ func Convert(data commonmeta.Data, fromHost string) (Inveniordm, error) {
 		for _, v := range data.Contributors {
 			var identifiers []Identifier
 			if v.ID != "" {
-				id, _ := utils.ValidateORCID(v.ID)
-				Identifier := Identifier{
-					Identifier: id,
-					Scheme:     "orcid",
+				id, ok := utils.ValidateORCID(v.ID)
+				if ok {
+					Identifier := Identifier{
+						Identifier: id,
+						Scheme:     "orcid",
+					}
+					identifiers = append(identifiers, Identifier)
 				}
-				identifiers = append(identifiers, Identifier)
 			}
 			var affiliations []Affiliation
 			for _, a := range v.Affiliations {
