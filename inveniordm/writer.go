@@ -524,7 +524,7 @@ func Upsert(record commonmeta.APIResponse, client *InvenioRDMClient, cache *cach
 			if synonym := CommunityTranslations[slug]; synonym != "" {
 				slug = synonym
 			}
-			communityID, err = SearchBySlug(slug, "topic", client)
+			communityID, err = SearchBySlug(slug, "subject", client)
 			if err != nil {
 				fmt.Println(err)
 			}
