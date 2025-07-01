@@ -15,8 +15,6 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/muesli/cache2go"
-
 	"github.com/front-matter/commonmeta/authorutils"
 	"github.com/front-matter/commonmeta/commonmeta"
 	"github.com/front-matter/commonmeta/doiutils"
@@ -784,17 +782,10 @@ func SearchByDOI(doi string, client *InvenioRDMClient) (string, error) {
 }
 
 // SearchBySlug searches InvenioRDM communities by slug.
-// Specify type of community (blog, topic or subject) in query, subject area communities are always queried.
-func SearchBySlug(slug string, type_ string, client *InvenioRDMClient, cache *cache2go.CacheTable) (string, error) {
-	// first check for cached community ID
-	res, _ := cache.Value(slug)
-	if res != nil {
-		id := fmt.Sprintf("%v", res.Data())
-		return id, nil
-	}
-
+// Specify type of community (blog, topic or subject) in query.
+func SearchBySlug(slug string, type_ string, client *InvenioRDMClient) (string, error) {
 	var query Query
-	requestURL := fmt.Sprintf("https://%s/api/communities?q=slug:%s&type=%s&type=subject", client.Host, slug, type_)
+	requestURL := fmt.Sprintf("https://%s/api/communities?q=slug:%s&type=%s", client.Host, slug, type_)
 	req, _ := http.NewRequest(http.MethodGet, requestURL, nil)
 	req.Header = http.Header{
 		"Content-Type": {"application/json"},
@@ -814,7 +805,6 @@ func SearchBySlug(slug string, type_ string, client *InvenioRDMClient, cache *ca
 		return "", nil
 	} else {
 		id := utils.ParseString(query.Hits.Hits[0].ID)
-		cache.Add(slug, 1*time.Hour, id)
 		return id, nil
 	}
 }

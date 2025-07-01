@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/front-matter/commonmeta/inveniordm"
-	"github.com/muesli/cache2go"
 	"golang.org/x/time/rate"
 )
 
@@ -106,8 +105,7 @@ func ExampleSearchBySlug() {
 	host := "rogue-scholar.org"
 	rl := rate.NewLimiter(rate.Every(10*time.Second), 100)
 	client := inveniordm.NewClient(rl, host)
-	cache := cache2go.Cache("communities")
-	s, _ := inveniordm.SearchBySlug("naturalSciences", "subject", client, cache)
+	s, _ := inveniordm.SearchBySlug("naturalSciences", "subject", client)
 	fmt.Println(s)
 	// Output:
 	// f04b2ef6-257d-4aa1-8fcb-83039a3a9471

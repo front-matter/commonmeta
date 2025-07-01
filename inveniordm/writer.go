@@ -453,7 +453,7 @@ func Upsert(record commonmeta.APIResponse, client *InvenioRDMClient, cache *cach
 	for i, v := range data.Relations {
 		if v.Type == "IsPartOf" && strings.HasPrefix(v.ID, "https://rogue-scholar.org/api/communities/") {
 			slug := strings.Split(v.ID, "/")[5]
-			communityID, _ := SearchBySlug(slug, "blog", client, cache)
+			communityID, _ := SearchBySlug(slug, "blog", client)
 			if communityID != "" {
 				record.Community = slug
 				record.CommunityID = communityID
@@ -522,7 +522,7 @@ func Upsert(record commonmeta.APIResponse, client *InvenioRDMClient, cache *cach
 			if synonym := CommunityTranslations[slug]; synonym != "" {
 				slug = synonym
 			}
-			communityID, err = SearchBySlug(slug, "topic", client, cache)
+			communityID, err = SearchBySlug(slug, "topic", client)
 			if err != nil {
 				fmt.Println(err)
 			}
@@ -860,7 +860,7 @@ func UpsertCommunity(community Community, client *InvenioRDMClient, apiKey strin
 	var communityID string
 
 	// check if community already exists
-	communityID, _ = SearchBySlug(community.Slug, community.Metadata.Type.ID, client, cache)
+	communityID, _ = SearchBySlug(community.Slug, community.Metadata.Type.ID, client)
 	if communityID != "" {
 		community.ID = communityID
 		communityID, err = UpdateCommunity(community, client, apiKey)
