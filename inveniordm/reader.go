@@ -376,7 +376,7 @@ var CMToInvenioMappings = map[string]string{
 	"Standard":              "publication-standard",
 	"WebPage":               "publication",
 	"Workflow":              "workflow",
-	"Other":                 "publication-thesis", // "other",
+	"Other":                 "other",
 }
 
 // InvenioToCMIdentifierMappings maps Commonmeta identifier types to InvenioRDM identifier types
