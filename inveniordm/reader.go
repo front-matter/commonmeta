@@ -294,37 +294,49 @@ type AwardVocabulary struct {
 // InvenioToCMMappings maps InvenioRDM resource types to Commonmeta types
 // source: https://github.com/zenodo/zenodo/blob/master/zenodo/modules/records/data/objecttypes.json
 var InvenioToCMMappings = map[string]string{
-	"annotationcollection":  "Collection",
-	"book":                  "Book",
-	"conferencepaper":       "ProceedingsArticle",
-	"datamanagementplan":    "OutputManagementPlan",
-	"dataset":               "Dataset",
-	"drawing":               "Image",
-	"figure":                "Image",
-	"image":                 "Image",
-	"lesson":                "InteractiveResource",
-	"patent":                "Patent",
-	"peerreview":            "PeerReview",
-	"photo":                 "Image",
-	"physicalobject":        "PhysicalObject",
-	"plot":                  "Image",
-	"poster":                "Poster",
-	"presentation":          "Presentation",
-	"preprint":              "Article",
-	"publication":           "JournalArticle",
-	"publication-blogpost":  "BlogPost",
-	"publication-preprint":  "BlogPost", //"Article"
-	"report":                "Report",
-	"section":               "BookChapter",
-	"software":              "Software",
-	"softwaredocumentation": "Software",
-	"taxonomictreatment":    "Collection",
-	"technicalnote":         "Report",
-	"thesis":                "Dissertation",
-	"video":                 "Audiovisual",
-	"workflow":              "Workflow",
-	"workingpaper":          "Report",
-	"other":                 "Other",
+	"annotationcollection":             "Collection",
+	"book":                             "Book",
+	"conferencepaper":                  "ProceedingsArticle",
+	"datamanagementplan":               "OutputManagementPlan",
+	"dataset":                          "Dataset",
+	"drawing":                          "Image",
+	"figure":                           "Image",
+	"image":                            "Image",
+	"lesson":                           "InteractiveResource",
+	"patent":                           "Patent",
+	"peerreview":                       "PeerReview",
+	"photo":                            "Image",
+	"physicalobject":                   "PhysicalObject",
+	"plot":                             "Image",
+	"poster":                           "Poster",
+	"presentation":                     "Presentation",
+	"preprint":                         "Article",
+	"publication":                      "JournalArticle",
+	"publication-annotationcollection": "Collection",
+	"publication-article":              "Article",
+	"publication-blogpost":             "BlogPost",
+	"publication-book":                 "Book",
+	"publication-conferencepaper":      "ProceedingsArticle",
+	"publication-conferenceproceeding": "Proceedings",
+	"publication-journal":              "Journal",
+	"publication-peerreview":           "PeerReview",
+	"publication-preprint":             "BlogPost",
+	"publication-report":               "Report",
+	"publication-section":              "BookChapter",
+	"publication-standard":             "Standard",
+	"publication-thesis":               "Dissertation",
+	"report":                           "Report",
+	"section":                          "BookChapter",
+	"software":                         "Software",
+	"software-computationalnotebook":   "ComputationalNotebook",
+	"softwaredocumentation":            "Software",
+	"taxonomictreatment":               "Collection",
+	"technicalnote":                    "Report",
+	"thesis":                           "Dissertation",
+	"video":                            "Audiovisual",
+	"workflow":                         "Workflow",
+	"workingpaper":                     "Report",
+	"other":                            "Other",
 }
 
 // CMTOInvenioMappings maps Commonmeta types to InvenioRDM resource types
@@ -364,7 +376,7 @@ var CMToInvenioMappings = map[string]string{
 	"Standard":              "publication-standard",
 	"WebPage":               "publication",
 	"Workflow":              "workflow",
-	"Other":                 "other",
+	"Other":                 "publication-thesis", // "other",
 }
 
 // InvenioToCMIdentifierMappings maps Commonmeta identifier types to InvenioRDM identifier types
@@ -537,6 +549,49 @@ var CommunityTranslations = map[string]string{
 	"biorxiv":                    "preprints",
 	"runiverse":                  "r",
 	"bericht":                    "report",
+}
+
+var DCCSections = map[string]string{
+	"500": "500 Science",
+	"510": "510 Mathematics",
+	"520": "520 Astronomy",
+	"530": "530 Physics",
+	"540": "540 Chemistry",
+	"550": "550 Earth Sciences",
+	"560": "560 Paleontology",
+	"570": "570 Biology",
+	"580": "580 Botany",
+	"590": "590 Zoology",
+	"600": "600 Technology",
+	"610": "610 Medicine",
+	"620": "620 Engineering",
+	"630": "630 Agriculture",
+	"640": "640 Home Economics",
+	"650": "650 Management",
+	"660": "660 Chemical Engineering",
+	"670": "670 Manufacturing",
+	"680": "680 Manufacturing",
+	"690": "690 Construction",
+	"700": "700 Arts",
+	"710": "710 Landscape Architecture",
+	"720": "720 Architecture",
+	"730": "730 Sculpture",
+	"740": "740 Drawing and Decorative Arts",
+	"750": "750 Painting",
+	"760": "760 Printmaking",
+	"770": "770 Photography",
+	"780": "780 Music",
+	"790": "790 Sport, Recreation, and Entertainment",
+	"800": "800 Literature",
+	"810": "810 American Literature",
+	"820": "820 English Literature",
+	"830": "830 German Literature",
+	"840": "840 French Literature",
+	"850": "850 Italian Literature",
+	"860": "860 Spanish and Portuguese Literature",
+	"870": "870 Latin Literature",
+	"880": "880 Classical Greek Literature",
+	"890": "890 Other Literatures",
 }
 
 // Fetch fetches InvenioRDM metadata and returns Commonmeta metadata.
@@ -1107,7 +1162,7 @@ func Read(content Content, match bool) (commonmeta.Data, error) {
 			ID:  licenseID,
 			URL: licenseURL,
 		}
-	} else if content.Metadata.License.ID != "" {
+	} else if content.Metadata.License != nil && content.Metadata.License.ID != "" {
 		var licenseURL string
 		licenseID := LicenseMappings[content.Metadata.License.ID]
 		license, _ := spdx.Search(licenseID)
@@ -1137,9 +1192,14 @@ func Read(content Content, match bool) (commonmeta.Data, error) {
 	if len(content.Metadata.Subjects) > 0 {
 		for _, v := range content.Metadata.Subjects {
 			s := v.Subject
+			dcc := DCCSections[s]
+			if dcc != "" {
+				s = dcc
+			}
 			// if v.Scheme == "FOS" {
 			// 	s = "FOS: " + s
 			// }
+
 			subject := commonmeta.Subject{
 				Subject: s,
 			}
@@ -1403,7 +1463,7 @@ func GetCommunityLogo(host string, slug string) ([]byte, error) {
 	var logo []byte
 
 	client := &http.Client{
-		Timeout: time.Second * 10,
+		Timeout: time.Second * 30,
 	}
 	requestURL := fmt.Sprintf("https://%s/api/communities/%s/logo", host, slug)
 	req, err := http.NewRequest(http.MethodGet, requestURL, nil)
