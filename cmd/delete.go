@@ -48,7 +48,7 @@ var deleteCmd = &cobra.Command{
 		rl := rate.NewLimiter(rate.Every(10*time.Second), 100)
 		client := inveniordm.NewClient(rl, host)
 		record.ID = rid
-		record, err := inveniordm.DeleteDraftRecord(record, client, token)
+		record, err := inveniordm.DeleteDraftRecord(record, token, client)
 		if err != nil {
 			cmd.PrintErr(err)
 		}

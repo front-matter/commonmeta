@@ -7,9 +7,11 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"time"
 
 	"github.com/front-matter/commonmeta/inveniordm"
 	"github.com/spf13/cobra"
+	"golang.org/x/time/rate"
 )
 
 // setupCmd represents the setup command
@@ -42,13 +44,16 @@ var setupCmd = &cobra.Command{
 				fmt.Println("Please provide an inveniordm host and token")
 				return
 			}
+			rl := rate.NewLimiter(rate.Every(10*time.Second), 100)
+			client := inveniordm.NewClient(rl, host)
+			oldClient := inveniordm.NewClient(rl, fromHost)
 			switch action {
 			case "create_subject_communities":
-				output, err = inveniordm.CreateSubjectCommunities(host, token)
+				output, err = inveniordm.CreateSubjectCommunities(token, client)
 			case "transfer_blog_communities":
-				output, err = inveniordm.TransferCommunities(fromHost, host, "blog", token)
+				output, err = inveniordm.TransferCommunities("blog", token, oldClient, client)
 			case "transfer_topic_communities":
-				output, err = inveniordm.TransferCommunities(fromHost, host, "topic", token)
+				output, err = inveniordm.TransferCommunities("topic", token, oldClient, client)
 			}
 		}
 

@@ -2,7 +2,6 @@ package inveniordm
 
 import (
 	"bytes"
-	"crypto/tls"
 	"embed"
 	"encoding/json"
 	"errors"
@@ -425,7 +424,7 @@ func WriteAll(list []commonmeta.Data, fromHost string) ([]byte, error) {
 }
 
 // Upsert updates or creates a record in InvenioRDM.
-func Upsert(record commonmeta.APIResponse, client *InvenioRDMClient, cache *cache2go.CacheTable, fromHost string, apiKey string, legacyKey string, data commonmeta.Data) (commonmeta.APIResponse, error) {
+func Upsert(record commonmeta.APIResponse, cache *cache2go.CacheTable, fromHost string, apiKey string, legacyKey string, data commonmeta.Data, client *InvenioRDMClient) (commonmeta.APIResponse, error) {
 	if client.Host == "rogue-scholar.org" && !doiutils.IsRogueScholarDOI(data.ID, "") {
 		record.Status = "failed_not_rogue_scholar_doi"
 		return record, nil
@@ -484,25 +483,25 @@ func Upsert(record commonmeta.APIResponse, client *InvenioRDMClient, cache *cach
 	record.ID, _ = SearchByDOI(data.ID, client)
 	if record.ID == "" {
 		// create draft record
-		record, err = CreateDraftRecord(record, client, apiKey, inveniordm)
+		record, err = CreateDraftRecord(record, apiKey, inveniordm, client)
 		if err != nil {
 			return record, err
 		}
 	} else {
 		// create draft record from published record
-		record, err = EditPublishedRecord(record, client, apiKey)
+		record, err = EditPublishedRecord(record, apiKey, client)
 		if err != nil {
 			return record, err
 		}
 		// update draft record
-		record, err = UpdateDraftRecord(record, client, apiKey, inveniordm)
+		record, err = UpdateDraftRecord(record, apiKey, inveniordm, client)
 		if err != nil {
 			return record, err
 		}
 	}
 
 	// publish draft record
-	record, err = PublishDraftRecord(record, client, apiKey)
+	record, err = PublishDraftRecord(record, apiKey, client)
 	if err != nil {
 		return record, err
 	}
@@ -582,7 +581,7 @@ func UpsertAll(list []commonmeta.Data, fromHost string, host string, apiKey stri
 		} else if host == "rogue-scholar.org" && !doiutils.IsRogueScholarDOI(data.ID, "") {
 			record.Status = "failed_not_rogue_scholar_doi"
 		} else {
-			record, _ = Upsert(record, client, cache, fromHost, apiKey, legacyKey, data)
+			record, _ = Upsert(record, cache, fromHost, apiKey, legacyKey, data, client)
 		}
 
 		records = append(records, record)
@@ -592,7 +591,7 @@ func UpsertAll(list []commonmeta.Data, fromHost string, host string, apiKey stri
 }
 
 // CreateDraftRecord creates a draft record in InvenioRDM.
-func CreateDraftRecord(record commonmeta.APIResponse, client *InvenioRDMClient, apiKey string, inveniordm Inveniordm) (commonmeta.APIResponse, error) {
+func CreateDraftRecord(record commonmeta.APIResponse, apiKey string, inveniordm Inveniordm, client *InvenioRDMClient) (commonmeta.APIResponse, error) {
 	output, err := json.Marshal(inveniordm)
 	if err != nil {
 		return record, err
@@ -643,7 +642,7 @@ func CreateDraftRecord(record commonmeta.APIResponse, client *InvenioRDMClient, 
 }
 
 // EditPublishedRecord creates a draft record from a published record in InvenioRDM.
-func EditPublishedRecord(record commonmeta.APIResponse, client *InvenioRDMClient, apiKey string) (commonmeta.APIResponse, error) {
+func EditPublishedRecord(record commonmeta.APIResponse, apiKey string, client *InvenioRDMClient) (commonmeta.APIResponse, error) {
 	type Response struct {
 		*Inveniordm
 		Created string `json:"created,omitempty"`
@@ -673,7 +672,7 @@ func EditPublishedRecord(record commonmeta.APIResponse, client *InvenioRDMClient
 }
 
 // UpdateDraftRecord updates a draft record in InvenioRDM.
-func UpdateDraftRecord(record commonmeta.APIResponse, client *InvenioRDMClient, apiKey string, inveniordm Inveniordm) (commonmeta.APIResponse, error) {
+func UpdateDraftRecord(record commonmeta.APIResponse, apiKey string, inveniordm Inveniordm, client *InvenioRDMClient) (commonmeta.APIResponse, error) {
 	output, err := json.Marshal(inveniordm)
 	if err != nil {
 		return record, err
@@ -710,7 +709,7 @@ func UpdateDraftRecord(record commonmeta.APIResponse, client *InvenioRDMClient, 
 }
 
 // PublishDraftRecord publishes a draft record in InvenioRDM.
-func PublishDraftRecord(record commonmeta.APIResponse, client *InvenioRDMClient, apiKey string) (commonmeta.APIResponse, error) {
+func PublishDraftRecord(record commonmeta.APIResponse, apiKey string, client *InvenioRDMClient) (commonmeta.APIResponse, error) {
 	type Response struct {
 		*Inveniordm
 		Created string `json:"created,omitempty"`
@@ -745,7 +744,7 @@ func PublishDraftRecord(record commonmeta.APIResponse, client *InvenioRDMClient,
 }
 
 // DeleteDraftRecord publishes a draft record in InvenioRDM.
-func DeleteDraftRecord(record commonmeta.APIResponse, client *InvenioRDMClient, apiKey string) (commonmeta.APIResponse, error) {
+func DeleteDraftRecord(record commonmeta.APIResponse, apiKey string, client *InvenioRDMClient) (commonmeta.APIResponse, error) {
 	requestURL := fmt.Sprintf("https://%s/api/records/%s/draft", client.Host, record.ID)
 	req, _ := http.NewRequest(http.MethodDelete, requestURL, nil)
 	req.Header = http.Header{
@@ -767,7 +766,7 @@ func DeleteDraftRecord(record commonmeta.APIResponse, client *InvenioRDMClient, 
 }
 
 // CreateSubjectCommunities creates communities for each subject in FOSKeyMappings
-func CreateSubjectCommunities(host string, apiKey string) ([]byte, error) {
+func CreateSubjectCommunities(apiKey string, client *InvenioRDMClient) ([]byte, error) {
 	var communities []Community
 	var id string
 	var err error
@@ -775,10 +774,6 @@ func CreateSubjectCommunities(host string, apiKey string) ([]byte, error) {
 
 	// create a new cache for frequently accessed community queries
 	cache := cache2go.Cache("communities")
-
-	// create a new http client with rate limiting
-	rl := rate.NewLimiter(rate.Every(10*time.Second), 100) // 100 request every 10 seconds
-	client := NewClient(rl, host)
 
 	for slug := range commonmeta.FOSKeyMappings {
 		title := commonmeta.FOSKeyMappings[slug]
@@ -798,7 +793,7 @@ func CreateSubjectCommunities(host string, apiKey string) ([]byte, error) {
 				},
 			},
 		}
-		id, err = UpsertCommunity(community, client, apiKey, cache)
+		id, err = UpsertCommunity(community, apiKey, cache, client)
 		if err != nil {
 			return output, err
 		}
@@ -812,7 +807,7 @@ func CreateSubjectCommunities(host string, apiKey string) ([]byte, error) {
 
 // TransferCommunities transfers communities between InvenioRDM instances
 // Transfer is my community type, e.g. blog, topic or subject
-func TransferCommunities(fromHost string, host string, type_ string, apiKey string) ([]byte, error) {
+func TransferCommunities(type_ string, apiKey string, oldClient *InvenioRDMClient, client *InvenioRDMClient) ([]byte, error) {
 	var oldCommunities, communities []Community
 	var id string
 	var err error
@@ -821,18 +816,14 @@ func TransferCommunities(fromHost string, host string, type_ string, apiKey stri
 	// create a new cache for frequently accessed community queries
 	cache := cache2go.Cache("communities")
 
-	// create a new http client with rate limiting
-	rl := rate.NewLimiter(rate.Every(10*time.Second), 100) // 100 request every 10 seconds
-	client := NewClient(rl, host)
-
 	// get all communities by type from old InvenioRDM instance
-	oldCommunities, err = SearchByType(fromHost, type_)
+	oldCommunities, err = SearchByType(type_, oldClient)
 	if err != nil {
 		return output, err
 	}
 
 	for _, community := range oldCommunities {
-		id, err = UpsertCommunity(community, client, apiKey, cache)
+		id, err = UpsertCommunity(community, apiKey, cache, client)
 		if err != nil {
 			return output, err
 		}
@@ -840,12 +831,12 @@ func TransferCommunities(fromHost string, host string, type_ string, apiKey stri
 		communities = append(communities, community)
 
 		// transfer optional logo if it exists
-		logo, err := GetCommunityLogo(fromHost, community.Slug)
+		logo, err := GetCommunityLogo(community.Slug, oldClient)
 		if err != nil {
 			return output, err
 		}
 		if len(logo) > 0 {
-			_, err = UpdateCommunityLogo(community.Slug, logo, client, apiKey)
+			_, err = UpdateCommunityLogo(community.Slug, logo, apiKey, client)
 			if err != nil {
 				return output, err
 			}
@@ -857,7 +848,7 @@ func TransferCommunities(fromHost string, host string, type_ string, apiKey stri
 }
 
 // UpsertCommunity updates or creates a community in InvenioRDM.
-func UpsertCommunity(community Community, client *InvenioRDMClient, apiKey string, cache *cache2go.CacheTable) (string, error) {
+func UpsertCommunity(community Community, apiKey string, cache *cache2go.CacheTable, client *InvenioRDMClient) (string, error) {
 	var err error
 	var communityID string
 
@@ -880,7 +871,7 @@ func UpsertCommunity(community Community, client *InvenioRDMClient, apiKey strin
 }
 
 // UpdateCommunityLogo updates a community logo in InvenioRDM.
-func UpdateCommunityLogo(slug string, logo []byte, client *InvenioRDMClient, apiKey string) (string, error) {
+func UpdateCommunityLogo(slug string, logo []byte, apiKey string, client *InvenioRDMClient) (string, error) {
 	if len(logo) == 0 {
 		return "", fmt.Errorf("empty logo data")
 	}
@@ -1011,43 +1002,4 @@ func AddRecordToCommunity(record commonmeta.APIResponse, client *InvenioRDMClien
 	err = json.Unmarshal(body, &response)
 	record.Status = "added_to_community"
 	return record, err
-}
-
-type InvenioRDMClient struct {
-	client      *http.Client
-	Host        string
-	Ratelimiter *rate.Limiter
-	Transport   http.RoundTripper
-}
-
-func (c *InvenioRDMClient) Do(req *http.Request) (*http.Response, error) {
-	// Comment out the below 5 lines to turn off ratelimiting
-	// ctx := context.Background()
-	// err := c.Ratelimiter.Wait(ctx) // This is a blocking call. Honors the rate limit
-	// if err != nil {
-	// 	return nil, err
-	// }
-	resp, err := c.client.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	return resp, nil
-}
-
-// NewClient returns a new InvenioRDMClient. It handles rate limiting and insecure connections on localhost.
-func NewClient(rl *rate.Limiter, host string) *InvenioRDMClient {
-	c := &InvenioRDMClient{
-		client:      http.DefaultClient,
-		Host:        host,
-		Ratelimiter: rl,
-	}
-	c.client.Timeout = time.Second * 10
-	if host == "localhost" {
-		// type assertion to check if client.Transport is of type *http.Transport
-		if tpt, ok := c.Transport.(*http.Transport); ok {
-			newTLSClientConfig := &tls.Config{InsecureSkipVerify: true}
-			tpt.TLSClientConfig = newTLSClientConfig
-		}
-	}
-	return c
 }

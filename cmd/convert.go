@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"os"
 	"slices"
+	"time"
 
 	"github.com/front-matter/commonmeta/commonmeta"
 	"github.com/front-matter/commonmeta/crossrefxml"
@@ -20,6 +21,7 @@ import (
 	"github.com/front-matter/commonmeta/ror"
 	"github.com/front-matter/commonmeta/schemaorg"
 	"github.com/front-matter/commonmeta/utils"
+	"golang.org/x/time/rate"
 
 	"github.com/front-matter/commonmeta/crossref"
 
@@ -97,7 +99,9 @@ commonmeta 10.5555/12345678`,
 			} else if from == "datacite" {
 				data, err = datacite.Fetch(id, match)
 			} else if from == "inveniordm" {
-				data, err = inveniordm.Fetch(id, match)
+				rl := rate.NewLimiter(rate.Every(10*time.Second), 100)
+				client := inveniordm.NewClient(rl, fromHost)
+				data, err = inveniordm.Fetch(id, match, client)
 			} else if from == "jsonfeed" {
 				data, err = jsonfeed.Fetch(id)
 			} else if from == "openalex" {

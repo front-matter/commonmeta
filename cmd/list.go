@@ -23,6 +23,7 @@ import (
 	"github.com/front-matter/commonmeta/openalex"
 	"github.com/front-matter/commonmeta/ror"
 	"github.com/front-matter/commonmeta/schemaorg"
+	"golang.org/x/time/rate"
 
 	"github.com/spf13/cobra"
 )
@@ -126,7 +127,9 @@ var listCmd = &cobra.Command{
 			r := openalex.NewReader(email)
 			data, err = r.FetchAll(number, page, member, type_, sample, "", year, orcid, ror_, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, hasArchive)
 		} else if from == "inveniordm" {
-			data, err = inveniordm.FetchAll(number, page, fromHost, community, subject, type_, year, language, orcid, affiliation, ror_, hasORCID, hasROR, match)
+			rl := rate.NewLimiter(rate.Every(10*time.Second), 100)
+			client := inveniordm.NewClient(rl, fromHost)
+			data, err = inveniordm.FetchAll(number, page, client, community, subject, type_, year, language, orcid, affiliation, ror_, hasORCID, hasROR, match)
 		} else if from == "jsonfeed" {
 			data, err = jsonfeed.FetchAll(number, page, community, isArchived)
 		} else if str != "" && from == "ror" {

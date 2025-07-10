@@ -2,6 +2,7 @@
 package inveniordm
 
 import (
+	"crypto/tls"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -21,6 +22,7 @@ import (
 	"github.com/front-matter/commonmeta/ror"
 	"github.com/front-matter/commonmeta/spdx"
 	"github.com/front-matter/commonmeta/utils"
+	"golang.org/x/time/rate"
 )
 
 // Query represents the InvenioRDM JSON API query.
@@ -289,6 +291,13 @@ type AwardVocabulary struct {
 		Identifier string `yaml:"identifier"`
 		Scheme     string `yaml:"scheme"`
 	}
+}
+
+type InvenioRDMClient struct {
+	client      *http.Client
+	Host        string
+	Ratelimiter *rate.Limiter
+	Transport   http.RoundTripper
 }
 
 // InvenioToCMMappings maps InvenioRDM resource types to Commonmeta types
@@ -595,10 +604,10 @@ var DCCSections = map[string]string{
 }
 
 // Fetch fetches InvenioRDM metadata and returns Commonmeta metadata.
-func Fetch(str string, match bool) (commonmeta.Data, error) {
+func Fetch(str string, match bool, client *InvenioRDMClient) (commonmeta.Data, error) {
 	var data commonmeta.Data
 	id, _ := utils.ValidateID(str)
-	content, err := Get(id)
+	content, err := Get(id, client)
 	if err != nil {
 		return data, err
 	}
@@ -607,9 +616,9 @@ func Fetch(str string, match bool) (commonmeta.Data, error) {
 }
 
 // FetchAll gets the metadata for a list of records from a InvenioRDM community and returns Commonmeta metadata.
-func FetchAll(number int, page int, host string, community string, subject string, type_ string, year string, language string, orcid string, affiliation string, ror string, hasORCID bool, hasROR bool, match bool) ([]commonmeta.Data, error) {
+func FetchAll(number int, page int, client *InvenioRDMClient, community string, subject string, type_ string, year string, language string, orcid string, affiliation string, ror string, hasORCID bool, hasROR bool, match bool) ([]commonmeta.Data, error) {
 	var data []commonmeta.Data
-	content, err := GetAll(number, page, host, community, subject, type_, year, language, orcid, affiliation, ror, hasORCID, hasROR)
+	content, err := GetAll(number, page, client, community, subject, type_, year, language, orcid, affiliation, ror, hasORCID, hasROR)
 	if err != nil {
 		return data, err
 	}
@@ -661,12 +670,15 @@ func LoadAll(filename string, match bool) ([]commonmeta.Data, error) {
 }
 
 // Get retrieves InvenioRDM metadata.
-func Get(id string) (Content, error) {
+func Get(id string, client *InvenioRDMClient) (Content, error) {
 	var content Content
-	client := &http.Client{
-		Timeout: time.Second * 10,
+
+	url := fmt.Sprintf("https://%s/api/records/%s", client.Host, id)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		return content, err
 	}
-	resp, err := client.Get(id)
+	resp, err := client.Do(req)
 	if err != nil {
 		return content, err
 	}
@@ -686,7 +698,7 @@ func Get(id string) (Content, error) {
 }
 
 // GetAll retrieves InvenioRDM metadata for all records in a community.
-func GetAll(number int, page int, host string, community string, subject string, type_ string, year string, language string, orcid string, affiliation string, ror string, hasORCID bool, hasROR bool) ([]Content, error) {
+func GetAll(number int, page int, client *InvenioRDMClient, community string, subject string, type_ string, year string, language string, orcid string, affiliation string, ror string, hasORCID bool, hasROR bool) ([]Content, error) {
 	var response Query
 	var content []Content
 
@@ -695,10 +707,7 @@ func GetAll(number int, page int, host string, community string, subject string,
 	} else if number > 500 {
 		number = 500
 	}
-	client := &http.Client{
-		Timeout: time.Second * 30,
-	}
-	url := QueryURL(number, page, host, community, subject, type_, year, language, orcid, affiliation, ror, hasORCID, hasROR)
+	url := QueryURL(number, page, client.Host, community, subject, type_, year, language, orcid, affiliation, ror, hasORCID, hasROR)
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		return content, err
@@ -866,19 +875,16 @@ func SearchBySlug(slug string, type_ string, client *InvenioRDMClient) (string, 
 
 // SearchByType returns all InvenioRDM communities by host and type,
 // enables transfer of communities between InvenioRDM instances
-func SearchByType(fromHost string, type_ string) ([]Community, error) {
+func SearchByType(type_ string, client *InvenioRDMClient) ([]Community, error) {
 	type Query struct {
 		Hits struct {
 			Total int         `json:"total"`
 			Hits  []Community `json:"hits"`
 		} `json:"hits"`
 	}
-	client := &http.Client{
-		Timeout: time.Second * 30,
-	}
 	var hits []Community
 	var query Query
-	requestURL := fmt.Sprintf("https://%s/api/communities?q=&type=%s&size=200", fromHost, type_)
+	requestURL := fmt.Sprintf("https://%s/api/communities?q=&type=%s&size=200", client.Host, type_)
 	req, _ := http.NewRequest(http.MethodGet, requestURL, nil)
 	req.Header = http.Header{
 		"Content-Type": {"application/json"},
@@ -1459,13 +1465,10 @@ func GetZenodoContributor(v Creator) commonmeta.Contributor {
 }
 
 // GetCommunityLogo returns the logo from a InvenioRDM community
-func GetCommunityLogo(host string, slug string) ([]byte, error) {
+func GetCommunityLogo(slug string, client *InvenioRDMClient) ([]byte, error) {
 	var logo []byte
 
-	client := &http.Client{
-		Timeout: time.Second * 30,
-	}
-	requestURL := fmt.Sprintf("https://%s/api/communities/%s/logo", host, slug)
+	requestURL := fmt.Sprintf("https://%s/api/communities/%s/logo", client.Host, slug)
 	req, err := http.NewRequest(http.MethodGet, requestURL, nil)
 	if err != nil {
 		return logo, err
@@ -1488,4 +1491,36 @@ func GetCommunityLogo(host string, slug string) ([]byte, error) {
 	default:
 		return logo, fmt.Errorf("unexpected status code: %d %s", resp.StatusCode, resp.Status)
 	}
+}
+
+func (c *InvenioRDMClient) Do(req *http.Request) (*http.Response, error) {
+	// Comment out the below 5 lines to turn off ratelimiting
+	// ctx := context.Background()
+	// err := c.Ratelimiter.Wait(ctx) // This is a blocking call. Honors the rate limit
+	// if err != nil {
+	// 	return nil, err
+	// }
+	resp, err := c.client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	return resp, nil
+}
+
+// NewClient returns a new InvenioRDMClient. It handles rate limiting and insecure connections on localhost.
+func NewClient(rl *rate.Limiter, host string) *InvenioRDMClient {
+	c := &InvenioRDMClient{
+		client:      http.DefaultClient,
+		Host:        host,
+		Ratelimiter: rl,
+	}
+	c.client.Timeout = time.Second * 30
+	if host == "localhost" {
+		// type assertion to check if client.Transport is of type *http.Transport
+		if tpt, ok := c.Transport.(*http.Transport); ok {
+			newTLSClientConfig := &tls.Config{InsecureSkipVerify: true}
+			tpt.TLSClientConfig = newTLSClientConfig
+		}
+	}
+	return c
 }

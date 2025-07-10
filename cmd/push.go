@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/front-matter/commonmeta/commonmeta"
 	"github.com/front-matter/commonmeta/crossrefxml"
@@ -16,6 +17,7 @@ import (
 	"github.com/front-matter/commonmeta/datacite"
 	"github.com/front-matter/commonmeta/inveniordm"
 	"github.com/front-matter/commonmeta/jsonfeed"
+	"golang.org/x/time/rate"
 
 	"github.com/front-matter/commonmeta/crossref"
 
@@ -96,7 +98,9 @@ commonmeta push --sample -f crossref -t inveniordm -h rogue-scholar.org --token 
 		} else if from == "datacite" {
 			data, err = datacite.FetchAll(number, page, client_, type_, sample, year, language, orcid, ror, hasORCID, hasROR, hasReferences, hasRelation, hasAbstract, hasAward, hasLicense, match)
 		} else if from == "inveniordm" {
-			data, err = inveniordm.FetchAll(number, page, fromHost, community, subject, type_, year, language, orcid, affiliation, ror, hasORCID, hasROR, match)
+			rl := rate.NewLimiter(rate.Every(10*time.Second), 100)
+			client := inveniordm.NewClient(rl, fromHost)
+			data, err = inveniordm.FetchAll(number, page, client, community, subject, type_, year, language, orcid, affiliation, ror, hasORCID, hasROR, match)
 		} else if from == "jsonfeed" {
 			data, err = jsonfeed.FetchAll(number, page, community, isArchived)
 		} else if str != "" && from == "commonmeta" {
@@ -123,7 +127,8 @@ commonmeta push --sample -f crossref -t inveniordm -h rogue-scholar.org --token 
 		}
 
 		var records []commonmeta.APIResponse
-		if to == "crossrefxml" {
+		switch to {
+		case "crossrefxml":
 			account := crossrefxml.Account{
 				Depositor:   depositor,
 				Email:       email,
@@ -132,20 +137,20 @@ commonmeta push --sample -f crossref -t inveniordm -h rogue-scholar.org --token 
 				LoginPasswd: loginPasswd,
 			}
 			records, err = crossrefxml.UpsertAll(data, account, legacyKey)
-		} else if to == "datacite" {
+		case "datacite":
 			account := datacite.Account{
 				Client:      client_,
 				Password:    password,
 				Development: development,
 			}
 			records, err = datacite.UpsertAll(data, account)
-		} else if to == "inveniordm" {
+		case "inveniordm":
 			if host == "" || token == "" {
 				fmt.Println("Please provide an inveniordm host and token")
 				return
 			}
 			records, err = inveniordm.UpsertAll(data, fromHost, host, token, legacyKey)
-		} else {
+		default:
 			fmt.Println("Please provide a valid service")
 			return
 		}

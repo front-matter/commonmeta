@@ -86,7 +86,10 @@ commonmeta put 10.5555/12345678 -f crossref -t inveniordm -h rogue-scholar.org -
 				data, err = crossrefxml.Fetch(id)
 			} else if from == "datacite" {
 				data, err = datacite.Fetch(id, match)
-				data, err = inveniordm.Fetch(id, match)
+			} else if from == "inveniordm" {
+				rl := rate.NewLimiter(rate.Every(10*time.Second), 100)
+				client := inveniordm.NewClient(rl, fromHost)
+				data, err = inveniordm.Fetch(id, match, client)
 			} else if from == "jsonfeed" {
 				data, err = jsonfeed.Fetch(id)
 			} else if from == "schemaorg" {
@@ -151,9 +154,9 @@ commonmeta put 10.5555/12345678 -f crossref -t inveniordm -h rogue-scholar.org -
 				return
 			}
 			rl := rate.NewLimiter(rate.Every(10*time.Second), 100) // 100 request every 10 seconds
-			client := inveniordm.NewClient(rl, host)
 			cache := cache2go.Cache("communities")
-			record, err = inveniordm.Upsert(record, client, cache, fromHost, token, legacyKey, data)
+			client := inveniordm.NewClient(rl, host)
+			record, err = inveniordm.Upsert(record, cache, fromHost, token, legacyKey, data, client)
 			if err != nil {
 				cmd.PrintErr(err)
 			}
