@@ -52,6 +52,7 @@ func init() {
 	rootCmd.PersistentFlags().StringP("affiliation", "", "", "affiliation name")
 	rootCmd.PersistentFlags().StringP("ror", "", "", "ROR ID")
 	rootCmd.PersistentFlags().StringP("from-host", "", "", "from InvenioRDM host")
+	rootCmd.PersistentFlags().StringP("from-token", "", "", "tokenfrom InvenioRDM host")
 	rootCmd.PersistentFlags().StringP("community", "", "", "InvenioRDM community slug")
 	rootCmd.PersistentFlags().StringP("subject", "", "", "subject area")
 	rootCmd.PersistentFlags().StringP("country", "", "", "country code")

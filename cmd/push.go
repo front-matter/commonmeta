@@ -55,6 +55,7 @@ commonmeta push --sample -f crossref -t inveniordm -h rogue-scholar.org --token 
 		affiliation, _ := cmd.Flags().GetString("affiliation")
 		ror, _ := cmd.Flags().GetString("ror")
 		fromHost, _ := cmd.Flags().GetString("from-host")
+		fromToken, _ := cmd.Flags().GetString("from-token")
 		community, _ := cmd.Flags().GetString("community")
 		subject, _ := cmd.Flags().GetString("subject")
 		hasORCID, _ := cmd.Flags().GetBool("has-orcid")
@@ -100,7 +101,7 @@ commonmeta push --sample -f crossref -t inveniordm -h rogue-scholar.org --token 
 		} else if from == "inveniordm" {
 			rl := rate.NewLimiter(rate.Every(10*time.Second), 100)
 			client := inveniordm.NewClient(rl, fromHost)
-			data, err = inveniordm.FetchAll(number, page, client, community, subject, type_, year, language, orcid, affiliation, ror, hasORCID, hasROR, match)
+			data, err = inveniordm.FetchAll(number, page, fromToken, community, subject, type_, year, language, orcid, affiliation, ror, hasORCID, hasROR, match, client)
 		} else if from == "jsonfeed" {
 			data, err = jsonfeed.FetchAll(number, page, community, isArchived)
 		} else if str != "" && from == "commonmeta" {

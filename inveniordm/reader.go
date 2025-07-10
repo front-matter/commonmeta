@@ -616,9 +616,9 @@ func Fetch(str string, match bool, client *InvenioRDMClient) (commonmeta.Data, e
 }
 
 // FetchAll gets the metadata for a list of records from a InvenioRDM community and returns Commonmeta metadata.
-func FetchAll(number int, page int, client *InvenioRDMClient, community string, subject string, type_ string, year string, language string, orcid string, affiliation string, ror string, hasORCID bool, hasROR bool, match bool) ([]commonmeta.Data, error) {
+func FetchAll(number int, page int, token string, community string, subject string, type_ string, year string, language string, orcid string, affiliation string, ror string, hasORCID bool, hasROR bool, match bool, client *InvenioRDMClient) ([]commonmeta.Data, error) {
 	var data []commonmeta.Data
-	content, err := GetAll(number, page, client, community, subject, type_, year, language, orcid, affiliation, ror, hasORCID, hasROR)
+	content, err := GetAll(number, page, token, community, subject, type_, year, language, orcid, affiliation, ror, hasORCID, hasROR, client)
 	if err != nil {
 		return data, err
 	}
@@ -698,7 +698,7 @@ func Get(id string, client *InvenioRDMClient) (Content, error) {
 }
 
 // GetAll retrieves InvenioRDM metadata for all records in a community.
-func GetAll(number int, page int, client *InvenioRDMClient, community string, subject string, type_ string, year string, language string, orcid string, affiliation string, ror string, hasORCID bool, hasROR bool) ([]Content, error) {
+func GetAll(number int, page int, token string, community string, subject string, type_ string, year string, language string, orcid string, affiliation string, ror string, hasORCID bool, hasROR bool, client *InvenioRDMClient) ([]Content, error) {
 	var response Query
 	var content []Content
 
@@ -711,6 +711,16 @@ func GetAll(number int, page int, client *InvenioRDMClient, community string, su
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		return content, err
+	}
+	if token != "" {
+		req.Header = http.Header{
+			"Content-Type":  {"application/json"},
+			"Authorization": {"Bearer " + token},
+		}
+	} else {
+		req.Header = http.Header{
+			"Content-Type": {"application/json"},
+		}
 	}
 	resp, err := client.Do(req)
 	if err != nil {
@@ -875,7 +885,7 @@ func SearchBySlug(slug string, type_ string, client *InvenioRDMClient) (string, 
 
 // SearchByType returns all InvenioRDM communities by host and type,
 // enables transfer of communities between InvenioRDM instances
-func SearchByType(type_ string, client *InvenioRDMClient) ([]Community, error) {
+func SearchByType(type_ string, token string, client *InvenioRDMClient) ([]Community, error) {
 	type Query struct {
 		Hits struct {
 			Total int         `json:"total"`
@@ -886,8 +896,16 @@ func SearchByType(type_ string, client *InvenioRDMClient) ([]Community, error) {
 	var query Query
 	requestURL := fmt.Sprintf("https://%s/api/communities?q=&type=%s&size=200", client.Host, type_)
 	req, _ := http.NewRequest(http.MethodGet, requestURL, nil)
-	req.Header = http.Header{
-		"Content-Type": {"application/json"},
+
+	if token != "" {
+		req.Header = http.Header{
+			"Content-Type":  {"application/json"},
+			"Authorization": {"Bearer " + token},
+		}
+	} else {
+		req.Header = http.Header{
+			"Content-Type": {"application/json"},
+		}
 	}
 	resp, err := client.Do(req)
 	if err != nil {

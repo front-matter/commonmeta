@@ -794,14 +794,14 @@ func CreateSubjectCommunities(apiKey string, client *InvenioRDMClient) ([]byte, 
 
 // TransferCommunities transfers communities between InvenioRDM instances
 // Transfer is my community type, e.g. blog, topic or subject
-func TransferCommunities(type_ string, apiKey string, oldClient *InvenioRDMClient, client *InvenioRDMClient) ([]byte, error) {
+func TransferCommunities(type_ string, apiKey string, oldApiKey string, oldClient *InvenioRDMClient, client *InvenioRDMClient) ([]byte, error) {
 	var oldCommunities, communities []Community
 	var id string
 	var err error
 	var output []byte
 
 	// get all communities by type from old InvenioRDM instance
-	oldCommunities, err = SearchByType(type_, oldClient)
+	oldCommunities, err = SearchByType(type_, oldApiKey, oldClient)
 	if err != nil {
 		return output, err
 	}

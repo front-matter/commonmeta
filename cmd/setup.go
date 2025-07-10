@@ -28,6 +28,7 @@ var setupCmd = &cobra.Command{
 		to, _ := cmd.Flags().GetString("to")
 
 		fromHost, _ := cmd.Flags().GetString("from-host")
+		fromToken, _ := cmd.Flags().GetString("from-token")
 		host, _ := cmd.Flags().GetString("host")
 		token, _ := cmd.Flags().GetString("token")
 		action, _ := cmd.Flags().GetString("action")
@@ -51,9 +52,9 @@ var setupCmd = &cobra.Command{
 			case "create_subject_communities":
 				output, err = inveniordm.CreateSubjectCommunities(token, client)
 			case "transfer_blog_communities":
-				output, err = inveniordm.TransferCommunities("blog", token, oldClient, client)
+				output, err = inveniordm.TransferCommunities("blog", token, fromToken, oldClient, client)
 			case "transfer_topic_communities":
-				output, err = inveniordm.TransferCommunities("topic", token, oldClient, client)
+				output, err = inveniordm.TransferCommunities("topic", token, fromToken, oldClient, client)
 			}
 		}
 
