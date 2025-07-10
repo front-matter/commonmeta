@@ -149,7 +149,9 @@ commonmeta push --sample -f crossref -t inveniordm -h rogue-scholar.org --token 
 				fmt.Println("Please provide an inveniordm host and token")
 				return
 			}
-			records, err = inveniordm.UpsertAll(data, fromHost, host, token, legacyKey)
+			rl := rate.NewLimiter(rate.Every(10*time.Second), 100) // 100 request every 10 seconds
+			client := inveniordm.NewClient(rl, host)
+			records, err = inveniordm.UpsertAll(data, fromHost, token, legacyKey, client)
 		default:
 			fmt.Println("Please provide a valid service")
 			return

@@ -12,7 +12,6 @@ import (
 	"path/filepath"
 	"slices"
 	"strings"
-	"time"
 
 	"github.com/front-matter/commonmeta/commonmeta"
 	"github.com/front-matter/commonmeta/dateutils"
@@ -21,8 +20,6 @@ import (
 	"github.com/front-matter/commonmeta/ror"
 	"github.com/front-matter/commonmeta/schemautils"
 	"github.com/front-matter/commonmeta/utils"
-	"github.com/muesli/cache2go"
-	"golang.org/x/time/rate"
 	"gopkg.in/yaml.v3"
 )
 
@@ -424,7 +421,7 @@ func WriteAll(list []commonmeta.Data, fromHost string) ([]byte, error) {
 }
 
 // Upsert updates or creates a record in InvenioRDM.
-func Upsert(record commonmeta.APIResponse, cache *cache2go.CacheTable, fromHost string, apiKey string, legacyKey string, data commonmeta.Data, client *InvenioRDMClient) (commonmeta.APIResponse, error) {
+func Upsert(record commonmeta.APIResponse, fromHost string, apiKey string, legacyKey string, data commonmeta.Data, client *InvenioRDMClient) (commonmeta.APIResponse, error) {
 	if client.Host == "rogue-scholar.org" && !doiutils.IsRogueScholarDOI(data.ID, "") {
 		record.Status = "failed_not_rogue_scholar_doi"
 		return record, nil
@@ -563,25 +560,18 @@ func Upsert(record commonmeta.APIResponse, cache *cache2go.CacheTable, fromHost 
 }
 
 // UpsertAll updates or creates a list of records in InvenioRDM.
-func UpsertAll(list []commonmeta.Data, fromHost string, host string, apiKey string, legacyKey string) ([]commonmeta.APIResponse, error) {
+func UpsertAll(list []commonmeta.Data, fromHost string, apiKey string, legacyKey string, client *InvenioRDMClient) ([]commonmeta.APIResponse, error) {
 	var records []commonmeta.APIResponse
-
-	// create a new cache for frequently accessed community queries
-	cache := cache2go.Cache("communities")
-
-	// create a new http client with rate limiting
-	rl := rate.NewLimiter(rate.Every(10*time.Second), 100) // 100 request every 10 seconds
-	client := NewClient(rl, host)
 
 	for _, data := range list {
 		record := commonmeta.APIResponse{ID: data.ID}
 		doi, ok := doiutils.ValidateDOI(data.ID)
 		if !ok && doi == "" {
 			record.Status = "failed_missing_doi"
-		} else if host == "rogue-scholar.org" && !doiutils.IsRogueScholarDOI(data.ID, "") {
+		} else if client.Host == "rogue-scholar.org" && !doiutils.IsRogueScholarDOI(data.ID, "") {
 			record.Status = "failed_not_rogue_scholar_doi"
 		} else {
-			record, _ = Upsert(record, cache, fromHost, apiKey, legacyKey, data, client)
+			record, _ = Upsert(record, fromHost, apiKey, legacyKey, data, client)
 		}
 
 		records = append(records, record)
@@ -772,9 +762,6 @@ func CreateSubjectCommunities(apiKey string, client *InvenioRDMClient) ([]byte, 
 	var err error
 	var output []byte
 
-	// create a new cache for frequently accessed community queries
-	cache := cache2go.Cache("communities")
-
 	for slug := range commonmeta.FOSKeyMappings {
 		title := commonmeta.FOSKeyMappings[slug]
 		community := Community{
@@ -793,7 +780,7 @@ func CreateSubjectCommunities(apiKey string, client *InvenioRDMClient) ([]byte, 
 				},
 			},
 		}
-		id, err = UpsertCommunity(community, apiKey, cache, client)
+		id, err = UpsertCommunity(community, apiKey, client)
 		if err != nil {
 			return output, err
 		}
@@ -813,9 +800,6 @@ func TransferCommunities(type_ string, apiKey string, oldClient *InvenioRDMClien
 	var err error
 	var output []byte
 
-	// create a new cache for frequently accessed community queries
-	cache := cache2go.Cache("communities")
-
 	// get all communities by type from old InvenioRDM instance
 	oldCommunities, err = SearchByType(type_, oldClient)
 	if err != nil {
@@ -823,7 +807,7 @@ func TransferCommunities(type_ string, apiKey string, oldClient *InvenioRDMClien
 	}
 
 	for _, community := range oldCommunities {
-		id, err = UpsertCommunity(community, apiKey, cache, client)
+		id, err = UpsertCommunity(community, apiKey, client)
 		if err != nil {
 			return output, err
 		}
@@ -848,7 +832,7 @@ func TransferCommunities(type_ string, apiKey string, oldClient *InvenioRDMClien
 }
 
 // UpsertCommunity updates or creates a community in InvenioRDM.
-func UpsertCommunity(community Community, apiKey string, cache *cache2go.CacheTable, client *InvenioRDMClient) (string, error) {
+func UpsertCommunity(community Community, apiKey string, client *InvenioRDMClient) (string, error) {
 	var err error
 	var communityID string
 
@@ -875,13 +859,6 @@ func UpdateCommunityLogo(slug string, logo []byte, apiKey string, client *Inveni
 	if len(logo) == 0 {
 		return "", fmt.Errorf("empty logo data")
 	}
-
-	// Store original timeout and restore it after upload
-	originalTimeout := client.client.Timeout
-	client.client.Timeout = time.Second * 30
-	defer func() {
-		client.client.Timeout = originalTimeout
-	}()
 
 	requestURL := fmt.Sprintf("https://%s/api/communities/%s/logo", client.Host, slug)
 	req, err := http.NewRequest(http.MethodPut, requestURL, bytes.NewReader(logo))

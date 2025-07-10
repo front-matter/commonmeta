@@ -13,7 +13,6 @@ require (
 	github.com/google/uuid v1.6.0
 	github.com/jszwec/csvutil v1.10.0
 	github.com/microcosm-cc/bluemonday v1.0.27
-	github.com/muesli/cache2go v0.0.0-20221011235721-518229cd8021
 	github.com/pkosilo/iso7064 v0.9.0
 	github.com/samber/lo v1.47.0
 	github.com/schollz/progressbar/v3 v3.18.0
