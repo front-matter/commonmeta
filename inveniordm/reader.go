@@ -962,7 +962,7 @@ func Read(content Content, match bool) (commonmeta.Data, error) {
 					Identifier:     identifier,
 					IdentifierType: identifierType,
 					Type:           type_,
-					Title:          v.Metadata.Title,
+					Title:          content.CustomFields.Journal.Title,
 				}
 				if identifierType == "ISSN" {
 					identifier = utils.ISSNAsURL(identifier)
