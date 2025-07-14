@@ -44,6 +44,9 @@ func WriteAll(list []Data, extension string) ([]byte, error) {
 	switch extension {
 	case ".yaml":
 		output, err = yaml.Marshal(list)
+		if err != nil {
+			return nil, err
+		}
 	case ".json":
 		output, err = json.Marshal(list)
 		if err != nil {
