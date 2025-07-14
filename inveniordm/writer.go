@@ -419,7 +419,7 @@ func WriteAll(list []commonmeta.Data, fromHost string) ([]byte, error) {
 }
 
 // Upsert updates or creates a record in InvenioRDM.
-func Upsert(record commonmeta.APIResponse, fromHost string, apiKey string, legacyKey string, data commonmeta.Data, client *InveniordmClient) (commonmeta.APIResponse, error) {
+func Upsert(record commonmeta.APIResponse, fromHost string, apiKey string, legacyKey string, data commonmeta.Data, client *InvenioRDMClient) (commonmeta.APIResponse, error) {
 	if client.Host == "rogue-scholar.org" && !doiutils.IsRogueScholarDOI(data.ID, "") {
 		record.Status = "failed_not_rogue_scholar_doi"
 		return record, nil
@@ -471,32 +471,6 @@ func Upsert(record commonmeta.APIResponse, fromHost string, apiKey string, legac
 			record.UUID = v.Identifier
 		}
 	}
-	// check if record already exists in InvenioRDM
-	record.ID, _ = SearchByDOI(data.ID, client)
-	if record.ID == "" {
-		// create draft record
-		record, err = CreateDraftRecord(record, apiKey, inveniordm, client)
-		if err != nil {
-			return record, err
-		}
-	} else {
-		// create draft record from published record
-		record, err = EditPublishedRecord(record, apiKey, client)
-		if err != nil {
-			return record, err
-		}
-		// update draft record
-		record, err = UpdateDraftRecord(record, apiKey, inveniordm, client)
-		if err != nil {
-			return record, err
-		}
-	}
-
-	// publish draft record
-	record, err = PublishDraftRecord(record, apiKey, client)
-	if err != nil {
-		return record, err
-	}
 
 	// add record to blog community if blog community is specified and exists
 	if record.CommunityID != "" {
@@ -540,13 +514,38 @@ func Upsert(record commonmeta.APIResponse, fromHost string, apiKey string, legac
 						return record, err
 					}
 					// remove related identifier
-					fmt.Println("Removing related identifier:", inveniordm.Metadata.RelatedIdentifiers[i].Identifier)
 					inveniordm.Metadata.RelatedIdentifiers = slices.Delete(inveniordm.Metadata.RelatedIdentifiers, i, i+1)
 				}
 			}
 		}
 	}
-	fmt.Println(len(inveniordm.Metadata.RelatedIdentifiers), "related identifiers after removing IsPartOf relations")
+
+	// check if record already exists in InvenioRDM
+	record.ID, _ = SearchByDOI(data.ID, client)
+	if record.ID == "" {
+		// create draft record
+		record, err = CreateDraftRecord(record, apiKey, inveniordm, client)
+		if err != nil {
+			return record, err
+		}
+	} else {
+		// create draft record from published record
+		record, err = EditPublishedRecord(record, apiKey, client)
+		if err != nil {
+			return record, err
+		}
+		// update draft record
+		record, err = UpdateDraftRecord(record, apiKey, inveniordm, client)
+		if err != nil {
+			return record, err
+		}
+	}
+
+	// publish draft record
+	record, err = PublishDraftRecord(record, apiKey, client)
+	if err != nil {
+		return record, err
+	}
 
 	// update rogue-scholar legacy record with Invenio rid if host is rogue-scholar.org
 	if client.Host == "rogue-scholar.org" && legacyKey != "" {
@@ -559,7 +558,7 @@ func Upsert(record commonmeta.APIResponse, fromHost string, apiKey string, legac
 }
 
 // UpsertAll updates or creates a list of records in InvenioRDM.
-func UpsertAll(list []commonmeta.Data, fromHost string, apiKey string, legacyKey string, client *InveniordmClient) ([]commonmeta.APIResponse, error) {
+func UpsertAll(list []commonmeta.Data, fromHost string, apiKey string, legacyKey string, client *InvenioRDMClient) ([]commonmeta.APIResponse, error) {
 	var records []commonmeta.APIResponse
 
 	for _, data := range list {
@@ -580,7 +579,7 @@ func UpsertAll(list []commonmeta.Data, fromHost string, apiKey string, legacyKey
 }
 
 // CreateDraftRecord creates a draft record in InvenioRDM.
-func CreateDraftRecord(record commonmeta.APIResponse, apiKey string, inveniordm Inveniordm, client *InveniordmClient) (commonmeta.APIResponse, error) {
+func CreateDraftRecord(record commonmeta.APIResponse, apiKey string, inveniordm Inveniordm, client *InvenioRDMClient) (commonmeta.APIResponse, error) {
 	output, err := json.Marshal(inveniordm)
 	if err != nil {
 		return record, err
@@ -631,7 +630,7 @@ func CreateDraftRecord(record commonmeta.APIResponse, apiKey string, inveniordm 
 }
 
 // EditPublishedRecord creates a draft record from a published record in InvenioRDM.
-func EditPublishedRecord(record commonmeta.APIResponse, apiKey string, client *InveniordmClient) (commonmeta.APIResponse, error) {
+func EditPublishedRecord(record commonmeta.APIResponse, apiKey string, client *InvenioRDMClient) (commonmeta.APIResponse, error) {
 	type Response struct {
 		*Inveniordm
 		Created string `json:"created,omitempty"`
@@ -661,7 +660,7 @@ func EditPublishedRecord(record commonmeta.APIResponse, apiKey string, client *I
 }
 
 // UpdateDraftRecord updates a draft record in InvenioRDM.
-func UpdateDraftRecord(record commonmeta.APIResponse, apiKey string, inveniordm Inveniordm, client *InveniordmClient) (commonmeta.APIResponse, error) {
+func UpdateDraftRecord(record commonmeta.APIResponse, apiKey string, inveniordm Inveniordm, client *InvenioRDMClient) (commonmeta.APIResponse, error) {
 	output, err := json.Marshal(inveniordm)
 	if err != nil {
 		return record, err
@@ -698,7 +697,7 @@ func UpdateDraftRecord(record commonmeta.APIResponse, apiKey string, inveniordm 
 }
 
 // PublishDraftRecord publishes a draft record in InvenioRDM.
-func PublishDraftRecord(record commonmeta.APIResponse, apiKey string, client *InveniordmClient) (commonmeta.APIResponse, error) {
+func PublishDraftRecord(record commonmeta.APIResponse, apiKey string, client *InvenioRDMClient) (commonmeta.APIResponse, error) {
 	type Response struct {
 		*Inveniordm
 		Created string `json:"created,omitempty"`
@@ -733,7 +732,7 @@ func PublishDraftRecord(record commonmeta.APIResponse, apiKey string, client *In
 }
 
 // DeleteDraftRecord publishes a draft record in InvenioRDM.
-func DeleteDraftRecord(record commonmeta.APIResponse, apiKey string, client *InveniordmClient) (commonmeta.APIResponse, error) {
+func DeleteDraftRecord(record commonmeta.APIResponse, apiKey string, client *InvenioRDMClient) (commonmeta.APIResponse, error) {
 	requestURL := fmt.Sprintf("https://%s/api/records/%s/draft", client.Host, record.ID)
 	req, _ := http.NewRequest(http.MethodDelete, requestURL, nil)
 	req.Header = http.Header{
@@ -755,7 +754,7 @@ func DeleteDraftRecord(record commonmeta.APIResponse, apiKey string, client *Inv
 }
 
 // CreateSubjectCommunities creates communities for each subject in FOSKeyMappings
-func CreateSubjectCommunities(apiKey string, client *InveniordmClient) ([]byte, error) {
+func CreateSubjectCommunities(apiKey string, client *InvenioRDMClient) ([]byte, error) {
 	var communities []Community
 	var id string
 	var err error
@@ -793,7 +792,7 @@ func CreateSubjectCommunities(apiKey string, client *InveniordmClient) ([]byte, 
 
 // TransferCommunities transfers communities between InvenioRDM instances
 // Transfer is my community type, e.g. blog, topic or subject
-func TransferCommunities(type_ string, apiKey string, oldApiKey string, oldClient *InveniordmClient, client *InveniordmClient) ([]byte, error) {
+func TransferCommunities(type_ string, apiKey string, oldApiKey string, oldClient *InvenioRDMClient, client *InvenioRDMClient) ([]byte, error) {
 	var oldCommunities, communities []Community
 	var id string
 	var err error
@@ -831,7 +830,7 @@ func TransferCommunities(type_ string, apiKey string, oldApiKey string, oldClien
 }
 
 // UpsertCommunity updates or creates a community in InvenioRDM.
-func UpsertCommunity(community Community, apiKey string, client *InveniordmClient) (string, error) {
+func UpsertCommunity(community Community, apiKey string, client *InvenioRDMClient) (string, error) {
 	var err error
 	var communityID string
 
@@ -854,7 +853,7 @@ func UpsertCommunity(community Community, apiKey string, client *InveniordmClien
 }
 
 // UpdateCommunityLogo updates a community logo in InvenioRDM.
-func UpdateCommunityLogo(slug string, logo []byte, apiKey string, client *InveniordmClient) (string, error) {
+func UpdateCommunityLogo(slug string, logo []byte, apiKey string, client *InvenioRDMClient) (string, error) {
 	if len(logo) == 0 {
 		return "", fmt.Errorf("empty logo data")
 	}
@@ -882,7 +881,7 @@ func UpdateCommunityLogo(slug string, logo []byte, apiKey string, client *Inveni
 }
 
 // CreateCommunity creates a community in InvenioRDM.
-func CreateCommunity(community Community, client *InveniordmClient, apiKey string) (string, error) {
+func CreateCommunity(community Community, client *InvenioRDMClient, apiKey string) (string, error) {
 	type Response struct {
 		*Community
 		Created string `json:"created,omitempty"`
@@ -920,7 +919,7 @@ func CreateCommunity(community Community, client *InveniordmClient, apiKey strin
 }
 
 // UpdateCommunity updates a community in InvenioRDM.
-func UpdateCommunity(community Community, client *InveniordmClient, apiKey string) (string, error) {
+func UpdateCommunity(community Community, client *InvenioRDMClient, apiKey string) (string, error) {
 	type Response struct {
 		*Community
 		Created string `json:"created,omitempty"`
@@ -957,7 +956,7 @@ func UpdateCommunity(community Community, client *InveniordmClient, apiKey strin
 }
 
 // AddRecordToCommunity adds record to InvenioRDM community.
-func AddRecordToCommunity(record commonmeta.APIResponse, client *InveniordmClient, apiKey string, communityID string) (commonmeta.APIResponse, error) {
+func AddRecordToCommunity(record commonmeta.APIResponse, client *InvenioRDMClient, apiKey string, communityID string) (commonmeta.APIResponse, error) {
 	type Response struct {
 		ID string `json:"id"`
 	}
@@ -976,9 +975,6 @@ func AddRecordToCommunity(record commonmeta.APIResponse, client *InveniordmClien
 	defer resp.Body.Close()
 	body, _ := io.ReadAll(resp.Body)
 	err = json.Unmarshal(body, &response)
-	record.Status = "added_to_community"
-	return record, err
-}
 	record.Status = "added_to_community"
 	return record, err
 }
