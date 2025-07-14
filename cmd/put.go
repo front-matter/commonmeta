@@ -79,21 +79,22 @@ commonmeta put 10.5555/12345678 -f crossref -t inveniordm -h rogue-scholar.org -
 			if from == "" {
 				from = utils.FindFromFormatByID(id)
 			}
-			if from == "crossref" {
+			switch from {
+			case "crossref":
 				data, err = crossref.Fetch(id, match)
-			} else if from == "crossrefxml" {
+			case "crossrefxml":
 				data, err = crossrefxml.Fetch(id)
-			} else if from == "datacite" {
+			case "datacite":
 				data, err = datacite.Fetch(id, match)
-			} else if from == "inveniordm" {
+			case "inveniordm":
 				rl := rate.NewLimiter(rate.Every(10*time.Second), 100)
 				client := inveniordm.NewClient(rl, fromHost)
 				data, err = inveniordm.Fetch(id, match, client)
-			} else if from == "jsonfeed" {
+			case "jsonfeed":
 				data, err = jsonfeed.Fetch(id)
-			} else if from == "schemaorg" {
+			case "schemaorg":
 				data, err = schemaorg.Fetch(id, match)
-			} else {
+			default:
 				fmt.Println("Please provide a valid input")
 				return
 			}
