@@ -108,8 +108,9 @@ var RORVersions = map[string]string{
 	"v1.65": "2025-05-05",
 	"v1.66": "2025-05-20",
 	"v1.67": "2025-06-24",
+	"v1.68": "2025-07-15",
 }
-var DefaultVersion = "v1.67"
+var DefaultVersion = "v1.68"
 
 // RORZenodoIDs contains the Zenodo IDs for the ROR data releases.
 var RORZenodoIDs = map[string]string{
@@ -122,6 +123,7 @@ var RORZenodoIDs = map[string]string{
 	"v1.65": "15343380",
 	"v1.66": "15475023",
 	"v1.67": "15731450",
+	"v1.68": "15925254",
 }
 
 var ArchivedFilename = fmt.Sprintf("%s-%s-ror-data_schema_v2.json", DefaultVersion, RORVersions[DefaultVersion])

@@ -30,14 +30,15 @@ var installCmd = &cobra.Command{
 		}
 		input := args[0]
 
-		if input == "spdx" {
+		switch input {
+		case "spdx":
 			_, err = spdx.FetchAll()
 			if err != nil {
 				cmd.Println(err)
 				return
 			}
 			fileName = spdx.SPDXFilename
-		} else if input == "ror" {
+		case "ror":
 			if dataVersion == "" {
 				dataVersion = ror.DefaultVersion
 			}
@@ -47,7 +48,7 @@ var installCmd = &cobra.Command{
 				return
 			}
 			fileName = ror.ArchivedFilename
-		} else {
+		default:
 			cmd.Println("Unsupported vocabulary. Supported vocabularies are: spdx, ror")
 			return
 		}
