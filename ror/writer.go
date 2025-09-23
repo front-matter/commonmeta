@@ -12,6 +12,8 @@ import (
 
 	"github.com/front-matter/commonmeta/utils"
 	"github.com/jszwec/csvutil"
+	"github.com/parquet-go/parquet-go"
+	"github.com/parquet-go/parquet-go/compress/zstd"
 	"gopkg.in/yaml.v3"
 )
 
@@ -325,6 +327,18 @@ func WriteAll(list []ROR, extension string) ([]byte, error) {
 			if err != nil {
 				fmt.Println(err)
 			}
+		}
+		output = buffer.Bytes()
+	case ".parquet":
+		buffer := &bytes.Buffer{}
+		// use gzip compression
+		pw := parquet.NewGenericWriter[ROR](buffer, parquet.Compression(&zstd.Codec{}))
+		_, err = pw.Write(list)
+		if err != nil {
+			fmt.Println(err, "parquet write")
+		}
+		if err := pw.Close(); err != nil {
+			fmt.Println(err, "parquet close")
 		}
 		output = buffer.Bytes()
 	case ".csv":

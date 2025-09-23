@@ -299,6 +299,7 @@ func TestValidateISNI(t *testing.T) {
 		{input: "https://isni.org/isni/0000-0001-2112-2291", want: "0000000121122291", ok: true},
 		{input: "0000 0001 2112 2291", want: "0000000121122291", ok: true},
 		{input: "0000-0001-2112-2291", want: "0000000121122291", ok: true},
+		{input: "0000 0004 0420 2273", want: "0000000404202273", ok: true},
 		{input: "https://isni.org/isni/000000021825009", want: "", ok: false}, // invalid ISNI
 	}
 	for _, tc := range testCases {
@@ -311,7 +312,7 @@ func TestValidateISNI(t *testing.T) {
 }
 
 func ExampleValidateISNI() {
-	s, _ := utils.ValidateISNI("https://isni.org/isni/000000012146438X")
+	s, _ := utils.ValidateISNI("https://isni.org/isni/0000000404202273")
 	fmt.Println(s)
 	// Output:
 	// 000000012146438X

@@ -56,6 +56,10 @@ var setupCmd = &cobra.Command{
 			case "transfer_topic_communities":
 				output, err = inveniordm.TransferCommunities("topic", token, fromToken, oldClient, client)
 			}
+			if err != nil {
+				cmd.PrintErr(err)
+				return
+			}
 		}
 
 		var out bytes.Buffer

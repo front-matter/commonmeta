@@ -887,6 +887,9 @@ func CreateCommunity(community Community, client *InvenioRDMClient, apiKey strin
 		Created string `json:"created,omitempty"`
 		Updated string `json:"updated,omitempty"`
 	}
+	if community.Access.RecordPolicy == "" {
+		community.Access.RecordPolicy = "open"
+	}
 	var response Response
 	var requestURL string
 	var req *http.Request
@@ -924,6 +927,9 @@ func UpdateCommunity(community Community, client *InvenioRDMClient, apiKey strin
 		*Community
 		Created string `json:"created,omitempty"`
 		Updated string `json:"updated,omitempty"`
+	}
+	if community.Access.RecordPolicy == "" {
+		community.Access.RecordPolicy = "open"
 	}
 	var response Response
 	var requestURL string

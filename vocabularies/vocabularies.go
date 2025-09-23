@@ -3,28 +3,20 @@ package vocabularies
 import (
 	"embed"
 	"fmt"
-	"path/filepath"
-
-	"github.com/front-matter/commonmeta/fileutils"
 )
 
-//go:embed *.zip *.json
+//go:embed *.zip *.json *.parquet
 var Files embed.FS
 
-var RORFile = "v1.68-2025-07-15-ror-data_schema_v2.json"
+var RORFile = "ror.parquet"
 var SPDXFile = "licenses.json"
 
 func LoadVocabulary(name string) ([]byte, error) {
-	var input, output []byte
-	var err error
+	var output []byte
 
 	switch name {
 	case "ROR.Organizations":
-		input, _ = Files.ReadFile(filepath.Join(RORFile + ".zip"))
-		output, err = fileutils.UnzipContent(input, RORFile)
-		if err != nil {
-			return nil, err
-		}
+		output, _ = Files.ReadFile(RORFile)
 	case "SPDX.Licenses":
 		output, _ = Files.ReadFile(SPDXFile)
 	default:

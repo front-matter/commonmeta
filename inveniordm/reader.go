@@ -1485,7 +1485,9 @@ func GetZenodoContributor(v Creator) commonmeta.Contributor {
 // GetCommunityLogo returns the logo from a InvenioRDM community
 func GetCommunityLogo(slug string, client *InvenioRDMClient) ([]byte, error) {
 	var logo []byte
-
+	if slug == "" || client.Host == "" {
+		return logo, errors.New("missing slug or host")
+	}
 	requestURL := fmt.Sprintf("https://%s/api/communities/%s/logo", client.Host, slug)
 	req, err := http.NewRequest(http.MethodGet, requestURL, nil)
 	if err != nil {
@@ -1507,7 +1509,8 @@ func GetCommunityLogo(slug string, client *InvenioRDMClient) ([]byte, error) {
 		}
 		return logo, nil
 	default:
-		return logo, fmt.Errorf("unexpected status code: %d %s", resp.StatusCode, resp.Status)
+		fmt.Println("unexpected status code:", resp.StatusCode)
+		return logo, nil
 	}
 }
 

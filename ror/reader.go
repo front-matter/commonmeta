@@ -18,6 +18,7 @@ import (
 	"github.com/front-matter/commonmeta/fileutils"
 	"github.com/front-matter/commonmeta/utils"
 	"github.com/front-matter/commonmeta/vocabularies"
+	"github.com/parquet-go/parquet-go"
 	"gopkg.in/yaml.v3"
 )
 
@@ -109,8 +110,11 @@ var RORVersions = map[string]string{
 	"v1.66": "2025-05-20",
 	"v1.67": "2025-06-24",
 	"v1.68": "2025-07-15",
+	"v1.69": "2025-08-07",
+	"v1.70": "2025-08-26",
+	"v1.71": "2025-09-22",
 }
-var DefaultVersion = "v1.68"
+var DefaultVersion = "v1.71"
 
 // RORZenodoIDs contains the Zenodo IDs for the ROR data releases.
 var RORZenodoIDs = map[string]string{
@@ -124,6 +128,9 @@ var RORZenodoIDs = map[string]string{
 	"v1.66": "15475023",
 	"v1.67": "15731450",
 	"v1.68": "15925254",
+	"v1.69": "16762508",
+	"v1.70": "16950727",
+	"v1.71": "17178491",
 }
 
 var ArchivedFilename = fmt.Sprintf("%s-%s-ror-data_schema_v2.json", DefaultVersion, RORVersions[DefaultVersion])
@@ -131,7 +138,7 @@ var RORFilename = fmt.Sprintf("%s-%s-ror-data.zip", DefaultVersion, RORVersions[
 var RORDownloadURL = fmt.Sprintf("https://github.com/ror-community/ror-data/blob/main/%s", RORFilename)
 
 var RORTypes = []string{"archive", "company", "education", "facility", "funder", "government", "healthcare", "nonprofit", "other"}
-var Extensions = []string{".avro", ".yaml", ".json", ".jsonl", ".csv"}
+var Extensions = []string{".avro", ".parquet", ".yaml", ".json", ".jsonl", ".csv"}
 
 // Fetch fetches ROR metadata for a given ror id.
 func Fetch(str string) (ROR, error) {
@@ -366,19 +373,28 @@ func LoadAll(filename string) ([]ROR, error) {
 		}
 	}
 
+	list, err = LoadAllFromBytes(output, extension)
+	return list, err
+}
+
+// LoadAllFromBytes loads the metadata for a list of organizations from ROR data in bytes.
+func LoadAllFromBytes(data []byte, extension string) ([]ROR, error) {
+	var list []ROR
+	var err error
+
 	switch extension {
 	case ".json":
-		err = json.Unmarshal(output, &list)
+		err = json.Unmarshal(data, &list)
 		if err != nil {
 			return list, errors.New("error unmarshalling json file")
 		}
 	case ".yaml":
-		err = yaml.Unmarshal(output, &list)
+		err = yaml.Unmarshal(data, &list)
 		if err != nil {
 			return list, errors.New("error unmarshalling yaml file")
 		}
 	case ".jsonl":
-		decoder := json.NewDecoder(bytes.NewReader(output))
+		decoder := json.NewDecoder(bytes.NewReader(data))
 		for {
 			var item ROR
 			if err := decoder.Decode(&item); err == io.EOF {
@@ -388,8 +404,27 @@ func LoadAll(filename string) ([]ROR, error) {
 			}
 			list = append(list, item)
 		}
-	case ".sql":
+	case ".parquet":
+		reader := bytes.NewReader(data)
+		pf, err := parquet.OpenFile(reader, int64(len(data)))
+		if err != nil {
+			return list, fmt.Errorf("error opening parquet file: %w", err)
+		}
 
+		pr := parquet.NewGenericReader[ROR](pf)
+		defer pr.Close()
+
+		for {
+			rows := make([]ROR, 1000) // Read in batches
+			n, err := pr.Read(rows)
+			if err == io.EOF {
+				break
+			}
+			if err != nil {
+				return list, fmt.Errorf("error reading parquet data: %w", err)
+			}
+			list = append(list, rows[:n]...)
+		}
 	default:
 		return list, errors.New("unsupported file format")
 	}
@@ -440,9 +475,13 @@ func LoadBuiltin() ([]ROR, error) {
 	var list []ROR
 
 	bytes, err := vocabularies.LoadVocabulary("ROR.Organizations")
-	err = json.Unmarshal(bytes, &list)
 	if err != nil {
-		return nil, fmt.Errorf("error parsing json data: %w", err)
+		return nil, fmt.Errorf("error loading vocabulary: %w", err)
+	}
+
+	list, err = LoadAllFromBytes(bytes, ".parquet")
+	if err != nil {
+		return nil, fmt.Errorf("error parsing parquet data: %w", err)
 	}
 
 	return list, nil

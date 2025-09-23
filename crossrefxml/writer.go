@@ -248,12 +248,13 @@ func Convert(data commonmeta.Data) (Body, error) {
 			f := Assertion{}
 			if fundingReference.FunderIdentifier != "" {
 				_, type_ := utils.ValidateID(fundingReference.FunderIdentifier)
-				if type_ == "ROR" {
+				switch type_ {
+				case "ROR":
 					f = Assertion{
 						Name: "ror",
 						Text: fundingReference.FunderIdentifier,
 					}
-				} else if type_ == "Crossref Funder ID" {
+				case "Crossref Funder ID":
 					fi := Assertion{
 						Name: "funder_identifier",
 						Text: fundingReference.FunderIdentifier,
