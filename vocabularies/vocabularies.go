@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-//go:embed *.zip *.json *.parquet
+//go:embed *.json *.parquet
 var Files embed.FS
 
 var RORFile = "ror.parquet"
