@@ -138,7 +138,7 @@ var RORFilename = fmt.Sprintf("%s-%s-ror-data.zip", DefaultVersion, RORVersions[
 var RORDownloadURL = fmt.Sprintf("https://github.com/ror-community/ror-data/blob/main/%s", RORFilename)
 
 var RORTypes = []string{"archive", "company", "education", "facility", "funder", "government", "healthcare", "nonprofit", "other"}
-var Extensions = []string{".avro", ".parquet", ".yaml", ".json", ".jsonl", ".csv"}
+var Extensions = []string{".parquet", ".yaml", ".json", ".jsonl", ".csv"}
 
 // Fetch fetches ROR metadata for a given ror id.
 func Fetch(str string) (ROR, error) {

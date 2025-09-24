@@ -146,7 +146,7 @@ var listCmd = &cobra.Command{
 		} else if str == "" && from == "ror" {
 			// if no input is provided, use ROR data dump
 			orgdata, err = ror.LoadBuiltin()
-			input = ror.Basename("v1.64")
+			input = ror.Basename("v1.71")
 		} else {
 			fmt.Println("Please provide a valid input format")
 			return

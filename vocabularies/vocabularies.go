@@ -8,7 +8,7 @@ import (
 //go:embed *.json *.parquet
 var Files embed.FS
 
-var RORFile = "ror.parquet"
+var RORFile = "ror_v1.71.parquet"
 var SPDXFile = "licenses.json"
 
 func LoadVocabulary(name string) ([]byte, error) {
